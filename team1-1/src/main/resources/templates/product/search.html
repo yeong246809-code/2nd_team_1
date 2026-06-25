@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>K-market | 상품검색</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Tailwind Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c1c7ca",
+                        "inverse-on-surface": "#f0f1f2",
+                        "secondary-container": "#c0ecdc",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#c8e8f2",
+                        "primary-fixed-dim": "#acccd5",
+                        "primary": "#14333b",
+                        "on-primary-container": "#99b9c2",
+                        "primary-container": "#2c4a52",
+                        "on-surface": "#191c1d",
+                        "on-background": "#191c1d",
+                        "inverse-primary": "#acccd5",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdcc7",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-secondary-container": "#446c5f",
+                        "secondary-fixed": "#c0ecdc",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "on-tertiary-container": "#d6ab90",
+                        "tertiary-container": "#5e3f2a",
+                        "secondary": "#3e6659",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#72787a",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "inverse-surface": "#2e3132",
+                        "on-secondary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "on-secondary-fixed": "#002018",
+                        "on-primary-fixed": "#001f26",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-tint": "#45636b",
+                        "on-surface-variant": "#41484a",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "tertiary": "#452916",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-low": "#f3f4f5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "md": "24px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "margin-mobile": "16px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Be Vietnam Pro"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .product-card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(44, 74, 82, 0.06);
+        }
+        .product-card-shadow:hover {
+            box-shadow: 0 10px 25px -4px rgba(44, 74, 82, 0.12);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-secondary-container">
+<!-- Header Start -->
+<header class="bg-surface sticky top-0 z-50 shadow-sm">
+    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
+        <a class="font-display-lg text-headline-lg font-bold text-primary" href="/">K-market</a>
+        <!-- Global Search Box -->
+        <div class="hidden md:flex flex-1 max-w-xl mx-xl relative items-center">
+            <input class="w-full pl-md pr-xl py-3 rounded-full bg-surface-container border-none focus:ring-2 focus:ring-primary-container transition-all" placeholder="셔츠" th:value="${keyword}" type="text"/>
+            <button class="absolute right-3 p-2 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined" data-icon="search">search</span>
+            </button>
+        </div>
+        <nav class="flex items-center gap-md font-label-md text-label-md">
+            <a class="text-on-surface-variant hover:text-primary transition-colors" href="/login">Login</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors" href="/join">Join</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors" href="/mypage">My Page</a>
+            <a class="flex items-center text-on-surface-variant hover:text-primary transition-colors" href="/cart">
+                <span class="material-symbols-outlined mr-1" data-icon="shopping_cart">shopping_cart</span>
+                Cart
+            </a>
+        </nav>
+    </div>
+</header>
+<!-- Header End -->
+<main class="max-w-container-max mx-auto px-md py-lg flex gap-md">
+    <!-- Sidebar Start -->
+    <aside class="hidden lg:flex flex-col gap-md w-64 shrink-0">
+        <div class="bg-surface-container-low p-md rounded-xl">
+            <div class="mb-base">
+                <h2 class="font-headline-md text-headline-md text-primary">Categories</h2>
+                <p class="text-label-sm text-outline-variant uppercase tracking-wider">Browse by Department</p>
+            </div>
+            <nav class="flex flex-col gap-1">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                    <span class="material-symbols-outlined text-primary" data-icon="checkroom">checkroom</span>
+                    <span class="font-label-md">Fashion</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                    <span class="material-symbols-outlined" data-icon="devices">devices</span>
+                    <span class="font-label-md">Electronics</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                    <span class="material-symbols-outlined" data-icon="home">home</span>
+                    <span class="font-label-md">Home Decor</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                    <span class="material-symbols-outlined" data-icon="face">face</span>
+                    <span class="font-label-md">Beauty</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                    <span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+                    <span class="font-label-md">Groceries</span>
+                </a>
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                    <span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+                    <span class="font-label-md">Sports</span>
+                </a>
+            </nav>
+        </div>
+        <!-- Best Items Mini List -->
+        <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border border-surface-container">
+            <h3 class="font-label-md text-primary mb-md flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+                베스트 상품
+            </h3>
+            <div class="flex flex-col gap-md">
+                <!-- Best Item 1 -->
+                <div class="flex gap-3">
+                    <div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden shrink-0">
+                        <img class="w-full h-full object-cover" data-alt="A premium high-fashion photography of a minimalist linen shirt displayed on a neutral background, professional studio lighting, sophisticated corporate aesthetic with teal and navy tones, high-resolution product shot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkF5PQj6Dj_mcuCJyjZXNdX3YcRS9iwiQol66AE8T45JVoNQqNdc2VQ-S35PsWBa9h-UkHDFze_JKaC-EYPTN9HTJA5DA7nZkEEFFa2b-_Llfxts2FB_mteJfEOjUhls-wugtAP7hR72VGs18pgEXjpfLaV52a03D5vJ4sQSIQ0jzI-OjPXspPdhgISN-V06PIhUesreGsXtM7Yxp6YaMdOqylvqGq28atfj4qznou-EQ7VbmTqK7A2T5hAqD4GbrZ4K4UTFGeQaMq"/>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-label-sm line-clamp-1">프리미엄 린넨 셔츠</p>
+                        <p class="text-primary font-bold">27,000원</p>
+                    </div>
+                </div>
+                <!-- Best Item 2 -->
+                <div class="flex gap-3">
+                    <div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden shrink-0">
+                        <img class="w-full h-full object-cover" data-alt="Close-up of a high-quality cotton dress shirt, soft fabric texture visible, elegant styling in a bright and airy modern retail setting, focus on detail and material quality, clean white and soft gray palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABE38GqSrbdr-7Y7ABcejfqAyL3pzLzyykl_lxPql9P7B8Vp0l603zCJmJufYKuYPeMTcp9kxNEHa4MQmgV04x_cAbMAD64hp_3mqJdsLFEg79WuJD1fBNLLAKS0jZDZjtZrrQM9VT7aQw2YF0WS2TvLSwgn74hIbtO2BoMr77VmYx8TAGky4QYrBTmCRSSW4LUWYUZy8xE6LKmJbYzwnuESedYNceuROqh8Ua8Blm67Tt8dIpy-2-9L5uAgSnj7xqnz8A-e9lUkbQ"/>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-label-sm line-clamp-1">옥스퍼드 버튼다운</p>
+                        <p class="text-primary font-bold">32,000원</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- Sidebar End -->
+    <!-- Search Results Start -->
+    <section class="flex-1">
+        <!-- Breadcrumbs & Result Header -->
+        <div class="flex justify-between items-end mb-md">
+            <div>
+                <nav class="text-label-sm text-outline-variant mb-1">
+                    HOME &gt; 상품검색 &gt; <span class="text-on-surface">검색결과</span>
+                </nav>
+                <h1 class="text-headline-lg font-headline-lg text-on-surface">
+                    "<span class="text-primary" th:text="${keyword}">셔츠</span>" 검색결과
+                    <span class="text-body-md font-normal text-on-surface-variant ml-2">(총 <span th:text="${totalCount}">20</span>건)</span>
+                </h1>
+            </div>
+        </div>
+        <!-- Secondary Search & Filter Bar -->
+        <div class="bg-surface-container-low p-md rounded-xl mb-lg border border-surface-variant/50">
+            <form class="flex flex-wrap items-center gap-md">
+                <div class="flex-1 min-w-[280px] flex gap-2">
+                    <input class="flex-1 px-md py-2.5 rounded-lg border-surface-variant bg-surface-container-lowest focus:ring-primary focus:border-primary" placeholder="결과 내 재검색" type="text"/>
+                    <button class="bg-primary text-on-primary px-lg py-2.5 rounded-lg font-label-md hover:opacity-90 transition-opacity">검색</button>
+                </div>
+                <div class="flex items-center gap-md text-label-md text-on-surface-variant">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 상품명
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 설명
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 가격
+                    </label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input class="w-24 px-3 py-2 rounded-lg border-surface-variant bg-surface-container-lowest" placeholder="최소" type="number"/>
+                    <span class="text-outline-variant">~</span>
+                    <input class="w-24 px-3 py-2 rounded-lg border-surface-variant bg-surface-container-lowest" placeholder="최대" type="number"/>
+                </div>
+            </form>
+        </div>
+        <!-- Sort Tabs -->
+        <div class="flex border-b border-surface-variant mb-md overflow-x-auto">
+            <button class="px-md py-3 font-label-md text-primary border-b-2 border-primary whitespace-nowrap">판매많은순</button>
+            <button class="px-md py-3 font-label-md text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">낮은가격순</button>
+            <button class="px-md py-3 font-label-md text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">높은가격순</button>
+            <button class="px-md py-3 font-label-md text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">평점높은순</button>
+            <button class="px-md py-3 font-label-md text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">후기많은순</button>
+            <button class="px-md py-3 font-label-md text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">최근등록순</button>
+        </div>
+        <!-- Product List Container -->
+        <div class="flex flex-col gap-md">
+            <!-- Single Product Item (Iteration starts here) -->
+            <div class="group flex flex-col md:flex-row gap-md p-md bg-surface-container-lowest rounded-xl product-card-shadow border border-surface-container transition-all" th:each="product : ${products}">
+                <!-- Image -->
+                <div class="w-full md:w-48 h-48 rounded-lg overflow-hidden bg-surface-container-low shrink-0 relative">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdWmML6wVLoLeEh4sMK7eyhvZq4yE7dZpGnQ66-jCH7oBW2l_z-8ZxoucezAEtjspPufgAcV9LGm4vgPyhYZ4ZH4PYk_fYKFBPDCzggqyv4UiQIwBW9I_VPy_mWr4BWKmzqp2baVPU9JtqsjOQDujk7IaMPGD8CKkjh2WmqRFJEtTmhOrxBuQ9HfNyDK4bow87nPbvcTaFL-l7Eae33oP1EJXDm1qvXLomlOmvcSaqRL8GsJky1NssxNQOEUUOGgkrLBqB87_5v6ET" th:data-alt="'A high-quality studio photograph of ' + ${product.name} + '. The product is showcased with soft environmental lighting, emphasizing clean lines and premium fabric texture. Professional e-commerce style with a muted gray background and subtle teal accents reflecting the K-market brand identity.'"/>
+                    <div class="absolute top-2 left-2 px-2 py-1 bg-secondary text-on-secondary text-label-sm rounded shadow-sm" th:if="${product.isNew}">NEW</div>
+                </div>
+                <!-- Content -->
+                <div class="flex-1 flex flex-col justify-between py-xs">
+                    <div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-1" th:text="${product.name}">이지 워시 옥스퍼드 셔츠</h3>
+                        <p class="text-body-md text-on-surface-variant line-clamp-2 mb-4" th:text="${product.description}">다양한 체형에 어울리는 스탠다드 핏으로 제작되어 데일리 아이템으로 최적화된 코튼 셔츠입니다.</p>
+                        <div class="flex items-center gap-md">
+                            <span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded text-label-sm font-semibold" th:if="${product.isFreeShipping}">무료배송</span>
+                            <span class="text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="local_shipping">local_shipping</span>
+                                    배송비 2,500원
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Price & Seller Info -->
+                <div class="w-full md:w-56 border-t md:border-t-0 md:border-l border-surface-variant pt-md md:pt-0 md:pl-md flex flex-col justify-between items-start md:items-end text-left md:text-right">
+                    <div>
+                        <div class="flex items-baseline gap-2 md:justify-end">
+                            <span class="text-error font-bold text-label-md" th:text="${product.discount} + '%'">10% ↓</span>
+                            <span class="text-outline-variant text-label-sm line-through" th:text="${product.originalPrice} + '원'">30,000원</span>
+                        </div>
+                        <div class="text-headline-lg font-headline-lg text-primary" th:text="${product.price} + '원'">27,000원</div>
+                    </div>
+                    <div class="mt-md w-full">
+                        <div class="flex items-center gap-2 md:justify-end mb-1">
+                            <span class="text-label-sm text-on-surface-variant" th:text="${product.seller}">패션빌리지</span>
+                            <span class="material-symbols-outlined text-secondary text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        </div>
+                        <div class="flex items-center gap-1 md:justify-end">
+                            <div class="flex text-tertiary-container">
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star_half" style="font-variation-settings: 'FILL' 1;">star_half</span>
+                            </div>
+                            <span class="text-label-sm text-outline-variant">(48)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat Mock Items for Visual Depth -->
+            <div class="group flex flex-col md:flex-row gap-md p-md bg-surface-container-lowest rounded-xl product-card-shadow border border-surface-container transition-all">
+                <div class="w-full md:w-48 h-48 rounded-lg overflow-hidden bg-surface-container-low shrink-0 relative">
+                    <img class="w-full h-full object-cover" data-alt="Minimalist fashion lifestyle shot showing a light blue linen shirt hanging in a clean, sunlit modern interior. Soft shadows and high-key lighting create a sense of calm reliability and premium quality. Corporate colors of navy-teal accents integrated into the background scenery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmkcVCwaqRmNg3HYvlkELjyeLJR4Xr8GQ4eCyxobauvqLxCWHSycfue_H1fu2vqu5Rnv0xWxpKqQPee9w3bf6DCEldD7SD9yTzWgdkrzrbMd7M54uT52v4BuQ0n8oB0GvzYa3u6rBVZE3Kxw5CLZk3BzgoHbbuzFTT_DZsn_glU4CfJcJMtvGkS8d5TVOKRgFjjqgfP33g_ptC6nTORVr-IE-VegqlpiUddYKjUhr45ItaO3hATLN3ahxCRjm1aX7N9G8XIfNGulcb"/>
+                </div>
+                <div class="flex-1 flex flex-col justify-between py-xs">
+                    <div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-1">프리미엄 린넨 헨리넥 셔츠</h3>
+                        <p class="text-body-md text-on-surface-variant line-clamp-2 mb-4">여름철 시원하게 착용 가능한 천연 린넨 소재의 셔츠입니다. 통기성이 뛰어나며 세련된 실루엣을 선사합니다.</p>
+                        <div class="flex items-center gap-md">
+                            <span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded text-label-sm font-semibold">무료배송</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-56 border-t md:border-t-0 md:border-l border-surface-variant pt-md md:pt-0 md:pl-md flex flex-col justify-between items-start md:items-end text-left md:text-right">
+                    <div>
+                        <div class="flex items-baseline gap-2 md:justify-end">
+                            <span class="text-error font-bold text-label-md">15% ↓</span>
+                            <span class="text-outline-variant text-label-sm line-through">45,000원</span>
+                        </div>
+                        <div class="text-headline-lg font-headline-lg text-primary">38,250원</div>
+                    </div>
+                    <div class="mt-md w-full">
+                        <div class="flex items-center gap-2 md:justify-end mb-1">
+                            <span class="text-label-sm text-on-surface-variant">모던웨어</span>
+                            <span class="material-symbols-outlined text-secondary text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        </div>
+                        <div class="flex items-center gap-1 md:justify-end">
+                            <div class="flex text-tertiary-container">
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            </div>
+                            <span class="text-label-sm text-outline-variant">(124)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="group flex flex-col md:flex-row gap-md p-md bg-surface-container-lowest rounded-xl product-card-shadow border border-surface-container transition-all">
+                <div class="w-full md:w-48 h-48 rounded-lg overflow-hidden bg-surface-container-low shrink-0">
+                    <img class="w-full h-full object-cover" data-alt="Elegant close-up shot of a white cotton dress shirt folded perfectly, highlighting its high thread count and crisp collar. Set in a professional editorial environment with soft ambient lighting. Muted color palette focusing on whites and soft grays with subtle primary navy-teal branding elements in the distance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7yW8TE6nLo4DPtbbMRPqQfM2MnbmX4IC5yYJEz0s-bwKj17IdfhonfmEJHZJSrvaEx3SkPUROJmeJx2ZVsfCpYa2DiqiYKY_rcPDHD40h2ZIHlfoFHJIPytdXk6cI4Ro4zJeu2H5OaZ69HPHJ973hWcHK-AiNy7kBWONfKDSscszd_ldye4iejgEY1Jk34fr_c_qkHRRHc7ZtpoW9FFiVJZWatyFz8VPni9DISlfBSKT7iOzgTZGdu6ZZFaiAjWXB_RGZrJApv-9H"/>
+                </div>
+                <div class="flex-1 flex flex-col justify-between py-xs">
+                    <div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors mb-1">데일리 코튼 스트라이프 셔츠</h3>
+                        <p class="text-body-md text-on-surface-variant line-clamp-2 mb-4">잔잔한 스트라이프 패턴으로 지적인 분위기를 연출하는 비즈니스 캐주얼 셔츠입니다.</p>
+                        <div class="flex items-center gap-md">
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="local_shipping">local_shipping</span>
+                                    배송비 3,000원
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-56 border-t md:border-t-0 md:border-l border-surface-variant pt-md md:pt-0 md:pl-md flex flex-col justify-between items-start md:items-end text-left md:text-right">
+                    <div>
+                        <div class="flex items-baseline gap-2 md:justify-end">
+                            <span class="text-error font-bold text-label-md">20% ↓</span>
+                            <span class="text-outline-variant text-label-sm line-through">29,000원</span>
+                        </div>
+                        <div class="text-headline-lg font-headline-lg text-primary">23,200원</div>
+                    </div>
+                    <div class="mt-md w-full">
+                        <div class="flex items-center gap-2 md:justify-end mb-1">
+                            <span class="text-label-sm text-on-surface-variant">베이직라인</span>
+                        </div>
+                        <div class="flex items-center gap-1 md:justify-end">
+                            <div class="flex text-tertiary-container">
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-xs" data-icon="star_outline" style="font-variation-settings: 'FILL' 1;">star_outline</span>
+                            </div>
+                            <span class="text-label-sm text-outline-variant">(12)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pagination Start -->
+        <div class="flex justify-center items-center gap-2 mt-xl mb-lg">
+            <button class="p-2 rounded-lg hover:bg-surface-container transition-colors text-outline-variant disabled:opacity-30" disabled="">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button class="w-10 h-10 rounded-lg bg-primary text-on-primary font-bold">1</button>
+            <button class="w-10 h-10 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">2</button>
+            <button class="w-10 h-10 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">3</button>
+            <button class="w-10 h-10 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">4</button>
+            <button class="w-10 h-10 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">5</button>
+            <button class="w-10 h-10 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">6</button>
+            <button class="w-10 h-10 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">7</button>
+            <button class="p-2 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+        <!-- Pagination End -->
+    </section>
+    <!-- Search Results End -->
+</main>
+<!-- Footer Start -->
+<footer class="bg-surface-container-highest w-full mt-lg">
+    <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
+        <div class="font-headline-md text-headline-md font-bold text-primary">K-market</div>
+        <nav class="flex flex-wrap justify-center gap-x-lg gap-y-2 text-body-md text-on-surface-variant">
+            <a class="hover:text-primary underline transition-colors" href="#">About Us</a>
+            <a class="hover:text-primary underline transition-colors" href="#">Customer Service</a>
+            <a class="hover:text-primary underline transition-colors" href="#">Privacy Policy</a>
+            <a class="hover:text-primary underline transition-colors" href="#">Terms of Service</a>
+            <a class="hover:text-primary underline transition-colors" href="#">FAQ</a>
+            <a class="hover:text-primary underline transition-colors" href="#">Contact</a>
+        </nav>
+        <div class="text-label-sm text-outline-variant mt-md text-center">
+            (주)K-market | 대표이사: 홍길동 | 사업자등록번호: 000-00-00000<br/>
+            서울특별시 강남구 테헤란로 000 | 고객센터: 1588-0000<br/>
+            <p class="mt-4">© 2024 K-market. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<!-- Footer End -->
+<script>
+    // Micro-interactions
+    document.querySelectorAll('.group').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.style.transform = 'translateY(-2px)';
+        });
+        item.addEventListener('mouseleave', () => {
+            item.style.transform = 'translateY(0)';
+        });
+    });
+</script>
+</body></html>
