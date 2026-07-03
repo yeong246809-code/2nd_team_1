@@ -1,8 +1,9 @@
 package org.example.k_market.repository;
 
+import org.example.k_market.entity.Deliveries;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PointRepository extends JpaRepository {
+public interface DeliveriesRepository extends JpaRepository<Deliveries, Long> {
 }
