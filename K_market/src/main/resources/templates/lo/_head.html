@@ -1,0 +1,46 @@
+<!-- Header Component (header.html) -->
+<header th:fragment="header" class="w-full bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Top Utility Bar -->
+        <div class="flex justify-end gap-4 py-2 text-xs text-gray-500 border-b border-gray-100">
+            <a href="#" class="hover:text-primary transition-colors">로그인</a>
+            <a href="#" class="hover:text-primary transition-colors">회원가입</a>
+            <a href="#" class="hover:text-primary transition-colors">마이페이지</a>
+            <a href="#" class="flex items-center gap-1 hover:text-primary transition-colors">
+                <span class="material-icons text-sm">shopping_cart</span>
+                장바구니
+                <span class="bg-primary text-white px-1.5 py-0.5 rounded-full text-[10px]">3</span>
+            </a>
+        </div>
+
+        <!-- Main Header Content -->
+        <div class="flex items-center justify-between py-6">
+            <!-- Logo -->
+            <a href="/" class="text-3xl font-black text-primary tracking-tighter">
+                K-market
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl mx-12">
+                <form action="/search" method="GET" class="relative">
+                    <input type="text" name="keyword" placeholder="어떤 상품을 찾으시나요?"
+                           class="w-full h-12 pl-4 pr-12 rounded-lg border-2 border-primary focus:outline-none text-sm">
+                    <button type="submit" class="absolute right-0 top-0 h-full px-4 text-primary hover:bg-gray-50 rounded-r-lg transition-colors">
+                        <span class="material-icons">search</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Area -->
+    <nav class="bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 flex gap-8">
+            <a href="#" class="py-3 text-sm font-bold text-primary border-b-2 border-primary">오늘의 특가</a>
+            <a href="#" class="py-3 text-sm font-medium text-gray-700 hover:text-primary transition-colors">추천 상품</a>
+            <a href="#" class="py-3 text-sm font-medium text-gray-700 hover:text-primary transition-colors">신상품</a>
+            <a href="#" class="py-3 text-sm font-medium text-gray-700 hover:text-primary transition-colors">베스트</a>
+            <a href="#" class="py-3 text-sm font-bold text-red-500 hover:text-red-600 transition-colors">세일</a>
+        </div>
+    </nav>
+</header>

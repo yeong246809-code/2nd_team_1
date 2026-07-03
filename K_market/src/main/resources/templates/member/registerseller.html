@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary": "#3e6659",
+            "on-secondary-fixed": "#002018",
+            "on-primary-container": "#99b9c2",
+            "surface-tint": "#45636b",
+            "surface-container-low": "#f3f4f5",
+            "error": "#ba1a1a",
+            "surface-container": "#edeeef",
+            "surface": "#f8f9fa",
+            "surface-dim": "#d9dadb",
+            "on-secondary-fixed-variant": "#264e42",
+            "primary-fixed-dim": "#acccd5",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#a5d0c0",
+            "on-tertiary-fixed-variant": "#5f402b",
+            "on-error-container": "#93000a",
+            "tertiary-fixed-dim": "#eabda2",
+            "on-background": "#191c1d",
+            "on-secondary-container": "#446c5f",
+            "on-primary-fixed-variant": "#2d4b53",
+            "surface-bright": "#f8f9fa",
+            "on-tertiary-container": "#d6ab90",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#c0ecdc",
+            "surface-variant": "#e1e3e4",
+            "on-primary-fixed": "#001f26",
+            "on-error": "#ffffff",
+            "tertiary-container": "#5e3f2a",
+            "primary": "#14333b",
+            "surface-container-highest": "#e1e3e4",
+            "on-tertiary-fixed": "#2d1605",
+            "tertiary": "#452916",
+            "on-surface": "#191c1d",
+            "primary-container": "#2c4a52",
+            "inverse-on-surface": "#f0f1f2",
+            "tertiary-fixed": "#ffdcc7",
+            "inverse-surface": "#2e3132",
+            "outline-variant": "#c1c7ca",
+            "surface-container-high": "#e7e8e9",
+            "primary-fixed": "#c8e8f2",
+            "background": "#f8f9fa",
+            "on-surface-variant": "#41484a",
+            "outline": "#72787a",
+            "on-tertiary": "#ffffff",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#c0ecdc",
+            "inverse-primary": "#acccd5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "container-max": "1280px",
+            "margin-mobile": "16px",
+            "md": "24px",
+            "base": "8px",
+            "xl": "80px",
+            "xs": "4px",
+            "lg": "48px",
+            "gutter": "24px",
+            "sm": "12px"
+          },
+          "fontFamily": {
+            "body-lg": ["Be Vietnam Pro"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Be Vietnam Pro"],
+            "label-sm": ["Be Vietnam Pro"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-md": ["Be Vietnam Pro"]
+          },
+          "fontSize": {
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+            "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #191c1d;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Custom Scrollbar for better UI feel */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c1c7ca;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #72787a;
+    }
+    .registration-card {
+      box-shadow: 0 4px 20px -2px rgba(44, 74, 82, 0.08);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="bg-surface sticky top-0 z-50 shadow-sm transition-all duration-200 ease-in-out">
+  <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
+    <div class="flex items-center gap-lg">
+      <a class="font-display-lg text-headline-lg font-bold text-primary" href="#">K-market</a>
+      <nav class="hidden md:flex gap-md">
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Login</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Join</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">My Page</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Cart</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-base">
+      <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+      <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">person</span>
+      </button>
+      <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </button>
+    </div>
+  </div>
+</header>
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-lg">
+  <!-- Page Header -->
+  <div class="mb-lg">
+    <h1 class="font-headline-lg text-headline-lg text-primary mb-base">판매자 회원가입</h1>
+    <p class="text-on-surface-variant font-body-md text-body-md">K-market의 파트너가 되어 더 넓은 시장으로 비즈니스를 확장하세요.</p>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+    <!-- Side Visual/Info -->
+    <div class="lg:col-span-4 space-y-md">
+      <div class="rounded-xl overflow-hidden bg-white registration-card border border-surface-variant">
+        <div class="p-md">
+          <h3 class="font-headline-md text-headline-md text-primary mb-sm">판매자 혜택</h3>
+          <ul class="space-y-base text-on-surface-variant font-label-md text-label-md">
+            <li class="flex items-start gap-xs">
+              <span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+              <span>국내 최대 이커머스 네트워크 접속</span>
+            </li>
+            <li class="flex items-start gap-xs">
+              <span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+              <span>정밀한 데이터 분석 도구 제공</span>
+            </li>
+            <li class="flex items-start gap-xs">
+              <span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+              <span>합리적인 판매 수수료 정책</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="bg-primary-container text-on-primary-container p-md rounded-xl">
+        <div class="flex items-center gap-sm mb-xs">
+          <span class="material-symbols-outlined">support_agent</span>
+          <p class="font-label-md font-bold">입점 지원 센터</p>
+        </div>
+        <p class="text-label-sm opacity-90">회원가입 중 문의사항이 있으시면 언제든지 고객센터로 연락주세요.</p>
+        <p class="mt-base font-headline-md">1588-0000</p>
+      </div>
+    </div>
+    <!-- Registration Form Content -->
+    <div class="lg:col-span-8 bg-white p-md md:p-lg rounded-xl registration-card border border-surface-variant">
+      <form class="space-y-lg" id="sellerRegistrationForm">
+        <!-- Section: Login Info -->
+        <section><!-- 단계별 인디케이터 (Stepper) 추가 -->
+          <div class="mb-lg flex items-center justify-between">
+            <div class="flex items-center gap-sm">
+              <div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[18px]">check</span>
+              </div>
+              <span class="font-label-md text-on-surface-variant">1. 약관동의</span>
+            </div>
+            <div class="flex-grow h-px bg-outline-variant mx-md"></div>
+            <div class="flex items-center gap-sm">
+              <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+                2
+              </div>
+              <span class="font-label-md text-primary font-bold">2. 정보입력</span>
+            </div>
+            <div class="flex-grow h-px bg-outline-variant mx-md"></div>
+            <div class="flex items-center gap-sm">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold">
+                3
+              </div>
+              <span class="font-label-md text-on-surface-variant opacity-50">3. 가입완료</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-sm mb-md border-b border-surface-variant pb-base">
+            <span class="material-symbols-outlined text-primary">account_circle</span>
+            <h2 class="font-headline-md text-headline-md text-primary">기본 로그인 정보</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <!-- ID Field -->
+            <div class="flex flex-col gap-xs">
+              <label class="font-label-md text-on-surface-variant" for="seller-id">아이디 (ID)</label>
+              <div class="flex gap-sm">
+                <input class="flex-grow bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="seller-id" name="id" placeholder="아이디 입력" type="text"/>
+                <button class="whitespace-nowrap px-md py-base bg-secondary-container text-on-secondary-container font-label-md rounded-lg hover:bg-secondary hover:text-white transition-all" type="button">중복확인</button>
+              </div>
+            </div>
+            <!-- Empty space for layout balance if needed or add more info -->
+            <div class="hidden md:block"></div>
+            <!-- Password Field -->
+            <div class="flex flex-col gap-xs">
+              <label class="font-label-md text-on-surface-variant" for="password">비밀번호 (Password)</label>
+              <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="password" name="password" placeholder="영문, 숫자, 특수문자 조합 8~16자" type="password"/>
+            </div>
+            <!-- Password Confirm Field -->
+            <div class="flex flex-col gap-xs">
+              <label class="font-label-md text-on-surface-variant" for="password-confirm">비밀번호 확인</label>
+              <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="password-confirm" name="password_confirm" placeholder="비밀번호 재입력" type="password"/>
+            </div>
+          </div>
+        </section>
+        <!-- Section: Business Info -->
+        <section>
+          <div class="flex items-center gap-sm mb-md border-b border-surface-variant pb-base">
+            <span class="material-symbols-outlined text-primary">business</span>
+            <h2 class="font-headline-md text-headline-md text-primary">사업자 정보</h2>
+          </div>
+          <div class="space-y-md">
+            <!-- Company Name & Representative -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+              <div class="flex flex-col gap-xs">
+                <label class="font-label-md text-on-surface-variant" for="company-name">상호명 (Company Name)</label>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="company-name" name="company" placeholder="상호명 입력" type="text"/>
+              </div>
+              <div class="flex flex-col gap-xs">
+                <label class="font-label-md text-on-surface-variant" for="rep-name">대표자 (Representative)</label>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="rep-name" name="representative" placeholder="대표자 성명" type="text"/>
+              </div>
+            </div>
+            <!-- License Numbers -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+              <div class="flex flex-col gap-xs">
+                <label class="font-label-md text-on-surface-variant" for="biz-license">사업자 등록 번호</label>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="biz-license" name="license_number" placeholder="000-00-00000" type="text"/>
+              </div>
+              <div class="flex flex-col gap-xs">
+                <label class="font-label-md text-on-surface-variant" for="online-report">통신판매업 신고 번호</label>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="online-report" name="report_number" placeholder="제 0000-지역-0000호" type="text"/>
+              </div>
+            </div>
+            <!-- Contact (Phone & Fax) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+              <div class="flex flex-col gap-xs">
+                <label class="font-label-md text-on-surface-variant" for="phone">대표 전화번호 (Phone)</label>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="phone" name="phone" placeholder="02-0000-0000" type="tel"/>
+              </div>
+              <div class="flex flex-col gap-xs">
+                <label class="font-label-md text-on-surface-variant" for="fax">팩스 번호 (Fax)</label>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="fax" name="fax" placeholder="02-0000-0000" type="tel"/>
+              </div>
+            </div>
+            <!-- Address -->
+            <div class="flex flex-col gap-xs">
+              <label class="font-label-md text-on-surface-variant" for="address">사업장 주소 (Address)</label>
+              <div class="flex flex-col gap-sm">
+                <div class="flex gap-sm">
+                  <input class="w-32 bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all cursor-not-allowed" id="zip-code" name="zip" placeholder="우편번호" readonly="" type="text"/>
+                  <button class="px-md py-base bg-surface-container-high text-on-surface font-label-md rounded-lg hover:bg-surface-variant transition-all" type="button">주소 검색</button>
+                </div>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="address-main" name="address_main" placeholder="기본 주소" type="text"/>
+                <input class="bg-surface border-outline-variant rounded-lg px-sm py-base focus:ring-primary focus:border-primary transition-all" id="address-detail" name="address_detail" placeholder="상세 주소" type="text"/>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Terms Agreement (Simulated) -->
+        <div class="bg-surface p-md rounded-lg border border-outline-variant">
+          <label class="flex items-start gap-sm cursor-pointer group">
+            <input class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+            <span class="font-label-md text-on-surface-variant group-hover:text-primary transition-colors">판매자 이용약관 및 개인정보 수집 및 이용에 동의합니다. (필수)</span>
+          </label>
+        </div>
+        <!-- Submission -->
+        <div class="pt-md flex justify-center">
+          <button class="w-full md:w-80 py-lg bg-primary text-on-primary font-headline-md rounded-xl hover:bg-opacity-90 shadow-lg transition-all transform hover:-translate-y-1" type="submit">
+            판매자 회원가입 신청하기
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-highest w-full mt-lg">
+  <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
+    <div class="font-headline-md text-headline-md font-bold text-primary">K-market</div>
+    <div class="flex flex-wrap justify-center gap-md">
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">About Us</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Customer Service</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Terms of Service</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">FAQ</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Contact</a>
+    </div>
+    <p class="text-on-surface-variant font-body-md text-body-md opacity-80">© 2024 K-market. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+  // Form Interaction Logic
+  document.getElementById('sellerRegistrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // In a real app, validation and API calls would happen here
+    alert('가입 신청이 완료되었습니다. 심사 후 이메일로 결과를 안내해 드립니다.');
+  });
+
+  // Hover Effect on header
+  const header = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      header.classList.add('py-2', 'shadow-md');
+      header.classList.remove('py-base', 'shadow-sm');
+    } else {
+      header.classList.add('py-base', 'shadow-sm');
+      header.classList.remove('py-2', 'shadow-md');
+    }
+  });
+</script>
+</body></html>
