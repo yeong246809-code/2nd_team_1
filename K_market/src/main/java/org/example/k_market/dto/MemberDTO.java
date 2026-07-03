@@ -1,6 +1,6 @@
-package kr.co.k_market.dto;
+package org.example.k_market.dto;
 
-import kr.co.k_market.entity.Member;
+import org.example.k_market.entity.Member;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

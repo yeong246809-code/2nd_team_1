@@ -1,7 +1,7 @@
-package kr.co.kmarket.entity;
+package org.example.k_market.entity;
 
 import jakarta.persistence.*;
-import kr.co.kmarket.dto.OrderDetailsDTO;
+import org.example.k_market.dto.OrderDetailsDTO;
 import lombok.*;
 
 @Getter

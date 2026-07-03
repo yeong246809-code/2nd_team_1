@@ -1,7 +1,7 @@
-package kr.co.kmarket.entity;
+package org.example.k_market.entity;
 
 import jakarta.persistence.*;
-import kr.co.kmarket.dto.CuponDTO;
+import org.example.k_market.dto.CuponDTO;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
