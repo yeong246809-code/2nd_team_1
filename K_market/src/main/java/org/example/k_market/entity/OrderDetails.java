@@ -1,0 +1,36 @@
+package kr.co.kmarket.entity;
+
+import jakarta.persistence.*;
+import kr.co.kmarket.dto.OrderDetailsDTO;
+import lombok.*;
+
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "order_details")
+public class OrderDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long orderDetailNo;
+    private long orderNo;
+    private long productNo;
+    private long shopNo;
+    private int quantity;
+    private int price;
+    private int discountPrice;
+    private int shippingFee;
+    private int rewardPoints;
+    private String status;
+
+    public OrderDetailsDTO toDTO(){
+        return OrderDetailsDTO.builder()
+                .orderDetailNo(orderDetailNo).orderNo(orderNo).productNo(productNo)
+                .shopNo(shopNo).quantity(quantity).price(price)
+                .discountPrice(discountPrice).shippingFee(shippingFee)
+                .rewardPoints(rewardPoints).status(status)
+                .build();
+    }
+}
