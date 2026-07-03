@@ -1,6 +1,6 @@
-package kr.co.k_market.dto;
+package org.example.k_market.dto;
 
-import kr.co.k_market.entity.Product;
+import org.example.k_market.entity.Product;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
