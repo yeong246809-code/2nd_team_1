@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="07867c10-8107-4063-a75d-042d9f387d4c" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/k_market/controller/member/MemberIndexController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/k_market/controller/member/MemberIndexController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/k_market/controller/product/ProductIndexController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/k_market/controller/product/ProductIndexController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/company/culture.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/company/culture.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/company/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/company/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/company/media.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/company/media.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/company/recruit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/company/recruit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/company/story.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/company/story.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/product/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/product/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/product/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/product/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/product/view.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/product/view.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0000000007512437" />
+      <entry key="MS500" value="1.0149989967800441" />
+      <entry key="S2" value="1.4381363533857383" />
+      <entry key="S5" value="2.296020300440185" />
+      <entry key="S10" value="3.282640812478561" />
+      <entry key="S30" value="4.737322751641738" />
+      <entry key="S60" value="5.336086894719156" />
+      <entry key="M2" value="6.207280671882613" />
+      <entry key="M5" value="9.513687304870134" />
+      <entry key="M10" value="13.94134649906283" />
+      <entry key="M15" value="17.7798224438053" />
+      <entry key="M30" value="26.754745173767958" />
+      <entry key="H1" value="36.351463972257264" />
+      <entry key="H2" value="43.783276903806225" />
+      <entry key="H4" value="48.47736493940513" />
+      <entry key="D1" value="53.01527933012025" />
+      <entry key="W1" value="53.85765453896862" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="9.280189008901593E-276" />
+      <entry key="S2" value="1.7453768260159216E-69" />
+      <entry key="S5" value="3.1387424579094924E-28" />
+      <entry key="S10" value="1.771649643103707E-14" />
+      <entry key="S30" value="2.6069094538886706E-5" />
+      <entry key="S60" value="0.005105790295232141" />
+      <entry key="M2" value="0.07145481296735105" />
+      <entry key="M5" value="0.3480607769961511" />
+      <entry key="M10" value="0.5957733103053846" />
+      <entry key="M15" value="0.7358156031326691" />
+      <entry key="M30" value="1.0187263112660612" />
+      <entry key="H1" value="1.340106281643589" />
+      <entry key="H2" value="1.6083621522500429" />
+      <entry key="H4" value="1.7853365980958074" />
+      <entry key="D1" value="1.9612514157792402" />
+      <entry key="W1" value="1.9943865988631062" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.47631899902196995" />
+      <entry key="MS500" value="0.8631913578044826" />
+      <entry key="S2" value="1.1967388742740241" />
+      <entry key="S5" value="2.014291488784945" />
+      <entry key="S10" value="3.0424367822926124" />
+      <entry key="S30" value="4.612287536216951" />
+      <entry key="S60" value="5.269940837869912" />
+      <entry key="M2" value="6.2375140135170115" />
+      <entry key="M5" value="9.837019511339442" />
+      <entry key="M10" value="14.51886790520117" />
+      <entry key="M15" value="18.499972222226233" />
+      <entry key="M30" value="27.761421614370214" />
+      <entry key="H1" value="37.68319108388378" />
+      <entry key="H2" value="45.38650834642126" />
+      <entry key="H4" value="50.2598333842501" />
+      <entry key="D1" value="54.976003328819836" />
+      <entry key="W1" value="55.851964474043925" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3G7CwHpLtxBa2baP6qCrgYHXdUT" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.2nd_team_1 빌드.executor": "Run",
+    "JavaScript 디버그.cart.html.executor": "Run",
+    "JavaScript 디버그.index.html (1).executor": "Run",
+    "JavaScript 디버그.index.html.executor": "Run",
+    "JavaScript 디버그.join.html.executor": "Run",
+    "JavaScript 디버그.login.html.executor": "Run",
+    "JavaScript 디버그.main.html.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.KMarketApplication.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/GGG/Desktop/Workspace/프로젝트/2nd Project Team1/2nd_team_1",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Spring Boot.KMarketApplication">
+    <configuration name="cart.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/K_market/K_market.main/templates/product/cart.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/K_market/K_market.main/templates/cs/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/K_market/K_market.main/templates/my/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="join.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/K_market/K_market.main/templates/member/join.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="login.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/K_market/K_market.main/templates/member/login.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="2nd_team_1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="2nd_team_1" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration name="KMarketApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="K_market.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.k_market.KMarketApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript 디버그.index.html (1)" />
+        <item itemvalue="JavaScript 디버그.cart.html" />
+        <item itemvalue="JavaScript 디버그.index.html" />
+        <item itemvalue="JavaScript 디버그.join.html" />
+        <item itemvalue="JavaScript 디버그.login.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.25134.95" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.25134.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="07867c10-8107-4063-a75d-042d9f387d4c" name="변경" comment="" />
+      <created>1783313458812</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1783313458812</updated>
+      <workItem from="1783313460062" duration="12219000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

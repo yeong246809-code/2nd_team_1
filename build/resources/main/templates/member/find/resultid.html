@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>아이디 찾기 결과 - K-market</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary": "#452916",
+                        "surface-container-low": "#f3f4f5",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-primary-container": "#99b9c2",
+                        "surface": "#f8f9fa",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#5e3f2a",
+                        "primary-fixed-dim": "#acccd5",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "on-primary-fixed": "#001f26",
+                        "on-secondary-fixed": "#002018",
+                        "secondary-fixed": "#c0ecdc",
+                        "on-surface": "#191c1d",
+                        "on-error": "#ffffff",
+                        "on-background": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-container": "#c0ecdc",
+                        "on-surface-variant": "#41484a",
+                        "outline-variant": "#c1c7ca",
+                        "on-tertiary-container": "#d6ab90",
+                        "surface-bright": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "secondary": "#3e6659",
+                        "primary-fixed": "#c8e8f2",
+                        "inverse-primary": "#acccd5",
+                        "surface-container-high": "#e7e8e9",
+                        "tertiary-fixed": "#ffdcc7",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2c4a52",
+                        "outline": "#72787a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "background": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "surface-variant": "#e1e3e4",
+                        "surface-tint": "#45636b",
+                        "on-secondary-container": "#446c5f",
+                        "primary": "#14333b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "md": "24px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md">
+<!-- Header Section -->
+<header class="bg-surface dark:bg-surface-container-lowest shadow-sm dark:shadow-none w-full sticky top-0 z-50">
+<div class="flex flex-col w-full max-w-container-max mx-auto">
+<!-- Top Utility Bar (Login, Join, etc.) -->
+<div class="flex justify-end items-center px-md py-sm gap-md border-b border-surface-variant dark:border-surface-container-high hidden md:flex">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">로그인</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">회원가입</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">마이페이지</a>
+<a class="flex items-center gap-xs text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-[16px]">shopping_cart</span>
+                    장바구니
+                </a>
+</div>
+<!-- Main Header Area -->
+<div class="flex justify-between items-center px-md py-md w-full">
+<!-- Logo -->
+<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed tracking-tight" href="#">K-market</a>
+<!-- Desktop Search (Left aligned as per JSON) -->
+<div class="hidden md:flex flex-1 max-w-md ml-lg">
+<div class="relative w-full">
+<input class="w-full bg-surface-container-low border border-surface-variant rounded-full py-sm pl-md pr-xl focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-body-md font-body-md" placeholder="상품을 검색해보세요" type="text"/>
+<button class="absolute right-xs top-1/2 -translate-y-1/2 p-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill">search</span>
+</button>
+</div>
+</div>
+<!-- Icons (Mobile / Desktop Trailing) -->
+<div class="flex items-center gap-md">
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors md:hidden relative" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+</a>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Section -->
+<main class="flex-grow flex items-center justify-center py-xl px-margin-mobile md:px-gutter">
+<div class="w-full max-w-[600px] bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
+<!-- Page Title -->
+<h1 class="font-headline-lg md:text-headline-lg text-headline-lg-mobile text-on-surface font-bold text-center mb-lg border-b-2 border-primary pb-sm inline-block w-full text-left">
+                아이디 찾기 결과
+            </h1>
+<!-- Result Table / Card -->
+<div class="bg-surface-container-low rounded-lg p-md mb-md border border-surface-variant">
+<div class="flex flex-col gap-sm">
+<!-- Row: Name -->
+<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
+<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">이름</div>
+<div class="flex-1 font-body-md text-body-md text-on-surface">홍길동</div>
+</div>
+<!-- Row: ID -->
+<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
+<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">아이디</div>
+<div class="flex-1 font-body-md text-body-md text-on-surface font-semibold text-primary">honggildong</div>
+</div>
+<!-- Row: Email -->
+<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
+<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">이메일</div>
+<div class="flex-1 font-body-md text-body-md text-on-surface">honggildong@gmail.com</div>
+</div>
+<!-- Row: Join Date -->
+<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
+<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">가입일</div>
+<div class="flex-1 font-body-md text-body-md text-on-surface text-on-surface-variant">2022-11-16 10:20:22</div>
+</div>
+</div>
+</div>
+<!-- Descriptive Text -->
+<p class="text-center font-body-md text-body-md text-on-surface-variant mb-xl">
+                고객님의 정보와 일치하는 아이디 입니다.
+            </p>
+<!-- Action Buttons -->
+<div class="flex flex-col md:flex-row gap-md justify-center">
+<a class="flex-1 bg-surface-variant text-on-surface-variant hover:bg-outline-variant hover:text-on-surface transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium" href="/member/login">
+                    로그인
+                </a>
+<a class="flex-1 bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium shadow-sm" href="/member/find/password">
+                    비밀번호 찾기
+                </a>
+</div>
+</div>
+</main>
+<!-- Footer Section -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-high w-full mt-lg px-md py-lg flex flex-col items-center gap-md">
+<div class="flex gap-md font-body-md text-body-md text-on-surface-variant dark:text-outline-variant flex-wrap justify-center">
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">About Us</a>
+<span class="text-outline">|</span>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Customer Service</a>
+<span class="text-outline">|</span>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Privacy Policy</a>
+<span class="text-outline">|</span>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Terms of Service</a>
+<span class="text-outline">|</span>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">FAQ</a>
+<span class="text-outline">|</span>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Contact</a>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-center mt-sm">
+            © 2024 K-market. All rights reserved.
+        </div>
+</footer>
+</body></html>

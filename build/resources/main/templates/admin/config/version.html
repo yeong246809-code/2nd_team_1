@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>K-market Admin Console - 버전관리</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary-container": "#5e3f2a",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#72787a",
+                        "surface-container-high": "#e7e8e9",
+                        "primary": "#14333b",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001f26",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#c8e8f2",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-secondary-container": "#446c5f",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#acccd5",
+                        "on-background": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "background": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-surface-variant": "#41484a",
+                        "outline-variant": "#c1c7ca",
+                        "tertiary": "#452916",
+                        "surface-bright": "#f8f9fa",
+                        "secondary-fixed": "#c0ecdc",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-container": "#2c4a52",
+                        "tertiary-fixed": "#ffdcc7",
+                        "surface-container": "#edeeef",
+                        "secondary-container": "#c0ecdc",
+                        "inverse-surface": "#2e3132",
+                        "surface-dim": "#d9dadb",
+                        "on-surface": "#191c1d",
+                        "on-secondary-fixed": "#002018",
+                        "on-error-container": "#93000a",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "primary-fixed-dim": "#acccd5",
+                        "on-primary-container": "#99b9c2",
+                        "surface-variant": "#e1e3e4",
+                        "secondary": "#3e6659",
+                        "surface-tint": "#45636b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "xl": "80px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "xs": "4px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": [
+                            "Be Vietnam Pro"
+                        ],
+                        "headline-md": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "headline-lg-mobile": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "display-lg": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "body-lg": [
+                            "Be Vietnam Pro"
+                        ],
+                        "label-sm": [
+                            "Be Vietnam Pro"
+                        ],
+                        "headline-lg": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "body-md": [
+                            "Be Vietnam Pro"
+                        ]
+                    },
+                    "fontSize": {
+                        "label-md": [
+                            "14px",
+                            {
+                                "lineHeight": "1.4",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "headline-md": [
+                            "20px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "headline-lg-mobile": [
+                            "24px",
+                            {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "display-lg": [
+                            "48px",
+                            {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "body-lg": [
+                            "18px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "label-sm": [
+                            "12px",
+                            {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "headline-lg": [
+                            "32px",
+                            {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "body-sm": [
+                            "14px",
+                            {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface dark:bg-surface-dim shadow-sm flex flex-col h-full border-r border-outline-variant dark:border-outline z-20">
+    <div class="p-6">
+        <h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed">K-market</h1>
+        <p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Admin Console</p>
+    </div>
+    <div class="px-4 mb-6">
+        <button class="w-full bg-primary-container text-on-primary-container font-label-md py-2.5 rounded-lg font-semibold hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+            상품 등록
+        </button>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-3 space-y-1">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+            대시보드
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+            재고 관리
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">shopping_cart</span>
+            주문 관리
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">group</span>
+            회원 관리
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">monitoring</span>
+            통계 분석
+        </a>
+        <details class="group" open>
+            <summary class="flex items-center justify-between gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all rounded-lg cursor-pointer list-none">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined group-open:fill-1" style="font-variation-settings: 'FILL' 0;">settings</span>
+                    <span class="font-label-md text-label-md">환경 설정</span>
+                </div>
+                <span class="material-symbols-outlined text-outline group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <div class="space-y-1.5 pl-9 pr-3 py-1.5">
+                <a class="block px-3 py-1.5 text-label-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-high/50 rounded" href="#">기본설정</a>
+                <a class="block px-3 py-1.5 text-label-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-high/50 rounded" href="#">배너관리</a>
+                <a class="block px-3 py-1.5 text-label-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-high/50 rounded" href="#">약관관리</a>
+                <a class="block px-3 py-1.5 text-label-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-high/50 rounded" href="#">카테고리</a>
+                <a class="block px-3 py-1.5 text-label-sm font-semibold text-on-secondary-fixed-variant bg-secondary-fixed dark:bg-secondary-fixed-dim rounded" href="#">버전관리</a>
+            </div>
+        </details>
+    </nav>
+    <div class="p-4 mt-auto border-t border-outline-variant dark:border-outline">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_outline</span>
+            고객지원
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline hover:text-error hover:bg-error-container/50 transition-all active:scale-95 transition-transform rounded-lg font-label-md text-label-md" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">logout</span>
+            로그아웃
+        </a>
+    </div>
+</aside>
+<main class="flex-1 ml-64 flex flex-col min-h-screen">
+    <header class="bg-surface dark:bg-surface-dim docked full-width top-0 sticky bg-surface/80 backdrop-blur-md shadow-sm z-10">
+        <div class="flex justify-between items-center h-16 px-md w-full">
+            <h2 class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary-fixed">관리자 대시보드</h2>
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 rounded-full transition-all">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 rounded-full transition-all">
+                    <span class="material-symbols-outlined">mail</span>
+                </button>
+                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 rounded-full transition-all">
+                    <span class="material-symbols-outlined">apps</span>
+                </button>
+                <div class="ml-4 w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+                    <img alt="Administrator Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN0VHSCT-SJkYpn7AbHphrLRgszt8WBvsOrgFwnlAZpFH8iwNQL2BR-CjGu50gP6_tqMgak-fmO2u6x3GKiZU3u8TdsKHJzSJcfpTh3qo9MmsiSBOH6TdttLiqfshAIbZ8Gxyyy5JbL0HNtB4IXEF8HIjEXtaVB1UCE9GzxRVkLM04QzoOmJu-973t-VwwsG2UAd_lG_i6IpFaxEuCoK6fqq7hsU-bWS77a8Eb56p6sDf8OkSZXapKucibtLkHGifaOZh-Fent5HMR"/>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="p-md lg:p-lg flex-1 overflow-y-auto">
+        <div class="flex justify-between items-end mb-8 border-b border-outline-variant pb-4">
+            <h2 class="font-headline-lg text-headline-lg text-on-background">버전관리</h2>
+            <nav class="font-label-sm text-label-sm text-on-surface-variant flex gap-2">
+                <a class="hover:text-primary" href="#">HOME</a>
+                <span>></span>
+                <a class="hover:text-primary" href="#">환경설정</a>
+                <span>></span>
+                <span class="text-primary font-semibold">버전관리</span>
+            </nav>
+        </div>
+        <div class="space-y-12">
+            <section>
+                <div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+                    <div class="p-4 bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
+                        사이트 버전 목록 입니다.
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left table-auto">
+                            <thead class="bg-surface-container-lowest font-label-sm text-label-sm text-on-surface font-semibold border-b border-outline-variant">
+                            <tr>
+                                <th class="p-4 w-12"><input type="checkbox" class="rounded border-outline-variant"></th>
+                                <th class="p-4">번호</th>
+                                <th class="p-4">버전</th>
+                                <th class="p-4">작성자</th>
+                                <th class="p-4">등록일시</th>
+                                <th class="p-4">변경내역</th>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant font-body-sm text-body-sm text-on-surface-variant">
+                            <tr th:each="dto : ${dtoList}" class="hover:bg-surface-container-low/30">
+                                <td class="p-4"><input type="checkbox" class="rounded border-outline-variant"></td>
+                                <td class="p-4">[[${dto.id}]]</td>
+                                <td class="p-4">[[${dto.versionCode}]]</td>
+                                <td class="p-4">[[${dto.memberNo}]]</td>
+                                <td class="p-4">[[${dto.createdAt}]]</td>
+                                <td class="p-4"><a href="#" class="text-primary hover:underline">[ 확인 ]</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mt-6 pb-12">
+                    <button class="bg-surface-container-highest text-on-surface-variant px-4 py-2 rounded-md font-label-sm hover:bg-surface-container-high transition-colors">선택 삭제</button>
+                    <div class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+                        <a href="#" class="px-2 py-1.5 hover:bg-surface-container-low rounded">이전</a>
+                        <a href="#" class="px-2 py-1.5 font-semibold text-primary bg-primary-container rounded">1</a>
+                        <a href="#" class="px-2 py-1.5 hover:bg-surface-container-low rounded">2</a>
+                        <a href="#" class="px-2 py-1.5 hover:bg-surface-container-low rounded">3</a>
+                        <a href="#" class="px-2 py-1.5 hover:bg-surface-container-low rounded">4</a>
+                        <a href="#" class="px-2 py-1.5 hover:bg-surface-container-low rounded">5</a>
+                        <a href="#" class="px-2 py-1.5 hover:bg-surface-container-low rounded">다음</a>
+                    </div>
+                    <button class="bg-primary text-on-primary px-4 py-2 rounded-md font-label-sm hover:bg-primary/90 transition-colors">등록</button>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer class="bg-surface-variant p-4 mt-auto border-t border-outline-variant text-center">
+        <p class="font-label-sm text-label-sm text-on-surface-variant">Copyright © Kmarket.co.kr All rights reserved. Kmarket ADMINISTRATOR Version 5.4.1.2</p>
+    </footer>
+</main>
+</body></html>
