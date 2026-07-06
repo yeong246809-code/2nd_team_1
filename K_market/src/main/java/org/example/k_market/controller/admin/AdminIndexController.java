@@ -8,4 +8,8 @@ import org.springframework.stereotype.Controller;
 @Log4j2
 @RequiredArgsConstructor
 public class AdminIndexController {
+
+
+
 }
+    
