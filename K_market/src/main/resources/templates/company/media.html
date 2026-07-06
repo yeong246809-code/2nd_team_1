@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>미디어 | K-market</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e7e8e9",
+                        "surface": "#f8f9fa",
+                        "on-surface-variant": "#41484a",
+                        "background": "#f8f9fa",
+                        "secondary-container": "#c0ecdc",
+                        "inverse-primary": "#acccd5",
+                        "on-tertiary-container": "#d6ab90",
+                        "surface-variant": "#e1e3e4",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#452916",
+                        "outline": "#72787a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#446c5f",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "primary-fixed": "#c8e8f2",
+                        "outline-variant": "#c1c7ca",
+                        "tertiary-container": "#5e3f2a",
+                        "secondary": "#3e6659",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-background": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#45636b",
+                        "surface-container": "#edeeef",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#99b9c2",
+                        "surface-dim": "#d9dadb",
+                        "secondary-fixed": "#c0ecdc",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-primary-fixed": "#001f26",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#002018",
+                        "primary": "#14333b",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffdcc7",
+                        "primary-fixed-dim": "#acccd5",
+                        "primary-container": "#2c4a52",
+                        "tertiary-fixed-dim": "#eabda2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
+
+<!-- Header 영역 컴포넌트 -->
+<header th:fragment="header" class="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Top Utility Bar -->
+        <div class="flex justify-end gap-4 py-2 text-xs text-gray-500 border-b border-gray-100">
+            <a href="#" class="hover:text-primary transition-colors">로그인</a>
+            <a href="#" class="hover:text-primary transition-colors">회원가입</a>
+            <a href="#" class="hover:text-primary transition-colors">마이페이지</a>
+            <a href="#" class="flex items-center gap-1 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-sm">shopping_cart</span>
+                장바구니
+                <span class="bg-primary text-white px-1.5 py-0.5 rounded-full text-[10px] font-bold">3</span>
+            </a>
+        </div>
+
+        <!-- Main Header Content -->
+        <div class="flex items-center justify-between py-6">
+            <!-- Logo -->
+            <a href="/" class="text-3xl font-black text-primary tracking-tighter">
+                K-market
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl mx-12">
+                <form action="/search" method="GET" class="relative">
+                    <input type="text" name="keyword" placeholder="어떤 상품을 찾으시나요?"
+                           class="w-full h-12 pl-4 pr-12 rounded-lg border-2 border-primary focus:outline-none text-sm bg-white text-on-background">
+                    <button type="submit" class="absolute right-0 top-0 h-full px-4 text-primary hover:bg-gray-50 rounded-r-lg transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- 기획서 요구사항 1: 회사소개 서브 메인메뉴 영역 및 현재 페이지 하이라이트 -->
+    <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-12">
+        <div class="text-xs text-gray-400">회사소개 &gt; 미디어</div>
+        <nav class="flex gap-8 text-sm font-medium text-gray-500">
+            <a href="#" class="hover:text-primary transition-colors">HOME</a>
+            <a href="#" class="hover:text-primary transition-colors">기업문화</a>
+            <a href="#" class="hover:text-primary transition-colors">소식과 이야기</a>
+            <a href="#" class="hover:text-primary transition-colors">채용</a>
+            <a href="#" class="text-primary font-bold border-b-2 border-primary pb-4 -mb-[18px]">미디어</a>
+        </nav>
+    </div>
+
+    <!-- 타이틀 및 서브 설명 섹션 -->
+    <div class="mb-16 animate-fade-up">
+        <h1 class="text-4xl font-bold text-primary tracking-tight mb-3">
+            미디어 세상 속 케이마켓을 소개합니다!
+        </h1>
+        <p class="text-base text-gray-500 font-normal">
+            더 다양한 K-market 영상을 소개합니다.
+        </p>
+    </div>
+
+    <!-- 기획서 요구사항 2: 유튜브 영상 목록 출력 및 레이아웃 구성 -->
+    <div class="max-w-4xl mx-auto space-y-8 mb-24">
+
+        <!-- 영상 항목 1 -->
+        <div class="flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-200 p-6 gap-6 items-center hover:shadow-md transition-all group cursor-pointer">
+            <!-- 썸네일 플레이스홀더 영역 (기획서 내부 유튜브 플레이 버튼 형상화) -->
+            <div class="w-full sm:w-64 h-40 bg-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
+                <img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" alt="영상 1 썸네일" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80"/>
+                <div class="w-16 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:bg-red-500 transition-colors z-10">
+                    <span class="material-symbols-outlined text-white text-3xl fill-1">play_arrow</span>
+                </div>
+            </div>
+            <!-- 영상 텍스트 영역 -->
+            <div class="flex-1 w-full">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                    # 영상제목 1 : 세상에 없던 새로운 이커머스 쇼핑 플랫폼의 탄생
+                </h3>
+                <p class="text-gray-500 text-sm mb-4 leading-relaxed">
+                    # 부제목 EP.201 | K-market 공식 홍보 다큐멘터리 시리즈 영상공개
+                </p>
+                <div class="flex items-center gap-3 text-xs text-gray-400">
+                    <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">유튜브 업로드</span>
+                    <span>2026년 07월 01일 방송</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 영상 항목 2 -->
+        <div class="flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-200 p-6 gap-6 items-center hover:shadow-md transition-all group cursor-pointer">
+            <!-- 썸네일 플레이스홀더 영역 -->
+            <div class="w-full sm:w-64 h-40 bg-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
+                <img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" alt="영상 2 썸네일" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80"/>
+                <div class="w-16 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:bg-red-500 transition-colors z-10">
+                    <span class="material-symbols-outlined text-white text-3xl fill-1">play_arrow</span>
+                </div>
+            </div>
+            <!-- 영상 텍스트 영역 -->
+            <div class="flex-1 w-full">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                    # 영상제목 2 : 2026년도 상반기 브랜드 파트너 상생 협력 데이 현장 스케치
+                </h3>
+                <p class="text-gray-500 text-sm mb-4 leading-relaxed">
+                    # 부제목 EP.104 | K-market이 파트너사들과 동반 성장하는 비결 인터뷰
+                </p>
+                <div class="flex items-center gap-3 text-xs text-gray-400">
+                    <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">실시간 스트리밍</span>
+                    <span>2026년 06월 18일 방송</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- Footer 영역 컴포넌트 -->
+<footer th:fragment="footer" class="bg-gray-50 border-t border-gray-200 mt-20 pt-12 pb-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Top Policy Links -->
+        <div class="flex gap-8 mb-10 text-xs font-bold text-gray-600">
+            <a href="#" class="hover:text-primary transition-colors">회사소개</a>
+            <a href="#" class="hover:text-primary transition-colors">서비스이용약관</a>
+            <a href="#" class="text-primary font-black">개인정보처리방침</a>
+            <a href="#" class="hover:text-primary transition-colors">전자금융거래약관</a>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-start">
+            <!-- Company Info -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-5">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-400">storefront</span>
+                    </div>
+                    <h2 class="text-xl font-black text-gray-800">(주)케이마켓</h2>
+                </div>
+                <div class="space-y-1.5 text-xs text-gray-500 leading-relaxed">
+                    <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
+                    <p>대표이사 : 홍길동 | 사업자등록번호 : 123-45-12345</p>
+                    <p class="mt-4 opacity-60">Copyright © 2026 김철학 All rights reserved.</p>
+                </div>
+            </div>
+
+            <!-- Customer Center -->
+            <div class="col-span-12 md:col-span-3 lg:col-span-4">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">고객센터</h3>
+                <div class="space-y-2">
+                    <p class="text-lg font-black text-primary">Tel : 1234-5678</p>
+                    <div class="text-xs text-gray-500 space-y-1">
+                        <p>평일 09:00 - 18:00</p>
+                        <p>점심 12:00 - 13:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaints Center -->
+            <div class="col-span-12 md:col-span-3 lg:col-span-3">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">전자금융거래 분쟁 담당</h3>
+                <div class="space-y-2 text-xs text-gray-500 mb-6">
+                    <p>1234-1234 (365일 09:00 - 18:00)</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-sm transition-all text-gray-400 hover:text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">share</span>
+                    </button>
+                    <button class="p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-sm transition-all text-gray-400 hover:text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">mail</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

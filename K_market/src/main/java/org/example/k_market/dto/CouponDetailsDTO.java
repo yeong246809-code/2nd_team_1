@@ -1,6 +1,6 @@
 package org.example.k_market.dto;
 
-import org.example.k_market.entity.CuponDetails;
+import org.example.k_market.entity.CouponDetails;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CuponDetailsDTO {
+public class CouponDetailsDTO {
 
-    private long cuponDetailNo;
+    private long couponDetailNo;
     private long couponNo;
     private int memberNo;
     private String isUsed;
@@ -20,9 +20,9 @@ public class CuponDetailsDTO {
     private LocalDateTime issuedAt;
     private String status;
 
-    public CuponDetails toEntity(){
-        return CuponDetails.builder()
-                .cuponDetailNo(cuponDetailNo).couponNo(couponNo).memberNo(memberNo)
+    public CouponDetails toEntity(){
+        return CouponDetails.builder()
+                .couponDetailNo(couponDetailNo).couponNo(couponNo).memberNo(memberNo)
                 .isUsed(isUsed).usedAt(usedAt).issuedAt(issuedAt).status(status)
                 .build();
     }

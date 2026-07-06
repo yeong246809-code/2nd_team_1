@@ -17,8 +17,6 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memNo;
-    private String id;
-    private String pass;
     private String name;
     private LocalDate birthDate;
     private String gender;
@@ -37,7 +35,7 @@ public class Member {
 
     public MemberDTO toDTO(){
         return MemberDTO.builder()
-                .memNo(memNo).id(id).pass(pass).name(name).birthDate(birthDate)
+                .memNo(memNo).name(name).birthDate(birthDate)
                 .gender(gender).email(email).phone(phone).zipCode(zipCode)
                 .baseAddress(baseAddress).detailAddress(detailAddress)
                 .gradeNo(gradeNo).points(points).createdAt(createdAt)

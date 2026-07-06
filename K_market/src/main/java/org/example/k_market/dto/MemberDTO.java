@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 public class MemberDTO {
 
     private int memNo;
-    private String id;
-    private String pass;
     private String name;
     private LocalDate birthDate;
     private String gender;
@@ -34,7 +32,7 @@ public class MemberDTO {
 
     public Member toEntity(){
         return Member.builder()
-                .memNo(memNo).id(id).pass(pass).name(name).birthDate(birthDate)
+                .memNo(memNo).name(name).birthDate(birthDate)
                 .gender(gender).email(email).phone(phone).zipCode(zipCode)
                 .baseAddress(baseAddress).detailAddress(detailAddress)
                 .gradeNo(gradeNo).points(points).createdAt(createdAt)
