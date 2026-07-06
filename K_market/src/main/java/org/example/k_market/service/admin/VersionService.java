@@ -1,5 +1,6 @@
 package org.example.k_market.service.admin;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.example.k_market.dao.VersionDAO;
@@ -17,11 +18,21 @@ public class VersionService {
     private final VersionDAO dao;
     private final VersionRepository repository;
 
-    public List<VersionDTO> getAll(){
-        List<Version> entityList = repository.findAll();
-        List<VersionDTO> dtoList = entityList.stream()
-                .map(entity -> entity.toDTO())
+    public List<VersionDTO> getAll() {
+        List<Version> entityList = repository.findAllWithMember();
+
+        return entityList.stream()
+                .map(Version::toDTO) // 아주 깔끔해집니다!
                 .toList();
-        return dtoList;
+    }
+
+    public void insertVersion(VersionDTO versionDTO) {
+
+        Version entity = versionDTO.toEntity();
+
+        // DB에 저장 (JPA가 INSERT 쿼리를 날려줍니다)
+        repository.save(entity);
+
+        log.info("버전 등록 완료: {}", entity);
     }
 }

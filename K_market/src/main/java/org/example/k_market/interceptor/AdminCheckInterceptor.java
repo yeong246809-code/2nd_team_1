@@ -14,7 +14,7 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
         String role = (String) session.getAttribute("role");
 
         if (role == null || !role.equals("ADMIN")) {
-            response.sendRedirect("/"); // 메인으로 튕겨냄
+            response.sendRedirect(request.getContextPath() + "/member/login");
             return false;
         }
         return true;

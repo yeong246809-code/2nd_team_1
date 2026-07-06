@@ -1,0 +1,835 @@
+<!DOCTYPE html><html lang="ko" style=""><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market 마이페이지</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdcc7",
+                        "surface-bright": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8f9fa",
+                        "tertiary-container": "#5e3f2a",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "on-background": "#191c1d",
+                        "secondary-fixed": "#c0ecdc",
+                        "on-surface-variant": "#41484a",
+                        "primary-fixed-dim": "#acccd5",
+                        "secondary-container": "#c0ecdc",
+                        "inverse-surface": "#2e3132",
+                        "inverse-primary": "#acccd5",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-primary-container": "#99b9c2",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#45636b",
+                        "tertiary": "#452916",
+                        "on-secondary-container": "#446c5f",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "surface-dim": "#d9dadb",
+                        "primary-container": "#2c4a52",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "outline-variant": "#c1c7ca",
+                        "on-surface": "#191c1d",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#002018",
+                        "outline": "#72787a",
+                        "secondary": "#3e6659",
+                        "background": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary": "#ffffff",
+                        "primary": "#14333b",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "primary-fixed": "#c8e8f2",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "container-max": "1280px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "gutter": "24px",
+                        "xl": "80px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": [
+                            "Be Vietnam Pro"
+                        ],
+                        "headline-md": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "body-md": [
+                            "Be Vietnam Pro"
+                        ],
+                        "label-sm": [
+                            "Be Vietnam Pro"
+                        ],
+                        "display-lg": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "body-lg": [
+                            "Be Vietnam Pro"
+                        ],
+                        "headline-lg-mobile": [
+                            "Plus Jakarta Sans"
+                        ],
+                        "headline-lg": [
+                            "Plus Jakarta Sans"
+                        ]
+                    },
+                    "fontSize": {
+                        "label-md": [
+                            "14px",
+                            {
+                                "lineHeight": "1.4",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "headline-md": [
+                            "20px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "label-sm": [
+                            "12px",
+                            {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "display-lg": [
+                            "48px",
+                            {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "body-lg": [
+                            "18px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "headline-lg-mobile": [
+                            "24px",
+                            {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "headline-lg": [
+                            "32px",
+                            {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface bg-background min-h-screen" style="overflow: hidden;">
+<!-- 상단 네비게이션 바 -->
+<header class="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40">
+    <div class="max-w-container-max mx-auto px-xl py-md flex justify-between items-center">
+        <div class="flex items-center gap-base">
+            <a class="text-headline-lg font-headline-lg font-bold text-primary" href="#">K-market</a>
+        </div>
+        <nav class="hidden md:flex items-center space-x-md">
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">로그인</a>
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">회원가입</a>
+            <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" href="#">마이페이지</a>
+            <div class="flex items-center gap-xs text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span class="font-label-md text-label-md">장바구니</span>
+            </div>
+        </nav>
+    </div>
+</header>
+<main class="max-w-container-max mx-auto flex px-xl py-lg gap-gutter">
+    <!-- 사이드 네비게이션 -->
+    <aside class="w-64 shrink-0 flex flex-col space-y-2 py-md bg-surface-container-low rounded-xl shadow-sm border-r border-outline-variant h-fit sticky top-0">
+        <div class="px-4 pb-4 border-b border-outline-variant mb-2">
+            <h2 class="font-headline-md text-headline-md text-primary">나의쇼핑정보</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant opacity-70">환영합니다</p>
+        </div>
+        <nav class="flex flex-col space-y-1">
+            <a class="bg-primary-container text-on-primary-container font-semibold rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
+                <span class="material-symbols-outlined">list_alt</span>
+                전체주문내역
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
+                <span class="material-symbols-outlined">payments</span>
+                포인트내역
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
+                <span class="material-symbols-outlined">confirmation_number</span>
+                쿠폰
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
+                <span class="material-symbols-outlined">rate_review</span>
+                나의리뷰
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
+                <span class="material-symbols-outlined">contact_support</span>
+                문의하기
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
+                <span class="material-symbols-outlined">settings</span>
+                나의설정
+            </a>
+        </nav>
+    </aside>
+    <!-- 메인 콘텐츠 영역 -->
+    <section class="flex-1 space-y-md">
+        <!-- 사용자 요약 요약바 -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-md flex justify-around items-center divide-x divide-outline-variant">
+            <div class="flex-1 text-center">
+                <p class="font-label-md text-label-md text-on-surface-variant">주문</p>
+                <p class="font-headline-lg text-headline-lg text-primary">2</p>
+            </div>
+            <div class="flex-1 text-center">
+                <p class="font-label-md text-label-md text-on-surface-variant">쿠폰</p>
+                <p class="font-headline-lg text-headline-lg text-primary">1</p>
+            </div>
+            <div class="flex-1 text-center">
+                <p class="font-label-md text-label-md text-on-surface-variant">포인트</p>
+                <p class="font-headline-lg text-headline-lg text-primary">1,000</p>
+            </div>
+            <div class="flex-1 text-center">
+                <p class="font-label-md text-label-md text-on-surface-variant">문의</p>
+                <p class="font-headline-lg text-headline-lg text-primary">1</p>
+            </div>
+        </div>
+        <!-- 배너 광고 영역 -->
+        <a class="block w-full h-[86px] overflow-hidden rounded-xl shadow-sm" href="#">
+            <img alt="K-market Promotional Banner" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANeRv9FJSL8KXNjC11NLm2MVPYBKXfBxCazip7olJPJrHQqw4LeY-X7jTyFdy7rPShphtx0vduGaLSWLpeAI7Z9Eaf18ZNe8NrFavStXwoNeT_0Ju3OxHrA24parNlRy13Mmv15Gvhzs2KyMXJroCx337cGaFLJQEvvmukKSLSzPpWYaD43iKDQX_8dZDF_mmhTcwzsqAwYhPGuL7AgAYRzEKotbBvXu-T64WLQhk8QQSP3JQVo_WjS74syX1yg9WOhFavB3uEf75u">
+        </a>
+        <!-- 최근 주문 내역 -->
+        <div class="space-y-sm">
+            <div class="flex justify-between items-end border-b-2 border-primary pb-2">
+                <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">
+                    최근주문내역
+                </h3>
+                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" href="#">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-surface-container-low border-b border-outline-variant">
+                    <tr>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">날짜</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">상품정보</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">상태</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant text-center">확인 / 신청</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <!-- 주문 아이템 1 -->
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap">2022-12-13</td>
+                        <td class="px-md py-md">
+                            <div class="flex gap-md">
+                                <div class="w-24 h-24 shrink-0 rounded-lg overflow-hidden border border-outline-variant bg-surface-container">
+                                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv3LTdlkAUaDFlm71RMWQb5PXwUE6rtixNXpnN_91ONw_tDp728OL0pC_DgBzwrx6xnb2-ZyTZuSs8BegkEuYim_PPukURQOo82ATYK9VnZ5lxf-1lsOPhjREEJ_fDwRO_ZAm7U3Cq78LAvqN4Rq3aWzyGDIoJwE8En9MAVeCuzVgksMmW_YQYR4IEOXb3Fo7barotMDFZTDV0nPvhmgdl4T_VM0t6FbN9b63hZbJDCaJzXRlMzirUuDURmfmjw1835LyoozcEy3ML">
+                                </div>
+                                <div class="space-y-xs">
+                                    <p class="font-label-sm text-label-sm text-on-surface-variant">주문번호 : <span class="font-bold text-on-surface">1012211341</span></p>
+                                    <!-- Seller Name trigger -->
+                                    <a class="font-label-md text-label-md text-primary hover:underline cursor-pointer open-seller-btn">(주) 상호명</a>
+                                    <!-- Product Name trigger -->
+                                    <h4 class="font-headline-md text-headline-md text-primary cursor-pointer hover:underline open-order-btn">상품명 A 디자인 리빙 오브제</h4>
+                                    <p class="font-body-md text-body-md">수량 : 1 개</p>
+                                    <p class="font-headline-md text-headline-md text-primary font-bold">34,000원</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-md py-md">
+                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">배송완료</span>
+                        </td>
+                        <td class="px-md py-md">
+                            <div class="flex flex-col gap-2 w-32 mx-auto">
+                                <button class="bg-primary text-on-primary font-label-md text-label-md py-2 rounded-lg hover:opacity-90 transition-opacity">구매확정</button>
+                                <button class="border border-primary text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-primary-fixed transition-colors">상품평쓰기</button>
+                                <button class="border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors">반품신청</button>
+                                <button class="border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors">교환신청</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- 주문 아이템 2 -->
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap">2022-12-13</td>
+                        <td class="px-md py-md">
+                            <div class="flex gap-md">
+                                <div class="w-24 h-24 shrink-0 rounded-lg overflow-hidden border border-outline-variant bg-surface-container">
+                                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdyBMkyIBMM3tXWlOfe3Jh7BvDGM_ipQA9JzuBVRwUJ3fVL9Y7T6J5dieMIU-OQHnMueX4DJwT6btD9zr2FjuJHaKg4vgHiam_l1SPzPQ7yVY3RBCW6AKfT7wIfDUDkM5_kwPbWCGRR9d_EBoYIMMX4JP2uf8TVrHWSCVi2Xzdby9-hxNaz1gCWo3zRaxGk1pImjciyvnIEiA-aYy5_T1NL4hGP7flAwgT2P_UzQc4XySaljR7aNCgTKO1M-0tpwDt-s5l1DfaMmAd">
+                                </div>
+                                <div class="space-y-xs">
+                                    <p class="font-label-sm text-label-sm text-on-surface-variant">주문번호 : <span class="font-bold text-on-surface">1012211341</span></p>
+                                    <!-- Seller Name trigger -->
+                                    <a class="font-label-md text-label-md text-primary hover:underline cursor-pointer open-seller-btn">(주) 상호명</a>
+                                    <!-- Product Name trigger -->
+                                    <h4 class="font-headline-md text-headline-md text-primary cursor-pointer hover:underline open-order-btn">상품명 B 스마트 홈 허브</h4>
+                                    <p class="font-body-md text-body-md">수량 : 1 개</p>
+                                    <p class="font-headline-md text-headline-md text-primary font-bold">34,000원</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-md py-md">
+                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">배송완료</span>
+                        </td>
+                        <td class="px-md py-md">
+                            <div class="flex flex-col gap-2 w-32 mx-auto">
+                                <button class="bg-primary text-on-primary font-label-md text-label-md py-2 rounded-lg hover:opacity-90 transition-opacity">구매확정</button>
+                                <button class="border border-primary text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-primary-fixed transition-colors">상품평쓰기</button>
+                                <button class="border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors">반품신청</button>
+                                <button class="border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors">교환신청</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 판매자 정보 섹션 -->
+        <!-- 포인트 적립 내역 섹션 -->
+        <div class="pt-lg">
+            <div class="flex justify-between items-end border-b-2 border-primary pb-2 mb-sm">
+                <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">포인트적립내역</h3>
+                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" href="#">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-surface-container-low border-b border-outline-variant">
+                    <tr>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">날짜</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">구분</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">주문번호</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">적립금액</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">비고</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">유효기간</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md">2022-12-13</td>
+                        <td class="px-md py-md font-body-md text-body-md">적립</td>
+                        <td class="px-md py-md font-body-md text-body-md">2022121001</td>
+                        <td class="px-md py-md font-body-md text-body-md font-bold text-primary">340</td>
+                        <td class="px-md py-md font-body-md text-body-md">상품 구매확정</td>
+                        <td class="px-md py-md font-body-md text-body-md">2024-12-10</td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md">2022-12-13</td>
+                        <td class="px-md py-md font-body-md text-body-md">적립</td>
+                        <td class="px-md py-md font-body-md text-body-md">2022120601</td>
+                        <td class="px-md py-md font-body-md text-body-md font-bold text-primary">120</td>
+                        <td class="px-md py-md font-body-md text-body-md">상품 구매확정</td>
+                        <td class="px-md py-md font-body-md text-body-md">2024-12-06</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 나의 문의 내역 시작 -->
+        <div class="pt-lg space-y-sm">
+            <div class="flex justify-between items-end border-b-2 border-primary pb-2 mb-sm">
+                <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">나의 문의 내역</h3>
+                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" href="#">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-surface-container-low border-b border-outline-variant">
+                    <tr>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">번호</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">문의채널</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">문의유형</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">제목</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">작성일</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">상태</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md">3</td>
+                        <td class="px-md py-md font-body-md text-body-md">고객센터</td>
+                        <td class="px-md py-md font-body-md text-body-md">배송</td>
+                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">배송이 보통 얼마나 걸리나요?</td>
+                        <td class="px-md py-md font-body-md text-body-md">2022-12-12</td>
+                        <td class="px-md py-md">
+                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">답변완료</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md">2</td>
+                        <td class="px-md py-md font-body-md text-body-md">고객센터</td>
+                        <td class="px-md py-md font-body-md text-body-md">주문/결제</td>
+                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
+                        <td class="px-md py-md font-body-md text-body-md">2022-12-12</td>
+                        <td class="px-md py-md">
+                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">답변완료</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-md font-body-md text-body-md">1</td>
+                        <td class="px-md py-md font-body-md text-body-md">고객센터</td>
+                        <td class="px-md py-md font-body-md text-body-md">주문/결제</td>
+                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
+                        <td class="px-md py-md font-body-md text-body-md">2022-12-12</td>
+                        <td class="px-md py-md">
+                            <span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm">검토중</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 나의 설정 -->
+        <div class="pt-lg space-y-sm">
+            <div class="flex justify-between items-end border-b-2 border-primary pb-2">
+                <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">나의설정</h3>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-md grid grid-cols-1 md:grid-cols-3 gap-md divide-y md:divide-y-0 md:divide-x divide-outline-variant">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <p class="font-label-md text-label-md text-on-surface font-bold">기본배송지설정</p>
+                        <button class="text-primary font-label-sm text-label-sm hover:underline">변경</button>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface-variant">부산광역시 부산진구 중앙대로 300 한빛빌딩 10층</p>
+                </div>
+                <div class="space-y-2 md:pl-md pt-md md:pt-0">
+                    <div class="flex justify-between items-center">
+                        <p class="font-label-md text-label-md text-on-surface font-bold">Email 설정</p>
+                        <button class="text-primary font-label-sm text-label-sm hover:underline">변경</button>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface-variant">abc123@naver.com</p>
+                    <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
+                </div>
+                <div class="space-y-2 md:pl-md pt-md md:pt-0">
+                    <div class="flex justify-between items-center">
+                        <p class="font-label-md text-label-md text-on-surface font-bold">휴대폰 설정</p>
+                        <button class="text-primary font-label-sm text-label-sm hover:underline">변경</button>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface-variant">010 - 1234 - 1001</p>
+                    <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- 푸터 -->
+<footer class="bg-surface-container border-t border-outline-variant mt-xl">
+    <div class="max-w-container-max mx-auto py-lg px-xl flex flex-col items-center space-y-md">
+        <div class="flex space-x-md font-label-md text-label-md text-on-surface-variant">
+            <a class="hover:underline" href="#">회사소개</a>
+            <a class="hover:underline" href="#">이용약관</a>
+            <a class="hover:underline font-bold" href="#">개인정보처리방침</a>
+            <a class="hover:underline" href="#">고객센터</a>
+        </div>
+        <div class="text-center space-y-xs">
+            <div class="font-bold text-on-surface font-headline-md mb-2">K-market</div>
+            <p class="font-body-md text-body-md text-on-surface-variant">Copyright © 2025 K-market All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<!-- 주문상세정보 모달 (Order Detail Popup) -->
+<div class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 custom-modal" id="order-detail-modal">
+    <!-- 배경 오버레이 -->
+    <div class="absolute inset-0 bg-on-surface/50 modal-overlay cursor-pointer close-modal-trigger"></div>
+    <!-- 모달 콘텐츠 -->
+    <div class="relative w-full max-w-4xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-95 opacity-0">
+        <!-- 모달 헤더 -->
+        <div class="px-md py-4 border-b border-outline-variant flex justify-between items-center bg-white sticky top-0 z-10">
+            <h3 class="font-headline-md text-headline-md text-primary">주문상세정보</h3>
+            <button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant close-modal-trigger">
+                <span class="material-symbols-outlined pointer-events-none">close</span>
+            </button>
+        </div>
+        <!-- 모달 바디 (스크롤 가능) -->
+        <div class="p-md space-y-lg overflow-y-auto">
+            <!-- 주문정보 -->
+            <div class="space-y-md">
+                <div class="flex items-center">
+                    <span class="w-1.5 h-6 bg-primary rounded-full mr-3"></span>
+                    <h4 class="font-headline-md text-headline-md text-on-surface">주문정보</h4>
+                </div>
+                <div class="border border-outline-variant rounded-xl overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-surface-container-low">
+                        <tr>
+                            <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant w-1/4">날짜</th>
+                            <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant w-2/4">상품정보</th>
+                            <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant w-1/4">상태</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="border-b border-outline-variant">
+                            <td class="px-md py-md font-body-md text-body-md text-on-surface-variant">2024-01-01</td>
+                            <td class="px-md py-md">
+                                <div class="flex gap-4">
+                                    <img class="w-24 h-24 object-cover rounded-lg bg-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIX3xfVnd5pvLmEK1wuBazCm_hwN4LstT3SnK5jzyTb21cPFemO4MtRqayxVgJy4oMtjoQCphNOXNNfEw4RUOFGL8a2VUW4E_RHFqCoCgZECcv-SXn0B_bPQ1pXiyfDJquCSCO1uaUkh4vQ6SN3cYun0CbQHwjNXsrVVMAlQHcA-YnRtSdZMcjpct4RL8h8zuMV-YH3tNySmUJ9OEyOYwoSdmwOOMinbohXql7wwSW9pqVsu5Hzv-cggYAkpCzNnSrjvYjV5W6_DcC">
+                                    <div class="space-y-1">
+                                        <div class="font-label-sm text-label-sm text-primary">주문번호 : 1012211341</div>
+                                        <div class="font-body-md text-body-md font-semibold text-on-surface">(주) 상호명</div>
+                                        <div class="font-body-md text-body-md text-on-surface-variant">상품명 A 디자인 리빙 오브제</div>
+                                        <div class="flex items-baseline space-x-2">
+                                            <span class="font-body-md text-body-md text-on-surface-variant">수량 : 1개</span>
+                                            <span class="font-headline-md text-headline-md text-primary">34,000원</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-md py-md">
+<span class="inline-flex items-center px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-md text-label-md">
+                                    배송완료
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-md bg-surface-container-low/50 flex justify-end items-center gap-xl">
+                        <div class="text-right">
+                            <p class="font-label-sm text-label-sm text-on-surface-variant">판매가: 34,000원</p>
+                            <p class="font-label-sm text-label-sm text-error">할인: -3,000원</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-label-sm text-label-sm text-on-surface-variant">최종 결제금액</p>
+                            <p class="font-headline-lg text-headline-lg text-primary">31,000원</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 배송정보 -->
+            <div class="space-y-md">
+                <div class="flex items-center">
+                    <span class="w-1.5 h-6 bg-primary rounded-full mr-3"></span>
+                    <h4 class="font-headline-md text-headline-md text-on-surface">배송정보</h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant rounded-xl overflow-hidden">
+                    <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">받는사람</div>
+                    <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">홍길동</div>
+                    <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">연락처</div>
+                    <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">010-1234-1001</div>
+                    <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">배송주소</div>
+                    <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface leading-relaxed">[210**] 부산광역시 부산진구 대연동 121 10층 1004호</div>
+                    <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">배송요청사항</div>
+                    <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface-variant italic">없음</div>
+                </div>
+            </div>
+        </div>
+        <!-- 모달 푸터: Return to List Button -->
+        <div class="p-md bg-white border-t border-outline-variant flex justify-center sticky bottom-0 z-10">
+            <button class="px-xl py-md bg-surface-container-high text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all close-modal-trigger">목록으로 이동하기</button>
+        </div>
+    </div>
+</div>
+<!-- 문의하기 모달 (Inquiry Popup) -->
+<div class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4 custom-modal" id="inquiry-modal">
+    <!-- 배경 오버레이 -->
+    <div class="absolute inset-0 bg-on-surface/50 modal-overlay cursor-pointer close-modal-trigger"></div>
+    <!-- 모달 콘텐츠 -->
+    <div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-95 opacity-0">
+        <!-- 모달 헤더 -->
+        <div class="px-md py-4 border-b border-outline-variant flex justify-between items-center bg-white sticky top-0 z-10">
+            <h3 class="font-headline-md text-headline-md text-primary">문의하기</h3>
+            <button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant close-modal-trigger">
+                <span class="material-symbols-outlined pointer-events-none">close</span>
+            </button>
+        </div>
+        <!-- 모달 바디 -->
+        <div class="p-md space-y-md overflow-y-auto">
+            <!-- 문의 종류 선택 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">문의 종류</label>
+                <div class="flex flex-wrap gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input checked="" class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">상품</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">배송</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">반품/취소</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">교환</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">기타</span>
+                    </label>
+                </div>
+            </div>
+            <!-- 이메일 입력 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">이메일</label>
+                <input class="w-full p-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="example@email.com" type="email">
+            </div>
+            <!-- 제목 입력 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">제목</label>
+                <input class="w-full p-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="문의 제목을 입력해주세요" type="text">
+            </div>
+            <!-- 내용 입력 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">내용</label>
+                <textarea class="w-full p-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none" placeholder="문의하실 내용을 상세히 입력해주세요" rows="6"></textarea>
+            </div>
+        </div>
+        <!-- 모달 푸터 -->
+        <div class="p-md bg-white border-t border-outline-variant flex justify-center gap-3 sticky bottom-0 z-10">
+            <button class="flex-1 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">등록하기</button>
+            <button class="flex-1 py-3 bg-surface-container-high text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all close-modal-trigger">취소</button>
+        </div>
+    </div>
+</div>
+<script>
+    // 인터랙션 효과
+    document.querySelectorAll('button, a').forEach(el => {
+        el.addEventListener('mousedown', () => el.classList.add('opacity-80'));
+        el.addEventListener('mouseup', () => el.classList.remove('opacity-80'));
+    });
+
+    // 모달 표시 함수
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const modalContent = modal.querySelector('.modal-content');
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // 스크롤 방지
+
+        // 애니메이션을 위해 약간의 지연 후 클래스 추가
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    // 모달 숨김 함수
+    function hideModal(modal) {
+        if (!modal) return;
+        const modalContent = modal.querySelector('.modal-content');
+
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+
+        // 애니메이션 완료 후 숨김
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            // 열려있는 다른 모달이 없다면 바디 스크롤 복원
+            const anyOpenModal = document.querySelector('.custom-modal:not(.hidden)');
+            if (!anyOpenModal) {
+                document.body.style.overflow = '';
+            }
+        }, 300);
+    }
+
+    // 이벤트 리스너 등록: 상품명 클릭 (주문상세정보 모달)
+    document.querySelectorAll('.open-order-btn').forEach(btn => {
+        btn.addEventListener('click', () => showModal('order-detail-modal'));
+    });
+
+    // 이벤트 리스너 등록: 판매자명 클릭 (판매자 정보 스크롤 이동) -> 수정됨: 판매자 정보 모달 열기
+    document.querySelectorAll('.open-seller-btn').forEach(btn => {
+        btn.addEventListener('click', () => showModal('seller-info-modal'));
+    });
+
+    // 이벤트 리스너 등록: 문의하기 버튼 클릭 (문의하기 모달)
+    document.querySelectorAll('.open-inquiry-btn').forEach(btn => {
+        btn.addEventListener('click', () => showModal('inquiry-modal'));
+    });
+
+    // 이벤트 리스너 등록: 모든 모달 닫기 버튼들
+    document.querySelectorAll('.close-modal-trigger').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            // 버튼의 부모 모달 요소를 찾아서 닫기
+            const modal = this.closest('.custom-modal');
+            if (modal) hideModal(modal);
+        });
+    });
+
+    // ESC 키로 열려있는 모든 모달 닫기
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.custom-modal:not(.hidden)').forEach(modal => {
+                hideModal(modal);
+            });
+        }
+    });
+</script>
+<!-- 판매자 정보 모달 (Seller Info Popup) -->
+<div class="fixed inset-0 z-[70] flex items-center justify-center p-4 custom-modal" id="seller-info-modal">
+    <!-- 배경 오버레이 -->
+    <div class="absolute inset-0 bg-on-surface/50 modal-overlay cursor-pointer close-modal-trigger"></div>
+    <!-- 모달 콘텐츠 -->
+    <div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-100 opacity-100">
+        <!-- 모달 헤더 -->
+        <div class="px-md py-4 border-b border-outline-variant flex justify-between items-center bg-white sticky top-0 z-10">
+            <h3 class="font-headline-md text-headline-md text-primary">판매자 정보</h3>
+            <button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant close-modal-trigger">
+                <span class="material-symbols-outlined pointer-events-none">close</span>
+            </button>
+        </div>
+        <!-- 모달 바디 -->
+        <div class="p-md space-y-md overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant rounded-xl overflow-hidden">
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">판매자 등급</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">파워딜러</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">상호</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">(주) 상호명</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">대표자</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">홍길동</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">전화번호</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">051-123-1000</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">FAX</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">051-123-1001</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">Email</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">company@abc.com</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">사업자번호</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface">123-12-123457</div>
+                <div class="bg-surface-container-low px-md py-4 font-label-md text-label-md text-on-surface-variant">영업소 소재지</div>
+                <div class="bg-white px-md py-4 font-body-md text-body-md text-on-surface leading-relaxed">[210**] 부산광역시 부산진구 중앙대로 300 한빛빌딩 10층</div>
+            </div>
+            <p class="text-label-sm text-on-surface-variant opacity-70">※ 위 정보는 전자상거래 법 제 20조 제 2항 및 동 법 시행령 제 25조 제 2항에 의거하여 소비자보호에 의거 공개합니다</p>
+        </div>
+        <!-- 모달 푸터 -->
+        <div class="p-md bg-white border-t border-outline-variant flex justify-center gap-3 sticky bottom-0 z-10">
+            <button class="flex-1 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all open-inquiry-btn" onclick="showModal('seller-inquiry-reg-modal')">문의하기</button>
+            <button class="flex-1 py-3 bg-surface-container-high text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all close-modal-trigger">닫기</button>
+        </div>
+    </div>
+</div><!-- 판매자 문의하기 등록 모달 (Seller Inquiry Registration Popup) -->
+<div class="fixed inset-0 z-[80] flex items-center justify-center p-4 custom-modal hidden" id="seller-inquiry-reg-modal">
+    <!-- 배경 오버레이 -->
+    <div class="absolute inset-0 bg-on-surface/50 modal-overlay cursor-pointer close-modal-trigger"></div>
+    <!-- 모달 콘텐츠 -->
+    <div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-100 opacity-100">
+        <!-- 모달 헤더 -->
+        <div class="px-md py-4 border-b border-outline-variant flex justify-between items-center bg-white sticky top-0 z-10">
+            <h3 class="font-headline-md text-headline-md text-primary">문의하기</h3>
+            <button class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant close-modal-trigger" onclick="this.closest('.custom-modal').classList.add('hidden')">
+                <span class="material-symbols-outlined pointer-events-none">close</span>
+            </button>
+        </div>
+        <!-- 모달 바디 -->
+        <div class="p-md space-y-md overflow-y-auto">
+            <!-- 문의 종류 선택 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">문의 종류</label>
+                <div class="flex flex-wrap gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input checked="" class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="seller_inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">상품</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="seller_inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">배송</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="seller_inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">반품/취소</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="seller_inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">교환</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input class="w-4 h-4 text-primary focus:ring-primary border-outline-variant" name="seller_inquiry_type" type="radio">
+                        <span class="font-body-md text-body-md text-on-surface-variant">기타</span>
+                    </label>
+                </div>
+            </div>
+            <!-- 이메일 입력 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">이메일</label>
+                <input class="w-full p-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="example@email.com" type="email">
+            </div>
+            <!-- 제목 입력 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">제목</label>
+                <input class="w-full p-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="문의 제목을 입력해주세요" type="text">
+            </div>
+            <!-- 내용 입력 -->
+            <div class="space-y-2">
+                <label class="font-label-md text-label-md text-on-surface font-bold">내용</label>
+                <textarea class="w-full p-3 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none" placeholder="문의하실 내용을 상세히 입력해주세요" rows="6"></textarea>
+            </div>
+        </div>
+        <!-- 모달 푸터 -->
+        <div class="p-md bg-white border-t border-outline-variant flex justify-center gap-3 sticky bottom-0 z-10">
+            <button class="flex-1 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">등록하기</button>
+            <button class="flex-1 py-3 bg-surface-container-high text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all close-modal-trigger" onclick="this.closest('.custom-modal').classList.add('hidden')">취소</button>
+        </div>
+    </div>
+</div>
+
+<script class="">
+    document.querySelectorAll('.close-modal-trigger').forEach(btn => {
+        btn.onclick = () => {
+            const modal = btn.closest('.custom-modal');
+            if (modal) modal.classList.add('hidden');
+        };
+    });
+</script></body></html>

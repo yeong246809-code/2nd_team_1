@@ -18,6 +18,9 @@ public class VersionDTO {
     private LocalDateTime createdAt;
     private String changeLog;
 
+    //추가필드 - 외래키
+    private String memberId;
+
     public Version toEntity(){
         return Version.builder()
                 .id(id).versionCode(versionCode).memberNo(memberNo)
