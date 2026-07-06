@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int memNo;
+    private int memberNo;
     private String id;
     private String pass;
     private String role;
@@ -25,6 +25,6 @@ public class Users {
     private String createdAt;
 
     public UsersDTO toDto() {
-        return UsersDTO.builder().memNo(memNo).id(id).pass(pass).role(role).status(status).createdAt(createdAt).build();
+        return UsersDTO.builder().memberNo(memberNo).id(id).pass(pass).role(role).status(status).createdAt(createdAt).build();
     }
 }

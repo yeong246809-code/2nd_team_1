@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class Shop {
 
     @Id
-    private int memNo;
+    private int memberNo;
     private int shopNo;
     private String name;
     private String ceo;
@@ -32,7 +32,7 @@ public class Shop {
 
     public ShopDTO toDTO(){
         return ShopDTO.builder()
-                .memNo(memNo).shopNo(shopNo).name(name).ceo(ceo)
+                .memberNo(memberNo).shopNo(shopNo).name(name).ceo(ceo)
                 .bizNumber(bizNumber).mailOrderNumber(mailOrderNumber)
                 .phone(phone).fax(fax).zipCode(zipCode).baseAddress(baseAddress)
                 .detailAddress(detailAddress).status(status).manageStatus(manageStatus)

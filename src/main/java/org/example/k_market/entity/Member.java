@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int memNo;
+    private int memberNo;
     private String name;
     private LocalDate birthDate;
     private String gender;
@@ -35,7 +35,7 @@ public class Member {
 
     public MemberDTO toDTO(){
         return MemberDTO.builder()
-                .memNo(memNo).name(name).birthDate(birthDate)
+                .memberNo(memberNo).name(name).birthDate(birthDate)
                 .gender(gender).email(email).phone(phone).zipCode(zipCode)
                 .baseAddress(baseAddress).detailAddress(detailAddress)
                 .gradeNo(gradeNo).points(points).createdAt(createdAt)

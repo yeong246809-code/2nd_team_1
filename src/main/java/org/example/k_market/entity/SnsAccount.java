@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 @Table(name = "sns_account")
 public class SnsAccount {
     @Id
-    private int memNo;
+    private int memberNo;
     private String provider;
     private String providerId;
     private LocalDateTime connectedAt;
 
     public SnsAccountDTO toDTO(){
         return SnsAccountDTO.builder()
-                .memNo(memNo).provider(provider)
+                .memberNo(memberNo).provider(provider)
                 .providerId(providerId).connectedAt(connectedAt)
                 .build();
     }

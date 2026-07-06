@@ -10,7 +10,7 @@ import org.example.k_market.entity.Users;
 @NoArgsConstructor
 @Builder
 public class UsersDTO {
-    private int memNo;
+    private int memberNo;
     private String id;
     private String pass;
     private String role;
@@ -18,6 +18,6 @@ public class UsersDTO {
     private String createdAt;
 
     public Users toEntity() {
-        return Users.builder().memNo(memNo).id(id).pass(pass).role(role).status(status).createdAt(createdAt).build();
+        return Users.builder().memberNo(memberNo).id(id).pass(pass).role(role).status(status).createdAt(createdAt).build();
     }
 }

@@ -22,9 +22,9 @@ public class MemberDAO {
         return savedEntity.toDTO();
     }
 
-    public Optional<MemberDTO> findById(Integer memNo) {
+    public Optional<MemberDTO> findById(Integer memberNo) {
         // PK 타입이 엔티티의 @Id 타입과 다르면 컴파일 오류 발생
-        return memberRepository.findById(memNo)
+        return memberRepository.findById(memberNo)
                 .map(Member::toDTO);
     }
 
@@ -36,10 +36,10 @@ public class MemberDAO {
                 .toList();
     }
 
-    public void deleteById(Integer memNo) {
+    public void deleteById(Integer memberNo) {
         // 존재하지 않는 PK 삭제를 막기 위해 existsById로 먼저 확인
-        if (memberRepository.existsById(memNo)) {
-            memberRepository.deleteById(memNo);
+        if (memberRepository.existsById(memberNo)) {
+            memberRepository.deleteById(memberNo);
         }
     }
 }

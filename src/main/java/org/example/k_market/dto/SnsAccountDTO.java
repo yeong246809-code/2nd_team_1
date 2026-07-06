@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 @Builder
 public class SnsAccountDTO {
 
-    private int memNo;
+    private int memberNo;
     private String provider;
     private String providerId;
     private LocalDateTime connectedAt;
 
     public SnsAccount toEntity(){
         return SnsAccount.builder()
-                .memNo(memNo).provider(provider)
+                .memberNo(memberNo).provider(provider)
                 .providerId(providerId).connectedAt(connectedAt)
                 .build();
     }

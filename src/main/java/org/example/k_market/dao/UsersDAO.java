@@ -25,8 +25,8 @@ public class UsersDAO {
     /**
      * 2. 통합회원번호(PK)로 단건 조회
      */
-    public Users findByMemNo(Integer memNo) {
-        return em.find(Users.class, memNo);
+    public Users findByMemberNo(Integer memberNo) {
+        return em.find(Users.class, memberNo);
     }
 
     /**

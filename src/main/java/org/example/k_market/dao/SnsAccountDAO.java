@@ -22,9 +22,9 @@ public class SnsAccountDAO {
         return savedEntity.toDTO();
     }
 
-    public Optional<SnsAccountDTO> findById(Integer memNo) {
+    public Optional<SnsAccountDTO> findById(Integer memberNo) {
         // PK 타입이 엔티티의 @Id 타입과 다르면 컴파일 오류 발생
-        return snsAccountRepository.findById(memNo)
+        return snsAccountRepository.findById(memberNo)
                 .map(SnsAccount::toDTO);
     }
 
@@ -36,10 +36,10 @@ public class SnsAccountDAO {
                 .toList();
     }
 
-    public void deleteById(Integer memNo) {
+    public void deleteById(Integer memberNo) {
         // 존재하지 않는 PK 삭제를 막기 위해 existsById로 먼저 확인
-        if (snsAccountRepository.existsById(memNo)) {
-            snsAccountRepository.deleteById(memNo);
+        if (snsAccountRepository.existsById(memberNo)) {
+            snsAccountRepository.deleteById(memberNo);
         }
     }
 }
