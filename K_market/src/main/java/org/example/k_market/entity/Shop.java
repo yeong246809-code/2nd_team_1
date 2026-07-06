@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "shop")
 public class Shop {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long shopNo;
-    private String id;
-    private String pass;
+    private int memNo;
+    private int shopNo;
     private String name;
     private String ceo;
     private String bizNumber;
@@ -33,7 +32,7 @@ public class Shop {
 
     public ShopDTO toDTO(){
         return ShopDTO.builder()
-                .shopNo(shopNo).id(id).pass(pass).name(name).ceo(ceo)
+                .memNo(memNo).shopNo(shopNo).name(name).ceo(ceo)
                 .bizNumber(bizNumber).mailOrderNumber(mailOrderNumber)
                 .phone(phone).fax(fax).zipCode(zipCode).baseAddress(baseAddress)
                 .detailAddress(detailAddress).status(status).manageStatus(manageStatus)

@@ -1,6 +1,6 @@
 package org.example.k_market.dto;
 
-import org.example.k_market.entity.Cupon;
+import org.example.k_market.entity.Coupon;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CuponDTO {
+public class CouponDTO {
 
-    private long cuponNo;
+    private long couponNo;
     private String issuerName;
     private String couponType;
     private String name;
@@ -27,9 +27,9 @@ public class CuponDTO {
     private String status;
     private LocalDateTime createdAt;
 
-    public Cupon toEntity(){
-        return Cupon.builder()
-                .cuponNo(cuponNo).issuerName(issuerName).couponType(couponType)
+    public Coupon toEntity(){
+        return Coupon.builder()
+                .couponNo(couponNo).issuerName(issuerName).couponType(couponType)
                 .name(name).benefitType(benefitType).benefitValue(benefitValue)
                 .dateType(dateType).startDate(startDate).endDate(endDate)
                 .validDays(validDays).notes(notes).status(status).createdAt(createdAt)

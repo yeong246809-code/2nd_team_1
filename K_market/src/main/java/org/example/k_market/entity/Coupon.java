@@ -1,7 +1,7 @@
 package org.example.k_market.entity;
 
 import jakarta.persistence.*;
-import org.example.k_market.dto.CuponDTO;
+import org.example.k_market.dto.CouponDTO;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "cupon")
-public class Cupon {
+@Table(name = "coupon")
+public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long cuponNo;
+    private long couponNo;
     private String issuerName;
     private String couponType;
     private String name;
@@ -30,9 +30,9 @@ public class Cupon {
     private String status;
     private LocalDateTime createdAt;
 
-    public CuponDTO toDTO(){
-        return CuponDTO.builder()
-                .cuponNo(cuponNo).issuerName(issuerName).couponType(couponType)
+    public CouponDTO toDTO(){
+        return CouponDTO.builder()
+                .couponNo(couponNo).issuerName(issuerName).couponType(couponType)
                 .name(name).benefitType(benefitType).benefitValue(benefitValue)
                 .dateType(dateType).startDate(startDate).endDate(endDate)
                 .validDays(validDays).notes(notes).status(status).createdAt(createdAt)

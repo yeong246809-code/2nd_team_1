@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @Table(name = "sns_account")
 public class SnsAccount {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int snsNo;
     private int memNo;
     private String provider;
     private String providerId;
@@ -23,7 +21,7 @@ public class SnsAccount {
 
     public SnsAccountDTO toDTO(){
         return SnsAccountDTO.builder()
-                .snsNo(snsNo).memNo(memNo).provider(provider)
+                .memNo(memNo).provider(provider)
                 .providerId(providerId).connectedAt(connectedAt)
                 .build();
     }

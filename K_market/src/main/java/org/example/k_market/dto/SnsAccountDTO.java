@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 public class SnsAccountDTO {
 
-    private int snsNo;
     private int memNo;
     private String provider;
     private String providerId;
@@ -20,7 +19,7 @@ public class SnsAccountDTO {
 
     public SnsAccount toEntity(){
         return SnsAccount.builder()
-                .snsNo(snsNo).memNo(memNo).provider(provider)
+                .memNo(memNo).provider(provider)
                 .providerId(providerId).connectedAt(connectedAt)
                 .build();
     }
