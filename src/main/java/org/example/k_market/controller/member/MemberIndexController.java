@@ -42,6 +42,7 @@ public class MemberIndexController {
 
     @GetMapping("/member/find/resultid")
     public String findResultId() {
+
         return "member/find/resultid";
     }
 

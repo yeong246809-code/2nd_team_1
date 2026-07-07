@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class PolicyIndexController {
 
+
     @GetMapping("/policy/buyer")
     public String buyer() {
         return "policy/buyer";

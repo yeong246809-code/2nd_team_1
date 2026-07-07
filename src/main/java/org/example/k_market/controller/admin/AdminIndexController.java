@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Log4j2
 @RequiredArgsConstructor
 public class AdminIndexController {
+
     @GetMapping("/admin/index")
     public String adminIndex() {
         return "admin/index";
