@@ -14,6 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CsIndexController {
 
+
     @GetMapping("/cs/index")
     public String index() {
         return "cs/index";
