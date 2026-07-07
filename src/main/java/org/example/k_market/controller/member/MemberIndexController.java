@@ -2,15 +2,21 @@ package org.example.k_market.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.dto.PolicyDTO;
+import org.example.k_market.service.policy.PolicyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+
 @Controller
 @Log4j2
 @RequiredArgsConstructor
 public class MemberIndexController {
+
+    private final PolicyService policyService;
 
     @GetMapping("/member/join")
     public String join() {
@@ -30,9 +36,15 @@ public class MemberIndexController {
     @GetMapping("/member/signup")
     public String signup(@RequestParam(defaultValue = "user") String type, Model model) {
         boolean seller = "seller".equalsIgnoreCase(type);
+        Map<String, PolicyDTO> signupPolicies = policyService.getSignupPolicies(seller);
+
         model.addAttribute("memberType", seller ? "seller" : "user");
         model.addAttribute("memberTypeName", seller ? "판매회원" : "일반회원");
         model.addAttribute("nextUrl", seller ? "/member/registerseller?agreed=true" : "/member/register?agreed=true");
+        model.addAttribute("mainPolicy", signupPolicies.get("main"));
+        model.addAttribute("financePolicy", signupPolicies.get("finance"));
+        model.addAttribute("privacyPolicy", signupPolicies.get("privacy"));
+        model.addAttribute("locationPolicy", signupPolicies.get("location"));
         return "member/signup";
     }
 

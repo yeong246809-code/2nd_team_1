@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.io.PrintWriter;
+
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
@@ -21,10 +23,26 @@ public class SecurityConfig {
         httpSecurity.formLogin( form -> form
                 .loginPage("/member/login")
                 .loginProcessingUrl("/member/login")
-                .defaultSuccessUrl("/my/index") // login success page
                 .failureUrl("/member/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
+                .successHandler((request, response, authentication) -> {
+                    // 💡 현재 애플리케이션의 Context Path 가져오기 (예: "/k_market")
+                    String contextPath = request.getContextPath();
+                    String userId = authentication.getName();
+                    request.getSession().setAttribute("sessUser", userId);
+
+                    boolean isAdmin = authentication.getAuthorities().stream()
+                            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+                    if (isAdmin) {
+                        // Context Path를 앞에 붙여서 리다이렉트
+                        response.sendRedirect(contextPath + "/admin/index");
+                    } else {
+                        // 일반 유저 메인 페이지
+                        response.sendRedirect(contextPath + "/my/index");
+                    }
+                })
         );
 
         // 로그아웃 설정
@@ -34,19 +52,34 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/member/login?logout=success")
         );
 
-        // 인가 설정 (관리자 전용 접근 제어)
+        // 인가 설정 (권한 제어)
         httpSecurity.authorizeHttpRequests( authorize -> authorize
-                // 로그인 페이지와 정적 리소스들을 명확히 분리해서 선언하세요
-                .requestMatchers("/member/login", "/member/join", "/member/signup", "/member/welcome",
+                .requestMatchers(
+                        "/member/login", "/member/join", "/member/signup", "/member/welcome",
                         "/member/session", "/member/check-id", "/member/email/send", "/member/email/verify",
                         "/member/register", "/member/registerseller",
-                        "/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/member/login", "/resources/**", "/css/**", "/js/**", "/images/**","/uploads/**").permitAll()
+                        "/resources/**", "/css/**", "/js/**", "/images/**", "/uploads/**"
+                ).permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );
 
-        // CSRF 비활성화 (필요에 따라 켜셔도 됩니다)
+        // 예외 처리 (JavaScript로 alert 띄우고 리다이렉트)
+        httpSecurity.exceptionHandling( exception -> exception
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    String contextPath = request.getContextPath();
+
+                    response.setContentType("text/html; charset=UTF-8");
+                    PrintWriter out = response.getWriter();
+                    out.print("<script>");
+                    out.print("alert('접근할 수 없는 페이지입니다.');");
+                    out.print("location.href='" + contextPath + "/';");
+                    out.print("</script>");
+                    out.flush();
+                })
+        );
+
+        // CSRF 비활성화
         httpSecurity.csrf(CsrfConfigurer::disable);
 
         return httpSecurity.build();
@@ -54,7 +87,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        // ★ 비밀번호 평문 비교를 위한 설정 (운영 환경에서는 절대 사용 금지)
         return NoOpPasswordEncoder.getInstance();
     }
 }

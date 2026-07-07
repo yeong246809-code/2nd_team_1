@@ -157,9 +157,9 @@
                         </div>
                         <div class="grid grid-cols-1 gap-xs">
                             <label class="font-label-md text-primary" for="confirm-password">비밀번호 확인</label>
-                            <input class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow" id="confirm-password" name="password_confirm" placeholder="비밀번호 재입력" required type="password"><!-- Password Match Message -->
-                            <p id="pw-check-msg" class="hidden text-label-sm mt-xs"></p>
+                            <input class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow" id="confirm-password" name="password_confirm" placeholder="비밀번호 재입력" required type="password">
                         </div>
+                        <p id="pw-check-msg" class="hidden text-label-sm mt-xs md:col-span-2"></p>
                     </div>
                     <!-- Name & Gender -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
@@ -192,18 +192,18 @@
                     <!-- Phone -->
                     <div class="grid grid-cols-1 gap-xs">
                         <label class="font-label-md text-primary" for="phone">휴대전화 번호</label>
-                        <div class="flex gap-base">
-                            <select class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary w-24">
+                        <div class="flex gap-base items-start">
+                            <select class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary w-24 h-[44px] shrink-0">
                                 <option>010</option>
                                 <option>011</option>
                                 <option>016</option>
                             </select>
-                            <div class="flex-1 flex flex-col gap-xs">
+                            <div class="flex-1 flex flex-col gap-xs min-w-0">
                                 <div class="flex gap-base">
-                                    <input class="flex-1 bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow" id="phone" placeholder="- 없이 번호만 입력" type="tel">
-                                    <button id="verify-phone-btn" class="bg-secondary text-on-secondary px-md rounded-lg font-label-md hover:bg-secondary/90 transition-all whitespace-nowrap" type="button">인증하기</button>
+                                    <input class="flex-1 min-w-0 bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow" id="phone" placeholder="- 없이 번호만 입력" type="tel">
+                                    <button id="verify-phone-btn" class="bg-secondary text-on-secondary px-md rounded-lg font-label-md hover:bg-secondary/90 transition-all whitespace-nowrap shrink-0" type="button">인증하기</button>
                                 </div>
-                                <p id="phone-status" class="hidden text-label-sm text-secondary">사용 가능한 번호입니다.</p>
+                                <p id="phone-status" class="hidden text-label-sm text-secondary leading-snug">사용 가능한 번호입니다.</p>
                             </div>
                         </div>
                     </div>
