@@ -3,7 +3,7 @@ package org.example.k_market.controller.policy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.example.k_market.dto.PolicyDTO;
-import org.example.k_market.service.policy.PolicyService;
+import org.example.k_market.service.admin.PolicyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

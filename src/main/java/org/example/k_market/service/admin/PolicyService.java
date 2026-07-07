@@ -7,6 +7,7 @@ import org.example.k_market.repository.PolicyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -16,37 +17,89 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PolicyService {
 
+    public static final String BUYER_POLICY = "구매회원 약관";
+    public static final String SELLER_POLICY = "판매회원약관";
+    public static final String FINANCE_POLICY = "전자금융거래 약관";
+    public static final String LOCATION_POLICY = "위치정보 이용약관";
+    public static final String PRIVACY_POLICY = "개인정보처리방침";
+
+    private static final List<String> DISPLAY_ORDER = List.of(
+            BUYER_POLICY,
+            SELLER_POLICY,
+            FINANCE_POLICY,
+            LOCATION_POLICY,
+            PRIVACY_POLICY
+    );
+
     private final PolicyRepository policyRepository;
 
-    /**
-     * 1. 모든 약관 조회 (Thymeleaf 처리를 위해 ID를 Key로 하는 Map 형태로 반환)
-     */
     public Map<Long, PolicyDTO> getPolicyList() {
-        List<Policy> policies = policyRepository.findAll();
-
-        // 데이터가 잘 넘어오는지 확인 (콘솔로 확인하세요)
-        System.out.println("★ 조회된 데이터 개수: " + policies.size());
-
-        return policies.stream()
+        return policyRepository.findAll()
+                .stream()
                 .map(Policy::toDTO)
-                // 키(ID)가 중복되거나 문제가 있을 경우를 대비하여 (k, v) -> v 처리 추가
                 .collect(Collectors.toMap(
                         PolicyDTO::getId,
                         Function.identity(),
-                        (existing, replacement) -> existing // 중복 발생 시 기존 것 유지
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
                 ));
     }
 
-    /**
-     * 2. 특정 약관 내용 업데이트
-     */
+    public Map<String, PolicyDTO> getSignupPolicies(boolean seller) {
+        Map<String, PolicyDTO> policies = getPolicyMap();
+        String mainPolicyType = seller ? SELLER_POLICY : BUYER_POLICY;
+
+        Map<String, PolicyDTO> signupPolicies = new LinkedHashMap<>();
+        signupPolicies.put("main", findOrFallback(policies, mainPolicyType));
+        signupPolicies.put("finance", findOrFallback(policies, FINANCE_POLICY));
+        signupPolicies.put("privacy", findOrFallback(policies, PRIVACY_POLICY));
+        signupPolicies.put("location", findOrFallback(policies, LOCATION_POLICY));
+        return signupPolicies;
+    }
+
+    public List<PolicyDTO> getOrderedPolicies() {
+        Map<String, PolicyDTO> policies = getPolicyMap();
+        return DISPLAY_ORDER.stream()
+                .map(policyType -> findOrFallback(policies, policyType))
+                .toList();
+    }
+
+    public PolicyDTO getPolicy(String policyType) {
+        Map<String, PolicyDTO> policies = getPolicyMap();
+        String targetType = (policyType == null || policyType.isBlank()) ? BUYER_POLICY : policyType;
+        return findOrFallback(policies, targetType);
+    }
+
     @Transactional
     public void updatePolicy(PolicyDTO dto) {
-        // DB에서 해당 ID의 약관을 꺼내옴
         Policy policy = policyRepository.findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 약관이 존재하지 않습니다. ID: " + dto.getId()));
-
-        // 꺼내온 엔티티의 내용을 변경 (트랜잭션이 끝나면 JPA가 알아서 UPDATE 쿼리를 날림)
         policy.updateContent(dto.getContent());
+    }
+
+    private Map<String, PolicyDTO> getPolicyMap() {
+        return policyRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(
+                        Policy::getPolicyType,
+                        Policy::toDTO,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private PolicyDTO findOrFallback(Map<String, PolicyDTO> policies, String policyType) {
+        PolicyDTO policy = policies.get(policyType);
+        if (policy == null && SELLER_POLICY.equals(policyType)) {
+            policy = policies.get("판매회원 약관");
+        }
+        if (policy != null) {
+            return policy;
+        }
+
+        return PolicyDTO.builder()
+                .policyType(policyType)
+                .content("등록된 약관 내용이 없습니다. policy 테이블의 policyType과 content를 확인해주세요.")
+                .build();
     }
 }
