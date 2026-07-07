@@ -3,7 +3,6 @@ package org.example.k_market.service.cs;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.entity.Notice;
 import org.example.k_market.repository.NoticeRepository;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +13,14 @@ public class NoticeService {
 
     private final NoticeRepository noticeRepository;
 
-    // 공지사항 목록 조회
+    // 공지사항 목록 전체 조회
     public List<Notice> findAll() {
-        return noticeRepository.findAll(Sort.by(Sort.Direction.DESC, "no"));
+        return noticeRepository.findAllByOrderByNoDesc();
+    }
+
+    // 고객센터 메인 공지사항 최신 5개 조회
+    public List<Notice> findTop5() {
+        return noticeRepository.findTop5ByOrderByNoDesc();
     }
 
     // 공지사항 상세 조회
