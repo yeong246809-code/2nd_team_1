@@ -1,12 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8"/>
     <title>K-market - 문의하기</title>
-
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <script>
         tailwind.config = {
             theme: {
@@ -38,71 +37,80 @@
             }
         }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+    <style id="kmarket-cs-common-style">
+        .font-display-lg, .font-headline-lg, .font-headline-md, .font-headline-lg-mobile { font-family: "Plus Jakarta Sans", sans-serif; }
+        .font-body-md, .font-body-lg, .font-label-md, .font-label-sm { font-family: "Be Vietnam Pro", sans-serif; }
+        .text-label-sm { font-size: 12px; line-height: 1.2; font-weight: 600; }
+        .text-label-md { font-size: 14px; line-height: 1.4; letter-spacing: 0.01em; font-weight: 500; }
+        .text-body-md { font-size: 16px; line-height: 1.6; font-weight: 400; }
+        .text-body-lg { font-size: 18px; line-height: 1.6; font-weight: 400; }
+        .text-headline-md { font-size: 20px; line-height: 1.4; font-weight: 600; }
+        .text-headline-lg-mobile { font-size: 24px; line-height: 1.3; font-weight: 600; }
+        .text-headline-lg { font-size: 32px; line-height: 1.3; font-weight: 600; }
+        .text-display-lg { font-size: 48px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px; line-height: 1; }
+    </style>
 </head>
-
-<body class="bg-background text-on-surface min-h-screen flex flex-col">
-
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
 <!-- Header -->
-<header class="bg-surface border-b border-outline-variant w-full">
-    <div class="max-w-container-max mx-auto px-md py-base flex justify-between items-center">
-        <a class="font-bold text-primary text-3xl" th:href="@{/}">K-market</a>
-
-        <nav class="flex gap-md text-sm text-on-surface-variant">
-            <a th:href="@{/member/login}">Login</a>
-            <a th:href="@{/member/join}">Join</a>
-            <a th:href="@{/my/home}">My Page</a>
-            <a th:href="@{/cart/list}">Cart</a>
+<header class="bg-surface shadow-sm sticky top-0 z-50 w-full">
+    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
+        <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/}">K-market</a>
+        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
+            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">Login</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Join</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/my/home}">My Page</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cart/list}">Cart</a>
         </nav>
+        <div class="flex items-center gap-sm text-primary">
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/list}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
+            </a>
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/home}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">person</span>
+            </a>
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/cart/list}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">shopping_cart</span>
+            </a>
+        </div>
     </div>
 </header>
-
 <!-- Main -->
-<main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex gap-lg">
-
+<main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex flex-col md:flex-row gap-lg">
     <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 bg-surface-container-low rounded-xl p-md">
-        <h2 class="font-bold text-primary text-xl mb-xs">고객센터</h2>
-        <p class="text-sm text-on-surface-variant mb-md">Customer Support</p>
-
-        <nav class="flex flex-col gap-sm text-sm">
-            <a th:href="@{/cs/notice/list}"
-               class="px-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant flex items-center gap-sm">
+    <aside class="w-full md:w-64 shrink-0 flex flex-col gap-base">
+        <h2 class="font-headline-md text-headline-md text-primary mb-sm px-sm">고객센터</h2>
+        <nav class="flex flex-col gap-xs">
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/notice/list}">
                 <span class="material-symbols-outlined">campaign</span>
                 공지사항
             </a>
-
-            <a th:href="@{/cs/faq/list}"
-               class="px-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant flex items-center gap-sm">
-                <span class="material-symbols-outlined">help_outline</span>
-                자주하는 질문
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/faq/list}">
+                <span class="material-symbols-outlined">help</span>
+                자주묻는 질문
             </a>
-
-            <a th:href="@{/cs/qna/list}"
-               class="px-md py-3 rounded-lg text-primary font-bold bg-secondary-container flex items-center gap-sm">
-                <span class="material-symbols-outlined">edit_note</span>
-                문의하기
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-primary font-bold bg-secondary-container" th:href="@{/cs/qna/list}">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+                1:1 문의
             </a>
         </nav>
     </aside>
-
     <!-- Content -->
     <section class="flex-1 flex flex-col gap-md">
-
         <!-- Breadcrumb -->
         <div class="flex items-center gap-xs text-sm text-on-surface-variant">
             <a th:href="@{/}">홈</a>
             <span class="material-symbols-outlined text-sm">chevron_right</span>
             <a th:href="@{/cs/index}">고객센터</a>
             <span class="material-symbols-outlined text-sm">chevron_right</span>
-            <a th:href="@{/cs/qna/list}" class="font-bold text-on-surface">문의하기</a>
+            <a class="font-bold text-on-surface" th:href="@{/cs/qna/list}">문의하기</a>
         </div>
-
         <!-- Title -->
         <div class="border-b border-surface-variant pb-md">
             <h1 class="text-3xl font-bold text-primary">문의하기</h1>
             <p class="text-on-surface-variant mt-sm">회원 관련 문의내용 입니다.</p>
         </div>
-
         <!-- QNA List Table -->
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden mt-md">
             <table class="w-full text-left border-collapse">
@@ -114,153 +122,91 @@
                     <th class="py-md px-md font-semibold border-b border-surface-variant w-[120px] text-center">등록일</th>
                 </tr>
                 </thead>
-
                 <tbody class="text-sm text-on-surface divide-y divide-surface-variant">
-
                 <!-- QNA 목록 반복 출력 -->
-                <tr th:each="qna : ${qnas}"
-                    class="hover:bg-surface-container-low transition-colors">
-
+                <tr class="hover:bg-surface-container-low transition-colors" th:each="qna : ${qnas}">
                     <td class="py-md px-md">
-                        <a th:href="@{/cs/qna/view/{no}(no=${qna.no})}"
-                           class="block group">
-
-                            <span class="block text-on-surface-variant font-semibold"
-                                  th:text="|[ ${qna.type2} ]|"></span>
-
-                            <span class="block mt-xs group-hover:text-primary transition-colors"
-                                  th:text="${qna.title}"></span>
+                        <a class="block group" th:href="@{/cs/qna/view/{no}(no=${qna.no})}">
+                            <span class="block text-on-surface-variant font-semibold" th:text="|[ ${qna.type2} ]|"></span>
+                            <span class="block mt-xs group-hover:text-primary transition-colors" th:text="${qna.title}"></span>
                         </a>
                     </td>
-
                     <!-- 답변 상태 -->
                     <td class="py-md px-md text-center">
-                        <span th:if="${qna.isAnswered == '답변완료'}"
-                              class="inline-block px-3 py-1 bg-secondary-container text-primary rounded-full text-xs font-bold">
+<span class="inline-block px-3 py-1 bg-secondary-container text-primary rounded-full text-xs font-bold" th:if="${qna.isAnswered == '답변완료'}">
                             답변완료
                         </span>
-
-                        <span th:if="${qna.isAnswered != '답변완료'}"
-                              class="inline-block px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold"
-                              th:text="${qna.isAnswered}">
-                        </span>
+                        <span class="inline-block px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold" th:if="${qna.isAnswered != '답변완료'}" th:text="${qna.isAnswered}">
+</span>
                     </td>
-
                     <!-- 작성자 -->
-                    <td class="py-md px-md text-center text-on-surface"
-                        th:text="${qna.user.id}">
+                    <td class="py-md px-md text-center text-on-surface" th:text="${qna.user.id}">
                     </td>
-
                     <!-- 등록일 -->
-                    <td class="py-md px-md text-center text-on-surface"
-                        th:text="${#temporals.format(qna.createdAt, 'yy.MM.dd')}">
+                    <td class="py-md px-md text-center text-on-surface" th:text="${#temporals.format(qna.createdAt, 'yy.MM.dd')}">
                     </td>
                 </tr>
-
                 <!-- 데이터 없을 때 -->
                 <tr th:if="${#lists.isEmpty(qnas)}">
-                    <td colspan="4" class="py-lg px-md text-center text-on-surface-variant">
+                    <td class="py-lg px-md text-center text-on-surface-variant" colspan="4">
                         등록된 문의글이 없습니다.
                     </td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
-
         <!-- Bottom Area -->
         <div class="flex justify-between items-center mt-md">
-
             <!-- 실제 페이지네이션 -->
-            <div class="flex items-center gap-sm text-sm text-on-surface-variant"
-                 th:if="${totalPages > 0}">
-
+            <div class="flex items-center gap-sm text-sm text-on-surface-variant" th:if="${totalPages &gt; 0}">
                 <!-- 이전 -->
-                <a th:if="${hasPrev}"
-                   th:href="@{/cs/qna/list(page=${prevPage})}"
-                   class="hover:text-primary">
+                <a class="hover:text-primary" th:href="@{/cs/qna/list(page=${prevPage})}" th:if="${hasPrev}">
                     ‹ 이전
                 </a>
-
-                <span th:if="${!hasPrev}"
-                      class="text-outline cursor-default">
+                <span class="text-outline cursor-default" th:if="${!hasPrev}">
                     ‹ 이전
                 </span>
-
                 <!-- 페이지 번호 -->
-                <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
-                   th:href="@{/cs/qna/list(page=${pageNum})}"
-                   th:text="${pageNum}"
-                   th:classappend="${pageNum == currentPage}
+                <a class="w-8 h-8 flex items-center justify-center rounded-lg" th:classappend="${pageNum == currentPage}
                         ? ' bg-primary text-on-primary font-bold'
-                        : ' hover:bg-surface-container-high'"
-                   class="w-8 h-8 flex items-center justify-center rounded-lg">
+                        : ' hover:bg-surface-container-high'" th:each="pageNum : ${#numbers.sequence(startPage, endPage)}" th:href="@{/cs/qna/list(page=${pageNum})}" th:text="${pageNum}">
                 </a>
-
                 <!-- 다음 -->
-                <a th:if="${hasNext}"
-                   th:href="@{/cs/qna/list(page=${nextPage})}"
-                   class="hover:text-primary">
+                <a class="hover:text-primary" th:href="@{/cs/qna/list(page=${nextPage})}" th:if="${hasNext}">
                     다음 ›
                 </a>
-
-                <span th:if="${!hasNext}"
-                      class="text-outline cursor-default">
+                <span class="text-outline cursor-default" th:if="${!hasNext}">
                     다음 ›
                 </span>
             </div>
-
             <!-- 데이터 없을 때 페이지네이션 자리 유지 -->
             <div th:if="${totalPages == 0}"></div>
-
             <!-- 문의 작성 화면 이동 -->
-            <a th:href="@{/cs/qna/write}"
-               class="bg-primary text-on-primary hover:opacity-90 transition-opacity px-6 py-2.5 rounded-lg font-medium shadow-sm flex items-center gap-2">
+            <a class="bg-primary text-on-primary hover:opacity-90 transition-opacity px-6 py-2.5 rounded-lg font-medium shadow-sm flex items-center gap-2"
+               th:href="@{/cs/qna/write}">
                 <span class="material-symbols-outlined text-[18px]">edit_square</span>
                 문의하기
             </a>
         </div>
     </section>
 </main>
-
 <!-- Footer -->
 <footer class="bg-surface-container-highest w-full mt-lg">
-    <div class="max-w-container-max mx-auto py-lg text-center text-on-surface-variant">
-        <h2 class="font-bold text-primary mb-sm">K-market</h2>
-
-        <div class="flex justify-center gap-md text-sm mb-md">
-            <a th:href="@{/company/main}">About Us</a>
-            <a th:href="@{/cs/index}">Customer Service</a>
-            <a th:href="@{/policy/buyer}">Privacy Policy</a>
-            <a th:href="@{/member/register}">Terms of Service</a>
-            <a th:href="@{/cs/faq/list}">FAQ</a>
-            <a th:href="@{/cs/qna/list}">Contact</a>
-        </div>
-<div class="flex flex-wrap justify-center gap-x-md gap-y-2 font-body-md text-body-md text-on-surface-variant mb-4 max-w-2xl text-center">
-<a class="hover:text-primary underline transition-colors duration-200" th:href="@{/company/main}" href="/company/main">About Us</a>
-<a class="hover:text-primary underline transition-colors duration-200" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
-<a class="hover:text-primary underline transition-colors duration-200 font-semibold text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
-<a class="hover:text-primary underline transition-colors duration-200" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
-<a class="hover:text-primary underline transition-colors duration-200" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
-<a class="hover:text-primary underline transition-colors duration-200" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
-</div>
-<div class="text-center font-label-sm text-label-sm text-outline-variant max-w-container-max w-full border-t border-surface-variant pt-md flex flex-col md:flex-row justify-between items-center gap-4">
-<div class="flex items-center gap-4 text-left">
-<div class="w-12 h-12 bg-surface-variant rounded bg-cover bg-center" data-alt="A small, subtle, monochromatic corporate logo placeholder for a company. The logo is simple and sits on a light gray background, fitting a minimalist aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBdNilhaknS_joUOW08O1mKUDoZVfL-4niBBDRAsZlahNsoKjdq-hROHdUrCsKhPCgxiHdI2pX270fE-r3wZ05gKlv1KTAES4Ri9jlRQ5dgBlzr4muFJ3q8a9Z4P-3HMohigzFWgxm_ZmgDkA_VYUxFN4FMHGL8LRL8Q6CuJoQn6FBmpihvFOzvNq3G4sGeltAlLC5QbSqQU1ui-dYuW2zWzWrLUXiBNwb_PhjXBgwRg16FVajFEmhb0Yl0gGGqSTo58GirBHXU7SX8')"></div>
-<div>
-<p class="font-medium text-on-surface-variant">(주)케이마켓</p>
-<p class="">부산광역시 부산진구 중앙대로 300</p>
-</div>
-</div>
-<div class="">
-                © 2024 K-market. All rights reserved.
-            </div>
-</div>
-</footer>
-
-        <p>© 2024 K-market. All rights reserved.</p>
+    <div class="max-w-container-max mx-auto px-md py-lg text-center text-on-surface-variant">
+        <h2 class="font-headline-md text-headline-md font-bold text-primary mb-sm">K-market</h2>
+        <nav class="flex flex-wrap justify-center gap-x-md gap-y-2 font-label-md text-label-md mb-md">
+            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">About Us</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">Customer Service</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">Privacy Policy</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Terms of Service</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">FAQ</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">Contact</a>
+        </nav>
+        <p class="font-label-sm text-label-sm">© 2024 K-market. All rights reserved.</p>
     </div>
 </footer>
 
-<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
-</body></html>
+
+<script src="/k_market/js/auth-nav.js" th:src="@{/js/auth-nav.js}"></script>
+</body>
+</html>
