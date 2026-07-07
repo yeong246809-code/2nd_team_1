@@ -13,10 +13,5 @@ public class AdminIndexController {
     public String adminIndex() {
         return "admin/index";
     }
-
-    @GetMapping("/admin/config/basic")
-    public String basicConfig() {
-        return "admin/config/basic";
-    }
 }
     

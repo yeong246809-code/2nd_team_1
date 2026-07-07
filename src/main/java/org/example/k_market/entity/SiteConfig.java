@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,9 +19,12 @@ public class SiteConfig {
     private int id;
     private String title;
     private String subtitle;
-    private String headerLogo;
-    private String footerLogo;
-    private String favicon;
+    private String headerLogo_origin;
+    private String headerLogo_stored;
+    private String footerLogo_origin;
+    private String footerLogo_stored;
+    private String favicon_origin;
+    private String favicon_stored;
     private String companyName;
     private String ceo;
     private String bizNumber;
@@ -35,12 +39,13 @@ public class SiteConfig {
 
     public SiteConfigDTO toDTO(){
         return SiteConfigDTO.builder()
-                .id(id).title(title).subtitle(subtitle).headerLogo(headerLogo)
-                .footerLogo(footerLogo).favicon(favicon).companyName(companyName)
-                .ceo(ceo).bizNumber(bizNumber).mailOrderNumber(mailOrderNumber)
-                .baseAddress(baseAddress).detailAddress(detailAddress)
-                .csPhone(csPhone).csHours(csHours).csEmail(csEmail)
-                .finDisputeManager(finDisputeManager).copyright(copyright)
-                .build();
+                .id(id).title(title).subtitle(subtitle)
+                .headerLogo_origin(headerLogo_origin).headerLogo_stored(headerLogo_stored)
+                .footerLogo_origin(footerLogo_origin).footerLogo_stored(footerLogo_stored)
+                .favicon_origin(favicon_origin).favicon_stored(favicon_stored)
+                .companyName(companyName).ceo(ceo).bizNumber(bizNumber)
+                .mailOrderNumber(mailOrderNumber).baseAddress(baseAddress).detailAddress(detailAddress)
+                .csPhone(csPhone).csHours(csHours).csEmail(csEmail).finDisputeManager(finDisputeManager)
+                .copyright(copyright).build();
     }
 }

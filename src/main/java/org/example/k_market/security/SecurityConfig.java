@@ -36,7 +36,7 @@ public class SecurityConfig {
         // 인가 설정 (관리자 전용 접근 제어)
         httpSecurity.authorizeHttpRequests( authorize -> authorize
                 // 로그인 페이지와 정적 리소스들을 명확히 분리해서 선언하세요
-                .requestMatchers("/member/login", "/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/member/login", "/resources/**", "/css/**", "/js/**", "/images/**","/uploads/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );
