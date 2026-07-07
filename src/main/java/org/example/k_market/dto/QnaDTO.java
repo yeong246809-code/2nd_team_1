@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @Builder
 public class QnaDTO {
 
+    // Users 테이블의 id를 화면에 출력하기 위한 필드
+    // qna 테이블에 저장되는 값이 아니라 JOIN 조회 결과를 담는 용도
+    private String id;
     private int no;
     private String type1;
     private String type2;

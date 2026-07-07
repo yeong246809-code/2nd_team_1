@@ -22,7 +22,7 @@ public class ShopDAO {
         return savedEntity.toDTO();
     }
 
-    public Optional<ShopDTO> findById(Long shopNo) {
+    public Optional<ShopDTO> findById(int shopNo) {
         // PK 타입이 엔티티의 @Id 타입과 다르면 컴파일 오류 발생
         return shopRepository.findById(shopNo)
                 .map(Shop::toDTO);
@@ -36,7 +36,7 @@ public class ShopDAO {
                 .toList();
     }
 
-    public void deleteById(Long shopNo) {
+    public void deleteById(int shopNo) {
         // 존재하지 않는 PK 삭제를 막기 위해 existsById로 먼저 확인
         if (shopRepository.existsById(shopNo)) {
             shopRepository.deleteById(shopNo);

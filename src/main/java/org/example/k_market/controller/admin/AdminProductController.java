@@ -2,7 +2,9 @@ package org.example.k_market.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.k_market.dao.CategoryDAO;
 import org.example.k_market.dao.ProductDAO;
+import org.example.k_market.dto.CategoryDTO;
 import org.example.k_market.dto.ProductDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -24,6 +23,7 @@ import java.util.UUID;
 public class AdminProductController {
 
     private final ProductDAO productDAO;
+    private final CategoryDAO categoryDAO;
 
     /**
      * [목록 & 검색]
@@ -67,33 +67,48 @@ public class AdminProductController {
      */
     @GetMapping("/register")
     public String register(Model model) {
-        // 이 한 줄이 없으면 Thymeleaf는 'product'가 뭔지 몰라 에러를 냅니다.
+        // DB의 모든 카테고리를 조회하여 전달
+        List<CategoryDTO> allCategories = categoryDAO.findAll();
+
         model.addAttribute("product", new ProductDTO());
+        model.addAttribute("allCategories", allCategories);
         return "admin/product/register";
     }
 
+    // AdminProductController.java
     @PostMapping("/register")
-    public String registerSubmit(@ModelAttribute ProductDTO productDTO) {
-        // 1. 실제 DB에 존재하는 카테고리 번호를 가져와 강제 할당 (외래키 제약조건 회피)
-        // 기존에 존재하는 상품 중 하나를 샘플로 가져와 그 카테고리 정보를 사용
-        List<ProductDTO> allProducts = productDAO.findAll();
-        if (!allProducts.isEmpty()) {
-            ProductDTO sample = allProducts.get(0);
-            productDTO.setCateNo(sample.getCateNo());
-            productDTO.setShopNo(sample.getShopNo());
-        } else {
-            // 상품이 하나도 없을 경우를 대비한 기본값
-            productDTO.setCateNo(1010);
-            productDTO.setShopNo(1);
-        }
+    public String registerSubmit(@ModelAttribute("product") ProductDTO productDTO,
+                                 @RequestParam("file1") MultipartFile file1,
+                                 @RequestParam("file2") MultipartFile file2,
+                                 @RequestParam("file3") MultipartFile file3) throws IOException {
 
-        // 2. 누락될 수 있는 필수 필드 초기화 (null 방지)
+        // 1. 파일 저장 로직 (이전 답변 코드 참고)
+        String uploadPath = new File("uploads/").getAbsolutePath() + File.separator;
+        productDTO.setThumb1(saveFile(file1, uploadPath));
+        productDTO.setThumb2(saveFile(file2, uploadPath));
+        productDTO.setThumb3(saveFile(file3, uploadPath));
+
+        // 2. 강제 할당 로직 삭제 (이 부분이 오히려 오류를 만들거나 덮어쓰고 있을 수 있음)
+        // productDTO.setCateNo(sample.getCateNo()); // 이 부분을 삭제하세요!
+
+        // 3. 필수 기본값만 설정
         productDTO.setCreatedAt(LocalDateTime.now());
-        productDTO.setBizType("1");
-        productDTO.setRating(java.math.BigDecimal.ZERO);
+        if (productDTO.getBizType() == null) productDTO.setBizType("1");
+        if (productDTO.getRating() == null) productDTO.setRating(java.math.BigDecimal.ZERO);
 
+        // 4. 저장
         productDAO.save(productDTO);
         return "redirect:/admin/product/list";
+    }
+
+    // 파일 저장 로직 분리
+    private String saveFile(MultipartFile file, String uploadPath) throws IOException {
+        if (file == null || file.isEmpty()) return null;
+
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        File dest = new File(uploadPath + fileName);
+        file.transferTo(dest);
+        return fileName; // DB에는 파일명만 저장
     }
 
     /**
