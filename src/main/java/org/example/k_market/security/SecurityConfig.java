@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableMethodSecurity
 @Configuration
@@ -20,7 +21,7 @@ public class SecurityConfig {
         httpSecurity.formLogin( form -> form
                 .loginPage("/member/login")
                 .loginProcessingUrl("/member/login")
-                .defaultSuccessUrl("/admin/index") // 로그인 성공 시 이동할 관리자 메인 페이지
+                .defaultSuccessUrl("/my/index") // login success page
                 .failureUrl("/member/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
@@ -28,7 +29,7 @@ public class SecurityConfig {
 
         // 로그아웃 설정
         httpSecurity.logout( config -> config
-                .logoutUrl("/member/logout")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout", "GET"))
                 .invalidateHttpSession(true)
                 .logoutSuccessUrl("/member/login?logout=success")
         );
@@ -36,6 +37,10 @@ public class SecurityConfig {
         // 인가 설정 (관리자 전용 접근 제어)
         httpSecurity.authorizeHttpRequests( authorize -> authorize
                 // 로그인 페이지와 정적 리소스들을 명확히 분리해서 선언하세요
+                .requestMatchers("/member/login", "/member/join", "/member/signup", "/member/welcome",
+                        "/member/session", "/member/check-id", "/member/email/send", "/member/email/verify",
+                        "/member/register", "/member/registerseller",
+                        "/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/member/login", "/resources/**", "/css/**", "/js/**", "/images/**","/uploads/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()

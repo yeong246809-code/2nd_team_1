@@ -172,7 +172,7 @@
   </div>
   <section class="max-w-[800px] mx-auto">
     <div class="mb-lg">
-      <h1 class="font-headline-lg text-headline-lg mb-2">회원가입 약관동의</h1>
+      <h1 class="font-headline-lg text-headline-lg mb-2" th:text="|${memberTypeName} 약관동의|">회원가입 약관동의</h1>
       <p class="text-on-surface-variant font-body-md">K-market의 서비스를 이용하시려면 아래의 약관에 동의하셔야 합니다.</p>
     </div>
     <!-- Bento Layout for Terms -->
@@ -245,10 +245,10 @@
       </div>
       <!-- Action Button -->
       <div class="flex flex-col items-center gap-md mt-lg">
-        <button class="w-full md:w-64 py-4 bg-primary text-on-primary font-bold rounded-full shadow-lg hover:bg-primary-container transition-all hover:scale-[1.02] active:scale-95 disabled:bg-surface-variant disabled:text-outline-variant disabled:cursor-not-allowed" id="submitBtn" disabled="">
+        <button class="w-full md:w-64 py-4 bg-primary text-on-primary font-bold rounded-full shadow-lg hover:bg-primary-container transition-all hover:scale-[1.02] active:scale-95 disabled:bg-surface-variant disabled:text-outline-variant disabled:cursor-not-allowed" id="submitBtn" type="button" data-next-url="/k_market/member/register?agreed=true" th:data-next-url="${memberType == 'seller'} ? @{/member/registerseller(agreed=true)} : @{/member/register(agreed=true)}" disabled="">
           동의하고 계속하기
         </button>
-        <button class="text-on-surface-variant hover:text-primary font-label-md transition-colors underline underline-offset-4">취소하고 돌아가기</button>
+        <button class="text-on-surface-variant hover:text-primary font-label-md transition-colors underline underline-offset-4" type="button" th:onclick="|location.href='@{/member/join}'|">취소하고 돌아가기</button>
       </div>
     </div>
   </section>
@@ -317,14 +317,13 @@
     submitBtn.disabled = !allRequiredChecked;
   }
 
-  // Button Micro-interaction
   submitBtn.addEventListener('click', () => {
     if(!submitBtn.disabled) {
       submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
       setTimeout(() => {
-        alert('회원가입 정보 입력 페이지로 이동합니다.');
-        submitBtn.innerHTML = '동의하고 계속하기';
-      }, 1500);
+        sessionStorage.setItem('kmarket_terms_agreed', 'true');
+        window.location.href = submitBtn.dataset.nextUrl || './register?agreed=true';
+      }, 500);
     }
   });
 
@@ -344,4 +343,5 @@
 </script>
 
 
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

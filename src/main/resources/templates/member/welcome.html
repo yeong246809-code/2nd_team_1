@@ -123,7 +123,7 @@
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex flex-col gap-base py-sm">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-md">
-<h1 class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight">L-Market</h1>
+<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" th:href="@{/}" href="/">K-market</a>
 <!-- Search Bar Mockup -->
 <div class="hidden md:flex items-center bg-surface-container-low px-sm py-xs rounded-full border border-outline-variant w-96">
 <span class="material-symbols-outlined text-on-surface-variant">search</span>
@@ -131,8 +131,8 @@
 </div>
 </div>
 <div class="flex items-center gap-sm">
-<button class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors px-sm py-xs">로그인</button>
-<button class="font-label-md text-label-md bg-primary text-on-primary px-md py-xs rounded-full hover:opacity-90 transition-opacity">회원가입</button>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors px-sm py-xs" th:href="@{/member/login}" href="/member/login">로그인</a>
+<a class="font-label-md text-label-md bg-primary text-on-primary px-md py-xs rounded-full hover:opacity-90 transition-opacity" th:href="@{/member/join}" href="/member/join">회원가입</a>
 <div class="flex items-center gap-xs ml-sm border-l border-outline-variant pl-sm">
 <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">shopping_cart</span>
 <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">person</span>
@@ -201,19 +201,19 @@
 <div class="w-20 h-20 bg-secondary-container rounded-full flex items-center justify-center mb-md">
 <span class="material-symbols-outlined text-on-secondary-container text-[40px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 </div>
-<h2 class="font-display-lg text-headline-lg text-primary mb-base">환영합니다 OOO님!</h2>
-<h3 class="font-headline-md text-headline-md text-primary-container mb-md">K-market의 회원이 되신 것을 축하드립니다!</h3>
+<h2 class="font-display-lg text-headline-lg text-primary mb-base" th:text="|환영합니다 ${joinedId}님!|">환영합니다 회원님!</h2>
+<h3 class="font-headline-md text-headline-md text-primary-container mb-md" th:text="${welcomeMessage}">K-market의 회원이 되신 것을 축하드립니다!</h3>
 <p class="font-body-md text-body-md text-on-surface-variant max-w-md mb-lg">
                     회원가입이 성공적으로 완료되었습니다. 지금 바로 K-market에서 제공하는 다양한 혜택을 누려보세요.
                 </p>
 <div class="flex flex-col sm:flex-row gap-sm">
-<button class="bg-primary text-on-primary font-label-md text-label-md px-xl py-sm rounded-lg hover:opacity-90 transition-all flex items-center gap-xs">
+<a class="bg-primary text-on-primary font-label-md text-label-md px-xl py-sm rounded-lg hover:opacity-90 transition-all flex items-center gap-xs" th:href="@{/product/list}" href="/product/list">
                         오늘의 세일 바로가기
                         <span class="material-symbols-outlined">trending_up</span>
-</button>
-<button class="bg-surface text-primary border border-primary font-label-md text-label-md px-xl py-sm rounded-lg hover:bg-surface-container-low transition-all">
-                        마이페이지
-                    </button>
+</a>
+<a class="bg-surface text-primary border border-primary font-label-md text-label-md px-xl py-sm rounded-lg hover:bg-surface-container-low transition-all" th:href="@{/member/login}" href="/member/login">
+                        로그인하러 가기
+                    </a>
 </div>
 </div>
 <!-- Promotional / Benefits Section -->
@@ -300,4 +300,5 @@
             });
         }
     </script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

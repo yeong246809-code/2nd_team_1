@@ -166,6 +166,14 @@
                 </div>
             </div>
         </div>
+        <!-- Navigation Links -->
+        <nav class="flex gap-lg items-center overflow-x-auto pb-1 no-scrollbar">
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Hit Products</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Recommended</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">New Arrivals</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Popular</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Sale</a>
+        </nav>
     </div>
 </header>
 
@@ -510,5 +518,7 @@
         });
     });
 </script>
-</body>
-</html>
+
+
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+</body></html>

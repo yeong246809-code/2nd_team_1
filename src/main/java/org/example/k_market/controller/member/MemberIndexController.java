@@ -3,7 +3,9 @@ package org.example.k_market.controller.member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Log4j2
@@ -26,12 +28,25 @@ public class MemberIndexController {
     }
 
     @GetMapping("/member/signup")
-    public String signup() {
+    public String signup(@RequestParam(defaultValue = "user") String type, Model model) {
+        boolean seller = "seller".equalsIgnoreCase(type);
+        model.addAttribute("memberType", seller ? "seller" : "user");
+        model.addAttribute("memberTypeName", seller ? "판매회원" : "일반회원");
+        model.addAttribute("nextUrl", seller ? "/member/registerseller?agreed=true" : "/member/register?agreed=true");
         return "member/signup";
     }
 
     @GetMapping("/member/welcome")
-    public String welcome() {
+    public String welcome(
+            @RequestParam(required = false, defaultValue = "회원") String id,
+            @RequestParam(defaultValue = "user") String type,
+            Model model) {
+        boolean seller = "seller".equalsIgnoreCase(type);
+        model.addAttribute("joinedId", id);
+        model.addAttribute("memberTypeName", seller ? "판매회원" : "일반회원");
+        model.addAttribute("welcomeMessage", seller
+                ? "K-market 판매회원 신청이 완료되었습니다."
+                : "K-market의 회원이 되신 것을 축하드립니다!");
         return "member/welcome";
     }
 
@@ -42,7 +57,6 @@ public class MemberIndexController {
 
     @GetMapping("/member/find/resultid")
     public String findResultId() {
-
         return "member/find/resultid";
     }
 

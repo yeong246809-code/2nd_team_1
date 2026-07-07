@@ -160,6 +160,14 @@
                 </div>
             </div>
         </div>
+        <!-- Global Navigation -->
+        <nav class="flex items-center gap-lg py-xs">
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Hit Products</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Recommended</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">New Arrivals</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Popular</a>
+            <a class="text-primary font-bold border-b-2 border-primary font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Sale</a>
+        </nav>
     </div>
 </header>
 
@@ -455,5 +463,5 @@
         });
     }
 </script>
-</body>
-</html>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+</body></html>
