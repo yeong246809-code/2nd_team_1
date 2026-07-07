@@ -13,9 +13,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "`order`")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long orderNo;
+    private int orderNo; // 테이블의 int(11) 구조에 맞춰 long -> int로 변경
+
     private int memberNo;
     private String paymentMethod;
     private int totalProductPrice;
@@ -27,10 +29,15 @@ public class Order {
 
     public OrderDTO toDTO(){
         return OrderDTO.builder()
-                .orderNo(orderNo).memberNo(memberNo).paymentMethod(paymentMethod)
-                .totalProductPrice(totalProductPrice).totalDiscountPrice(totalDiscountPrice)
-                .totalShippingFee(totalShippingFee).usedPoints(usedPoints)
-                .totalPaymentPrice(totalPaymentPrice).createdAt(createdAt)
+                .orderNo(orderNo)
+                .memberNo(memberNo)
+                .paymentMethod(paymentMethod)
+                .totalProductPrice(totalProductPrice)
+                .totalDiscountPrice(totalDiscountPrice)
+                .totalShippingFee(totalShippingFee)
+                .usedPoints(usedPoints)
+                .totalPaymentPrice(totalPaymentPrice)
+                .createdAt(createdAt)
                 .build();
     }
 }
