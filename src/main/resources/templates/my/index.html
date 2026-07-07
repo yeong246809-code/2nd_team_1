@@ -240,6 +240,27 @@
     </aside>
     <!-- 메인 콘텐츠 영역 -->
     <section class="flex-1 space-y-md">
+        <!-- 사용자 정보 영역 -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-md flex flex-col md:flex-row md:items-center md:justify-between gap-md">
+            <div class="space-y-xs">
+                <p class="font-label-sm text-label-sm text-on-surface-variant">내 계정</p>
+                <h3 class="font-headline-md text-headline-md text-primary" th:text="${loginUserId} != '' ? |${loginUserId}님| : '로그인이 필요합니다'">사용자님</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant">
+                    권한
+                    <span class="font-bold text-primary" th:text="${loginUserRole}">USER</span>
+                </p>
+            </div>
+            <div class="flex flex-wrap justify-end items-center gap-base">
+                <a th:if="${isAdmin}" th:href="@{/admin/index}" href="/admin/index" class="inline-flex items-center gap-xs px-md py-2 rounded-lg border border-error bg-error-container/70 text-error font-bold hover:bg-error-container transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                    관리자
+                </a>
+                <a th:href="@{/cs/index}" href="/cs/index" class="inline-flex items-center gap-xs px-md py-2 rounded-lg border border-outline-variant text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                    고객센터
+                </a>
+            </div>
+        </div>
         <!-- 사용자 요약 요약바 -->
         <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-md flex justify-around items-center divide-x divide-outline-variant">
             <div class="flex-1 text-center">

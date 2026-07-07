@@ -29,6 +29,8 @@ public class SecurityConfig {
                 .successHandler((request, response, authentication) -> {
                     // 💡 현재 애플리케이션의 Context Path 가져오기 (예: "/k_market")
                     String contextPath = request.getContextPath();
+                    String userId = authentication.getName();
+                    request.getSession().setAttribute("sessUser", userId);
 
                     boolean isAdmin = authentication.getAuthorities().stream()
                             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
