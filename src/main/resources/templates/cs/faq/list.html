@@ -1,14 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>K-market - 자주묻는 질문</title>
-
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -75,7 +74,6 @@
             }
         }
     </script>
-
     <style>
         details > summary {
             list-style: none;
@@ -85,262 +83,180 @@
             display: none;
         }
     </style>
+
+    <style id="kmarket-cs-common-style">
+        .font-display-lg, .font-headline-lg, .font-headline-md, .font-headline-lg-mobile { font-family: "Plus Jakarta Sans", sans-serif; }
+        .font-body-md, .font-body-lg, .font-label-md, .font-label-sm { font-family: "Be Vietnam Pro", sans-serif; }
+        .text-label-sm { font-size: 12px; line-height: 1.2; font-weight: 600; }
+        .text-label-md { font-size: 14px; line-height: 1.4; letter-spacing: 0.01em; font-weight: 500; }
+        .text-body-md { font-size: 16px; line-height: 1.6; font-weight: 400; }
+        .text-body-lg { font-size: 18px; line-height: 1.6; font-weight: 400; }
+        .text-headline-md { font-size: 20px; line-height: 1.4; font-weight: 600; }
+        .text-headline-lg-mobile { font-size: 24px; line-height: 1.3; font-weight: 600; }
+        .text-headline-lg { font-size: 32px; line-height: 1.3; font-weight: 600; }
+        .text-display-lg { font-size: 48px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px; line-height: 1; }
+    </style>
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
-
 <!-- Top Navigation Bar -->
-<header class="bg-surface dark:bg-surface-container-lowest shadow-sm dark:shadow-none w-full sticky top-0 z-50">
+<header class="bg-surface shadow-sm sticky top-0 z-50 w-full">
     <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-        <!-- 메인 홈 -->
-        <a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed"
-           th:href="@{/}">
-            K-market
-        </a>
-
-        <!-- 상품 검색 : 검색 기능 연결 전 -->
-        <div class="hidden md:flex flex-1 max-w-md mx-md">
-            <form th:action="@{/product/search}" method="get" class="relative w-full">
-                <input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-2 pl-4 pr-10 focus:outline-none focus:border-primary transition-colors text-body-md text-on-surface"
-                       name="keyword"
-                       placeholder="Search products..."
-                       type="text">
-                <button type="submit"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
-            </form>
-        </div>
-
-        <!-- 회원 메뉴 -->
-        <div class="flex items-center gap-md">
-            <nav class="hidden md:flex gap-md">
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-                   th:href="@{/member/login}">Login</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-                   th:href="@{/member/join}">Join</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-                   th:href="@{/my/home}">My Page</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-                   th:href="@{/cart/list}">Cart</a>
-            </nav>
+        <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/}">K-market</a>
+        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
+            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">Login</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Join</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/my/home}">My Page</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cart/list}">Cart</a>
+        </nav>
+        <div class="flex items-center gap-sm text-primary">
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/list}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
+            </a>
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/home}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">person</span>
+            </a>
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/cart/list}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">shopping_cart</span>
+            </a>
         </div>
     </div>
 </header>
-
 <!-- Main Content Area -->
 <main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex flex-col md:flex-row gap-lg">
-
     <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-64 flex-shrink-0 flex flex-col gap-base">
-        <h2 class="hidden md:block font-headline-md text-headline-md text-primary font-bold px-md py-sm">고객센터</h2>
-
-        <nav class="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
-            <a th:href="@{/cs/notice/list}"
-               class="whitespace-nowrap md:whitespace-normal px-md py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all duration-200 flex items-center gap-3">
+    <aside class="w-full md:w-64 shrink-0 flex flex-col gap-base">
+        <h2 class="font-headline-md text-headline-md text-primary mb-sm px-sm">고객센터</h2>
+        <nav class="flex flex-col gap-xs">
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/notice/list}">
                 <span class="material-symbols-outlined">campaign</span>
                 공지사항
             </a>
-
-            <a th:href="@{/cs/faq/list}"
-               class="whitespace-nowrap md:whitespace-normal px-md py-3 rounded-lg font-label-md text-label-md text-primary font-bold bg-secondary-container transition-all duration-200 flex items-center gap-3">
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-primary font-bold bg-secondary-container" th:href="@{/cs/faq/list}">
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">help</span>
                 자주묻는 질문
             </a>
-
-            <a th:href="@{/cs/qna/list}"
-               class="whitespace-nowrap md:whitespace-normal px-md py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all duration-200 flex items-center gap-3">
-                <span class="material-symbols-outlined">support_agent</span>
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/qna/list}">
+                <span class="material-symbols-outlined">edit_note</span>
                 1:1 문의
             </a>
         </nav>
     </aside>
-
     <!-- Content Canvas -->
     <section class="flex-1 flex flex-col gap-lg">
-
         <!-- Breadcrumb -->
         <div class="hidden md:flex items-center gap-2 text-label-md text-on-surface-variant pb-md border-b border-surface-variant">
-            <a th:href="@{/}" class="hover:text-primary">홈</a>
+            <a class="hover:text-primary" th:href="@{/}">홈</a>
             <span class="material-symbols-outlined text-sm">chevron_right</span>
-            <a th:href="@{/cs/index}" class="hover:text-primary">고객센터</a>
+            <a class="hover:text-primary" th:href="@{/cs/index}">고객센터</a>
             <span class="material-symbols-outlined text-sm">chevron_right</span>
-            <a th:href="@{/cs/faq/list}" class="font-bold text-on-surface">자주묻는 질문</a>
+            <a class="font-bold text-on-surface" th:href="@{/cs/faq/list}">자주묻는 질문</a>
         </div>
-
         <div class="flex flex-col md:flex-row gap-lg items-start">
-
             <!-- FAQ type1 메뉴 -->
             <aside class="w-full md:w-48 flex-shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible border-b md:border-b-0 md:border-r border-surface-variant pb-2 md:pb-0 md:pr-4">
                 <h3 class="hidden md:block font-headline-md text-headline-md text-on-surface mb-sm">자주묻는 질문</h3>
-
-                <a th:href="@{/cs/faq/list(type1='회원', page=1)}"
-                   th:class="${type1 == '회원'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '회원'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='회원', page=1)}">
                     회원
                 </a>
-
-                <a th:href="@{/cs/faq/list(type1='쿠폰/이벤트', page=1)}"
-                   th:class="${type1 == '쿠폰/이벤트'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '쿠폰/이벤트'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='쿠폰/이벤트', page=1)}">
                     쿠폰/이벤트
                 </a>
-
-                <a th:href="@{/cs/faq/list(type1='주문/결제', page=1)}"
-                   th:class="${type1 == '주문/결제'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '주문/결제'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='주문/결제', page=1)}">
                     주문/결제
                 </a>
-
-                <a th:href="@{/cs/faq/list(type1='배송', page=1)}"
-                   th:class="${type1 == '배송'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '배송'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='배송', page=1)}">
                     배송
                 </a>
-
-                <a th:href="@{/cs/faq/list(type1='취소/반품/교환', page=1)}"
-                   th:class="${type1 == '취소/반품/교환'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '취소/반품/교환'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='취소/반품/교환', page=1)}">
                     취소/반품/교환
                 </a>
-
-                <a th:href="@{/cs/faq/list(type1='여행/숙박/항공', page=1)}"
-                   th:class="${type1 == '여행/숙박/항공'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '여행/숙박/항공'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='여행/숙박/항공', page=1)}">
                     여행/숙박/항공
                 </a>
-
-                <a th:href="@{/cs/faq/list(type1='안전거래', page=1)}"
-                   th:class="${type1 == '안전거래'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'">
+                <a th:class="${type1 == '안전거래'} ? 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-primary font-bold bg-surface-container transition-colors' : 'whitespace-nowrap md:whitespace-normal text-left px-3 py-2 rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors'" th:href="@{/cs/faq/list(type1='안전거래', page=1)}">
                     안전거래
                 </a>
             </aside>
-
             <!-- FAQ List Area -->
             <div class="flex-1 w-full flex flex-col gap-md">
-
                 <!-- type1 제목 -->
                 <div class="flex flex-col gap-1 pb-sm border-b-2 border-primary">
                     <div class="flex items-center gap-2">
-                        <h2 class="font-headline-md text-headline-md text-on-surface"
-                            th:text="${type1}">
+                        <h2 class="font-headline-md text-headline-md text-on-surface" th:text="${type1}">
                         </h2>
                     </div>
-
-                    <p class="text-label-sm text-on-surface-variant ml-8"
-                       th:text="${type1} + ' 관련 자주묻는 질문입니다.'">
+                    <p class="text-label-sm text-on-surface-variant ml-8" th:text="${type1} + ' 관련 자주묻는 질문입니다.'">
                     </p>
                 </div>
-
                 <!-- type2별 그룹 반복 -->
-                <div th:each="group : ${faqGroups}"
-                     class="flex flex-col gap-3 mt-4">
-
-                    <h3 class="font-headline-md text-headline-md text-on-surface"
-                        th:text="${group.key}">
+                <div class="flex flex-col gap-3 mt-4" th:each="group : ${faqGroups}">
+                    <h3 class="font-headline-md text-headline-md text-on-surface" th:text="${group.key}">
                     </h3>
-
                     <div class="border border-outline-variant rounded-lg overflow-hidden bg-surface">
-
-                        <details th:each="faq : ${group.value}"
-                                 class="group border-b border-surface-variant last:border-0">
-
+                        <details class="group border-b border-surface-variant last:border-0" th:each="faq : ${group.value}">
                             <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-container-low transition-colors list-none">
                                 <div class="flex items-start gap-3">
                                     <span class="font-bold text-primary text-lg">Q.</span>
-
-                                    <span class="font-body-md text-body-md text-on-surface mt-0.5"
-                                          th:text="${faq.title}">
-                                    </span>
+                                    <span class="font-body-md text-body-md text-on-surface mt-0.5" th:text="${faq.title}">
+</span>
                                 </div>
-
                                 <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">
                                     expand_more
                                 </span>
                             </summary>
-
                             <div class="p-4 bg-surface-container-lowest border-t border-surface-variant text-body-md text-on-surface-variant leading-relaxed">
                                 <span class="font-bold text-secondary mr-2 text-lg">A.</span>
                                 <span th:text="${faq.content}"></span>
                             </div>
-
                         </details>
                     </div>
                 </div>
-
                 <!-- 데이터 없을 때 -->
-                <div th:if="${#maps.isEmpty(faqGroups)}"
-                     class="p-4 text-center text-on-surface-variant font-body-md">
+                <div class="p-4 text-center text-on-surface-variant font-body-md" th:if="${#maps.isEmpty(faqGroups)}">
                     등록된 자주묻는 질문이 없습니다.
                 </div>
-
                 <!-- 실제 페이지네이션 -->
-                <div class="flex items-center justify-center gap-sm text-sm text-on-surface-variant mt-lg"
-                     th:if="${totalPages > 0}">
-
+                <div class="flex items-center justify-center gap-sm text-sm text-on-surface-variant mt-lg" th:if="${totalPages &gt; 0}">
                     <!-- 이전 -->
-                    <a th:if="${hasPrev}"
-                       th:href="@{/cs/faq/list(type1=${type1}, page=${prevPage})}"
-                       class="hover:text-primary">
+                    <a class="hover:text-primary" th:href="@{/cs/faq/list(type1=${type1}, page=${prevPage})}" th:if="${hasPrev}">
                         ‹ 이전
                     </a>
-
-                    <span th:if="${!hasPrev}"
-                          class="text-outline cursor-default">
+                    <span class="text-outline cursor-default" th:if="${!hasPrev}">
                         ‹ 이전
                     </span>
-
                     <!-- 페이지 번호 -->
-                    <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
-                       th:href="@{/cs/faq/list(type1=${type1}, page=${pageNum})}"
-                       th:text="${pageNum}"
-                       th:classappend="${pageNum == currentPage}
+                    <a class="w-8 h-8 flex items-center justify-center rounded-lg" th:classappend="${pageNum == currentPage}
                             ? ' bg-primary text-on-primary font-bold'
-                            : ' hover:bg-surface-container-high'"
-                       class="w-8 h-8 flex items-center justify-center rounded-lg">
+                            : ' hover:bg-surface-container-high'" th:each="pageNum : ${#numbers.sequence(startPage, endPage)}" th:href="@{/cs/faq/list(type1=${type1}, page=${pageNum})}" th:text="${pageNum}">
                     </a>
-
                     <!-- 다음 -->
-                    <a th:if="${hasNext}"
-                       th:href="@{/cs/faq/list(type1=${type1}, page=${nextPage})}"
-                       class="hover:text-primary">
+                    <a class="hover:text-primary" th:href="@{/cs/faq/list(type1=${type1}, page=${nextPage})}" th:if="${hasNext}">
                         다음 ›
                     </a>
-
-                    <span th:if="${!hasNext}"
-                          class="text-outline cursor-default">
+                    <span class="text-outline cursor-default" th:if="${!hasNext}">
                         다음 ›
                     </span>
                 </div>
-
             </div>
         </div>
     </section>
 </main>
-
 <!-- Footer -->
-<footer class="bg-surface-container-highest dark:bg-surface-container-high w-full mt-lg">
-    <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
-        <a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed"
-           th:href="@{/}">
-            K-market
-        </a>
-
-        <div class="flex flex-wrap justify-center gap-4 text-center">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary underline transition-colors duration-200"
-               th:href="@{/}">About Us</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary underline transition-colors duration-200"
-               th:href="@{/cs/index}">Customer Service</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary underline transition-colors duration-200"
-               th:href="@{/member/register}">Privacy Policy</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary underline transition-colors duration-200"
-               th:href="@{/policy/buyer}">Terms of Service</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary underline transition-colors duration-200"
-               th:href="@{/cs/faq/list}">FAQ</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary underline transition-colors duration-200"
-               th:href="@{/cs/qna/list}">Contact</a>
-        </div>
-
-        <p class="font-body-md text-body-md text-on-surface-variant mt-sm">
-            © 2024 K-market. All rights reserved.
-        </p>
+<footer class="bg-surface-container-highest w-full mt-lg">
+    <div class="max-w-container-max mx-auto px-md py-lg text-center text-on-surface-variant">
+        <h2 class="font-headline-md text-headline-md font-bold text-primary mb-sm">K-market</h2>
+        <nav class="flex flex-wrap justify-center gap-x-md gap-y-2 font-label-md text-label-md mb-md">
+            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">About Us</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">Customer Service</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">Privacy Policy</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Terms of Service</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">FAQ</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">Contact</a>
+        </nav>
+        <p class="font-label-sm text-label-sm">© 2024 K-market. All rights reserved.</p>
     </div>
 </footer>
-
+<script src="/k_market/js/auth-nav.js" th:src="@{/js/auth-nav.js}"></script>
 </body>
-
-<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
-</body></html>
+</html>

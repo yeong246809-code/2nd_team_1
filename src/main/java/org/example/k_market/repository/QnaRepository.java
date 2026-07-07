@@ -16,6 +16,10 @@ public interface QnaRepository extends JpaRepository<Qna, Integer> {
     // 문의 답변 조회
     Optional<Qna> findByParentNo(int parentNo);
 
+    // 고객센터 메인에 출력할 문의글 최신 5개 조회
+// parentNo가 0인 원글만 가져오고, 답변글은 제외한다.
+    List<Qna> findTop5ByParentNoOrderByNoDesc(int parentNo);
+
 
 
 }

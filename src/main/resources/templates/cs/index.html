@@ -167,29 +167,35 @@
                             전체보기 <span class="material-symbols-outlined text-[16px]">arrow_forward_ios</span>
 </a>
 </div>
-<ul class="flex flex-col gap-3">
-<li class="flex justify-between items-center group cursor-pointer">
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors truncate">[안내] 해외결제사 칭 문자주의</span>
-<span class="font-label-sm text-label-sm text-outline shrink-0 ml-4">22.10.31</span>
-</li>
-<li class="flex justify-between items-center group cursor-pointer">
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors truncate">[안내] 해외결제사 칭 문자주의</span>
-<span class="font-label-sm text-label-sm text-outline shrink-0 ml-4">22.10.31</span>
-</li>
-<li class="flex justify-between items-center group cursor-pointer">
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors truncate">[안내] 해외결제사 칭 문자주의</span>
-<span class="font-label-sm text-label-sm text-outline shrink-0 ml-4">22.10.31</span>
-</li>
-<li class="flex justify-between items-center group cursor-pointer">
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors truncate">[안내] 해외결제사 칭 문자주의</span>
-<span class="font-label-sm text-label-sm text-outline shrink-0 ml-4">22.10.31</span>
-</li>
-<li class="flex justify-between items-center group cursor-pointer">
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors truncate">[안내] 해외결제사 칭 문자주의</span>
-<span class="font-label-sm text-label-sm text-outline shrink-0 ml-4">22.10.31</span>
-</li>
-</ul>
+    <!-- 공지사항 최신글 5개 출력 -->
+    <ul class="flex flex-col gap-3">
+
+        <!-- NoticeService.findTop5()에서 넘어온 notices 반복 출력 -->
+        <li class="flex justify-between items-center group cursor-pointer"
+            th:each="notice : ${notices}">
+
+            <!-- 공지사항 제목 -->
+            <a class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors truncate"
+               th:href="@{/cs/notice/view/{no}(no=${notice.no})}"
+               th:text="${notice.title}">
+                공지사항 제목
+            </a>
+
+            <!-- 공지사항 작성일 -->
+            <span class="font-label-sm text-label-sm text-outline shrink-0 ml-4"
+                  th:text="${#temporals.format(notice.createdAt, 'yy.MM.dd')}">
+            24.07.07
+        </span>
+        </li>
+
+        <!-- 공지사항이 없을 때 -->
+        <li th:if="${#lists.isEmpty(notices)}"
+            class="font-body-md text-body-md text-on-surface-variant">
+            등록된 공지사항이 없습니다.
+        </li>
+    </ul>
 </section>
+
 <!-- 문의하기 (1:1 Inquiry) -->
 <section class="bg-surface-container-lowest rounded-xl shadow-[0_4px_24px_rgba(44,74,82,0.04)] p-md border border-surface-container-highest hover:shadow-[0_8px_32px_rgba(44,74,82,0.08)] transition-all duration-300">
 <div class="flex justify-between items-end border-b border-outline-variant pb-3 mb-4">
@@ -201,41 +207,61 @@
                             전체보기 <span class="material-symbols-outlined text-[16px]">arrow_forward_ios</span>
 </a>
 </div>
-<ul class="flex flex-col gap-4">
-<li class="flex justify-between items-start group cursor-pointer border-b border-surface-container pb-3 last:border-0 last:pb-0">
-<div class="flex flex-col gap-1">
-<span class="font-label-sm text-label-sm text-secondary">[회원]</span>
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">개인회원과 법인회원의 차이가 있나요?</span>
-<span class="font-label-sm text-label-sm text-outline">22.10.31</span>
-</div>
-<div class="shrink-0 ml-4 flex flex-col items-end">
-<span class="inline-block px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-[10px] font-bold mb-1">답변완료</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">chh**</span>
-</div>
-</li>
-<li class="flex justify-between items-start group cursor-pointer border-b border-surface-container pb-3 last:border-0 last:pb-0">
-<div class="flex flex-col gap-1">
-<span class="font-label-sm text-label-sm text-secondary">[쿠폰/이벤트]</span>
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">스마일포인트는 어디에 사용하나요?</span>
-<span class="font-label-sm text-label-sm text-outline">22.10.31</span>
-</div>
-<div class="shrink-0 ml-4 flex flex-col items-end">
-<span class="inline-block px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-[10px] font-bold mb-1">처리중</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">chh**</span>
-</div>
-</li>
-<li class="flex justify-between items-start group cursor-pointer border-b border-surface-container pb-3 last:border-0 last:pb-0">
-<div class="flex flex-col gap-1">
-<span class="font-label-sm text-label-sm text-secondary">[주문/결제]</span>
-<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">결제 수단을 변경하고 싶어요.</span>
-<span class="font-label-sm text-label-sm text-outline">22.10.31</span>
-</div>
-<div class="shrink-0 ml-4 flex flex-col items-end">
-<span class="inline-block px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-[10px] font-bold mb-1">답변완료</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">kim**</span>
-</div>
-</li>
-</ul>
+    <!-- 문의하기 최신글 5개 출력 -->
+    <ul class="flex flex-col gap-4">
+
+        <!-- QnaService.findTop5()에서 넘어온 qnas 반복 출력 -->
+        <li class="flex justify-between items-start group cursor-pointer border-b border-surface-container pb-3 last:border-0 last:pb-0"
+            th:each="qna : ${qnas}">
+
+            <div class="flex flex-col gap-1">
+
+                <!-- 문의 카테고리 -->
+                <span class="font-label-sm text-label-sm text-secondary"
+                      th:text="'[' + ${qna.type1} + ']'">
+                [회원]
+            </span>
+
+                <!-- 문의 제목 -->
+                <a class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors line-clamp-1"
+                   th:href="@{/cs/qna/view/{no}(no=${qna.no})}"
+                   th:text="${qna.title}">
+                    문의 제목
+                </a>
+
+                <!-- 문의 작성일 -->
+                <span class="font-label-sm text-label-sm text-outline"
+                      th:text="${#temporals.format(qna.createdAt, 'yy.MM.dd')}">
+                24.07.07
+            </span>
+            </div>
+
+            <div class="shrink-0 ml-4 flex flex-col items-end">
+
+                <!-- 답변 상태 -->
+                <span class="inline-block px-2 py-1 rounded text-[10px] font-bold mb-1"
+                      th:classappend="${qna.isAnswered == '답변완료'}
+                        ? ' bg-surface-container-high text-on-surface-variant'
+                        : ' bg-secondary-container text-on-secondary-container'"
+                      th:text="${qna.isAnswered}">
+                답변대기
+            </span>
+
+                <!-- 작성자 번호 임시 출력 -->
+                <!-- 나중에 Member 연관관계 연결하면 Users.id로 변경 가능 -->
+                <span class="font-label-sm text-label-sm text-on-surface-variant"
+                      th:text="${qna.memberNo}">
+                1
+            </span>
+            </div>
+        </li>
+
+        <!-- 문의글이 없을 때 -->
+        <li th:if="${#lists.isEmpty(qnas)}"
+            class="font-body-md text-body-md text-on-surface-variant">
+            등록된 문의글이 없습니다.
+        </li>
+    </ul>
 </section>
 </div>
 <!-- FAQ Categories Column (Right/Sidebar) -->
