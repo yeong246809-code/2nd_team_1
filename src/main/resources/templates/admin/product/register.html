@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>K-market Admin Dashboard - 상품등록</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .menu-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, padding 0.3s ease-in-out; opacity: 0; }
+        .menu-item-active .menu-content { max-height: 500px; opacity: 1; padding-top: 4px; padding-bottom: 8px; }
+        .chevron-icon { transition: transform 0.3s ease; }
+        .menu-item-active .chevron-icon { transform: rotate(180deg); }
+    </style>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config" th:replace="~{fragments/tailwind-config :: config}"></script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex">
+
+<aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface border-r border-outline-variant overflow-hidden">
+    <div class="flex items-center gap-md px-md py-lg border-b border-outline-variant">
+        <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined">storefront</span></div>
+        <div>
+            <h2 class="font-headline-md font-bold text-primary">K-market Admin</h2>
+            <p class="font-label-md text-on-surface-variant">관리자 모드</p>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
+        <div class="group/menu menu-item-active">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-primary font-bold bg-surface-container-high rounded-lg" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span><span>상품 관리</span></div>
+                <span class="material-symbols-outlined text-sm chevron-icon text-primary">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md" th:href="@{/admin/product/list}">상품목록</a>
+                <a class="py-2 text-primary font-bold font-label-md" href="#">상품등록</a>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<header class="fixed top-0 right-0 left-64 h-16 flex items-center px-md z-30 bg-surface-container-lowest border-b border-outline-variant">
+    <h1 class="font-headline-md font-black text-primary">K-market Admin Dashboard</h1>
+</header>
+
+<main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
+    <div class="mb-lg border-b border-outline-variant pb-sm">
+        <h1 class="font-headline-lg text-headline-lg text-on-background">상품등록</h1>
+    </div>
+
+    <form th:action="@{/admin/product/register}" th:object="${product}" method="post" enctype="multipart/form-data" class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md shadow-sm">
+
+        <input type="text" th:field="*{name}" />
+
+        <select th:field="*{cateNo}">
+            <option value="1">분류1</option>
+        </select>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block font-bold mb-2">상품명</label>
+                <input type="text" th:field="*{name}" class="w-full border-outline-variant rounded-lg p-2" placeholder="상품명을 입력하세요">
+            </div>
+            <div>
+                <label class="block font-bold mb-2">판매가격</label>
+                <input type="number" th:field="*{price}" class="w-full border-outline-variant rounded-lg p-2" placeholder="가격 입력">
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="block font-bold mb-2">대표 이미지 (thumb1)</label>
+            <input type="file" name="file1" class="w-full border-outline-variant rounded-lg p-2">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t border-outline-variant">
+            <a th:href="@{/admin/product/list}" class="px-6 py-2 bg-surface-variant rounded-lg">취소</a>
+            <button type="submit" class="px-6 py-2 bg-primary text-on-primary rounded-lg font-bold">등록완료</button>
+        </div>
+    </form>
+</main>
+
+<script>
+    function toggleAccordion(button) {
+        const menuItem = button.closest('.group\\/menu');
+        menuItem.classList.toggle('menu-item-active');
+    }
+</script>
+</body>
+</html>
