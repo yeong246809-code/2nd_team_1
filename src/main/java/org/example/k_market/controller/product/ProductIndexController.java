@@ -2,6 +2,9 @@ package org.example.k_market.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+// 1. 엔티티와 레포지토리 패키지를 임포트하세요 (본인 프로젝트 경로에 맞추기)
+import org.example.k_market.entity.Product;
+import org.example.k_market.repository.ProductRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +15,7 @@ import java.util.Map;
 
 @Controller
 @Log4j2
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Repository 자동 주입을 위해 필수!
 public class ProductIndexController {
 
     @GetMapping("/product/list")

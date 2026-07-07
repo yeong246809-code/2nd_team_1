@@ -1,7 +1,7 @@
-package org.example.k_market.controller;
+package org.example.k_market.controller.admin;
 
 import org.example.k_market.dto.SalesStatusDTO;
-import org.example.k_market.service.AdminShopService;
+import org.example.k_market.service.admin.AdminShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,22 +19,39 @@ public class AdminShopController {
 
     @GetMapping("/admin/shop/sales")
     public String getSalesStatus(
-            // 기본값을 'daily'(일별)로 설정하고, 요청이 들어오면 동적으로 바뀝니다.
             @RequestParam(value = "periodType", defaultValue = "daily") String periodType,
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, 10);
-
-        // 서비스 호출 시 periodType을 인자로 넘겨줍니다.
         Page<SalesStatusDTO> salesPage = adminShopService.getSalesStatusList(periodType, pageable);
 
-        // HTML 템플릿에서 쓸 변수들 담기
+        // HTML 대시보드 화면 표에 바인딩할 데이터 세팅
         model.addAttribute("salesList", salesPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", salesPage.getTotalPages());
-        model.addAttribute("currentPeriod", periodType); // 현재 선택된 옵션 유지용
+        model.addAttribute("currentPeriod", periodType);
 
-        return "admin/shop/sales"; // 본인의 html 경로에 맞게 지정
+        return "admin/shop/sales";
     }
+    // 기존 AdminShopController 클래스 내부에 추가해주세요.
+
+    @GetMapping("/admin/shop/list")
+    public String getShopList(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            Model model) {
+
+        // 한 페이지에 상점 10개씩 노출되도록 페이징 설정
+        Pageable pageable = PageRequest.of(page, 10);
+
+        // 서비스에서 상점 목록 데이터를 페이징 처리해서 가져옴 (서비스단 구현 필요)
+        // Page<ShopDTO> shopPage = adminShopService.getShopList(pageable);
+
+        // model.addAttribute("shopList", shopPage.getContent());
+        // model.addAttribute("currentPage", page);
+        // model.addAttribute("totalPages", shopPage.getTotalPages());
+
+        return "admin/shop/list"; // 호출할 HTML 파일명 (admin/shop/list.html)
+    }
+
 }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>K-market Admin - 상품수정</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Be+Vietnam+Pro&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = { theme: { extend: { "colors": { "primary": "#14333b", "background": "#f8f9fa", "outline-variant": "#c1c7ca" } } } }
+  </script>
+</head>
+<body class="bg-[#f8f9fa] p-lg font-sans antialiased p-8">
+<div class="max-w-2xl mx-auto bg-white rounded-lg border border-outline-variant p-6 shadow-sm mt-10">
+  <h1 class="text-2xl font-bold text-primary mb-6 border-b pb-3">상품 정보 수정</h1>
+
+  <form th:action="@{/admin/product/modify}" th:object="${product}" method="post" enctype="multipart/form-data" class="space-y-4">
+
+    <input type="hidden" th:field="*{prodNo}"/>
+    <input type="hidden" th:field="*{createdAt}"/>
+    <input type="hidden" th:field="*{viewCount}"/>
+    <input type="hidden" th:field="*{salesCount}"/>
+    <input type="hidden" th:field="*{rating}"/>
+
+    <input type="hidden" th:field="*{cateNo}"/>
+    <input type="hidden" th:field="*{shopNo}"/>
+
+    <input type="hidden" th:field="*{bizType}"/>
+    <input type="hidden" th:field="*{status}"/>
+    <input type="hidden" th:field="*{taxFreeYn}"/>
+    <input type="hidden" th:field="*{receiptYn}"/>
+    <input type="hidden" th:field="*{origin}"/>
+    <input type="hidden" th:field="*{detailContent}"/>
+
+    <input type="hidden" th:field="*{thumb1}"/>
+    <input type="hidden" th:field="*{thumb2}"/>
+    <input type="hidden" th:field="*{thumb3}"/>
+
+    <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">상품 이미지 (대표 이미지)</label>
+      <input type="file" name="file1" class="w-full border p-2 rounded-lg"/>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">상품 코드</label>
+      <input type="text" th:value="*{prodNo}" disabled class="w-full bg-gray-50 border-gray-300 text-gray-500 rounded-lg p-2 cursor-not-allowed"/>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">상품명</label>
+      <input type="text" th:field="*{name}" required class="w-full border-gray-300 rounded-lg p-2 focus:ring-primary focus:border-primary"/>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">판매가격 (원)</label>
+        <input type="number" th:field="*{price}" required class="w-full border-gray-300 rounded-lg p-2"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">할인율 (%)</label>
+        <input type="number" th:field="*{discountRate}" min="0" max="100" class="w-full border-gray-300 rounded-lg p-2"/>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">재고수량</label>
+        <input type="number" th:field="*{stockQuantity}" required class="w-full border-gray-300 rounded-lg p-2"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">제조사 / 판매자</label>
+        <input type="text" th:field="*{manufacturer}" required class="w-full border-gray-300 rounded-lg p-2"/>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">포인트 적립액</label>
+        <input type="number" th:field="*{rewardPoints}" class="w-full border-gray-300 rounded-lg p-2"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">배송비</label>
+        <input type="number" th:field="*{shippingFee}" class="w-full border-gray-300 rounded-lg p-2"/>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">간단 설명</label>
+      <input type="text" th:field="*{description}" class="w-full border-gray-300 rounded-lg p-2"/>
+    </div>
+    <div class="flex justify-end gap-2 pt-4 border-t">
+      <a th:href="@{/admin/product/list}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">취소</a>
+      <button type="submit" class="bg-primary text-white px-5 py-2 rounded-lg hover:opacity-90">수정완료</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

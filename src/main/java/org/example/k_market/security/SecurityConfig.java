@@ -41,6 +41,7 @@ public class SecurityConfig {
                         "/member/session", "/member/check-id", "/member/email/send", "/member/email/verify",
                         "/member/register", "/member/registerseller",
                         "/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/member/login", "/resources/**", "/css/**", "/js/**", "/images/**","/uploads/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );

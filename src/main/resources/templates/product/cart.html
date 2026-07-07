@@ -1,66 +1,67 @@
 <!DOCTYPE html>
-
-<html lang="ko"><head>
+<html class="light" lang="ko">
+<head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>장바구니 - L-Market</title>
+    <title>장바구니 - K-Market</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "surface-container-high": "#e7e8e9",
-                        "on-tertiary-fixed-variant": "#5f402b",
-                        "primary-fixed": "#c8e8f2",
-                        "primary-fixed-dim": "#acccd5",
-                        "surface-dim": "#d9dadb",
-                        "on-surface": "#191c1d",
-                        "on-background": "#191c1d",
-                        "inverse-on-surface": "#f0f1f2",
-                        "on-tertiary-fixed": "#2d1605",
-                        "outline": "#72787a",
-                        "tertiary-fixed-dim": "#eabda2",
-                        "tertiary-fixed": "#ffdcc7",
-                        "secondary-container": "#c0ecdc",
-                        "on-surface-variant": "#41484a",
                         "surface-container": "#edeeef",
-                        "on-primary-fixed-variant": "#2d4b53",
-                        "tertiary": "#452916",
-                        "primary-container": "#2c4a52",
-                        "error": "#ba1a1a",
-                        "surface": "#f8f9fa",
-                        "surface-container-low": "#f3f4f5",
-                        "on-secondary": "#ffffff",
-                        "primary": "#14333b",
-                        "on-error-container": "#93000a",
-                        "on-error": "#ffffff",
-                        "tertiary-container": "#5e3f2a",
-                        "on-secondary-fixed-variant": "#264e42",
-                        "inverse-surface": "#2e3132",
-                        "on-primary-fixed": "#001f26",
-                        "surface-variant": "#e1e3e4",
-                        "on-primary-container": "#99b9c2",
-                        "secondary": "#3e6659",
-                        "surface-container-highest": "#e1e3e4",
-                        "on-tertiary": "#ffffff",
-                        "background": "#f8f9fa",
-                        "on-secondary-fixed": "#002018",
-                        "secondary-fixed-dim": "#a5d0c0",
-                        "outline-variant": "#c1c7ca",
-                        "surface-tint": "#45636b",
-                        "on-tertiary-container": "#d6ab90",
-                        "inverse-primary": "#acccd5",
-                        "secondary-fixed": "#c0ecdc",
-                        "error-container": "#ffdad6",
                         "surface-container-lowest": "#ffffff",
+                        "primary": "#14333b",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-container": "#99b9c2",
+                        "on-secondary-fixed": "#002018",
+                        "background": "#f8f9fa",
+                        "primary-fixed-dim": "#acccd5",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-surface-variant": "#41484a",
+                        "tertiary-fixed": "#ffdcc7",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-variant": "#e1e3e4",
                         "on-secondary-container": "#446c5f",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191c1d",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-container": "#c0ecdc",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary-container": "#5e3f2a",
+                        "on-error": "#ffffff",
+                        "on-background": "#191c1d",
+                        "primary-fixed": "#c8e8f2",
+                        "error": "#ba1a1a",
+                        "tertiary": "#452916",
+                        "surface": "#f8f9fa",
+                        "surface-tint": "#45636b",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#3e6659",
+                        "primary-container": "#2c4a52",
+                        "inverse-primary": "#acccd5",
+                        "outline-variant": "#c1c7ca",
                         "on-primary": "#ffffff",
-                        "surface-bright": "#f8f9fa"
+                        "secondary-fixed": "#c0ecdc",
+                        "inverse-surface": "#2e3132",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-primary-fixed": "#001f26",
+                        "outline": "#72787a",
+                        "inverse-on-surface": "#f0f1f2"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -69,72 +70,94 @@
                         "full": "9999px"
                     },
                     "spacing": {
-                        "xs": "4px",
-                        "container-max": "1280px",
-                        "xl": "80px",
-                        "sm": "12px",
                         "md": "24px",
+                        "container-max": "1280px",
                         "base": "8px",
+                        "xs": "4px",
+                        "xl": "80px",
                         "margin-mobile": "16px",
                         "lg": "48px",
+                        "sm": "12px",
                         "gutter": "24px"
                     },
                     "fontFamily": {
-                        "label-md": ["Be Vietnam Pro"],
                         "headline-lg": ["Plus Jakarta Sans"],
-                        "label-sm": ["Be Vietnam Pro"],
-                        "display-lg": ["Plus Jakarta Sans"],
-                        "body-lg": ["Be Vietnam Pro"],
                         "body-md": ["Be Vietnam Pro"],
-                        "headline-md": ["Plus Jakarta Sans"]
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"]
                     },
                     "fontSize": {
-                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
                         "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
-                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
-                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
                         "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}]
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
                     }
-                }
-            }
+                },
+            },
         }
     </script>
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
             vertical-align: middle;
+        }
+        .standard-border {
+            border: 1px solid #e1e3e4;
+        }
+        .placeholder-image {
+            background-color: #f3f4f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #72787a;
         }
     </style>
 </head>
-<body class="bg-surface text-on-surface font-body-md text-body-md">
-<!-- Header -->
-<header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
-    <div class="max-w-container-max mx-auto px-gutter py-sm flex flex-col gap-base">
-        <!-- Top Utility Row -->
-        <div class="flex justify-end items-center gap-md text-on-surface-variant font-label-md text-label-md">
-            <a class="hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">마이페이지</a>
-            <a class="flex items-center gap-xs text-primary font-bold" th:href="@{/product/cart}" href="/product/cart">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
-                장바구니
-            </a>
-        </div>
-        <!-- Main Header Row -->
-        <div class="flex items-center justify-between gap-lg">
-            <div class="font-display-lg text-headline-lg font-bold text-primary">L-Market</div>
-            <!-- Search Bar -->
-            <div class="flex-1 max-w-2xl relative">
-                <input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-sm px-md focus:ring-2 focus:ring-primary focus:outline-none transition-all" placeholder="상품을 검색하세요" type="text"/>
-                <button class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary">
-                    <span class="material-symbols-outlined">search</span>
+<body class="bg-surface font-body-md text-on-surface">
+
+<header class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
+        <div class="flex justify-between items-center gap-md">
+            <div class="flex items-center gap-2">
+                <div class="logo-area w-8 h-8 placeholder-image rounded">
+                    <span class="material-symbols-outlined text-sm">storefront</span>
+                </div>
+                <a class="text-3xl font-extrabold text-primary shrink-0" href="#">K-market</a>
+            </div>
+            <div class="hidden md:flex flex-1 max-w-lg relative">
+                <input class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" placeholder="어떤 상품을 찾으시나요?" type="text"/>
+                <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded">
+                    <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
                 </button>
             </div>
             <div class="flex items-center gap-md">
-                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary">favorite</button>
-                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary">person</button>
+                <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
+                    <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
+                    <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
+                    <a class="hover:text-primary transition-colors" th:href="@{/my/index}">마이페이지</a>
+                    <a class="flex items-center gap-xs text-primary font-bold" th:href="@{/product/cart}">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+                        장바구니
+                    </a>
+                </div>
+                <div class="flex items-center gap-base">
+                    <button class="p-2 border border-outline-variant rounded relative">
+                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
+                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
+                    </button>
+                    <button class="md:hidden p-2 border border-outline-variant rounded">
+                        <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+                    </button>
+                </div>
             </div>
         </div>
         <!-- Global Navigation -->
@@ -147,232 +170,277 @@
         </nav>
     </div>
 </header>
-<main class="max-w-container-max mx-auto px-gutter py-lg flex gap-lg">
-    <!-- Sidebar -->
-    <aside class="w-64 shrink-0 flex flex-col gap-md">
-        <div class="bg-surface-container-low p-md rounded-lg shadow-sm flex flex-col gap-sm">
-            <div class="pb-sm border-b border-outline-variant">
-                <h2 class="font-headline-md text-headline-md font-bold text-primary">Categories</h2>
-                <p class="text-on-surface-variant text-label-sm font-label-sm">Shop by Department</p>
+
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
+    <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
+        <a class="text-on-surface-variant hover:text-primary py-1" href="#">오늘의 특가</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" href="#">추천 상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" href="#">신상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" href="#">베스트</a>
+        <a class="text-error font-semibold py-1" href="#">세일</a>
+    </nav>
+
+    <div class="flex flex-col md:flex-row gap-lg items-start">
+        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg">
+            <div class="bg-white standard-border rounded p-md">
+                <h2 class="font-bold text-lg mb-sm">카테고리</h2>
+                <nav class="flex flex-col gap-1" id="category-menu">
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="checkroom">checkroom</span>
+                        <span class="text-on-surface font-medium">패션/의류</span>
+                    </a>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="laptop_chromebook">laptop_chromebook</span>
+                        <span class="text-on-surface font-medium">가전/디지털</span>
+                    </a>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="local_grocery_store">local_grocery_store</span>
+                        <span class="text-on-surface font-medium">식품/생필품</span>
+                    </a>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="home">home</span>
+                        <span class="text-on-surface font-medium">홈/문구/취미</span>
+                    </a>
+                </nav>
             </div>
-            <nav class="flex flex-col gap-xs">
-                <a class="flex items-center gap-base p-sm text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-md" th:href="@{/product/list}" href="/product/list">
-                    <span class="material-symbols-outlined">apparel</span>
-                    <span class="font-label-md text-label-md">Fashion / Beauty</span>
-                </a>
-                <a class="flex items-center gap-base p-sm text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-md" th:href="@{/product/list}" href="/product/list">
-                    <span class="material-symbols-outlined">devices</span>
-                    <span class="font-label-md text-label-md">Appliance / Digital</span>
-                </a>
-                <a class="flex items-center gap-base p-sm text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-md" th:href="@{/product/list}" href="/product/list">
-                    <span class="material-symbols-outlined">restaurant</span>
-                    <span class="font-label-md text-label-md">Food / Essentials</span>
-                </a>
-                <a class="flex items-center gap-base p-sm text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 transition-all rounded-md" th:href="@{/product/list}" href="/product/list">
-                    <span class="material-symbols-outlined">home_work</span>
-                    <span class="font-label-md text-label-md">Home / Office</span>
-                </a>
-            </nav>
-        </div>
-        <!-- Best Product Mini-List (Contextual Sidebar) -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md">
-            <h3 class="font-label-md text-label-md font-bold mb-md">Best Items</h3>
-            <div class="space-y-md">
-                <div class="flex gap-sm items-center">
-                    <div class="w-16 h-16 bg-surface-container-high rounded-md flex items-center justify-center">
-                        <span class="material-symbols-outlined text-outline">image</span>
+            <div class="hidden md:block">
+                <h3 class="font-bold text-lg mb-sm">인기 순위</h3>
+                <div class="flex flex-col gap-sm" id="ranking-list">
+                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
+                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
+                            <span class="material-symbols-outlined text-xl">image</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold truncate">레드 스포츠 슈즈</p>
+                            <p class="text-primary font-bold text-xs">27,000 KRW</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-label-sm font-label-sm truncate w-24">프리미엄 셔츠</p>
-                        <p class="text-primary font-bold">27,000원</p>
+                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
+                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
+                            <span class="material-symbols-outlined text-xl">image</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold truncate">모던 스마트워치</p>
+                            <p class="text-primary font-bold text-xs">89,000 KRW</p>
+                        </div>
                     </div>
                 </div>
-                <div class="flex gap-sm items-center">
-                    <div class="w-16 h-16 bg-surface-container-high rounded-md flex items-center justify-center">
-                        <span class="material-symbols-outlined text-outline">image</span>
-                    </div>
-                    <div>
-                        <p class="text-label-sm font-label-sm truncate w-24">무선 마우스</p>
-                        <p class="text-primary font-bold">45,000원</p>
-                    </div>
+            </div>
+        </aside>
+
+        <section class="flex-1 flex flex-col gap-md w-full">
+            <div class="flex justify-between items-end border-b border-outline-variant pb-2">
+                <div>
+                    <h2 class="text-2xl font-bold text-primary">장바구니</h2>
+                </div>
+                <nav class="text-xs text-on-surface-variant flex items-center gap-1">
+                    <span>HOME</span> &gt; <span>패션/의류</span> &gt; <span class="font-bold text-primary">장바구니</span>
+                </nav>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm standard-border overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+                    <tr>
+                        <th class="px-md py-sm w-12 text-center">
+                            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+                        </th>
+                        <th class="px-md py-sm">상품명</th>
+                        <th class="px-md py-sm text-center">수량</th>
+                        <th class="px-md py-sm text-right">판매가</th>
+                        <th class="px-md py-sm text-center">할인</th>
+                        <th class="px-md py-sm text-center">포인트</th>
+                        <th class="px-md py-sm text-center">배송비</th>
+                        <th class="px-md py-sm text-right">소계</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <tr class="hover:bg-surface-container-low/30 transition-colors">
+                        <td class="px-md py-md text-center align-middle">
+                            <input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+                        </td>
+                        <td class="px-md py-md">
+                            <div class="flex items-center gap-md">
+                                <div class="w-20 h-20 placeholder-image rounded-lg shrink-0">
+                                    <span class="material-symbols-outlined text-3xl">image</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-on-surface truncate max-w-xs">프리미엄 린넨 셔츠 (화이트/L)</h4>
+                                    <p class="text-on-surface-variant text-label-sm font-label-sm">통기성이 뛰어난 고급 린넨 소재</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-md py-md text-center">
+                            <div class="inline-flex items-center border border-outline-variant rounded-md overflow-hidden bg-white">
+                                <button class="px-xs py-xs hover:bg-surface-container"><span class="material-symbols-outlined text-sm">remove</span></button>
+                                <span class="px-sm font-label-md text-label-md">1</span>
+                                <button class="px-xs py-xs hover:bg-surface-container"><span class="material-symbols-outlined text-sm">add</span></button>
+                            </div>
+                        </td>
+                        <td class="px-md py-md text-right font-bold">27,000</td>
+                        <td class="px-md py-md text-center text-error font-bold">5%</td>
+                        <td class="px-md py-md text-center">270p</td>
+                        <td class="px-md py-md text-center text-on-surface-variant">무료배송</td>
+                        <td class="px-md py-md text-right font-bold text-primary">25,650</td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/30 transition-colors">
+                        <td class="px-md py-md text-center align-middle">
+                            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+                        </td>
+                        <td class="px-md py-md">
+                            <div class="flex items-center gap-md">
+                                <div class="w-20 h-20 placeholder-image rounded-lg shrink-0">
+                                    <span class="material-symbols-outlined text-3xl">image</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-on-surface truncate max-w-xs">스마트 베이직 티셔츠</h4>
+                                    <p class="text-on-surface-variant text-label-sm font-label-sm">데일리 아이템으로 추천하는 기본 티</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-md py-md text-center">
+                            <div class="inline-flex items-center border border-outline-variant rounded-md overflow-hidden bg-white">
+                                <button class="px-xs py-xs hover:bg-surface-container"><span class="material-symbols-outlined text-sm">remove</span></button>
+                                <span class="px-sm font-label-md text-label-md">2</span>
+                                <button class="px-xs py-xs hover:bg-surface-container"><span class="material-symbols-outlined text-sm">add</span></button>
+                            </div>
+                        </td>
+                        <td class="px-md py-md text-right font-bold">15,000</td>
+                        <td class="px-md py-md text-center text-on-surface-variant">-</td>
+                        <td class="px-md py-md text-center">300p</td>
+                        <td class="px-md py-md text-center text-on-surface-variant">2,500</td>
+                        <td class="px-md py-md text-right font-bold text-primary">32,500</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex gap-sm">
+                    <button class="bg-white border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container transition-colors font-label-md text-label-md text-on-surface">선택삭제</button>
+                    <button class="bg-white border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container transition-colors font-label-md text-label-md text-on-surface">품절상품삭제</button>
+                </div>
+                <div class="text-on-surface-variant text-label-sm font-label-sm">
+                    선택된 상품 <span class="text-primary font-bold">1</span>개 / 총 <span class="text-primary font-bold">2</span>개
                 </div>
             </div>
-        </div>
-    </aside>
-    <!-- Cart Content -->
-    <section class="flex-1 flex flex-col gap-lg">
-        <!-- Breadcrumbs -->
-        <nav class="flex items-center gap-xs text-on-surface-variant text-label-sm font-label-sm">
-            <span>HOME</span>
-            <span class="material-symbols-outlined text-sm">chevron_right</span>
-            <span>패션 · 의류 · 뷰티</span>
-            <span class="material-symbols-outlined text-sm">chevron_right</span>
-            <span class="text-primary font-bold">장바구니</span>
-        </nav>
-        <div class="flex items-end justify-between border-b-2 border-primary pb-sm">
-            <h1 class="font-headline-lg text-headline-lg text-primary">장바구니</h1>
-        </div>
-        <!-- Cart Table -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
-                <tr>
-                    <th class="px-md py-sm w-12 text-center">
-                        <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
-                    </th>
-                    <th class="px-md py-sm">상품명</th>
-                    <th class="px-md py-sm text-center">수량</th>
-                    <th class="px-md py-sm text-right">판매가</th>
-                    <th class="px-md py-sm text-center">할인</th>
-                    <th class="px-md py-sm text-center">포인트</th>
-                    <th class="px-md py-sm text-center">배송비</th>
-                    <th class="px-md py-sm text-right">소계</th>
-                </tr>
-                </thead>
-                <tbody class="divide-y divide-outline-variant">
-                <!-- Product Row 1 -->
-                <tr class="hover:bg-surface-container-lowest transition-colors">
-                    <td class="px-md py-md text-center align-middle">
-                        <input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
-                    </td>
-                    <td class="px-md py-md">
-                        <div class="flex items-center gap-md">
-                            <div class="w-20 h-20 bg-surface-container-high rounded-lg flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-outline text-3xl">image</span>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-on-surface truncate max-w-xs">프리미엄 린넨 셔츠 (화이트/L)</h4>
-                                <p class="text-on-surface-variant text-label-sm font-label-sm">통기성이 뛰어난 고급 린넨 소재</p>
-                            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-4">
+                <div class="md:col-span-2 space-y-md">
+                    <div class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
+                        <div class="flex items-center gap-sm text-primary font-bold mb-xs">
+                            <span class="material-symbols-outlined">info</span>
+                            안내사항
                         </div>
-                    </td>
-                    <td class="px-md py-md text-center">
-                        <div class="inline-flex items-center border border-outline-variant rounded-md overflow-hidden">
-                            <button class="px-xs py-xs hover:bg-surface-container-high"><span class="material-symbols-outlined text-sm">remove</span></button>
-                            <span class="px-sm font-label-md text-label-md">1</span>
-                            <button class="px-xs py-xs hover:bg-surface-container-high"><span class="material-symbols-outlined text-sm">add</span></button>
-                        </div>
-                    </td>
-                    <td class="px-md py-md text-right font-bold">27,000</td>
-                    <td class="px-md py-md text-center text-error font-bold">5%</td>
-                    <td class="px-md py-md text-center">270p</td>
-                    <td class="px-md py-md text-center text-on-surface-variant">무료배송</td>
-                    <td class="px-md py-md text-right font-bold text-primary">25,650</td>
-                </tr>
-                <!-- Product Row 2 -->
-                <tr class="hover:bg-surface-container-lowest transition-colors">
-                    <td class="px-md py-md text-center align-middle">
-                        <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
-                    </td>
-                    <td class="px-md py-md">
-                        <div class="flex items-center gap-md">
-                            <div class="w-20 h-20 bg-surface-container-high rounded-lg flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-outline text-3xl">image</span>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-on-surface truncate max-w-xs">스마트 베이직 티셔츠</h4>
-                                <p class="text-on-surface-variant text-label-sm font-label-sm">데일리 아이템으로 추천하는 기본 티</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-md py-md text-center">
-                        <div class="inline-flex items-center border border-outline-variant rounded-md overflow-hidden">
-                            <button class="px-xs py-xs hover:bg-surface-container-high"><span class="material-symbols-outlined text-sm">remove</span></button>
-                            <span class="px-sm font-label-md text-label-md">2</span>
-                            <button class="px-xs py-xs hover:bg-surface-container-high"><span class="material-symbols-outlined text-sm">add</span></button>
-                        </div>
-                    </td>
-                    <td class="px-md py-md text-right font-bold">15,000</td>
-                    <td class="px-md py-md text-center text-on-surface-variant">-</td>
-                    <td class="px-md py-md text-center">300p</td>
-                    <td class="px-md py-md text-center text-on-surface-variant">2,500</td>
-                    <td class="px-md py-md text-right font-bold text-primary">32,500</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- Bulk Actions -->
-        <div class="flex items-center justify-between">
-            <div class="flex gap-sm">
-                <button class="bg-surface-container-lowest border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-md text-label-md text-on-surface">선택삭제</button>
-                <button class="bg-surface-container-lowest border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-md text-label-md text-on-surface">품절상품삭제</button>
-            </div>
-            <div class="text-on-surface-variant text-label-sm font-label-sm">
-                선택된 상품 <span class="text-primary font-bold">1</span>개 / 총 <span class="text-primary font-bold">2</span>개
-            </div>
-        </div>
-        <!-- Order Summary & Payment Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-            <div class="md:col-span-2 space-y-md">
-                <div class="bg-primary-container/10 p-md rounded-xl border border-primary-container/20">
-                    <div class="flex items-center gap-sm text-primary font-bold mb-xs">
-                        <span class="material-symbols-outlined">info</span>
-                        안내사항
-                    </div>
-                    <ul class="list-disc list-inside text-on-surface-variant text-label-sm font-label-sm space-y-xs opacity-80">
-                        <li>배송비는 판매자 설정 및 합배송 여부에 따라 달라질 수 있습니다.</li>
-                        <li>포인트는 최종 주문 금액의 1%가 적립될 예정입니다.</li>
-                        <li>장바구니 보관 기간은 최대 30일입니다.</li>
-                    </ul>
-                </div>
-            </div>
-            <!-- Order Summary Sidebar -->
-            <div class="bg-surface-container-lowest rounded-xl shadow-lg border border-primary p-md h-fit">
-                <h3 class="font-headline-md text-headline-md font-bold text-primary border-b border-outline-variant pb-md mb-md">전체합계</h3>
-                <div class="space-y-sm text-body-md font-body-md text-on-surface">
-                    <div class="flex justify-between">
-                        <span class="text-on-surface-variant">상품수</span>
-                        <span>1</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-on-surface-variant">상품금액</span>
-                        <span>27,000원</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-on-surface-variant">할인금액</span>
-                        <span class="text-error">-1,350원</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-on-surface-variant">배송비</span>
-                        <span>0원</span>
-                    </div>
-                    <div class="pt-md mt-md border-t-2 border-outline-variant flex justify-between items-end">
-                        <span class="font-bold text-primary">전체주문금액</span>
-                        <span class="text-3xl font-bold text-primary">25,650원</span>
-                    </div>
-                    <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant pt-xs">
-                        <span>적립 포인트</span>
-                        <span>270p</span>
+                        <ul class="list-disc list-inside text-on-surface-variant text-label-sm font-label-sm space-y-xs opacity-80">
+                            <li>배송비는 판매자 설정 및 합배송 여부에 따라 달라질 수 있습니다.</li>
+                            <li>포인트는 최종 주문 금액의 1%가 적립될 예정입니다.</li>
+                            <li>장바구니 보관 기간은 최대 30일입니다.</li>
+                        </ul>
                     </div>
                 </div>
-                <button class="w-full mt-lg bg-primary text-on-primary py-md rounded-xl font-headline-md text-headline-md font-bold hover:opacity-90 active:scale-[0.98] transition-all shadow-md">
-                    주문하기
-                </button>
+                <div class="bg-white rounded-xl shadow-lg border border-primary p-md h-fit">
+                    <h3 class="font-headline-md text-headline-md font-bold text-primary border-b border-outline-variant pb-md mb-md">전체합계</h3>
+                    <div class="space-y-sm text-body-md font-body-md text-on-surface">
+                        <div class="flex justify-between">
+                            <span class="text-on-surface-variant">상품수</span>
+                            <span>1</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-on-surface-variant">상품금액</span>
+                            <span>27,000원</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-on-surface-variant">할인금액</span>
+                            <span class="text-error">-1,350원</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-on-surface-variant">배송비</span>
+                            <span>0원</span>
+                        </div>
+                        <div class="pt-md mt-md border-t-2 border-outline-variant flex justify-between items-end">
+                            <span class="font-bold text-primary">전체주문금액</span>
+                            <span class="text-3xl font-bold text-primary">25,650원</span>
+                        </div>
+                        <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant pt-xs">
+                            <span>적립 포인트</span>
+                            <span>270p</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-lg bg-primary text-on-primary py-md rounded-xl font-headline-md text-headline-md font-bold hover:opacity-90 active:scale-[0.98] transition-all shadow-md">
+                        주문하기
+                    </button>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </main>
-<!-- Footer -->
-<footer class="bg-surface-container-highest border-t border-outline-variant">
-    <div class="max-w-container-max mx-auto py-lg px-gutter">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
-            <div class="space-y-sm">
-                <div class="font-headline-md text-on-surface font-bold">L-Market</div>
-                <p class="text-on-surface-variant text-body-md font-body-md">품격 있는 쇼핑의 시작, L-Market과 함께하세요.</p>
-                <div class="flex gap-md text-label-sm font-label-sm text-on-surface-variant">
-                    <a class="hover:underline" th:href="@{/company/main}" href="/company/main">About Us</a>
-                    <a class="hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
-                    <a class="hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
-                    <a class="hover:underline" th:href="@{/cs/index}" href="/cs/index">Customer Center</a>
+
+<footer class="bg-white border-t border-outline-variant mt-xl py-lg">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+        <div class="flex flex-wrap gap-md text-sm font-medium text-on-surface-variant mb-8 border-b border-surface-container pb-4">
+            <a class="hover:text-primary" th:href="@{/company/main}">회사소개</a>
+            <span class="text-outline-variant">|</span>
+            <a class="hover:text-primary" th:href="@{/policy/buyer}">서비스이용약관</a>
+            <span class="text-outline-variant">|</span>
+            <a class="hover:text-primary font-bold text-on-surface" th:href="@{/policy/buyer}">개인정보처리방침</a>
+            <span class="text-outline-variant">|</span>
+            <a class="hover:text-primary" th:href="@{/policy/buyer}">전자금융거래약관</a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+            <div class="flex flex-col md:flex-row gap-md items-start">
+                <div class="footer-logo w-24 h-24 placeholder-image flex items-center justify-center rounded shrink-0">
+                    <span class="material-symbols-outlined text-4xl">storefront</span>
+                </div>
+                <div class="text-sm text-on-surface-variant space-y-1">
+                    <h2 class="text-xl font-bold text-primary mb-2">(주)케이마켓</h2>
+                    <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
+                    <p>대표이사 : 홍길동</p>
+                    <p>사업자등록번호 : 123-45-12345</p>
+                    <p class="mt-4 text-[10px] text-outline">Copyright © 2025 김철학 All rights reserved.</p>
                 </div>
             </div>
-            <div class="text-right text-on-surface-variant space-y-xs">
-                <p class="text-label-sm font-label-sm">고객센터 1588-0000 | 평일 09:00 ~ 18:00</p>
-                <p class="text-label-sm font-label-sm">Copyright © 2025 L-Market All rights reserved.</p>
+            <div class="flex flex-col gap-2">
+                <h3 class="font-bold text-lg text-primary">고객센터</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md text-sm text-on-surface-variant">
+                    <div>
+                        <p class="font-bold text-on-surface">Tel : 1234-5678</p>
+                        <p>평일 09:00 ~ 18:00</p>
+                        <p>점심 12:00 ~ 13:00</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-on-surface">전자금융거래 분쟁 담당</p>
+                        <p>1234-1234 (365일 09:00 ~ 18:00)</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-4">
+                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" href="#"><span class="material-symbols-outlined text-sm">share</span></a>
+                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" href="#"><span class="material-symbols-outlined text-sm">mail</span></a>
+                </div>
             </div>
         </div>
     </div>
 </footer>
+
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-outline-variant flex justify-around py-3 z-50">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[10px]">홈</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span class="text-[10px]">메뉴</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+        <span class="material-symbols-outlined">search</span>
+        <span class="text-[10px]">검색</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+        <span class="material-symbols-outlined">person</span>
+        <span class="text-[10px]">마이페이지</span>
+    </a>
+</nav>
+
 <script>
     // Simple Interaction: Checkbox logic
     const selectAll = document.querySelector('thead input[type="checkbox"]');
@@ -381,6 +449,17 @@
     if(selectAll) {
         selectAll.addEventListener('change', (e) => {
             itemCheckboxes.forEach(cb => cb.checked = e.target.checked);
+        });
+    }
+
+    // Focus search interaction (From list.html)
+    const searchInput = document.querySelector('input[type="text"]');
+    if(searchInput) {
+        searchInput.addEventListener('focus', () => {
+            searchInput.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.classList.remove('ring-2', 'ring-primary/20');
         });
     }
 </script>

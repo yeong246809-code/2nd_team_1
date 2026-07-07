@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderDTO {
 
-    private long orderNo;
+    private int orderNo; // 엔티티와 동일하게 long -> int로 변경!
     private int memberNo;
     private String paymentMethod;
     private int totalProductPrice;
@@ -24,10 +24,15 @@ public class OrderDTO {
 
     public Order toEntity(){
         return Order.builder()
-                .orderNo(orderNo).memberNo(memberNo).paymentMethod(paymentMethod)
-                .totalProductPrice(totalProductPrice).totalDiscountPrice(totalDiscountPrice)
-                .totalShippingFee(totalShippingFee).usedPoints(usedPoints)
-                .totalPaymentPrice(totalPaymentPrice).createdAt(createdAt)
+                .orderNo(orderNo)
+                .memberNo(memberNo)
+                .paymentMethod(paymentMethod)
+                .totalProductPrice(totalProductPrice)
+                .totalDiscountPrice(totalDiscountPrice)
+                .totalShippingFee(totalShippingFee)
+                .usedPoints(usedPoints)
+                .totalPaymentPrice(totalPaymentPrice)
+                .createdAt(createdAt)
                 .build();
     }
 }
