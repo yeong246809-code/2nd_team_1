@@ -174,7 +174,7 @@
 <header class="bg-surface dark:bg-surface-container-lowest shadow-sm dark:shadow-none w-full sticky top-0 z-50">
 <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
 <!-- Brand Logo -->
-<a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed" href="#">K-market</a>
+<a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed" th:href="@{/}" href="/">K-market</a>
 <!-- Search Bar (Centered visually for better layout, though JSON says left) -->
 <div class="hidden md:flex flex-1 max-w-md mx-md">
 <div class="relative w-full">
@@ -187,10 +187,10 @@
 <!-- Navigation Links & Icons -->
 <div class="flex items-center gap-md">
 <nav class="hidden md:flex gap-md">
-<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" href="#">Login</a>
-<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" href="#">Join</a>
-<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" href="#">My Page</a>
-<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" href="#">Cart</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" th:href="@{/member/login}" href="/member/login">Login</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" th:href="@{/member/join}" href="/member/join">Join</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" th:href="@{/my/index}" href="/my/index">My Page</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 ease-in-out" th:href="@{/product/cart}" href="/product/cart">Cart</a>
 </nav>
 <div class="flex gap-sm">
 <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
@@ -384,12 +384,12 @@
 <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
 <div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">K-market</div>
 <div class="flex flex-wrap justify-center gap-4 text-center">
-<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">About Us</a>
-<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Customer Service</a>
-<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Privacy Policy</a>
-<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Terms of Service</a>
-<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">FAQ</a>
-<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Contact</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/company/main}" href="/company/main">About Us</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
 </div>
 <p class="font-body-md text-body-md text-on-surface-variant dark:text-outline-variant mt-sm">© 2024 K-market. All rights reserved.</p>
 </div>

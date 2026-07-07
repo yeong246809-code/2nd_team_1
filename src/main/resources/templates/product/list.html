@@ -134,7 +134,7 @@
                 <div class="logo-area w-8 h-8 placeholder-image rounded">
                     <span class="material-symbols-outlined text-sm">storefront</span>
                 </div>
-                <a class="text-3xl font-extrabold text-primary shrink-0" href="#">K-market</a>
+                <a class="text-3xl font-extrabold text-primary shrink-0" th:href="@{/}" href="/">K-market</a>
             </div>
             <!-- Search Bar -->
             <div class="hidden md:flex flex-1 max-w-lg relative">
@@ -146,9 +146,9 @@
             <!-- Simple Utility -->
             <div class="flex items-center gap-md">
                 <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
-                    <a class="hover:underline" href="#">로그인</a>
+                    <a class="hover:underline" th:href="@{/member/login}" href="/member/login">로그인</a>
                     <span class="text-outline-variant">/</span>
-                    <a class="hover:underline" href="#">회원가입</a>
+                    <a class="hover:underline" th:href="@{/member/join}" href="/member/join">회원가입</a>
                 </div>
                 <div class="flex items-center gap-base">
                     <button class="p-2 border border-outline-variant rounded relative">
@@ -166,11 +166,11 @@
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
     <!-- Sub Nav -->
     <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
-        <a class="font-bold text-primary border-b-2 border-primary py-1" href="#">오늘의 특가</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">추천 상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">신상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">베스트</a>
-        <a class="text-error font-semibold py-1" href="#">세일</a>
+        <a class="font-bold text-primary border-b-2 border-primary py-1" th:href="@{/product/list}" href="/product/list">오늘의 특가</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}" href="/product/list">추천 상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}" href="/product/list">신상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}" href="/product/list">베스트</a>
+        <a class="text-error font-semibold py-1" th:href="@{/product/list}" href="/product/list">세일</a>
     </nav>
     <div class="flex flex-col md:flex-row gap-lg items-start">
         <!-- Sidebar Navigation -->
@@ -178,19 +178,19 @@
             <div class="bg-white standard-border rounded p-md">
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
                         <span class="material-symbols-outlined text-on-surface-variant" data-icon="checkroom">checkroom</span>
                         <span class="text-on-surface font-medium">패션/의류</span>
                     </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
                         <span class="material-symbols-outlined text-on-surface-variant" data-icon="laptop_chromebook">laptop_chromebook</span>
                         <span class="text-on-surface font-medium">가전/디지털</span>
                     </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
                         <span class="material-symbols-outlined text-on-surface-variant" data-icon="local_grocery_store">local_grocery_store</span>
                         <span class="text-on-surface font-medium">식품/생필품</span>
                     </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
                         <span class="material-symbols-outlined text-on-surface-variant" data-icon="home">home</span>
                         <span class="text-on-surface font-medium">홈/문구/취미</span>
                     </a>
@@ -471,13 +471,13 @@
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
         <!-- Top Links -->
         <div class="flex flex-wrap gap-md text-sm font-medium text-on-surface-variant mb-8 border-b border-surface-container pb-4">
-            <a class="hover:text-primary" href="#">회사소개</a>
+            <a class="hover:text-primary" th:href="@{/company/main}" href="/company/main">회사소개</a>
             <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary" href="#">서비스이용약관</a>
+            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
             <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary font-bold text-on-surface" href="#">개인정보처리방침</a>
+            <a class="hover:text-primary font-bold text-on-surface" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
             <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary" href="#">전자금융거래약관</a>
+            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
             <!-- Company Info -->
@@ -517,19 +517,19 @@
 </footer>
 <!-- Mobile Nav -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-outline-variant flex justify-around py-3 z-50">
-    <a class="flex flex-col items-center gap-1 text-primary" href="#">
+    <a class="flex flex-col items-center gap-1 text-primary" th:href="@{/}" href="/">
         <span class="material-symbols-outlined">home</span>
         <span class="text-[10px] font-bold">홈</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/product/list}" href="/product/list">
         <span class="material-symbols-outlined">grid_view</span>
         <span class="text-[10px]">메뉴</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/product/search}" href="/product/search">
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px]">검색</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/my/index}" href="/my/index">
         <span class="material-symbols-outlined">person</span>
         <span class="text-[10px]">마이페이지</span>
     </a>

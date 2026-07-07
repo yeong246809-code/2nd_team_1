@@ -132,7 +132,7 @@
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex flex-col gap-base py-4">
         <div class="flex justify-between items-center">
             <!-- Brand Logo -->
-            <a class="font-display-lg text-headline-lg font-bold text-primary" href="/">L-Market</a>
+            <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">L-Market</a>
             <!-- Search Bar -->
             <div class="hidden md:flex flex-1 max-w-xl mx-gutter">
                 <div class="relative w-full">
@@ -143,11 +143,11 @@
             <!-- Action Icons -->
             <div class="flex items-center gap-md">
                 <div class="flex gap-sm text-label-md text-on-surface-variant">
-                    <a class="hover:text-primary" href="#">로그인</a>
+                    <a class="hover:text-primary" th:href="@{/member/login}" href="/member/login">로그인</a>
                     <span class="text-outline-variant">|</span>
-                    <a class="hover:text-primary" href="#">회원가입</a>
+                    <a class="hover:text-primary" th:href="@{/member/join}" href="/member/join">회원가입</a>
                     <span class="text-outline-variant">|</span>
-                    <a class="hover:text-primary" href="#">마이페이지</a>
+                    <a class="hover:text-primary" th:href="@{/my/index}" href="/my/index">마이페이지</a>
                 </div>
                 <div class="flex gap-base">
                     <button class="p-2 hover:bg-surface-container-low rounded-full relative">
@@ -162,11 +162,11 @@
         </div>
         <!-- Navigation Links -->
         <nav class="flex gap-lg items-center overflow-x-auto pb-1 no-scrollbar">
-            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" href="#">Hit Products</a>
-            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" href="#">Recommended</a>
-            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" href="#">New Arrivals</a>
-            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" href="#">Popular</a>
-            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" href="#">Sale</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Hit Products</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Recommended</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">New Arrivals</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Popular</a>
+            <a class="text-label-md text-on-surface-variant whitespace-nowrap hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">Sale</a>
         </nav>
     </div>
 </header>
@@ -429,10 +429,10 @@
             <p class="text-body-md text-on-surface-variant opacity-80">Copyright © 2025 L-Market All rights reserved.</p>
         </div>
         <div class="flex gap-lg">
-            <a class="text-label-sm text-on-surface-variant hover:underline" href="#">About Us</a>
-            <a class="text-label-sm text-on-surface-variant hover:underline" href="#">Terms of Service</a>
-            <a class="text-label-sm text-on-surface-variant hover:underline" href="#">Privacy Policy</a>
-            <a class="text-label-sm text-on-surface-variant hover:underline" href="#">Customer Center</a>
+            <a class="text-label-sm text-on-surface-variant hover:underline" th:href="@{/company/main}" href="/company/main">About Us</a>
+            <a class="text-label-sm text-on-surface-variant hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+            <a class="text-label-sm text-on-surface-variant hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+            <a class="text-label-sm text-on-surface-variant hover:underline" th:href="@{/cs/index}" href="/cs/index">Customer Center</a>
         </div>
     </div>
 </footer>

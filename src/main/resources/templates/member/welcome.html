@@ -141,11 +141,11 @@
 </div>
 <!-- Secondary Nav Links -->
 <nav class="flex items-center gap-md">
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">히트 상품</a>
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">추천 상품</a>
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">신상품</a>
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">인기 상품</a>
-<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">세일</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">히트 상품</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">추천 상품</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">신상품</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">인기 상품</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/list}" href="/product/list">세일</a>
 </nav>
 </div>
 </header>
@@ -262,10 +262,10 @@
 <p class="font-label-sm text-label-sm text-on-surface-variant opacity-80">Copyright © 2025 L-Market All rights reserved.</p>
 </div>
 <div class="flex flex-wrap gap-md">
-<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" href="#">회사 소개</a>
-<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" href="#">이용 약관</a>
-<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" href="#">개인정보 처리방침</a>
-<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" href="#">고객 센터</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" th:href="@{/company/main}" href="/company/main">회사 소개</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" th:href="@{/policy/buyer}" href="/policy/buyer">이용 약관</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보 처리방침</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:underline transition-opacity opacity-80 hover:opacity-100" th:href="@{/cs/index}" href="/cs/index">고객 센터</a>
 </div>
 <div class="flex gap-sm">
 <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">face_nod</span>

@@ -134,12 +134,12 @@
 <header class="bg-surface sticky top-0 z-50 shadow-sm transition-all duration-200 ease-in-out">
   <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
     <div class="flex items-center gap-lg">
-      <a class="font-display-lg text-headline-lg font-bold text-primary" href="#">K-market</a>
+      <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
       <nav class="hidden md:flex gap-md">
-        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Login</a>
-        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Join</a>
-        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">My Page</a>
-        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Cart</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+        <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
       </nav>
     </div>
     <div class="flex items-center gap-base">
@@ -322,12 +322,12 @@
   <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
     <div class="font-headline-md text-headline-md font-bold text-primary">K-market</div>
     <div class="flex flex-wrap justify-center gap-md">
-      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">About Us</a>
-      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Customer Service</a>
-      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
-      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Terms of Service</a>
-      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">FAQ</a>
-      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" href="#">Contact</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" th:href="@{/company/main}" href="/company/main">About Us</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+      <a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
     </div>
     <p class="text-on-surface-variant font-body-md text-body-md opacity-80">© 2024 K-market. All rights reserved.</p>
   </div>
