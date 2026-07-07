@@ -113,267 +113,263 @@
     </style>
 </head>
 <body class="bg-background text-on-background antialiased font-body-md">
-<!-- TopNavBar -->
+
 <header class="bg-surface dark:bg-surface-container-lowest text-primary dark:text-primary-fixed shadow-sm dark:shadow-none docked full-width top-0 z-50">
-<div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-<div class="flex items-center gap-md">
-<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed transition-all duration-200 ease-in-out" th:href="@{/}" href="/">
-                    K-market
+    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
+        <div class="flex items-center gap-md">
+            <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed transition-all duration-200 ease-in-out"
+               th:href="@{/}">
+                K-market
+            </a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-sm flex-1 ml-xl max-w-md"></div>
+
+        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md">
+            <a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors"
+               th:href="@{/member/login}">Login</a>
+
+            <a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors"
+               th:href="@{/member/register}">Join</a>
+
+            <a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors"
+               th:href="@{/member/mypage}">My Page</a>
+
+            <a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors"
+               th:href="@{/product/cart}">Cart</a>
+
+            <div class="flex items-center gap-sm ml-sm border-l border-outline-variant pl-sm">
+                <a class="text-on-surface-variant hover:text-primary transition-colors"
+                   th:href="@{/product/cart}">
+                    <span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
                 </a>
-</div>
-<!-- Search on Left (Not fully implemented in UI as per image, but following JSON structure) -->
-<div class="hidden md:flex items-center gap-sm flex-1 ml-xl max-w-md">
-<!-- Placeholder for search -->
-</div>
-<nav class="hidden md:flex items-center gap-md font-label-md text-label-md">
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
-<div class="flex items-center gap-sm ml-sm border-l border-outline-variant pl-sm">
-<button class="text-on-surface-variant hover:text-primary transition-colors">
-<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
-</button>
-<button class="text-on-surface-variant hover:text-primary transition-colors">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-</button>
-<button class="text-on-surface-variant hover:text-primary transition-colors">
-<span class="material-symbols-outlined" data-icon="search">search</span>
-</button>
-</div>
-</nav>
-</div>
+
+                <a class="text-on-surface-variant hover:text-primary transition-colors"
+                   th:href="@{/member/mypage}">
+                    <span class="material-symbols-outlined" data-icon="person">person</span>
+                </a>
+
+                <a class="text-on-surface-variant hover:text-primary transition-colors"
+                   th:href="@{/product/list}">
+                    <span class="material-symbols-outlined" data-icon="search">search</span>
+                </a>
+            </div>
+        </nav>
+    </div>
 </header>
-<!-- Main Container -->
+
 <main class="max-w-container-max mx-auto px-md py-lg flex flex-col md:flex-row gap-lg min-h-screen">
-<!-- 고객센터 사이드 메뉴 -->
-<!-- SideNavBar -->
-<aside class="hidden md:flex flex-col bg-surface-container-low dark:bg-surface-container h-full w-64 left-0 sticky flat no shadows rounded-xl overflow-hidden shrink-0">
-<div class="p-md pb-sm border-b border-surface-variant">
-<h2 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed mb-xs">고객센터</h2>
-<p class="font-label-md text-label-md text-on-surface-variant">FAQ &amp; Notices</p>
-</div>
-<nav class="flex flex-col gap-base p-md font-label-md text-label-md text-primary dark:text-primary-fixed transition-all duration-200">
-<!-- 활성화된 메뉴 -->
-<a class="flex items-center gap-sm p-sm text-primary dark:text-primary-fixed font-bold bg-secondary-container dark:bg-secondary-fixed-variant rounded-lg" href="#">
-<span class="material-symbols-outlined text-[20px]" data-icon="campaign">campaign</span>
-                    공지사항
+
+    <aside class="hidden md:flex flex-col bg-surface-container-low dark:bg-surface-container h-full w-64 left-0 sticky flat no shadows rounded-xl overflow-hidden shrink-0">
+        <div class="p-md pb-sm border-b border-surface-variant">
+            <h2 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed mb-xs">고객센터</h2>
+            <p class="font-label-md text-label-md text-on-surface-variant">FAQ &amp; Notices</p>
+        </div>
+
+        <nav class="flex flex-col gap-base p-md font-label-md text-label-md text-primary dark:text-primary-fixed transition-all duration-200">
+            <a class="flex items-center gap-sm p-sm text-primary dark:text-primary-fixed font-bold bg-secondary-container dark:bg-secondary-fixed-variant rounded-lg"
+               th:href="@{/cs/notice/list}">
+                <span class="material-symbols-outlined text-[20px]" data-icon="campaign">campaign</span>
+                공지사항
+            </a>
+
+            <a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-surface-container-high rounded-lg"
+               th:href="@{/cs/faq/list}">
+                <span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+                자주묻는질문
+            </a>
+
+            <a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-surface-container-high rounded-lg"
+               th:href="@{/cs/qna/list}">
+                <span class="material-symbols-outlined text-[20px]" data-icon="support_agent">support_agent</span>
+                문의하기
+            </a>
+        </nav>
+    </aside>
+
+    <section class="flex-1 flex flex-col gap-md">
+
+        <div class="flex flex-col gap-sm pb-md border-b border-surface-variant">
+            <div class="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant">
+                <a th:href="@{/}">
+                    <span class="material-symbols-outlined text-[16px]" data-icon="home">home</span>
                 </a>
-<!-- 비활성화 메뉴들 -->
-<!-- Note: The JSON provided Categories for a shop, but the user requested CS categories. Adapting to user request while maintaining style. -->
-<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-surface-container-high rounded-lg" href="#">
-<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
-                    자주묻는질문
-                </a>
-<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-surface-container-high rounded-lg" href="#">
-<span class="material-symbols-outlined text-[20px]" data-icon="support_agent">support_agent</span>
-                    문의하기
-                </a>
-</nav>
-</aside>
-<!-- 콘텐츠 영역 -->
-<section class="flex-1 flex flex-col gap-md">
-<!-- Breadcrumb & Title -->
-<div class="flex flex-col gap-sm pb-md border-b border-surface-variant">
-<div class="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant">
-<span class="material-symbols-outlined text-[16px]" data-icon="home">home</span>
-<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
-<span>고객센터</span>
-<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
-<span class="font-semibold text-primary">공지사항</span>
-</div>
-<h1 class="font-headline-lg text-headline-lg font-bold text-primary">공지사항</h1>
-</div>
-<!-- 서브 카테고리 탭 (기획안의 왼쪽 서브메뉴를 상단 탭으로 변형하여 모던한 레이아웃 구성) -->
-<div class="flex gap-sm overflow-x-auto pb-sm scrollbar-hide">
-<button class="px-md py-sm bg-primary text-on-primary rounded-full font-label-md text-label-md whitespace-nowrap">전체</button>
-<button class="px-md py-sm bg-surface-container hover:bg-surface-variant text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">고객서비스</button>
-<button class="px-md py-sm bg-surface-container hover:bg-surface-variant text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">안전거래</button>
-<button class="px-md py-sm bg-surface-container hover:bg-surface-variant text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">위해상품</button>
-<button class="px-md py-sm bg-surface-container hover:bg-surface-variant text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">이벤트당첨</button>
-</div>
-<!-- List Summary -->
-<div class="font-label-md text-label-md text-on-surface-variant mt-sm">
-                공지사항 전체 내용 입니다.
+                <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+                <a th:href="@{/cs/notice/list}">고객센터</a>
+                <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+                <span class="font-semibold text-primary">공지사항</span>
             </div>
-<!-- 공지사항 리스트 테이블 -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
-<table class="w-full text-left border-collapse">
-<thead class="bg-surface-container-low font-label-md text-label-md text-on-surface">
-<tr>
-<th class="py-sm px-md font-semibold border-b border-surface-variant w-16 text-center">번호</th>
-<th class="py-sm px-md font-semibold border-b border-surface-variant">제목</th>
-<th class="py-sm px-md font-semibold border-b border-surface-variant w-32 text-center">작성일</th>
-</tr>
-</thead>
-<tbody class="font-body-md text-body-md text-on-background divide-y divide-surface-variant">
-<!-- Thymeleaf Example: <tr th:each="notice : ${notices}" class="hover:bg-surface-container-low transition-colors group cursor-pointer"> -->
-<!-- Item 1 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">10</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">해외결제사칭 문자주의</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.10.25</td>
-</tr>
-<!-- Item 2 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">9</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-secondary-container rounded text-xs font-bold text-on-secondary-container">[발표]</span>
-<span class="group-hover:text-primary transition-colors">『G.Live X SK 스토아 (하남쭈꾸미)』 이벤트 당첨자</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.10.20</td>
-</tr>
-<!-- Item 3 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">8</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">로젠택배반품 / 교환수거지시지 연안 내</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.10.15</td>
-</tr>
-<!-- Item 4 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">7</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">위치정보이용약관개정공지</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.10.10</td>
-</tr>
-<!-- Item 5 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">6</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">구매회원이용약관개정</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.10.05</td>
-</tr>
-<!-- Item 6 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">5</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">씨티은행 시스템 점검에따른 계좌, 체크카드결제서비스일시 중단</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.10.01</td>
-</tr>
-<!-- Item 7 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">4</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">시스템 정기 점검 안내</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.09.28</td>
-</tr>
-<!-- Item 8 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">3</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-secondary-container rounded text-xs font-bold text-on-secondary-container">[발표]</span>
-<span class="group-hover:text-primary transition-colors">가을맞이 리뷰 이벤트 당첨자 발표</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.09.20</td>
-</tr>
-<!-- Item 9 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">2</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">추석 연휴 배송 일정 안내</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.09.10</td>
-</tr>
-<!-- Item 10 -->
-<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
-<td class="py-md px-md text-center text-on-surface-variant">1</td>
-<td class="py-md px-md">
-<div class="flex items-center gap-sm">
-<span class="px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant">[안내]</span>
-<span class="group-hover:text-primary transition-colors">K-market 신규 서비스 오픈 안내</span>
-</div>
-</td>
-<td class="py-md px-md text-center text-on-surface-variant font-label-sm">24.09.01</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- 페이지네이션 -->
-<div class="flex justify-center items-center gap-sm mt-lg">
-<button class="p-sm flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors disabled:opacity-50" disabled="">
-<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
-<span class="font-label-md ml-xs">이전</span>
-</button>
-<div class="flex items-center gap-xs">
-<button class="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-on-primary font-bold text-label-md">1</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-highest text-on-surface font-medium text-label-md transition-colors">2</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-highest text-on-surface font-medium text-label-md transition-colors">3</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-highest text-on-surface font-medium text-label-md transition-colors">4</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-highest text-on-surface font-medium text-label-md transition-colors">5</button>
-</div>
-<button class="p-sm flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-<span class="font-label-md mr-xs">다음</span>
-<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
-</button>
-</div>
-</section>
+
+            <h1 class="font-headline-lg text-headline-lg font-bold text-primary">공지사항</h1>
+        </div>
+
+        <div class="flex gap-sm overflow-x-auto pb-sm scrollbar-hide">
+            <a th:href="@{/cs/notice/list}"
+               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
+               th:classappend="${param.type == null} ? ' bg-primary text-on-primary' : ' bg-surface-container hover:bg-surface-variant text-on-surface'">
+                전체
+            </a>
+
+            <a th:href="@{/cs/notice/list(type='고객서비스')}"
+               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
+               th:classappend="${param.type != null and param.type[0] == '고객서비스'} ? ' bg-primary text-on-primary' : ' bg-surface-container hover:bg-surface-variant text-on-surface'">
+                고객서비스
+            </a>
+
+            <a th:href="@{/cs/notice/list(type='안전거래')}"
+               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
+               th:classappend="${param.type != null and param.type[0] == '안전거래'} ? ' bg-primary text-on-primary' : ' bg-surface-container hover:bg-surface-variant text-on-surface'">
+                안전거래
+            </a>
+
+            <a th:href="@{/cs/notice/list(type='위해상품')}"
+               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
+               th:classappend="${param.type != null and param.type[0] == '위해상품'} ? ' bg-primary text-on-primary' : ' bg-surface-container hover:bg-surface-variant text-on-surface'">
+                위해상품
+            </a>
+
+            <a th:href="@{/cs/notice/list(type='이벤트당첨')}"
+               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
+               th:classappend="${param.type != null and param.type[0] == '이벤트당첨'} ? ' bg-primary text-on-primary' : ' bg-surface-container hover:bg-surface-variant text-on-surface'">
+                이벤트당첨
+            </a>
+        </div>
+
+        <div class="font-label-md text-label-md text-on-surface-variant mt-sm">
+            공지사항 전체 내용 입니다.
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-surface-container-low font-label-md text-label-md text-on-surface">
+                <tr>
+                    <th class="py-md px-md font-semibold border-b border-surface-variant w-[80px] text-center">번호</th>
+                    <th class="py-md px-md font-semibold border-b border-surface-variant">제목</th>
+                    <th class="py-md px-md font-semibold border-b border-surface-variant w-[120px] text-center">작성일</th>
+                </tr>
+                </thead>
+
+                <tbody class="font-body-md text-body-md text-on-background divide-y divide-surface-variant">
+
+                <tr th:if="${#lists.isEmpty(notices)}">
+                    <td colspan="3" class="py-xl px-md text-center text-on-surface-variant">
+                        등록된 공지사항이 없습니다.
+                    </td>
+                </tr>
+
+                <tr th:each="notice, stat : ${notices}"
+                    class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+
+                    <td class="px-md text-center text-on-surface-variant py-md"
+                        th:text="${pageResponseDTO != null ? pageResponseDTO.startNo - stat.index : stat.count}">
+                        1
+                    </td>
+
+                    <td class="px-md py-md">
+                        <div class="flex items-center gap-sm">
+                            <span th:class="${notice.type == '이벤트당첨' or notice.type == '이벤트'}
+                                    ? 'px-2 py-1 bg-secondary-container rounded text-xs font-bold text-on-secondary-container'
+                                    : 'px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant'"
+                                  th:text="|[${notice.type}]|">
+                                [공지]
+                            </span>
+
+                            <a class="group-hover:text-primary transition-colors font-semibold text-body-lg"
+                               th:href="@{/cs/notice/view/{no}(no=${notice.no})}"
+                               th:text="${notice.title}">
+                                공지사항 제목입니다.
+                            </a>
+                        </div>
+                    </td>
+
+                    <td class="px-md text-center text-on-surface-variant font-label-sm py-md"
+                        th:text="${#temporals.format(notice.createdAt, 'yy.MM.dd')}">
+                        24.01.01
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-center items-center gap-sm mt-lg"
+             th:if="${pageResponseDTO != null and pageResponseDTO.end > 0}">
+
+            <a class="p-sm flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
+               th:classappend="${!pageResponseDTO.prev} ? ' pointer-events-none opacity-50'"
+               th:href="@{/cs/notice/list(pg=${pageResponseDTO.start - 1}, type=${param.type != null ? param.type[0] : null})}">
+                <span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+                <span class="font-label-md ml-xs">이전</span>
+            </a>
+
+            <div class="flex items-center gap-xs">
+                <a th:each="num : ${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}"
+                   th:href="@{/cs/notice/list(pg=${num}, type=${param.type != null ? param.type[0] : null})}"
+                   class="w-8 h-8 flex items-center justify-center rounded-full font-medium text-label-md transition-colors"
+                   th:classappend="${num == pageResponseDTO.pg}
+                        ? ' bg-primary text-on-primary font-bold'
+                        : ' hover:bg-surface-container-highest text-on-surface'"
+                   th:text="${num}">
+                    1
+                </a>
+            </div>
+
+            <a class="p-sm flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"
+               th:classappend="${!pageResponseDTO.next} ? ' pointer-events-none opacity-50'"
+               th:href="@{/cs/notice/list(pg=${pageResponseDTO.end + 1}, type=${param.type != null ? param.type[0] : null})}">
+                <span class="font-label-md mr-xs">다음</span>
+                <span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+            </a>
+        </div>
+
+    </section>
 </main>
-<!-- Footer -->
+
 <footer class="bg-surface-container-highest dark:bg-surface-container-high w-full mt-lg flat no shadows">
-<div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
-<!-- Footer Links -->
-<div class="flex flex-wrap justify-center gap-md font-label-md text-label-md text-on-surface-variant dark:text-outline-variant mb-md border-b border-outline-variant pb-md w-full">
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/company/main}" href="/company/main">회사소개</a>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200 font-semibold text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200 font-semibold text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
-</div>
-<!-- Company Info Layout based on the image provided -->
-<div class="flex flex-col md:flex-row justify-between w-full gap-lg text-body-md font-body-md text-on-surface-variant">
-<div class="flex items-start gap-md">
-<!-- Logo Placeholder -->
-<div class="w-32 h-16 bg-surface-container flex items-center justify-center border border-outline-variant relative overflow-hidden">
-<span class="material-symbols-outlined text-outline-variant text-[32px]" data-icon="landscape">landscape</span>
-</div>
-<div>
-<h3 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed mb-sm">(주)케이마켓</h3>
-<p class="text-label-md mb-xs">부산광역시 부산진구 중앙대로 300 26층</p>
-<p class="text-label-md mb-xs">대표이사 : 홍길동</p>
-<p class="text-label-md">사업자등록번호 : 123-45-12345</p>
-</div>
-</div>
-<div>
-<h3 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed mb-sm">고객센터</h3>
-<p class="text-label-md mb-xs font-semibold">Tel : 1234-5678 <span class="font-normal">(평일 09:00~18:00)</span></p>
-<p class="text-label-md">전자금융거래 분쟁 담당 : 1234-1234 (평일 09:00~18:00)</p>
-</div>
-</div>
-<div class="mt-md font-label-md text-label-md text-outline-variant text-center">
-                © 2024 K-market. All rights reserved.
+    <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
+
+        <div class="flex flex-wrap justify-center gap-md font-label-md text-label-md text-on-surface-variant dark:text-outline-variant mb-md border-b border-outline-variant pb-md w-full">
+            <a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200"
+               th:href="@{/company/about}">회사소개</a>
+
+            <a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200 font-semibold text-primary"
+               th:href="@{/policy/terms}">서비스이용약관</a>
+
+            <a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200 font-semibold text-primary"
+               th:href="@{/policy/privacy}">개인정보처리방침</a>
+
+            <a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200"
+               th:href="@{/policy/finance}">전자금융거래약관</a>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-between w-full gap-lg text-body-md font-body-md text-on-surface-variant">
+            <div class="flex items-start gap-md">
+                <div class="w-32 h-16 bg-surface-container flex items-center justify-center border border-outline-variant relative overflow-hidden">
+                    <span class="material-symbols-outlined text-outline-variant text-[32px]" data-icon="landscape">landscape</span>
+                </div>
+
+                <div>
+                    <h3 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed mb-sm">(주)케이마켓</h3>
+                    <p class="text-label-md mb-xs">부산광역시 부산진구 중앙대로 300 26층</p>
+                    <p class="text-label-md mb-xs">대표이사 : 홍길동</p>
+                    <p class="text-label-md">사업자등록번호 : 123-45-12345</p>
+                </div>
             </div>
-</div>
+
+            <div>
+                <h3 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed mb-sm">고객센터</h3>
+                <p class="text-label-md mb-xs font-semibold">
+                    Tel : 1234-5678 <span class="font-normal">(평일 09:00~18:00)</span>
+                </p>
+                <p class="text-label-md">전자금융거래 분쟁 담당 : 1234-1234 (평일 09:00~18:00)</p>
+            </div>
+        </div>
+
+        <div class="mt-md font-label-md text-label-md text-outline-variant text-center">
+            © 2024 K-market. All rights reserved.
+        </div>
+    </div>
 </footer>
-</body></html>
+
+</body>
+</html>

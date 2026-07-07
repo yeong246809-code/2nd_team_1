@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>K-market - 문의하기</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- list/view와 동일한 커스텀 컬러, 간격 설정 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: "#f8f9fa",
+                        surface: "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-variant": "#e1e3e4",
+                        "outline-variant": "#c1c7ca",
+                        primary: "#14333b",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#41484a",
+                        "secondary-container": "#c0ecdc"
+                    },
+                    spacing: {
+                        xs: "4px",
+                        sm: "12px",
+                        md: "24px",
+                        lg: "48px",
+                        base: "8px",
+                        "container-max": "1280px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+
+<!-- Header -->
+<header class="bg-surface border-b border-outline-variant w-full">
+    <div class="max-w-container-max mx-auto px-md py-base flex justify-between items-center">
+        <a class="font-bold text-primary text-3xl" th:href="@{/}">K-market</a>
+
+        <nav class="flex gap-md text-sm text-on-surface-variant">
+            <a href="#">Login</a>
+            <a href="#">Join</a>
+            <a href="#">My Page</a>
+            <a href="#">Cart</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Main -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex gap-lg">
+
+    <!-- Sidebar -->
+    <aside class="w-64 flex-shrink-0 bg-surface-container-low rounded-xl p-md">
+        <h2 class="font-bold text-primary text-xl mb-md">고객센터</h2>
+
+        <nav class="flex flex-col gap-sm text-sm">
+            <a th:href="@{/cs/notice/list}"
+               class="px-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant flex items-center gap-sm">
+                <span class="material-symbols-outlined">campaign</span>
+                공지사항
+            </a>
+
+            <a th:href="@{/cs/faq/list}"
+               class="px-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant flex items-center gap-sm">
+                <span class="material-symbols-outlined">help_outline</span>
+                자주하는 질문
+            </a>
+
+            <a th:href="@{/cs/qna/list}"
+               class="px-md py-3 rounded-lg text-primary font-bold bg-secondary-container flex items-center gap-sm">
+                <span class="material-symbols-outlined">edit_note</span>
+                문의하기
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Content -->
+    <section class="flex-1 flex flex-col gap-md">
+
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-xs text-sm text-on-surface-variant">
+            <span>홈</span>
+            <span class="material-symbols-outlined text-sm">chevron_right</span>
+            <span>고객센터</span>
+            <span class="material-symbols-outlined text-sm">chevron_right</span>
+            <span class="font-bold text-on-surface">문의하기</span>
+        </div>
+
+        <!-- Title -->
+        <div class="border-b border-surface-variant pb-md">
+            <h1 class="text-3xl font-bold text-primary">문의하기</h1>
+            <p class="text-on-surface-variant mt-sm">회원 관련 문의내용 입니다.</p>
+        </div>
+
+        <!-- Write Form -->
+        <form th:action="@{/cs/qna/write}"
+              method="post"
+              class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex flex-col gap-md">
+
+            <!-- 문의유형 설명 -->
+            <div class="border-b border-surface-variant pb-md">
+                <h2 class="text-xl font-bold text-on-surface mb-sm">회원</h2>
+                <p class="text-sm text-on-surface-variant">회원 관련 문의내용 입니다.</p>
+            </div>
+
+            <!-- 문의유형 -->
+            <div class="grid grid-cols-[120px_1fr] items-center gap-md border-b border-surface-variant pb-md">
+                <label class="font-bold text-on-surface">문의유형</label>
+
+                <div class="flex gap-sm">
+                    <select name="type1"
+                            class="border border-outline-variant rounded px-sm py-2 text-on-surface bg-white">
+                        <option value="">1차 선택</option>
+                        <option value="회원">회원</option>
+                        <option value="쿠폰/이벤트">쿠폰/이벤트</option>
+                        <option value="주문/결제">주문/결제</option>
+                        <option value="배송">배송</option>
+                        <option value="취소/반품/교환">취소/반품/교환</option>
+                        <option value="여행/숙박/항공">여행/숙박/항공</option>
+                        <option value="안전거래">안전거래</option>
+                    </select>
+
+                    <select name="type2"
+                            class="border border-outline-variant rounded px-sm py-2 text-on-surface bg-white">
+                        <option value="">2차 선택</option>
+                        <option value="가입">가입</option>
+                        <option value="탈퇴">탈퇴</option>
+                        <option value="계정">계정</option>
+                        <option value="결제">결제</option>
+                        <option value="배송조회">배송조회</option>
+                        <option value="반품/교환">반품/교환</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 제목 -->
+            <div class="grid grid-cols-[120px_1fr] items-center gap-md border-b border-surface-variant pb-md">
+                <label for="title" class="font-bold text-on-surface">제목</label>
+                <input id="title"
+                       type="text"
+                       name="title"
+                       placeholder="제목을 입력합니다."
+                       class="w-full border border-outline-variant rounded px-sm py-2 text-on-surface bg-white">
+            </div>
+
+            <!-- 내용 -->
+            <div class="grid grid-cols-[120px_1fr] gap-md border-b border-surface-variant pb-md">
+                <label for="content" class="font-bold text-on-surface pt-2">내용</label>
+                <textarea id="content"
+                          name="content"
+                          rows="10"
+                          placeholder="내용을 입력합니다."
+                          class="w-full border border-outline-variant rounded px-sm py-2 text-on-surface bg-white resize-none"></textarea>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-center gap-sm pt-md">
+                <a th:href="@{/cs/qna/list}"
+                   class="px-lg py-sm bg-surface-container-high text-on-surface-variant rounded-lg font-bold hover:bg-surface-variant transition-colors">
+                    취소하기
+                </a>
+
+                <button type="submit"
+                        class="px-lg py-sm bg-primary text-on-primary rounded-lg font-bold hover:opacity-90 transition-opacity">
+                    등록하기
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container-highest w-full mt-lg">
+    <div class="max-w-container-max mx-auto py-lg text-center text-on-surface-variant">
+        <h2 class="font-bold text-primary mb-sm">K-market</h2>
+        <p>© 2024 K-market. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
