@@ -58,6 +58,8 @@ public class SecurityConfig {
                         "/member/register", "/member/registerseller",
                         "/resources/**", "/css/**", "/js/**", "/images/**", "/uploads/**"
                 ).permitAll()
+                //셀러 권한 필요하면 여기에 추가
+                .requestMatchers("/admin/product/**").hasAnyRole("ADMIN", "SELLER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );
