@@ -116,13 +116,13 @@
 <!-- Header (상단 헤더) -->
 <header class="bg-surface shadow-sm sticky top-0 z-50">
     <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
-        <a class="font-display-lg text-headline-lg font-bold text-primary" href="/">K-market</a>
+        <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
         <nav class="hidden md:flex items-center gap-md">
             <div class="flex items-center gap-base">
-                <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Login</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Join</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">My Page</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Cart</a>
+                <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" th:href="@{/member/login}" href="/member/login">Login</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
             </div>
             <div class="flex items-center gap-sm ml-md">
                 <button class="p-2 text-on-surface-variant hover:text-primary transition-all">
@@ -159,9 +159,9 @@
                         <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">자동 로그인</span>
                     </label>
                     <div class="flex items-center gap-xs text-label-sm font-label-sm text-outline">
-                        <a class="hover:text-primary transition-colors" href="#">아이디 찾기</a>
+                        <a class="hover:text-primary transition-colors" th:href="@{/member/find/userid}" href="/member/find/userid">아이디 찾기</a>
                         <span class="text-outline-variant">|</span>
-                        <a class="hover:text-primary transition-colors" href="#">비밀번호 찾기</a>
+                        <a class="hover:text-primary transition-colors" th:href="@{/member/find/password}" href="/member/find/password">비밀번호 찾기</a>
                     </div>
                 </div>
                 <div class="pt-sm space-y-base">
@@ -237,12 +237,12 @@
 <footer class="bg-surface-container-highest w-full mt-lg">
     <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
         <div class="flex flex-wrap justify-center gap-md font-body-md text-body-md">
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">About Us</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Customer Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Terms of Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">FAQ</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Contact</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/company/main}" href="/company/main">About Us</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
         </div>
         <div class="w-full grid md:grid-cols-2 gap-lg pt-md border-t border-outline-variant/30">
             <div class="flex flex-col gap-base">
