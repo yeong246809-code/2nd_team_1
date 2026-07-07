@@ -15,13 +15,19 @@ public class VersionDTO {
     private long id;
     private String versionCode;
     private int memberNo;
+
+    private String userId;
+
     private LocalDateTime createdAt;
     private String changeLog;
 
     public Version toEntity(){
         return Version.builder()
-                .id(id).versionCode(versionCode).memberNo(memberNo)
-                .createdAt(createdAt).changeLog(changeLog)
+                .id(id)
+                .versionCode(versionCode)
+                .memberNo(memberNo)
+                .createdAt(createdAt)
+                .changeLog(changeLog)
                 .build();
     }
 }

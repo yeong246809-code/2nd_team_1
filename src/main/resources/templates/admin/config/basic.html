@@ -57,7 +57,7 @@
                         "on-tertiary-fixed": "#2d1605",
                         "on-primary-fixed-variant": "#2d4b53",
                         "primary-fixed-dim": "#acccd5",
-                        "on-primary-container": "#99b9c2",
+                        "on-primary-container": "#48565c",
                         "surface-variant": "#e1e3e4",
                         "secondary": "#3e6659",
                         "surface-tint": "#45636b"
@@ -169,6 +169,7 @@
             },
         }
     </script>
+    <link rel="icon" type="image/x-icon" th:href="@{/uploads/} + ${config.favicon_stored}">
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex">
 <!-- SideNavBar -->
@@ -222,7 +223,6 @@
 </aside>
 <!-- Main Content Area -->
 <main class="flex-1 ml-64 flex flex-col min-h-screen">
-    <!-- TopAppBar -->
     <header class="bg-surface dark:bg-surface-dim docked full-width top-0 sticky bg-surface/80 backdrop-blur-md shadow-sm z-10">
         <div class="flex justify-between items-center h-16 px-md w-full">
             <h2 class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary-fixed">관리자 대시보드</h2>
@@ -231,32 +231,28 @@
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
                 <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 rounded-full transition-all">
-                    <span class="material-symbols-outlined">mail</span>
+                    <span class="material-symbols-outlined">account_circle</span>
                 </button>
-                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 rounded-full transition-all">
-                    <span class="material-symbols-outlined">apps</span>
-                </button>
-                <div class="ml-4 w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
-                    <img alt="Administrator Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN0VHSCT-SJkYpn7AbHphrLRgszt8WBvsOrgFwnlAZpFH8iwNQL2BR-CjGu50gP6_tqMgak-fmO2u6x3GKiZU3u8TdsKHJzSJcfpTh3qo9MmsiSBOH6TdttLiqfshAIbZ8Gxyyy5JbL0HNtB4IXEF8HIjEXtaVB1UCE9GzxRVkLM04QzoOmJu-973t-VwwsG2UAd_lG_i6IpFaxEuCoK6fqq7hsU-bWS77a8Eb56p6sDf8OkSZXapKucibtLkHGifaOZh-Fent5HMR"/>
-                </div>
             </div>
         </div>
     </header>
-    <!-- Page Content -->
     <div class="p-md lg:p-lg flex-1 overflow-y-auto">
-        <!-- Breadcrumb & Title -->
         <div class="flex justify-between items-end mb-8 border-b border-outline-variant pb-4">
             <h2 class="font-headline-lg text-headline-lg text-on-background">기본설정</h2>
             <nav class="font-label-sm text-label-sm text-on-surface-variant flex gap-2">
                 <a class="hover:text-primary" href="#">HOME</a>
-                <span>&gt;</span>
+                <span>></span>
                 <a class="hover:text-primary" href="#">환경설정</a>
-                <span>&gt;</span>
+                <span>></span>
                 <span class="text-primary font-semibold">기본설정</span>
             </nav>
         </div>
+
+        <div th:if="${message}" class="mb-4 p-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+            <span class="font-bold">성공!</span> <span th:text="${message}">수정되었습니다.</span>
+        </div>
+
         <div class="max-w-4xl space-y-12">
-            <!-- 1. 버전 정보 -->
             <section>
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="font-headline-md text-headline-md text-on-background">버전 정보</h3>
@@ -269,19 +265,19 @@
                         <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">
                             사이트 버전
                         </div>
-                        <div class="p-4 flex-1 font-body-md text-body-md text-on-surface-variant flex items-center">
-                            <!-- th:text="${config.version}" -->
+                        <div class="p-4 flex-1 font-body-md text-body-md text-on-surface-variant flex items-center"
+                             th:text="${latestVersion != null ? latestVersion : '등록된 버전 없음'}">
                             1.0.1-RELEASE
                         </div>
                     </div>
                 </div>
             </section>
-            <!-- 2. 사이트 -->
+
             <section>
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="font-headline-md text-headline-md text-on-background">사이트</h3>
                 </div>
-                <form action="#" method="post">
+                <form th:action="@{/admin/config/basic/site}" method="post">
                     <div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-4">
                         <div class="p-4 bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
                             브라우저 탭, 헤더 및 푸터 노출 정보 입니다.
@@ -291,8 +287,7 @@
                                 제목
                             </div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${config.siteTitle}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="케이마켓"/>
+                                <input name="title" th:value="${config.title}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex">
@@ -300,8 +295,7 @@
                                 부제
                             </div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${config.siteSubtitle}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="더나은쇼핑을위한선택"/>
+                                <input name="subtitle" th:value="${config.subtitle}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                     </div>
@@ -312,24 +306,23 @@
                     </div>
                 </form>
             </section>
-            <!-- 3. 로고 -->
+
             <section>
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="font-headline-md text-headline-md text-on-background">로고</h3>
                 </div>
-                <form action="#" enctype="multipart/form-data" method="post">
+                <form th:action="@{/admin/config/basic/logo}" enctype="multipart/form-data" method="post">
                     <div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-4">
                         <div class="p-4 bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
-                            브라우저 탭, 헤더 및 푸터 노출 로고 입니다.
+                            브라우저 탭, 헤더 및 푸터 노출 로고 입니다. (새로 업로드 시에만 변경됩니다)
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">
                                 헤더 로고
                             </div>
                             <div class="p-4 flex-1 flex items-center gap-4">
-                                <!-- th:field="${config.headerLogo}" -->
-                                <input class="text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-surface-container-high file:text-on-surface hover:file:bg-surface-container-highest cursor-pointer border border-outline-variant rounded-md bg-surface-container-lowest w-full max-w-md" type="file"/>
-                                <span class="text-label-sm text-on-surface-variant">크기 370 x 76 권장</span>
+                                <input name="headerLogoFile" class="text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-surface-container-high file:text-on-surface hover:file:bg-surface-container-highest cursor-pointer border border-outline-variant rounded-md bg-surface-container-lowest w-full max-w-md" type="file" accept="image/*"/>
+                                <span class="text-label-sm text-on-surface-variant">가로 370px 비율 리사이징</span>
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
@@ -337,9 +330,8 @@
                                 푸터 로고
                             </div>
                             <div class="p-4 flex-1 flex items-center gap-4">
-                                <!-- th:field="${config.footerLogo}" -->
-                                <input class="text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-surface-container-high file:text-on-surface hover:file:bg-surface-container-highest cursor-pointer border border-outline-variant rounded-md bg-surface-container-lowest w-full max-w-md" type="file"/>
-                                <span class="text-label-sm text-on-surface-variant">크기 155 x 36 권장</span>
+                                <input name="footerLogoFile" class="text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-surface-container-high file:text-on-surface hover:file:bg-surface-container-highest cursor-pointer border border-outline-variant rounded-md bg-surface-container-lowest w-full max-w-md" type="file" accept="image/*"/>
+                                <span class="text-label-sm text-on-surface-variant">가로 155px 비율 리사이징</span>
                             </div>
                         </div>
                         <div class="flex">
@@ -347,9 +339,8 @@
                                 파비콘
                             </div>
                             <div class="p-4 flex-1 flex items-center gap-4">
-                                <!-- th:field="${config.favicon}" -->
-                                <input class="text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-surface-container-high file:text-on-surface hover:file:bg-surface-container-highest cursor-pointer border border-outline-variant rounded-md bg-surface-container-lowest w-full max-w-md" type="file"/>
-                                <span class="text-label-sm text-on-surface-variant">크기 32 x 32 권장</span>
+                                <input name="faviconFile" class="text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-surface-container-high file:text-on-surface hover:file:bg-surface-container-highest cursor-pointer border border-outline-variant rounded-md bg-surface-container-lowest w-full max-w-md" type="file" accept="image/*"/>
+                                <span class="text-label-sm text-on-surface-variant">32x32 고정 리사이징</span>
                             </div>
                         </div>
                     </div>
@@ -360,12 +351,12 @@
                     </div>
                 </form>
             </section>
-            <!-- 4. 기업 정보 (from second image reference, maintaining numbering sequence visually for user though image shows 1 again) -->
+
             <section>
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="font-headline-md text-headline-md text-on-background">기업 정보</h3>
                 </div>
-                <form action="#" method="post">
+                <form th:action="@{/admin/config/basic/company}" method="post">
                     <div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-4">
                         <div class="p-4 bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
                             푸터에 노출되는 기업 정보 입니다.
@@ -373,43 +364,37 @@
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">상호명</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${company.name}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="케이마켓쇼핑주식회사"/>
+                                <input name="companyName" th:value="${config.companyName}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">대표이사</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${company.ceo}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="홍길동"/>
+                                <input name="ceo" th:value="${config.ceo}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">사업자등록번호</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${company.bizNum}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="123-12-12345"/>
+                                <input name="bizNumber" th:value="${config.bizNumber}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">통신판매업신고</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${company.mailOrderNum}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="2024-서울강남-1234"/>
+                                <input name="mailOrderNumber" th:value="${config.mailOrderNumber}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">기본주소</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${company.address1}" -->
-                                <input class="w-full max-w-lg rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="부산광역시 부산진구 중앙동"/>
+                                <input name="baseAddress" th:value="${config.baseAddress}" class="w-full max-w-lg rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">상세주소</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${company.address2}" -->
-                                <input class="w-full max-w-lg rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="( 삼성동 , WeWork 빌딩 ) 7층"/>
+                                <input name="detailAddress" th:value="${config.detailAddress}" class="w-full max-w-lg rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                     </div>
@@ -420,12 +405,12 @@
                     </div>
                 </form>
             </section>
-            <!-- 5. 고객센터 정보 -->
+
             <section>
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="font-headline-md text-headline-md text-on-background">고객센터 정보</h3>
                 </div>
-                <form action="#" method="post">
+                <form th:action="@{/admin/config/basic/cs}" method="post">
                     <div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-4">
                         <div class="p-4 bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
                             푸터에 노출되는 고객센터 정보 입니다.
@@ -433,29 +418,25 @@
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">전화번호</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${cs.phone}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="02-1234-5678"/>
+                                <input name="csPhone" th:value="${config.csPhone}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">업무시간</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${cs.time}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="평일 09:00 ~ 18:00"/>
+                                <input name="csHours" th:value="${config.csHours}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                         <div class="flex border-b border-outline-variant">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">이메일</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${cs.email}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="email" value="admin@kmarket.com"/>
+                                <input name="csEmail" th:value="${config.csEmail}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="email" />
                             </div>
                         </div>
                         <div class="flex">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">전자금융거래 분쟁담당</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${cs.disputePhone}" -->
-                                <input class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="1234-1234"/>
+                                <input name="finDisputeManager" th:value="${config.finDisputeManager}" class="w-full max-w-md rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                     </div>
@@ -466,12 +447,12 @@
                     </div>
                 </form>
             </section>
-            <!-- 6. 카피라이트 -->
+
             <section>
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="font-headline-md text-headline-md text-on-background">카피라이트</h3>
                 </div>
-                <form action="#" method="post">
+                <form th:action="@{/admin/config/basic/copyright}" method="post">
                     <div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-4">
                         <div class="p-4 bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
                             푸터에 노출되는 카피라이트 정보 입니다.
@@ -479,8 +460,7 @@
                         <div class="flex">
                             <div class="w-48 bg-surface-container-lowest p-4 font-label-md text-label-md text-on-surface font-semibold flex items-center">카피라이트</div>
                             <div class="p-4 flex-1">
-                                <!-- th:field="${config.copyright}" -->
-                                <input class="w-full max-w-lg rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" value="Copyright © Kmarket. All rights reserved."/>
+                                <input name="copyright" th:value="${config.copyright}" class="w-full max-w-lg rounded-md border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-body-md px-3 py-2" type="text" />
                             </div>
                         </div>
                     </div>
@@ -493,7 +473,6 @@
             </section>
         </div>
     </div>
-    <!-- Footer Info -->
     <footer class="bg-surface-variant p-4 mt-auto border-t border-outline-variant text-center">
         <p class="font-label-sm text-label-sm text-on-surface-variant">Copyright © Kmarket.co.kr All rights reserved. Kmarket ADMINISTRATOR Version 5.4.1.2</p>
     </footer>
