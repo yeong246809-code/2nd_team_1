@@ -2,6 +2,9 @@ package org.example.k_market.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+// 1. 엔티티와 레포지토리 패키지를 임포트하세요 (본인 프로젝트 경로에 맞추기)
+import org.example.k_market.entity.Product;
+import org.example.k_market.repository.ProductRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +15,11 @@ import java.util.Map;
 
 @Controller
 @Log4j2
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Repository 자동 주입을 위해 필수!
 public class ProductIndexController {
+
+    // 2. DBeaver 데이터를 긁어올 Repository 의존성 주입
+    private final ProductRepository productRepository;
 
     @GetMapping("/product/list")
     public String list() {
@@ -22,22 +28,13 @@ public class ProductIndexController {
 
     @GetMapping("/product/search")
     public String search(@RequestParam(value = "keyword", defaultValue = "셔츠") String keyword, Model model) {
-        List<Map<String, Object>> products = List.of(
-                Map.of(
-                        "name", "이지 워시 옥스퍼드 셔츠",
-                        "description", "데일리 아이템으로 입기 좋은 스탠다드 핏 셔츠입니다.",
-                        "isNew", true,
-                        "isFreeShipping", true,
-                        "discount", 10,
-                        "originalPrice", "30,000",
-                        "price", "27,000",
-                        "seller", "패션빌리지"
-                )
-        );
+
+        // 3. 임시 가짜 Map 데이터 대신, DBeaver 실데이터(Entity)를 긁어옵니다.
+        List<Product> products = productRepository.findAll();
 
         model.addAttribute("keyword", keyword);
         model.addAttribute("totalCount", products.size());
-        model.addAttribute("products", products);
+        model.addAttribute("products", products); // HTML의 th:each="product : ${products}"로 직행합니다.
 
         return "product/search";
     }
