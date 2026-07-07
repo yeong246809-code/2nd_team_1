@@ -1,3 +1,5 @@
+/*
+
 package org.example.k_market.dao;
 
 import org.example.k_market.dto.QnaDTO;
@@ -27,6 +29,7 @@ public class QnaDAO {
         return qnaRepository.findById(no)
                 .map(Qna::toDTO);
     }
+    
 
     public List<QnaDTO> findAll() {
         return qnaRepository.findAll()
@@ -43,3 +46,4 @@ public class QnaDAO {
         }
     }
 }
+*/

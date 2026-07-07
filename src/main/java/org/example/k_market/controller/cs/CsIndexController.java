@@ -19,31 +19,4 @@ public class CsIndexController {
     public String index() {
         return "cs/index";
     }
-
-    @GetMapping("/cs/faq/list")
-    public String faqList() {
-        return "cs/faq/list";
-    }
-
-    @GetMapping("/cs/notice/list")
-    public String noticeList() {
-        return "cs/notice/list";
-    }
-
-    @GetMapping("/cs/notice/view")
-    public String noticeView(Model model) {
-        model.addAttribute("notice", Map.of(
-                "category", "[안내]",
-                "title", "K-market 공지사항입니다.",
-                "regDate", LocalDateTime.now(),
-                "hit", 124,
-                "content", "<p>K-market 공지사항 상세 화면입니다.</p>"
-        ));
-        return "cs/notice/view";
-    }
-
-    @GetMapping("/cs/qna/list")
-    public String qnaList() {
-        return "cs/qna/list";
-    }
 }
