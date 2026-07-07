@@ -185,10 +185,10 @@
 <header class="w-full bg-surface dark:bg-surface-dim full-width top-0 z-50">
     <div class="bg-surface-container-lowest text-on-surface-variant text-sm py-2">
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex justify-end gap-md">
-            <a class="hover:text-primary transition-colors" href="#">로그인</a>
-            <a class="hover:text-primary transition-colors" href="#">회원가입</a>
-            <a class="hover:text-primary transition-colors" href="#">마이페이지</a>
-            <a class="hover:text-primary transition-colors flex items-center gap-xs" href="#">
+            <a class="hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">마이페이지</a>
+            <a class="hover:text-primary transition-colors flex items-center gap-xs" th:href="@{/product/cart}" href="/product/cart">
                 <span class="material-symbols-outlined text-[18px]">shopping_cart</span>장바구니
             </a>
         </div>
@@ -196,7 +196,7 @@
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md flex flex-col md:flex-row items-center justify-between gap-base border-b border-outline-variant dark:border-on-surface-variant pb-md">
         <!-- Logo area -->
         <div class="flex-shrink-0 w-48">
-            <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" href="#">L-Market</a>
+            <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" th:href="@{/}" href="/">L-Market</a>
         </div>
         <!-- Search Bar -->
         <div class="flex-grow max-w-2xl mx-md relative w-full">
@@ -208,11 +208,11 @@
     </div>
     <!-- Navigation Links -->
     <nav class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex gap-md mt-sm overflow-x-auto no-scrollbar pb-sm">
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" href="#">히트상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" href="#">추천상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" href="#">신상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" href="#">인기상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" href="#">할인상품</a>
+        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">히트상품</a>
+        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">추천상품</a>
+        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">신상품</a>
+        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">인기상품</a>
+        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">할인상품</a>
     </nav>
 </header>
 <!-- Main Content Layout -->
@@ -333,13 +333,14 @@
         <div class="flex flex-col items-center md:items-start gap-sm">
             <img class="h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="L-market brand logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMXDyT8bw5KWJybWkX38nDH9zkHzFl1zu_oBPqQx83an2MRGhj_2ha7bdwAJmtJb_nx5ZAaZg4KBbTA0dRWMOa-q8Zh66S-wOtq-3d9Kx4LaW5EDSUwuSS76f03Zki8i0GqYCYkQVOrcuW-AhB9irg1NGB7wb7xGl5tyOCimItLWi6Rnnx4josjKEXBeUqE8qoDBdKiN49xyaCaoJPpJUzYeElyqXkUv3J8QnggVH-1NxQimKO3o4f5R9W2REn9ubjuXrZOw2C8edZ"/>
             <div class="flex gap-md font-label-sm text-label-sm">
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">회사소개</a>
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">서비스 이용약관</a>
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">개인정보처리방침</a>
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">고객센터</a>
+                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/company/main}" href="/company/main">회사소개</a>
+                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/policy/buyer}" href="/policy/buyer">서비스 이용약관</a>
+                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
+                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
             </div>
         </div>
         <p class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant text-center md:text-right">Copyright © 2025 L-Market All rights reserved.</p>
     </div>
 </footer>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

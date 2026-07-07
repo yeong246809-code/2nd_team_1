@@ -110,7 +110,7 @@
 <!-- Header Start -->
 <header class="bg-surface sticky top-0 z-50 shadow-sm">
     <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
-        <a class="font-display-lg text-headline-lg font-bold text-primary" href="/">K-market</a>
+        <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
         <!-- Global Search Box -->
         <div class="hidden md:flex flex-1 max-w-xl mx-xl relative items-center">
             <input class="w-full pl-md pr-xl py-3 rounded-full bg-surface-container border-none focus:ring-2 focus:ring-primary-container transition-all" placeholder="셔츠" th:value="${keyword}" type="text"/>
@@ -119,10 +119,10 @@
             </button>
         </div>
         <nav class="flex items-center gap-md font-label-md text-label-md">
-            <a class="text-on-surface-variant hover:text-primary transition-colors" href="/login">Login</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors" href="/join">Join</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors" href="/mypage">My Page</a>
-            <a class="flex items-center text-on-surface-variant hover:text-primary transition-colors" href="/cart">
+            <a class="text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+            <a class="flex items-center text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">
                 <span class="material-symbols-outlined mr-1" data-icon="shopping_cart">shopping_cart</span>
                 Cart
             </a>
@@ -139,27 +139,27 @@
                 <p class="text-label-sm text-outline-variant uppercase tracking-wider">Browse by Department</p>
             </div>
             <nav class="flex flex-col gap-1">
-                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" th:href="@{/product/list}" href="/product/list">
                     <span class="material-symbols-outlined text-primary" data-icon="checkroom">checkroom</span>
                     <span class="font-label-md">Fashion</span>
                 </a>
-                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" th:href="@{/product/list}" href="/product/list">
                     <span class="material-symbols-outlined" data-icon="devices">devices</span>
                     <span class="font-label-md">Electronics</span>
                 </a>
-                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" th:href="@{/product/list}" href="/product/list">
                     <span class="material-symbols-outlined" data-icon="home">home</span>
                     <span class="font-label-md">Home Decor</span>
                 </a>
-                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" th:href="@{/product/list}" href="/product/list">
                     <span class="material-symbols-outlined" data-icon="face">face</span>
                     <span class="font-label-md">Beauty</span>
                 </a>
-                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" th:href="@{/product/list}" href="/product/list">
                     <span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
                     <span class="font-label-md">Groceries</span>
                 </a>
-                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+                <a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" th:href="@{/product/list}" href="/product/list">
                     <span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
                     <span class="font-label-md">Sports</span>
                 </a>
@@ -401,12 +401,12 @@
     <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
         <div class="font-headline-md text-headline-md font-bold text-primary">K-market</div>
         <nav class="flex flex-wrap justify-center gap-x-lg gap-y-2 text-body-md text-on-surface-variant">
-            <a class="hover:text-primary underline transition-colors" href="#">About Us</a>
-            <a class="hover:text-primary underline transition-colors" href="#">Customer Service</a>
-            <a class="hover:text-primary underline transition-colors" href="#">Privacy Policy</a>
-            <a class="hover:text-primary underline transition-colors" href="#">Terms of Service</a>
-            <a class="hover:text-primary underline transition-colors" href="#">FAQ</a>
-            <a class="hover:text-primary underline transition-colors" href="#">Contact</a>
+            <a class="hover:text-primary underline transition-colors" th:href="@{/company/main}" href="/company/main">About Us</a>
+            <a class="hover:text-primary underline transition-colors" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+            <a class="hover:text-primary underline transition-colors" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+            <a class="hover:text-primary underline transition-colors" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+            <a class="hover:text-primary underline transition-colors" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+            <a class="hover:text-primary underline transition-colors" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
         </nav>
         <div class="text-label-sm text-outline-variant mt-md text-center">
             (주)K-market | 대표이사: 홍길동 | 사업자등록번호: 000-00-00000<br/>
@@ -427,4 +427,5 @@
         });
     });
 </script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

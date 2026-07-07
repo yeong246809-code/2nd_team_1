@@ -116,13 +116,13 @@
 <!-- Header (상단 헤더) -->
 <header class="bg-surface shadow-sm sticky top-0 z-50">
     <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
-        <a class="font-display-lg text-headline-lg font-bold text-primary" href="/">K-market</a>
+        <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
         <nav class="hidden md:flex items-center gap-md">
             <div class="flex items-center gap-base">
-                <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Login</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Join</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">My Page</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Cart</a>
+                <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" th:href="@{/member/login}" href="/member/login">Login</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
             </div>
             <div class="flex items-center gap-sm ml-md">
                 <button class="p-2 text-on-surface-variant hover:text-primary transition-all">
@@ -141,9 +141,12 @@
 </header>
 <main class="min-h-[calc(100vh-280px)] flex flex-col items-center justify-center py-xl px-margin-mobile md:px-0">
     <div class="max-w-container-max w-full flex flex-col md:flex-row gap-lg items-stretch justify-center">
-        <!-- Login Form (로그인 폼) -->
+            <!-- Login Form (로그인 폼) -->
         <section class="flex-1 max-w-md w-full bg-white rounded-xl shadow-[0_4px_24px_rgba(44,74,82,0.06)] p-md md:p-lg">
             <h1 class="font-headline-lg text-headline-lg text-primary mb-md">로그인</h1>
+            <p class="mb-base text-label-md text-secondary" th:if="${param.join}">회원가입이 완료되었습니다. 로그인해주세요.</p>
+            <p class="mb-base text-label-md text-error" th:if="${param.error}">아이디 또는 비밀번호를 확인해주세요.</p>
+            <p class="mb-base text-label-md text-secondary" th:if="${param.logout}">로그아웃되었습니다.</p>
             <form class="space-y-base" th:action="@{/member/login}" method="POST">
                 <div class="space-y-xs">
                     <label class="font-label-md text-label-md text-on-surface-variant" for="username">아이디</label>
@@ -159,16 +162,16 @@
                         <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">자동 로그인</span>
                     </label>
                     <div class="flex items-center gap-xs text-label-sm font-label-sm text-outline">
-                        <a class="hover:text-primary transition-colors" href="#">아이디 찾기</a>
+                        <a class="hover:text-primary transition-colors" th:href="@{/member/find/userid}" href="/member/find/userid">아이디 찾기</a>
                         <span class="text-outline-variant">|</span>
-                        <a class="hover:text-primary transition-colors" href="#">비밀번호 찾기</a>
+                        <a class="hover:text-primary transition-colors" th:href="@{/member/find/password}" href="/member/find/password">비밀번호 찾기</a>
                     </div>
                 </div>
                 <div class="pt-sm space-y-base">
                     <button class="w-full bg-primary text-white font-headline-md text-headline-md py-4 rounded-lg hover:shadow-lg transition-all active:scale-[0.98]" type="submit">
                         로그인
                     </button>
-                    <button class="w-full bg-transparent border-2 border-primary text-primary font-headline-md text-headline-md py-4 rounded-lg hover:bg-primary-fixed transition-all" type="button">
+                    <button class="w-full bg-transparent border-2 border-primary text-primary font-headline-md text-headline-md py-4 rounded-lg hover:bg-primary-fixed transition-all" type="button" th:onclick="|location.href='@{/member/join}'|">
                         회원가입
                     </button>
                 </div>
@@ -237,12 +240,12 @@
 <footer class="bg-surface-container-highest w-full mt-lg">
     <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
         <div class="flex flex-wrap justify-center gap-md font-body-md text-body-md">
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">About Us</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Customer Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Terms of Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">FAQ</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" href="#">Contact</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/company/main}" href="/company/main">About Us</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
         </div>
         <div class="w-full grid md:grid-cols-2 gap-lg pt-md border-t border-outline-variant/30">
             <div class="flex flex-col gap-base">
@@ -292,4 +295,5 @@
         });
     });
 </script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

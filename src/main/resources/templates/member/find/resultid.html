@@ -113,9 +113,9 @@
 <div class="flex flex-col w-full max-w-container-max mx-auto">
 <!-- Top Utility Bar (Login, Join, etc.) -->
 <div class="flex justify-end items-center px-md py-sm gap-md border-b border-surface-variant dark:border-surface-container-high hidden md:flex">
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">로그인</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">회원가입</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">마이페이지</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" th:href="@{/member/login}" href="/member/login">로그인</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" th:href="@{/member/join}" href="/member/join">회원가입</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" th:href="@{/my/index}" href="/my/index">마이페이지</a>
 <a class="flex items-center gap-xs text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-sm text-label-sm" href="#">
 <span class="material-symbols-outlined text-[16px]">shopping_cart</span>
                     장바구니
@@ -124,7 +124,7 @@
 <!-- Main Header Area -->
 <div class="flex justify-between items-center px-md py-md w-full">
 <!-- Logo -->
-<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed tracking-tight" href="#">K-market</a>
+<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed tracking-tight" th:href="@{/}" href="/">K-market</a>
 <!-- Desktop Search (Left aligned as per JSON) -->
 <div class="hidden md:flex flex-1 max-w-md ml-lg">
 <div class="relative w-full">
@@ -188,10 +188,10 @@
             </p>
 <!-- Action Buttons -->
 <div class="flex flex-col md:flex-row gap-md justify-center">
-<a class="flex-1 bg-surface-variant text-on-surface-variant hover:bg-outline-variant hover:text-on-surface transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium" href="/member/login">
+<a class="flex-1 bg-surface-variant text-on-surface-variant hover:bg-outline-variant hover:text-on-surface transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium" th:href="@{/member/login}" href="/member/login">
                     로그인
                 </a>
-<a class="flex-1 bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium shadow-sm" href="/member/find/password">
+<a class="flex-1 bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium shadow-sm" th:href="@{/member/find/password}" href="/member/find/password">
                     비밀번호 찾기
                 </a>
 </div>
@@ -200,20 +200,21 @@
 <!-- Footer Section -->
 <footer class="bg-surface-container-highest dark:bg-surface-container-high w-full mt-lg px-md py-lg flex flex-col items-center gap-md">
 <div class="flex gap-md font-body-md text-body-md text-on-surface-variant dark:text-outline-variant flex-wrap justify-center">
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">About Us</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/company/main}" href="/company/main">About Us</a>
 <span class="text-outline">|</span>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Customer Service</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
 <span class="text-outline">|</span>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
 <span class="text-outline">|</span>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Terms of Service</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
 <span class="text-outline">|</span>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">FAQ</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
 <span class="text-outline">|</span>
-<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" href="#">Contact</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed underline transition-colors duration-200" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
 </div>
 <div class="font-body-md text-body-md text-on-surface-variant text-center mt-sm">
             © 2024 K-market. All rights reserved.
         </div>
 </footer>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

@@ -118,13 +118,13 @@
 <header class="bg-surface sticky top-0 z-50 shadow-sm transition-all duration-200 ease-in-out">
     <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
         <!-- Brand Logo -->
-        <a class="font-display-lg text-headline-lg font-bold text-primary" href="/">K-market</a>
+        <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
         <!-- Navigation Links -->
         <nav class="hidden md:flex items-center gap-md">
-            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Login</a>
-            <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Join</a>
-            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">My Page</a>
-            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Cart</a>
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
+            <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" th:href="@{/member/join}" href="/member/join">Join</a>
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
         </nav>
         <!-- Actions -->
         <div class="flex items-center gap-base">
@@ -159,7 +159,7 @@
             <p class="font-body-md text-body-md text-on-surface-variant mb-lg">
                 상품 구매 및 이벤트 참여 등<br/>다양한 혜택을 누리실 수 있습니다.
             </p>
-            <a class="w-full py-base px-md bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" href="#">
+            <a class="w-full py-base px-md bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" th:href="@{/member/signup(type='user')}" href="/member/signup?type=user">
                 가입하기
             </a>
         </div>
@@ -172,7 +172,7 @@
             <p class="font-body-md text-body-md text-on-surface-variant mb-lg">
                 K-market의 파트너가 되어<br/>귀사의 우수한 상품을 판매해 보세요.
             </p>
-            <a class="w-full py-base px-md bg-secondary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" href="#">
+            <a class="w-full py-base px-md bg-secondary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" th:href="@{/member/signup(type='seller')}" href="/member/signup?type=seller">
                 가입하기
             </a>
         </div>
@@ -181,7 +181,7 @@
     <!-- Help Section -->
     <section class="mt-lg text-center">
         <p class="font-label-md text-label-md text-on-surface-variant">
-            이미 회원이신가요? <a class="text-primary font-bold hover:underline" href="#">로그인하기</a>
+            이미 회원이신가요? <a class="text-primary font-bold hover:underline" th:href="@{/member/login}" href="/member/login">로그인하기</a>
         </p>
         <div class="mt-sm flex items-center justify-center gap-base text-on-surface-variant">
             <span class="material-symbols-outlined !text-sm" data-icon="help_outline">help_outline</span>
@@ -194,12 +194,12 @@
     <div class="w-full max-w-container-max flex flex-col md:flex-row justify-between items-center gap-md">
         <div class="font-headline-md text-headline-md font-bold text-primary">K-market</div>
         <div class="flex flex-wrap justify-center gap-md">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" href="#">About Us</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" href="#">Customer Service</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" href="#">Terms of Service</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" href="#">FAQ</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" href="#">Contact</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/company/main}" href="/company/main">About Us</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
         </div>
     </div>
     <div class="text-center font-body-md text-body-md text-on-surface-variant">
@@ -217,4 +217,5 @@
         });
     });
 </script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

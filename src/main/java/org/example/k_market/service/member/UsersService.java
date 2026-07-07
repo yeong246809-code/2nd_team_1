@@ -9,8 +9,12 @@ import org.example.k_market.security.MyUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Log4j2
@@ -19,6 +23,37 @@ import java.util.Optional;
 public class UsersService implements UserDetailsService {
 
     private final UsersRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public boolean isIdAvailable(String id) {
+        return id != null && !id.isBlank() && userRepository.findById(id.trim()).isEmpty();
+    }
+
+    @Transactional
+    public Users register(String id, String password, String passwordConfirm, String role) {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("아이디를 입력해주세요.");
+        }
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+        }
+        if (!password.equals(passwordConfirm)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        if (userRepository.findById(id.trim()).isPresent()) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        Users user = Users.builder()
+                .id(id.trim())
+                .pass(passwordEncoder.encode(password))
+                .role(role)
+                .status("ACTIVE")
+                .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .build();
+
+        return userRepository.save(user);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

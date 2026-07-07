@@ -128,7 +128,7 @@
 <header class="bg-surface dark:bg-surface-container-lowest shadow-sm w-full sticky top-0 z-50 transition-all duration-200 ease-in-out">
   <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
     <div class="flex items-center gap-md">
-      <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed" href="#">K-market</a>
+      <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed" th:href="@{/}" href="/">K-market</a>
       <div class="hidden md:flex relative group">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
         <input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full w-64 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all font-label-md" placeholder="상품을 검색해보세요" type="text">
@@ -136,10 +136,10 @@
     </div>
     <nav class="flex items-center gap-base">
       <div class="hidden md:flex gap-md mr-base">
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Login</a>
-        <a class="font-label-md text-label-md text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" href="#">Join</a>
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">My Page</a>
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Cart</a>
+        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
+        <a class="font-label-md text-label-md text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" th:href="@{/member/join}" href="/member/join">Join</a>
+        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
       </div>
       <div class="flex gap-sm">
         <button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined text-on-surface-variant">search</span></button>
@@ -172,7 +172,7 @@
   </div>
   <section class="max-w-[800px] mx-auto">
     <div class="mb-lg">
-      <h1 class="font-headline-lg text-headline-lg mb-2">회원가입 약관동의</h1>
+      <h1 class="font-headline-lg text-headline-lg mb-2" th:text="|${memberTypeName} 약관동의|">회원가입 약관동의</h1>
       <p class="text-on-surface-variant font-body-md">K-market의 서비스를 이용하시려면 아래의 약관에 동의하셔야 합니다.</p>
     </div>
     <!-- Bento Layout for Terms -->
@@ -245,10 +245,10 @@
       </div>
       <!-- Action Button -->
       <div class="flex flex-col items-center gap-md mt-lg">
-        <button class="w-full md:w-64 py-4 bg-primary text-on-primary font-bold rounded-full shadow-lg hover:bg-primary-container transition-all hover:scale-[1.02] active:scale-95 disabled:bg-surface-variant disabled:text-outline-variant disabled:cursor-not-allowed" id="submitBtn" disabled="">
+        <button class="w-full md:w-64 py-4 bg-primary text-on-primary font-bold rounded-full shadow-lg hover:bg-primary-container transition-all hover:scale-[1.02] active:scale-95 disabled:bg-surface-variant disabled:text-outline-variant disabled:cursor-not-allowed" id="submitBtn" type="button" data-next-url="/k_market/member/register?agreed=true" th:data-next-url="${memberType == 'seller'} ? @{/member/registerseller(agreed=true)} : @{/member/register(agreed=true)}" disabled="">
           동의하고 계속하기
         </button>
-        <button class="text-on-surface-variant hover:text-primary font-label-md transition-colors underline underline-offset-4">취소하고 돌아가기</button>
+        <button class="text-on-surface-variant hover:text-primary font-label-md transition-colors underline underline-offset-4" type="button" th:onclick="|location.href='@{/member/join}'|">취소하고 돌아가기</button>
       </div>
     </div>
   </section>
@@ -263,18 +263,18 @@
     <div class="grid grid-cols-2 md:grid-cols-3 gap-lg">
       <div class="flex flex-col gap-base">
         <h4 class="font-bold text-primary">Service</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">About Us</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">FAQ</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/company/main}" href="/company/main">About Us</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
       </div>
       <div class="flex flex-col gap-base">
         <h4 class="font-bold text-primary">Support</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Customer Service</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Contact</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
       </div>
       <div class="flex flex-col gap-base">
         <h4 class="font-bold text-primary">Legal</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md font-semibold" href="#">Privacy Policy</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" href="#">Terms of Service</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md font-semibold" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
       </div>
     </div>
   </div>
@@ -317,14 +317,13 @@
     submitBtn.disabled = !allRequiredChecked;
   }
 
-  // Button Micro-interaction
   submitBtn.addEventListener('click', () => {
     if(!submitBtn.disabled) {
       submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
       setTimeout(() => {
-        alert('회원가입 정보 입력 페이지로 이동합니다.');
-        submitBtn.innerHTML = '동의하고 계속하기';
-      }, 1500);
+        sessionStorage.setItem('kmarket_terms_agreed', 'true');
+        window.location.href = submitBtn.dataset.nextUrl || './register?agreed=true';
+      }, 500);
     }
   });
 
@@ -344,4 +343,5 @@
 </script>
 
 
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

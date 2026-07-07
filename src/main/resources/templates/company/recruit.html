@@ -119,10 +119,10 @@
     <div class="max-w-7xl mx-auto px-4">
         <!-- Top Utility Bar -->
         <div class="flex justify-end gap-4 py-2 text-xs text-gray-500 border-b border-gray-100">
-            <a href="#" class="hover:text-primary transition-colors">로그인</a>
-            <a href="#" class="hover:text-primary transition-colors">회원가입</a>
-            <a href="#" class="hover:text-primary transition-colors">마이페이지</a>
-            <a href="#" class="flex items-center gap-1 hover:text-primary transition-colors">
+            <a th:href="@{/member/login}" href="/member/login" class="hover:text-primary transition-colors">로그인</a>
+            <a th:href="@{/member/join}" href="/member/join" class="hover:text-primary transition-colors">회원가입</a>
+            <a th:href="@{/my/index}" href="/my/index" class="hover:text-primary transition-colors">마이페이지</a>
+            <a th:href="@{/product/cart}" href="/product/cart" class="flex items-center gap-1 hover:text-primary transition-colors">
                 <span class="material-symbols-outlined text-sm">shopping_cart</span>
                 장바구니
                 <span class="bg-primary text-white px-1.5 py-0.5 rounded-full text-[10px] font-bold">3</span>
@@ -132,13 +132,13 @@
         <!-- Main Header Content -->
         <div class="flex items-center justify-between py-6">
             <!-- Logo -->
-            <a href="/" class="text-3xl font-black text-primary tracking-tighter">
+            <a th:href="@{/}" href="/" class="text-3xl font-black text-primary tracking-tighter">
                 K-market
             </a>
 
             <!-- Search Bar -->
             <div class="flex-1 max-w-2xl mx-12">
-                <form action="/search" method="GET" class="relative">
+                <form th:action="@{/product/search}" action="/product/search" method="GET" class="relative">
                     <input type="text" name="keyword" placeholder="어떤 상품을 찾으시나요?"
                            class="w-full h-12 pl-4 pr-12 rounded-lg border-2 border-primary focus:outline-none text-sm bg-white text-on-background">
                     <button type="submit" class="absolute right-0 top-0 h-full px-4 text-primary hover:bg-gray-50 rounded-r-lg transition-colors flex items-center justify-center">
@@ -158,11 +158,11 @@
     <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-12">
         <div class="text-xs text-gray-400">회사소개 &gt; 채용</div>
         <nav class="flex gap-8 text-sm font-medium text-gray-500">
-            <a href="#" class="hover:text-primary transition-colors">HOME</a>
-            <a href="#" class="hover:text-primary transition-colors">기업문화</a>
-            <a href="#" class="hover:text-primary transition-colors">소식과 이야기</a>
-            <a href="#" class="text-primary font-bold border-b-2 border-primary pb-4 -mb-[18px]">채용</a>
-            <a href="#" class="hover:text-primary transition-colors">미디어</a>
+            <a th:href="@{/company/main}" href="/company/main" class="hover:text-primary transition-colors">HOME</a>
+            <a th:href="@{/company/culture}" href="/company/culture" class="hover:text-primary transition-colors">기업문화</a>
+            <a th:href="@{/company/story}" href="/company/story" class="hover:text-primary transition-colors">소식과 이야기</a>
+            <a th:href="@{/company/recruit}" href="/company/recruit" class="text-primary font-bold border-b-2 border-primary pb-4 -mb-[18px]">채용</a>
+            <a th:href="@{/company/media}" href="/company/media" class="hover:text-primary transition-colors">미디어</a>
         </nav>
     </div>
 
@@ -272,10 +272,10 @@
     <div class="max-w-7xl mx-auto px-4">
         <!-- Top Policy Links -->
         <div class="flex gap-8 mb-10 text-xs font-bold text-gray-600">
-            <a href="#" class="hover:text-primary transition-colors">회사소개</a>
-            <a href="#" class="hover:text-primary transition-colors">서비스이용약관</a>
-            <a href="#" class="text-primary font-black">개인정보처리방침</a>
-            <a href="#" class="hover:text-primary transition-colors">전자금융거래약관</a>
+            <a th:href="@{/company/main}" href="/company/main" class="hover:text-primary transition-colors">회사소개</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">서비스이용약관</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="text-primary font-black">개인정보처리방침</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">전자금융거래약관</a>
         </div>
 
         <div class="grid grid-cols-12 gap-8 items-start">
@@ -325,5 +325,6 @@
     </div>
 </footer>
 
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body>
 </html>

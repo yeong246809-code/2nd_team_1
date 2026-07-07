@@ -115,10 +115,10 @@
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex flex-col gap-base py-sm">
 <!-- Top Utility Bar -->
 <div class="flex justify-end items-center gap-md text-label-sm font-label-sm text-on-surface-variant">
-<a class="hover:text-primary transition-colors" href="#">로그인</a>
-<a class="hover:text-primary transition-colors" href="#">회원가입</a>
-<a class="hover:text-primary transition-colors" href="#">마이페이지</a>
-<a class="flex items-center gap-xs hover:text-primary transition-colors" href="#">
+<a class="hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
+<a class="hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
+<a class="hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">마이페이지</a>
+<a class="flex items-center gap-xs hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">
 <span class="material-symbols-outlined text-[16px]">shopping_cart</span>
                     장바구니
                 </a>
@@ -127,15 +127,15 @@
 <div class="flex flex-col md:flex-row justify-between items-center gap-md pb-xs">
 <!-- Brand -->
 <div class="flex items-center gap-sm">
-<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" href="/">L-Market</a>
+<a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" th:href="@{/}" href="/">L-Market</a>
 </div>
 <!-- Navigation Links -->
 <nav class="hidden md:flex items-center gap-md">
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" href="#">Hit Products</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" href="#">Recommended</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" href="#">New Arrivals</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" href="#">Popular</a>
-<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" href="#">Sale</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Hit Products</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Recommended</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">New Arrivals</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Popular</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-3 py-2 rounded-md font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Sale</a>
 </nav>
 <!-- Search / Customer Center Focus -->
 <div class="w-full md:w-auto relative group">
@@ -163,7 +163,7 @@
 <div class="w-6 h-6 bg-primary text-on-primary rounded-full flex items-center justify-center font-label-sm text-label-sm">1</div>
 <h2 class="font-headline-md text-headline-md text-on-surface">공지사항</h2>
 </div>
-<a class="text-primary font-label-sm text-label-sm flex items-center gap-1 hover:underline" href="#">
+<a class="text-primary font-label-sm text-label-sm flex items-center gap-1 hover:underline" th:href="@{/cs/notice/list}" href="/cs/notice/list">
                             전체보기 <span class="material-symbols-outlined text-[16px]">arrow_forward_ios</span>
 </a>
 </div>
@@ -197,7 +197,7 @@
 <div class="w-6 h-6 bg-primary text-on-primary rounded-full flex items-center justify-center font-label-sm text-label-sm">3</div>
 <h2 class="font-headline-md text-headline-md text-on-surface">문의하기</h2>
 </div>
-<a class="text-primary font-label-sm text-label-sm flex items-center gap-1 hover:underline" href="#">
+<a class="text-primary font-label-sm text-label-sm flex items-center gap-1 hover:underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">
                             전체보기 <span class="material-symbols-outlined text-[16px]">arrow_forward_ios</span>
 </a>
 </div>
@@ -247,32 +247,32 @@
 <div class="w-6 h-6 bg-primary text-on-primary rounded-full flex items-center justify-center font-label-sm text-label-sm">2</div>
 <h2 class="font-headline-md text-headline-md text-on-surface">자주하는질문</h2>
 </div>
-<a class="text-primary font-label-sm text-label-sm flex items-center gap-1 hover:underline" href="#">
+<a class="text-primary font-label-sm text-label-sm flex items-center gap-1 hover:underline" th:href="@{/cs/faq/list}" href="/cs/faq/list">
                             전체보기 <span class="material-symbols-outlined text-[16px]">arrow_forward_ios</span>
 </a>
 </div>
 <div class="grid grid-cols-2 gap-4">
-<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" href="#">
+<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" th:href="@{/cs/faq/list}" href="/cs/faq/list">
 <span class="material-symbols-outlined text-[32px] text-primary mb-2 group-hover:scale-110 transition-transform">person</span>
 <span class="font-label-md text-label-md text-on-surface">회원</span>
 </a>
-<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" href="#">
+<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" th:href="@{/cs/faq/list}" href="/cs/faq/list">
 <span class="material-symbols-outlined text-[32px] text-primary mb-2 group-hover:scale-110 transition-transform">confirmation_number</span>
 <span class="font-label-md text-label-md text-on-surface">쿠폰/이벤트</span>
 </a>
-<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" href="#">
+<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" th:href="@{/cs/faq/list}" href="/cs/faq/list">
 <span class="material-symbols-outlined text-[32px] text-primary mb-2 group-hover:scale-110 transition-transform">credit_card</span>
 <span class="font-label-md text-label-md text-on-surface">주문/결제</span>
 </a>
-<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" href="#">
+<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" th:href="@{/cs/faq/list}" href="/cs/faq/list">
 <span class="material-symbols-outlined text-[32px] text-primary mb-2 group-hover:scale-110 transition-transform">local_shipping</span>
 <span class="font-label-md text-label-md text-on-surface">배송</span>
 </a>
-<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group text-center" href="#">
+<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group text-center" th:href="@{/cs/faq/list}" href="/cs/faq/list">
 <span class="material-symbols-outlined text-[32px] text-primary mb-2 group-hover:scale-110 transition-transform">assignment_return</span>
 <span class="font-label-md text-label-md text-on-surface leading-tight">취소/반품/<br/>환불</span>
 </a>
-<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" href="#">
+<a class="flex flex-col items-center justify-center p-4 bg-surface rounded-lg border border-surface-container hover:border-primary hover:bg-surface-container-low transition-all group" th:href="@{/cs/faq/list}" href="/cs/faq/list">
 <span class="material-symbols-outlined text-[32px] text-primary mb-2 group-hover:scale-110 transition-transform">security</span>
 <span class="font-label-md text-label-md text-on-surface">안전결제</span>
 </a>
@@ -318,7 +318,7 @@
 <span class="font-label-sm text-label-sm text-outline">(평일 09:00 ~ 18:00)</span>
 </div>
 </div>
-<a class="mt-2 flex items-center gap-1 text-primary font-label-md hover:underline" href="#">
+<a class="mt-2 flex items-center gap-1 text-primary font-label-md hover:underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">
                     판매자가입및서류접수안내
                     <span class="material-symbols-outlined text-[18px]">chevron_right</span>
 </a>
@@ -334,11 +334,12 @@
 <span class="font-body-md text-body-md text-on-surface-variant">Copyright © 2025 L-Market All rights reserved.</span>
 </div>
 <nav class="flex flex-wrap items-center gap-4 md:gap-6 font-label-sm text-label-sm text-on-surface-variant">
-<a class="hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">About Us</a>
-<a class="hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
-<a class="hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
-<a class="text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Customer Center</a>
+<a class="hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/company/main}" href="/company/main">About Us</a>
+<a class="hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+<a class="hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
+<a class="text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/cs/index}" href="/cs/index">Customer Center</a>
 </nav>
 </div>
 </footer>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

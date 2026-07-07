@@ -108,14 +108,14 @@
 <!-- Header 영역 -->
 <header class="bg-surface shadow-sm sticky top-0 z-50 transition-all duration-200 ease-in-out">
 <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-<a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" href="/">
+<a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/}" href="/">
                 K-market
             </a>
 <div class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
-<a class="hover:text-primary transition-colors" href="#">Login</a>
-<a class="hover:text-primary transition-colors" href="#">Join</a>
-<a class="hover:text-primary transition-colors" href="#">My Page</a>
-<a class="hover:text-primary transition-colors" href="#">Cart</a>
+<a class="hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
+<a class="hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
+<a class="hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
+<a class="hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
 </div>
 <div class="flex items-center gap-sm text-primary">
 <button class="p-sm hover:bg-surface-variant rounded-full transition-colors group">
@@ -159,9 +159,9 @@
 <section class="col-span-1 md:col-span-9 bg-surface rounded-xl p-md md:p-lg shadow-[0_4px_24px_rgba(44,74,82,0.04)] ring-1 ring-outline-variant/20">
 <!-- Breadcrumb -->
 <nav class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-lg">
-<a class="hover:text-primary transition-colors" href="#">홈</a>
+<a class="hover:text-primary transition-colors" th:href="@{/}" href="/">홈</a>
 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-<a class="hover:text-primary transition-colors" href="#">고객센터</a>
+<a class="hover:text-primary transition-colors" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
 <span class="text-primary font-bold">공지사항</span>
 </nav>
@@ -196,7 +196,7 @@
 </div>
 <!-- Navigation Button -->
 <div class="mt-xl pt-lg border-t border-outline-variant/30 flex justify-center">
-<a class="inline-flex items-center justify-center px-lg py-sm bg-surface-variant hover:bg-surface-container-high text-on-surface-variant font-label-md rounded-full transition-all duration-200" href="/cs/notice/list">
+<a class="inline-flex items-center justify-center px-lg py-sm bg-surface-variant hover:bg-surface-container-high text-on-surface-variant font-label-md rounded-full transition-all duration-200" th:href="@{/cs/notice/list}" href="/cs/notice/list">
                     목록
                 </a>
 </div>
@@ -209,10 +209,10 @@
                 K-market
             </div>
 <div class="flex flex-wrap justify-center gap-x-md gap-y-sm font-body-md text-body-md text-on-surface-variant">
-<a class="hover:text-primary transition-colors duration-200 hover:underline" href="#">회사소개</a>
-<a class="hover:text-primary transition-colors duration-200 hover:underline" href="#">서비스이용약관</a>
-<a class="hover:text-primary transition-colors duration-200 font-bold hover:underline" href="#">개인정보처리방침</a>
-<a class="hover:text-primary transition-colors duration-200 hover:underline" href="#">전자금융거래약관</a>
+<a class="hover:text-primary transition-colors duration-200 hover:underline" th:href="@{/company/main}" href="/company/main">회사소개</a>
+<a class="hover:text-primary transition-colors duration-200 hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
+<a class="hover:text-primary transition-colors duration-200 font-bold hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
+<a class="hover:text-primary transition-colors duration-200 hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
 </div>
 <div class="w-full border-t border-outline-variant/30 my-sm"></div>
 <div class="w-full flex flex-col md:flex-row justify-between items-center text-on-surface-variant text-label-sm text-center md:text-left gap-md">
@@ -231,4 +231,5 @@
             </div>
 </div>
 </footer>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

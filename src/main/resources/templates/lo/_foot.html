@@ -3,10 +3,10 @@
     <div class="max-w-7xl mx-auto px-4">
         <!-- Top Policy Links -->
         <div class="flex gap-8 mb-10 text-xs font-bold text-gray-600">
-            <a href="#" class="hover:text-primary transition-colors">회사소개</a>
-            <a href="#" class="hover:text-primary transition-colors">서비스이용약관</a>
-            <a href="#" class="text-primary font-black">개인정보처리방침</a>
-            <a href="#" class="hover:text-primary transition-colors">전자금융거래약관</a>
+            <a th:href="@{/company/main}" href="/company/main" class="hover:text-primary transition-colors">회사소개</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">서비스이용약관</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="text-primary font-black">개인정보처리방침</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">전자금융거래약관</a>
         </div>
 
         <div class="grid grid-cols-12 gap-8 items-start">
