@@ -27,4 +27,10 @@ public class Category {
                 .cateNo(cateNo).name(name).parentNo(parentNo).depth(depth)
                 .build();
     }
+
+    public void update(String name, Integer parentNo, int depth) {
+        this.name = name;
+        this.parentNo = parentNo;
+        this.depth = depth;
+    }
 }
