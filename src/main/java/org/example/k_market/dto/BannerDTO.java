@@ -25,14 +25,14 @@ public class BannerDTO {
     private LocalTime endTime;
     private String fileUrl;
     private String status;
-    private Integer couponNo;
+    private String fileUrl_stored;
 
     public Banner toEntity(){
         return Banner.builder()
                 .id(id).name(name).sizeType(sizeType).backgroundColor(backgroundColor)
                 .linkUrl(linkUrl).position(position).startDate(startDate).endDate(endDate)
                 .startTime(startTime).endTime(endTime).fileUrl(fileUrl)
-                .status(status).couponNo(couponNo)
+                .status(status).fileUrl_stored(fileUrl_stored)
                 .build();
     }
 }
