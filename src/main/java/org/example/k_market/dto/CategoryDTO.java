@@ -11,14 +11,14 @@ import lombok.*;
 @Builder
 public class CategoryDTO {
 
-    private int catNo;
+    private int cateNo;
     private String name;
     private Integer parentNo;
     private int depth;
 
     public Category toEntity(){
         return Category.builder()
-                .catNo(catNo).name(name).parentNo(parentNo).depth(depth)
+                .cateNo(cateNo).name(name).parentNo(parentNo).depth(depth)
                 .build();
     }
 }
