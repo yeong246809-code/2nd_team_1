@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
@@ -182,8 +182,9 @@
 </head>
 <body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
 
+<!-- Shared Component: SideNavBar -->
 <aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface dark:bg-inverse-surface border-r border-outline-variant overflow-hidden">
-    <div class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0">
+    <a class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0 hover:bg-surface-container-low transition-colors" th:href="@{/admin/index}" href="/admin/index" aria-label="관리자 메인으로 이동">
         <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
             <span class="material-symbols-outlined">storefront</span>
         </div>
@@ -191,26 +192,23 @@
             <h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">K-market Admin</h2>
             <p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p>
         </div>
-    </div>
-
+    </a>
     <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
-
         <div class="group/menu">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined">store</span>
-                    <span class="font-label-md text-label-md font-bold">상점 관리</span>
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">store</span>
+                    <span class="font-label-md text-label-md">상점 관리</span>
                 </div>
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">상점목록</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">매출현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">상점목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/sales}" href="/admin/shop/sales">매출현황</a>
             </div>
         </div>
-
         <div class="group/menu">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined">group</span>
                     <span class="font-label-md text-label-md">회원 관리</span>
@@ -218,13 +216,12 @@
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">회원목록</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">포인트관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">회원목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">포인트관리</a>
             </div>
         </div>
-
         <div class="group/menu">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined">inventory_2</span>
                     <span class="font-label-md text-label-md">상품 관리</span>
@@ -232,13 +229,12 @@
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">상품목록</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">상품등록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/list}" href="/admin/product/list">상품목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/register}" href="/admin/product/register">상품등록</a>
             </div>
         </div>
-
         <div class="group/menu">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     <span class="font-label-md text-label-md">주문 관리</span>
@@ -246,13 +242,12 @@
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">주문현황</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">배송현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/sales}" href="/admin/shop/sales">주문현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">배송현황</a>
             </div>
         </div>
-
         <div class="group/menu">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined">confirmation_number</span>
                     <span class="font-label-md text-label-md">쿠폰 관리</span>
@@ -260,13 +255,12 @@
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰목록</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰발급현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">쿠폰목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">쿠폰발급현황</a>
             </div>
         </div>
-
         <div class="group/menu">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined">support_agent</span>
                     <span class="font-label-md text-label-md">고객 센터</span>
@@ -274,44 +268,41 @@
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">공지사항</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">자주묻는질문</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">문의하기</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/cs/notice/list}" href="/cs/notice/list">공지사항</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/cs/faq/list}" href="/cs/faq/list">자주묻는질문</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/cs/qna/list}" href="/cs/qna/list">문의하기</a>
             </div>
         </div>
-
         <div class="group/menu menu-item-active">
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">settings</span>
-                    <span class="font-label-md text-label-md text-primary font-bold">환경 설정</span>
+                    <span class="material-symbols-outlined text-primary">settings</span>
+                    <span class="font-label-md text-label-md font-bold text-primary">환경 설정</span>
                 </div>
                 <span class="material-symbols-outlined text-sm chevron-icon text-primary">expand_more</span>
             </button>
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">기본설정</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">배너관리</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">약관관리</a>
-                <a class="py-2 text-primary font-bold font-label-md transition-colors" href="#">카테고리</a>
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">버전관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/basic}" href="/admin/config/basic">기본설정</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/basic}" href="/admin/config/basic">배너관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/policy}" href="/admin/config/policy">약관관리</a>
+                <a class="py-2 text-primary font-bold font-label-md transition-colors" th:href="@{/admin/config/category}" href="/admin/config/category">카테고리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/version}" href="/admin/config/version">버전관리</a>
             </div>
         </div>
-
     </div>
-
     <div class="border-t border-outline-variant p-base flex flex-col gap-xs flex-shrink-0">
-        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" th:href="@{/admin/index}" href="/admin/index">
             <span class="material-symbols-outlined">history</span>
             <span class="font-label-md text-label-md">시스템 로그</span>
         </a>
-        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" th:href="@{/cs/index}" href="/cs/index">
             <span class="material-symbols-outlined">help</span>
             <span class="font-label-md text-label-md">도움말</span>
         </a>
-        <button class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+        <a class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" th:href="@{/member/logout}" href="/member/logout">
             <span class="material-symbols-outlined text-sm">logout</span>
             로그아웃
-        </button>
+        </a>
     </div>
 </aside>
 
@@ -517,3 +508,5 @@
 </script>
 </body>
 </html>
+
+
