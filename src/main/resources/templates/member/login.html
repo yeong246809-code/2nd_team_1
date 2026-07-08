@@ -106,37 +106,64 @@
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
         }
         body {
             background-color: #F7F8F9;
         }
+        .placeholder-image {
+            background-color: #f3f4f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #72787a;
+        }
     </style>
 </head>
-<body class="font-body-md text-on-surface">
+<body class="bg-surface font-body-md text-on-surface">
 <!-- Header (상단 헤더) -->
-<header class="bg-surface shadow-sm sticky top-0 z-50">
-    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto h-20">
-        <a class="font-display-lg text-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
-        <nav class="hidden md:flex items-center gap-md">
-            <div class="flex items-center gap-base">
-                <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" th:href="@{/member/login}" href="/member/login">Login</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">Join</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
-                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
+<header class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
+        <div class="flex justify-between items-center gap-md">
+            <div class="flex items-center gap-2">
+                <div class="logo-area w-8 h-8 placeholder-image rounded">
+                    <span class="material-symbols-outlined text-sm">storefront</span>
+                </div>
+                <a class="text-3xl font-extrabold text-primary shrink-0" th:href="@{/}" href="/">K-market</a>
             </div>
-            <div class="flex items-center gap-sm ml-md">
-                <button class="p-2 text-on-surface-variant hover:text-primary transition-all">
-                    <span class="material-symbols-outlined">search</span>
+
+            <form class="hidden md:flex flex-1 max-w-lg relative" th:action="@{/product/search}" action="/product/search" method="GET">
+                <input class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" name="keyword" placeholder="어떤 상품을 찾으시나요?" type="text"/>
+                <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded" type="submit" aria-label="검색">
+                    <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
                 </button>
-                <button class="p-2 text-on-surface-variant hover:text-primary transition-all relative">
-                    <span class="material-symbols-outlined">shopping_cart</span>
-                    <span class="absolute top-0 right-0 bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
-                </button>
-                <button class="p-2 text-on-surface-variant hover:text-primary transition-all">
-                    <span class="material-symbols-outlined">person</span>
-                </button>
+            </form>
+
+            <div class="flex items-center gap-md">
+                <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
+                    <a class="hover:underline" th:href="@{/member/login}" href="/member/login">로그인</a>
+                    <span class="text-outline-variant">/</span>
+                    <a class="hover:underline" th:href="@{/member/join}" href="/member/join">회원가입</a>
+                    <span class="hidden text-outline-variant" data-auth-required="true">/</span>
+                    <a class="hidden hover:underline" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
+                    <span class="text-outline-variant">/</span>
+                    <a class="hover:underline flex items-center gap-1" th:href="@{/cs/index}" href="/cs/index">
+                        <span class="material-symbols-outlined text-sm">support_agent</span>
+                        고객센터
+                    </a>
+                </div>
+                <div class="flex items-center gap-base">
+                    <a class="p-2 border border-outline-variant rounded relative" th:href="@{/product/cart}" href="/product/cart" aria-label="장바구니">
+                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
+                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">0</span>
+                    </a>
+                    <button class="md:hidden p-2 border border-outline-variant rounded" type="button" aria-label="메뉴">
+                        <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+                    </button>
+                </div>
             </div>
-        </nav>
+        </div>
     </div>
 </header>
 <main class="min-h-[calc(100vh-280px)] flex flex-col items-center justify-center py-xl px-margin-mobile md:px-0">
@@ -145,8 +172,10 @@
         <section class="flex-1 max-w-md w-full bg-white rounded-xl shadow-[0_4px_24px_rgba(44,74,82,0.06)] p-md md:p-lg">
             <h1 class="font-headline-lg text-headline-lg text-primary mb-md">로그인</h1>
             <p class="mb-base text-label-md text-secondary" th:if="${param.join}">회원가입이 완료되었습니다. 로그인해주세요.</p>
-            <p class="mb-base text-label-md text-error" th:if="${param.error}">아이디 또는 비밀번호를 확인해주세요.</p>
+            <p class="mb-base text-label-md text-error" th:if="${snsError}" th:text="${snsMessage}">SNS 로그인에 실패했습니다. 설정을 확인해주세요.</p>
+            <p class="mb-base text-label-md text-error" th:if="${loginError}" th:text="${loginMessage}">아이디 또는 비밀번호를 확인해주세요.</p>
             <p class="mb-base text-label-md text-secondary" th:if="${param.logout}">로그아웃되었습니다.</p>
+            <p class="mb-base text-label-md text-secondary" th:if="${param.withdrawn}">회원 탈퇴가 완료되었습니다.</p>
             <form class="space-y-base" th:action="@{/member/login}" method="POST">
                 <div class="space-y-xs">
                     <label class="font-label-md text-label-md text-on-surface-variant" for="username">아이디</label>
@@ -181,11 +210,11 @@
                 <h2 class="text-center font-label-md text-label-md text-outline-variant mb-md">SNS 계정으로 로그인하기</h2>
                 <div class="flex justify-center gap-md">
                     <!-- 소셜 로그인 로고 삽입 위치: Naver -->
-                    <a class="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center hover:shadow-md transition-all group overflow-hidden" href="#">
+                    <a class="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center hover:shadow-md transition-all group overflow-hidden" th:href="@{/oauth2/authorization/naver}" href="/oauth2/authorization/naver" aria-label="네이버 로그인">
                         <div class="w-full h-full bg-[#03C75A] flex items-center justify-center text-white font-bold text-xl">N</div>
                     </a>
                     <!-- 소셜 로그인 로고 삽입 위치: Kakao -->
-                    <a class="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center hover:shadow-md transition-all group overflow-hidden" href="#">
+                    <a class="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center hover:shadow-md transition-all group overflow-hidden" th:href="@{/oauth2/authorization/kakao}" href="/oauth2/authorization/kakao" aria-label="카카오 로그인">
                         <div class="w-full h-full bg-[#FEE500] flex items-center justify-center text-[#3c1e1e] font-bold">
                             <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
                         </div>
@@ -236,37 +265,54 @@
         </div>
     </div>
 </main>
-<!-- Footer (푸터) -->
-<footer class="bg-surface-container-highest w-full mt-lg">
-    <div class="w-full px-md py-lg flex flex-col items-center gap-md max-w-container-max mx-auto">
-        <div class="flex flex-wrap justify-center gap-md font-body-md text-body-md">
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/company/main}" href="/company/main">About Us</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors underline" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
+<!-- Detailed Footer (상세 푸터) -->
+<footer class="bg-white border-t border-outline-variant mt-xl py-lg">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+        <div class="flex flex-wrap gap-md text-sm font-medium text-on-surface-variant mb-8 border-b border-surface-container pb-4">
+            <a class="hover:text-primary" th:href="@{/company/main}" href="/company/main">회사소개</a>
+            <span class="text-outline-variant">|</span>
+            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
+            <span class="text-outline-variant">|</span>
+            <a class="hover:text-primary font-bold text-on-surface" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
+            <span class="text-outline-variant">|</span>
+            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
         </div>
-        <div class="w-full grid md:grid-cols-2 gap-lg pt-md border-t border-outline-variant/30">
-            <div class="flex flex-col gap-base">
-                <h4 class="font-headline-md text-headline-md font-bold text-primary">(주)케이마켓</h4>
-                <p class="font-body-md text-body-md text-on-surface-variant">
-                    부산광역시 부산진구 중앙대로 103<br/>
-                    대표이사 : 홍길동<br/>
-                    사업자등록번호 : 123-45-12345
-                </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+            <div class="flex flex-col md:flex-row gap-md items-start">
+                <div class="footer-logo w-24 h-24 placeholder-image flex items-center justify-center rounded shrink-0">
+                    <span class="material-symbols-outlined text-4xl">storefront</span>
+                </div>
+                <div class="text-sm text-on-surface-variant space-y-1">
+                    <h2 class="text-xl font-bold text-primary mb-2">(주)케이마켓</h2>
+                    <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
+                    <p>대표이사 : 홍길동</p>
+                    <p>사업자등록번호 : 123-45-12345</p>
+                    <p class="mt-4 text-[10px] text-outline">0.0.5 SNAPSHOT</p>
+                </div>
             </div>
-            <div class="flex flex-col gap-base md:text-right">
-                <h4 class="font-headline-md text-headline-md font-bold text-primary">고객센터</h4>
-                <p class="font-body-md text-body-md text-on-surface-variant">
-                    Tel : 1234-5678 (평일 09:00~18:00)<br/>
-                    전자금융거래 분쟁 담당 : 1234-1234 (365일 09:00~18:00)
-                </p>
+            <div class="flex flex-col gap-2">
+                <h3 class="font-bold text-lg text-primary">고객센터</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md text-sm text-on-surface-variant">
+                    <div>
+                        <p class="font-bold text-on-surface">Tel : 1234-5678</p>
+                        <p>평일 09:00 ~ 18:00</p>
+                        <p>점심 12:00 ~ 13:00</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-on-surface">전자금융거래 분쟁 담당</p>
+                        <p>1234-1234 (365일 09:00 ~ 18:00)</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-4">
+                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" th:href="@{/cs/qna/list}" href="/cs/qna/list" aria-label="문의하기">
+                        <span class="material-symbols-outlined text-sm">mail</span>
+                    </a>
+                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" th:href="@{/cs/index}" href="/cs/index" aria-label="고객센터">
+                        <span class="material-symbols-outlined text-sm">support_agent</span>
+                    </a>
+                </div>
             </div>
         </div>
-        <p class="font-body-md text-body-md text-outline-variant mt-md">
-            © 2024 K-market. All rights reserved.
-        </p>
     </div>
 </footer>
 <script>

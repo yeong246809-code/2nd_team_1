@@ -8,6 +8,7 @@ import org.example.k_market.service.member.UsersService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,13 +34,28 @@ public class UsersController {
     private final EmailVerificationService emailVerificationService;
 
     @GetMapping("/member/login")
-    public String loginPage(Authentication authentication) {
+    public String loginPage(
+            Authentication authentication,
+            @RequestParam(name = "error", required = false) String error,
+            @RequestParam(name = "loginMessage", required = false) String loginMessage,
+            @RequestParam(name = "snsMessage", required = false) String snsMessage,
+            Model model) {
         if (isAuthenticated(authentication)) {
             if (isAdmin(authentication)) {
                 return "redirect:/admin/index";
             }
             return "redirect:/my/index";
         }
+
+        boolean snsError = "sns".equals(error);
+        model.addAttribute("snsError", snsError);
+        model.addAttribute("loginError", error != null && !snsError);
+        model.addAttribute("loginMessage", (loginMessage == null || loginMessage.isBlank())
+                ? "아이디 또는 비밀번호를 확인해주세요."
+                : loginMessage);
+        model.addAttribute("snsMessage", (snsMessage == null || snsMessage.isBlank())
+                ? "SNS 로그인에 실패했습니다. 설정을 확인해주세요."
+                : snsMessage);
 
         return "member/login";
     }

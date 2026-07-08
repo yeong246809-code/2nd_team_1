@@ -158,7 +158,7 @@
                 <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
                     <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
                     <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
-                    <a class="hover:text-primary transition-colors" th:href="@{/my/index}">마이페이지</a>
+                    <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
                     <a class="flex items-center gap-xs hover:text-primary transition-colors font-bold" th:href="@{/product/cart}">
                         <span class="material-symbols-outlined">shopping_cart</span>
                         장바구니
@@ -470,7 +470,7 @@
                     <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
                     <p>대표이사 : 홍길동</p>
                     <p>사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">Copyright © 2025 김철학 All rights reserved.</p>
+                    <p class="mt-4 text-[10px] text-outline">© 2025 K-market. 모든 권리 보유.</p>
                 </div>
             </div>
             <!-- Customer Center -->
@@ -510,7 +510,7 @@
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px]">검색</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="hidden flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/my/index}" href="/my/index" data-auth-required="true">
         <span class="material-symbols-outlined">person</span>
         <span class="text-[10px]">마이페이지</span>
     </a>

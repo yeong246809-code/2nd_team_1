@@ -153,8 +153,8 @@
                     <a class="hover:underline" th:href="@{/member/login}">로그인</a>
                     <span class="text-outline-variant">/</span>
                     <a class="hover:underline" th:href="@{/member/join}">회원가입</a>
-                    <span class="text-outline-variant">/</span>
-                    <a class="hover:underline" th:href="@{/my/index}">마이페이지</a>
+                    <span class="hidden text-outline-variant" data-auth-required="true">/</span>
+                    <a class="hidden hover:underline" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
                 </div>
                 <div class="flex items-center gap-base">
                     <button class="p-2 border border-outline-variant rounded relative" th:onclick="|location.href='@{/product/cart}'|">
@@ -334,7 +334,7 @@
                     <img alt="Product Detail Feature" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7_1ISGxDZdWnqUf8CRrNMEOcSANZxCj2Sf2BQVUJbD7VMRl4ULtlc9mSghIoM3cbDBZTOQUSuc3a5gUeJ3kh5TnPEP5VCcIWx3dQ-banuzqdHHhRHXNjLbZsIqtTNaViGamHOYQe-wzEY-RreO3Oi3UOaDibpHKEhLrsw8Va73uwDRBsbbA2mXCbyp1aa8mYQcwxOvoeCBvAngKfYaDS02AJK9NajvOqj6D74-Yjs3Me4j9RpxaEDfBIHiEJGUNbLVd4FL2Z8Ccca"/>
                     <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white p-lg text-center">
                         <p class="text-3xl font-bold mb-sm">최첨단 기술의 집약체</p>
-                        <p class="max-w-xl text-sm leading-relaxed">K-Market의 엄격한 품질 테스트를 통과한 최우수 상품입니다. 일상을 변화시키는 혁신적인 성능을 경험해보세요.</p>
+                        <p class="max-w-xl text-sm leading-relaxed">K-market의 엄격한 품질 테스트를 통과한 최우수 상품입니다. 일상을 변화시키는 혁신적인 성능을 경험해보세요.</p>
                     </div>
                 </div>
             </div>
@@ -442,7 +442,7 @@
                     <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
                     <p>대표이사 : 홍길동</p>
                     <p>사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">Copyright © 2026 K-Market All rights reserved.</p>
+                    <p class="mt-4 text-[10px] text-outline">© 2026 K-market. 모든 권리 보유.</p>
                 </div>
             </div>
             <!-- Customer Center -->
@@ -482,7 +482,7 @@
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px]">검색</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="hidden flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/my/index}" href="/my/index" data-auth-required="true">
         <span class="material-symbols-outlined">person</span>
         <span class="text-[10px]">마이페이지</span>
     </a>

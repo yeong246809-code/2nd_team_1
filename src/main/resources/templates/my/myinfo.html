@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html><html lang="ko" style=""><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market - 나의 설정</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary-fixed": "#ffdcc7",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "primary-fixed-dim": "#acccd5",
+                        "secondary-fixed": "#c0ecdc",
+                        "secondary-container": "#c0ecdc",
+                        "secondary": "#3e6659",
+                        "on-error": "#ffffff",
+                        "primary-container": "#2c4a52",
+                        "on-primary-container": "#99b9c2",
+                        "surface-container-high": "#e7e8e9",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#edeeef",
+                        "on-secondary-container": "#446c5f",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#001f26",
+                        "tertiary": "#452916",
+                        "surface-tint": "#45636b",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-surface-variant": "#41484a",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#002018",
+                        "on-background": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-primary": "#acccd5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed": "#c8e8f2",
+                        "surface-dim": "#d9dadb",
+                        "outline": "#72787a",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c1c7ca",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-container": "#5e3f2a",
+                        "surface-bright": "#f8f9fa",
+                        "primary": "#14333b",
+                        "on-tertiary-fixed": "#2d1605",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-primary-fixed-variant": "#2d4b53"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "lg": "48px",
+                        "xl": "80px"
+                    },
+                    fontFamily: {
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "label-md": ["14px", { lineHeight: "1.4", letterSpacing: "0.01em", fontWeight: "500" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "1.3", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "1.3", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "1.2", fontWeight: "600" }],
+                        "headline-md": ["20px", { lineHeight: "1.4", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8f9fa; }
+    </style>
+</head>
+<body class="text-on-surface flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<div th:replace="~{my/_shared :: header}"></div>
+<div class="flex-grow max-w-container-max mx-auto w-full flex flex-col md:flex-row px-margin-mobile md:px-gutter gap-lg py-lg">
+    <!-- SideNavBar -->
+    <div th:replace="~{my/_shared :: sidebar('myinfo')}"></div>
+    <!-- Main Content -->
+    <main class="flex-grow max-w-3xl">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface mb-md">나의 설정</h1>
+        <p class="mb-md text-label-md text-error" th:if="${param.withdrawError}" th:text="${param.withdrawError[0]}">탈퇴 처리 중 오류가 발생했습니다.</p>
+        <!-- Banner Placeholder -->
+        <div class="w-full h-24 mb-lg rounded-xl overflow-hidden bg-surface-variant flex items-center justify-center relative">
+            <img class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-multiply" data-alt="A wide horizontal banner ad space, styled minimally with soft lighting and subtle geometric patterns in light gray and pastel tones, indicating a placeholder for promotional content in a modern e-commerce setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtJZkE6RJooLinA5x4axH_U0cBNZg-k4SpqljjwTMzyYYJJQ1Kbs5XDoQGPV5x0E1vW9U9XNoGS2XWNyAFgQcXFYB2ZC0podP_TaEI17Om0-al8LEwpHQTv1nNwicLVC-HX8OS-C2hIJ4X8kwnk0JpXpjs_fdxAP_o-jVsGG45oio5qJfzeM3cUqFkNIdcOYJ3DktaBcqdhcBm-_fae7HwvE5zPMLk8pwMuXtC1NiZ6p0q1iWtoU9QS06iHF_A-mpUcuiu3Tca9gsJ">
+            <span class="font-headline-md text-outline relative z-10">810 x 86 배너 광고</span>
+        </div>
+        <!-- Settings Form -->
+        <div class="bg-surface rounded-xl p-lg shadow-sm border border-outline-variant">
+            <div class="grid grid-cols-[120px_1fr] gap-y-md items-center border-b border-outline-variant pb-lg mb-lg">
+                <div class="font-label-md text-on-surface-variant">사용자 ID</div>
+                <div class="font-body-md" th:text="${myInfoUserId} ?: '-'">chh****</div>
+                <div class="font-label-md text-on-surface-variant">비밀번호</div>
+                <div>
+                    <button class="px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">비밀번호 수정</button>
+                </div>
+                <div class="font-label-md text-on-surface-variant">이름</div>
+                <div class="font-body-md" th:text="${myInfoName}">김*학</div>
+                <div class="font-label-md text-on-surface-variant">생년월일</div>
+                <div class="font-body-md" th:text="${myInfoBirthDate}">1983년 05월 03일</div>
+                <div class="font-label-md text-on-surface-variant">이메일</div>
+                <div class="flex gap-sm items-center flex-wrap">
+                    <input class="h-10 min-w-[140px] flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" placeholder="이메일 아이디" type="text" th:value="${myInfoEmailLocal}" value="chhak0503">
+                    <span class="">@</span>
+                    <input class="h-10 min-w-[160px] flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" placeholder="이메일 도메인" type="text" th:value="${myInfoEmailDomain}" value="naver.com">
+                    <select class="h-10 w-40 px-sm pr-8 py-xs border border-outline rounded-lg bg-surface font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
+                        <option>직접입력</option>
+                    </select>
+                    <button class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
+                </div>
+                <div class="font-label-md text-on-surface-variant mt-sm">휴대폰</div>
+                <div class="flex gap-sm items-center flex-wrap mt-sm">
+                    <select class="h-10 w-24 px-sm pr-8 py-xs border border-outline rounded-lg bg-surface font-body-md text-on-surface focus:border-primary outline-none">
+                        <option th:value="${myInfoPhoneFirst}" th:text="${myInfoPhoneFirst}">010</option>
+                    </select>
+                    <span class="">-</span>
+                    <input class="h-10 w-28 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md text-center focus:border-primary outline-none" placeholder="0000" type="text" th:value="${myInfoPhoneMiddle}" value="1234">
+                    <span class="">-</span>
+                    <input class="h-10 w-28 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md text-center focus:border-primary outline-none" placeholder="0000" type="text" th:value="${myInfoPhoneLast}" value="5678">
+                    <button class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
+                </div>
+                <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">주소</div>
+                <div class="flex flex-col gap-sm mt-sm">
+                    <div class="flex gap-sm">
+                        <input class="px-sm py-xs border border-outline rounded-lg bg-surface font-body-md w-32 focus:border-primary outline-none" placeholder="우편번호" type="text" th:value="${myInfoZipCode}">
+                        <button class="px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors bg-surface-container-low">주소검색</button>
+                    </div>
+                    <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[56px] focus:border-primary outline-none resize-y" placeholder="기본주소" th:text="${myInfoBaseAddress}"></textarea>
+                    <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[72px] focus:border-primary outline-none resize-y" placeholder="상세주소" th:text="${myInfoDetailAddress}"></textarea>
+                </div>
+                <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">소셜 로그인</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm mt-sm">
+                    <div class="border border-outline-variant rounded-lg bg-surface-container-lowest px-md py-sm flex items-center justify-between">
+                        <div class="flex items-center gap-sm">
+                            <span class="w-8 h-8 rounded-full bg-[#03C75A] text-white font-bold flex items-center justify-center">N</span>
+                            <div>
+                                <p class="font-label-md text-label-md text-on-surface">네이버</p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant">SNS 로그인 상태</p>
+                            </div>
+                        </div>
+                        <span class="px-sm py-xs rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant" th:classappend="${naverConnected} ? ' bg-secondary-container text-on-secondary-container' : ''" th:text="${naverConnected} ? '연결됨' : '미연결'">미연결</span>
+                    </div>
+                    <div class="border border-outline-variant rounded-lg bg-surface-container-lowest px-md py-sm flex items-center justify-between">
+                        <div class="flex items-center gap-sm">
+                            <span class="w-8 h-8 rounded-full bg-[#FEE500] text-[#3c1e1e] font-bold flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+                            </span>
+                            <div>
+                                <p class="font-label-md text-label-md text-on-surface">카카오</p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant">SNS 로그인 상태</p>
+                            </div>
+                        </div>
+                        <span class="px-sm py-xs rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant" th:classappend="${kakaoConnected} ? ' bg-secondary-container text-on-secondary-container' : ''" th:text="${kakaoConnected} ? '연결됨' : '미연결'">미연결</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-sm items-center mt-xl">
+                <form class="order-2 sm:order-1 sm:justify-self-start" th:action="@{/my/withdraw}" method="post" onsubmit="return confirm('회원 탈퇴 후에는 같은 아이디로 로그인할 수 없습니다. 탈퇴하시겠습니까?');">
+                    <button type="submit" class="inline-flex h-10 min-w-[96px] items-center justify-center whitespace-nowrap px-md border border-error-container text-on-error-container font-label-md rounded-lg hover:bg-error-container transition-colors">탈퇴하기</button>
+                </form>
+                <button class="order-1 sm:order-2 inline-flex h-11 w-full sm:w-auto min-w-[160px] items-center justify-center px-xl bg-primary-container text-on-primary font-label-md rounded-lg hover:bg-primary transition-colors">수정하기</button>
+                <div class="hidden sm:block order-3"></div>
+            </div>
+        </div>
+    </main>
+</div>
+<!-- Footer -->
+<div th:replace="~{my/_shared :: footer}"></div>
+
+
+
+
+
+
+
+
+
+
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+</body></html>
+

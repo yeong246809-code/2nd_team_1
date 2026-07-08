@@ -147,7 +147,7 @@
         <div class="flex justify-end gap-4 py-2 text-xs text-gray-500 border-b border-gray-100">
             <a th:href="@{/member/login}" href="/member/login" class="hover:text-primary transition-colors">로그인</a>
             <a th:href="@{/member/join}" href="/member/join" class="hover:text-primary transition-colors">회원가입</a>
-            <a th:href="@{/my/index}" href="/my/index" class="hover:text-primary transition-colors">마이페이지</a>
+            <a th:href="@{/my/index}" href="/my/index" class="hidden hover:text-primary transition-colors" data-auth-required="true">마이페이지</a>
             <a th:href="@{/product/cart}" href="/product/cart" class="flex items-center gap-1 hover:text-primary transition-colors">
                 <span class="material-symbols-outlined text-sm">shopping_cart</span>
                 장바구니
@@ -363,7 +363,7 @@
                 <div class="space-y-1.5 text-xs text-gray-500 leading-relaxed">
                     <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
                     <p>대표이사 : 홍길동 | 사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 opacity-60">Copyright © 2026 김철학 All rights reserved.</p>
+                    <p class="mt-4 opacity-60">© 2026 K-market. 모든 권리 보유.</p>
                 </div>
             </div>
 

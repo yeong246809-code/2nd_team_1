@@ -3,7 +3,7 @@
 <html lang="ko"><head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>L-Market 서비스 이용약관</title>
+    <title>K-market 서비스 이용약관</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -187,7 +187,7 @@
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex justify-end gap-md">
             <a class="hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
             <a class="hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index">마이페이지</a>
+            <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
             <a class="hover:text-primary transition-colors flex items-center gap-xs" th:href="@{/product/cart}" href="/product/cart">
                 <span class="material-symbols-outlined text-[18px]">shopping_cart</span>장바구니
             </a>
@@ -196,7 +196,7 @@
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md flex flex-col md:flex-row items-center justify-between gap-base border-b border-outline-variant dark:border-on-surface-variant pb-md">
         <!-- Logo area -->
         <div class="flex-shrink-0 w-48">
-            <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" th:href="@{/}" href="/">L-Market</a>
+            <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" th:href="@{/}" href="/">K-market</a>
         </div>
         <!-- Search Bar -->
         <div class="flex-grow max-w-2xl mx-md relative w-full">
@@ -248,7 +248,7 @@
     <div class="flex-grow flex flex-col gap-lg min-w-0">
         <!-- Service Terms Header -->
         <div class="flex flex-col gap-md">
-            <h1 class="font-headline-lg text-headline-lg font-bold text-on-surface border-b border-outline-variant pb-sm">L-Market 서비스 이용약관</h1>
+            <h1 class="font-headline-lg text-headline-lg font-bold text-on-surface border-b border-outline-variant pb-sm">K-market 서비스 이용약관</h1>
             <!-- Terms Tabs -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-sm">
                 <a th:each="policy : ${policies}"
@@ -289,7 +289,7 @@
                 <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
             </div>
         </div>
-        <p class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant text-center md:text-right">Copyright © 2025 L-Market All rights reserved.</p>
+        <p class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant text-center md:text-right">© 2025 K-market. 모든 권리 보유.</p>
     </div>
 </footer>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>

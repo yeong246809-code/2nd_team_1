@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>장바구니 - K-Market</title>
+    <title>장바구니 - K-market</title>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
@@ -143,7 +143,7 @@
                 <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
                     <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
                     <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
-                    <a class="hover:text-primary transition-colors" th:href="@{/my/index}">마이페이지</a>
+                    <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
                     <a class="flex items-center gap-xs text-primary font-bold" th:href="@{/product/cart}">
                         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
                         장바구니
@@ -162,11 +162,11 @@
         </div>
         <!-- Global Navigation -->
         <nav class="flex items-center gap-lg py-xs">
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Hit Products</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Recommended</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">New Arrivals</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Popular</a>
-            <a class="text-primary font-bold border-b-2 border-primary font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">Sale</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">인기 상품</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">추천 상품</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">신상품</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">베스트</a>
+            <a class="text-primary font-bold border-b-2 border-primary font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">세일</a>
         </nav>
     </div>
 </header>
@@ -397,7 +397,7 @@
                     <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
                     <p>대표이사 : 홍길동</p>
                     <p>사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">Copyright © 2025 김철학 All rights reserved.</p>
+                    <p class="mt-4 text-[10px] text-outline">© 2025 K-market. 모든 권리 보유.</p>
                 </div>
             </div>
             <div class="flex flex-col gap-2">
@@ -435,7 +435,7 @@
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px]">검색</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="hidden flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/my/index}" href="/my/index" data-auth-required="true">
         <span class="material-symbols-outlined">person</span>
         <span class="text-[10px]">마이페이지</span>
     </a>

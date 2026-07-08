@@ -9,6 +9,7 @@ import org.example.k_market.repository.MemberRepository;
 import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.security.MyUserDetails;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +33,7 @@ public class UsersService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final ShopRepository shopRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DefaultMemberGradeService defaultMemberGradeService;
 
     public boolean isIdAvailable(String id) {
         return id != null && !id.isBlank() && userRepository.findById(id.trim()).isEmpty();
@@ -125,7 +127,7 @@ public class UsersService implements UserDetailsService {
                 .zipCode(trimToNull(zipCode))
                 .baseAddress(valueOrEmpty(baseAddress))
                 .detailAddress(trimToNull(detailAddress))
-                .gradeNo(1)
+                .gradeNo(defaultMemberGradeService.getDefaultGradeNo())
                 .points(0)
                 .createdAt(LocalDateTime.now())
                 .status("ACTIVE")
@@ -192,10 +194,15 @@ public class UsersService implements UserDetailsService {
         Optional<Users> optUser = userRepository.findById(username);
 
         if (optUser.isPresent()){
-            log.info("사용자 발견: " + optUser.get().getId());
+            Users user = optUser.get();
+            log.info("사용자 발견: " + user.getId());
+
+            if (MemberAccountStatus.isBlockedForLogin(user.getStatus())) {
+                throw new DisabledException(MemberAccountStatus.loginBlockMessage(user.getStatus()));
+            }
 
             MyUserDetails details = MyUserDetails.builder()
-                    .user(optUser.get())
+                    .user(user)
                     .build();
 
             return details;
