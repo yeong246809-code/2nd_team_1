@@ -3,9 +3,9 @@ package org.example.k_market.controller.cs;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.QnaDTO;
-import org.example.k_market.dto.UsersDTO;
-import org.example.k_market.entity.Member;
 import org.example.k_market.entity.Qna;
+import org.example.k_market.entity.Users;
+import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.service.cs.QnaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class QnaController {
 
     private final QnaService qnaService;
+    private final UsersRepository usersRepository;
 
     // 문의 목록
     @GetMapping("/list")
@@ -24,7 +25,6 @@ public class QnaController {
         model.addAttribute("qnas", qnaService.findAll());
         return "cs/qna/list";
     }
-
 
     // 문의 상세
     @GetMapping("/view/{no}")
@@ -37,33 +37,40 @@ public class QnaController {
         model.addAttribute("answer", answer);
 
         return "cs/qna/view";
-
     }
 
-
     // 답변 내용 저장
+    // admin 계정으로 로그인한 경우에만 답변 등록 가능
     @PostMapping("/answer")
     public String answer(@RequestParam int parentNo,
-                         @RequestParam String content){
+                         @RequestParam String content,
+                         HttpSession session) {
+
+        String sessUser = (String) session.getAttribute("sessUser");
+
+        // 로그인하지 않은 경우
+        if (sessUser == null) {
+            return "redirect:/member/login";
+        }
+
+        // admin이 아닌 경우 답변 등록 차단
+        if (!"admin".equals(sessUser)) {
+            return "redirect:/cs/qna/view/" + parentNo;
+        }
 
         qnaService.saveAnswer(parentNo, content);
 
         return "redirect:/cs/qna/view/" + parentNo;
     }
 
-
-    // 글쓰기
+    // 문의 작성 화면
     @GetMapping("/write")
     public String write(HttpSession session) {
 
-        // 세션 확인용 로그
-        System.out.println("sessUser = " + session.getAttribute("sessUser"));
-        System.out.println("sessMember = " + session.getAttribute("sessMember"));
-        System.out.println("member = " + session.getAttribute("member"));
-        System.out.println("user = " + session.getAttribute("user"));
+        // 현재 프로젝트에서는 sessUser에 UsersDTO가 아니라 로그인 id 문자열이 저장되어 있음
+        String sessUser = (String) session.getAttribute("sessUser");
 
-        UsersDTO sessUser = (UsersDTO) session.getAttribute("sessUser");
-
+        // 로그인하지 않은 경우 문의 작성 불가
         if (sessUser == null) {
             return "redirect:/member/login";
         }
@@ -71,30 +78,27 @@ public class QnaController {
         return "cs/qna/write";
     }
 
-
     // 문의글 등록 처리
-// write.html form에서 넘어온 title, content, type1, type2를 QnaDTO로 받는다.
-// 작성자 번호(memberNo)는 사용자가 보내는 값이 아니라 로그인 세션에서 가져온다.
     @PostMapping("/write")
     public String write(QnaDTO qnaDTO, HttpSession session) {
 
-        // 세션에서 로그인한 사용자 정보 가져오기
-        UsersDTO sessUser = (UsersDTO) session.getAttribute("sessUser");
+        // 세션에서 로그인한 사용자 id 가져오기
+        String sessUser = (String) session.getAttribute("sessUser");
 
-        // 로그인하지 않은 경우 글 등록 불가
+        // 로그인하지 않은 경우 문의 등록 불가
         if (sessUser == null) {
             return "redirect:/member/login";
         }
 
-        // qna 테이블에는 Users.id가 아니라 memberNo를 저장한다.
-        qnaDTO.setMemberNo(sessUser.getMemberNo());
+        // id로 Users 엔티티 조회
+        Users user = usersRepository.findById(sessUser)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        // JPA 방식: Service → Repository.save()
+        // 사용자가 보낸 값이 아니라 서버에서 찾은 memberNo를 저장
+        qnaDTO.setMemberNo(user.getMemberNo());
+
         qnaService.save(qnaDTO);
 
-        // 등록 후 문의 목록으로 이동
         return "redirect:/cs/qna/list";
     }
-
-
 }

@@ -140,7 +140,8 @@
 </span>
                     </td>
                     <!-- 작성자 -->
-                    <td class="py-md px-md text-center text-on-surface" th:text="${qna.user.id}">
+                    <td class="py-md px-md text-center text-on-surface"
+                        th:text="${qna.maskedId}">
                     </td>
                     <!-- 등록일 -->
                     <td class="py-md px-md text-center text-on-surface" th:text="${#temporals.format(qna.createdAt, 'yy.MM.dd')}">

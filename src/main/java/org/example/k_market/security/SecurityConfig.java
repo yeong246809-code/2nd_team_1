@@ -35,6 +35,10 @@ public class SecurityConfig {
                     boolean isAdmin = authentication.getAuthorities().stream()
                             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
+                    // 관리자 여부를 세션에 따로 저장
+                    request.getSession().setAttribute("sessUser", userId);
+                    request.getSession().setAttribute("isAdmin", isAdmin);
+
                     if (isAdmin) {
                         // Context Path를 앞에 붙여서 리다이렉트
                         response.sendRedirect(contextPath + "/admin/index");
@@ -63,6 +67,7 @@ public class SecurityConfig {
                 //셀러 권한 필요하면 여기에 추가
                 .requestMatchers("/admin/product/**").hasAnyRole("ADMIN", "SELLER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/cs/notice/write").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );
 

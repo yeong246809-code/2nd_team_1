@@ -278,6 +278,82 @@
             </div>
         </div>
 
+        <div class="mb-8">
+            <h2 class="font-bold text-lg mb-4 border-b pb-2">상품 선택 정보</h2>
+            <div id="optionContainer" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4 option-row">
+                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg">
+                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg">
+                </div>
+                <div class="grid grid-cols-2 gap-4 option-row">
+                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg">
+                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg">
+                </div>
+                <div class="grid grid-cols-2 gap-4 option-row">
+                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg">
+                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg">
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button type="button" onclick="addOption()" class="px-4 py-2 bg-secondary text-white rounded-lg text-sm">
+                    + 옵션 추가
+                </button>
+            </div>
+        </div>
+
+        <script>
+            // 옵션 추가 기능
+            function addOption() {
+                const container = document.getElementById('optionContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'grid grid-cols-2 gap-4 option-row mt-2';
+                newRow.innerHTML = `
+            <input type="text" name="optionName[]" placeholder="옵션명" class="border-outline-variant rounded-lg">
+            <input type="text" name="optionValue[]" placeholder="옵션항목" class="border-outline-variant rounded-lg">
+        `;
+                container.appendChild(newRow);
+            }
+        </script>
+
+        <div class="mb-8">
+            <h2 class="font-bold text-lg mb-4 border-b pb-2">상품정보 제공고시</h2>
+
+            <div class="bg-surface-container p-4 rounded-lg mb-4 text-sm text-on-surface-variant border border-outline-variant">
+                <p>[전자상거래에 관한 상품정보 제공에 관한 고시] 항목에 의거 등록하는 정보입니다.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">상품 상태</label>
+                        <input type="text" th:field="*{status}" placeholder="예: 새상품" class="w-full border-outline-variant rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">부가세 면세여부</label>
+                        <input type="text" th:field="*{taxFreeYn}" placeholder="예: 과세상품" class="w-full border-outline-variant rounded-lg">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">영수증 발행</label>
+                        <input type="text" th:field="*{receiptYn}" placeholder="예: 발행가능" class="w-full border-outline-variant rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">사업자 구분</label>
+                        <input type="text" th:field="*{bizType}" placeholder="예: 사업자판매자" class="w-full border-outline-variant rounded-lg">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">원산지</label>
+                    <input type="text" th:field="*{origin}" placeholder="예: 국내산" class="w-full border-outline-variant rounded-lg">
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-tertiary-fixed text-tertiary rounded-lg text-sm">
+                전자상거래에서의 상품등의 정보 제공에 관한 고시에 따라 총 35개 상품군에 대해 상품 특성등을 양식에 따라 입력할 수 있습니다.
+            </div>
+        </div>
+
         <div class="flex justify-end gap-3 pt-6 border-t">
             <a th:href="@{/admin/product/list}" class="px-6 py-2 bg-surface-variant rounded-lg">취소</a>
             <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg">상품등록</button>

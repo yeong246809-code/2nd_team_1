@@ -14,7 +14,9 @@ import lombok.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cateNo")
     private int cateNo;
+
     private String name;
     private Integer parentNo;
     private int depth;
@@ -23,5 +25,11 @@ public class Category {
         return CategoryDTO.builder()
                 .cateNo(cateNo).name(name).parentNo(parentNo).depth(depth)
                 .build();
+    }
+
+    public void update(String name, Integer parentNo, int depth) {
+        this.name = name;
+        this.parentNo = parentNo;
+        this.depth = depth;
     }
 }

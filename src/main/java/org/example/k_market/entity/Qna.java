@@ -46,4 +46,26 @@ public class Qna {
     )
     private Users user;
 
+    @Transient
+    public String getMaskedId() {
+
+        if (user == null || user.getId() == null) {
+            return "";
+        }
+
+        String id = user.getId();
+
+        if (id.length() <= 2) {
+            return id.substring(0, 1) + "*";
+        }
+
+        int visible = (id.length() + 1) / 2;   // 절반(홀수는 하나 더 보이게)
+
+        return id.substring(0, visible)
+                + "*".repeat(id.length() - visible);
+    }
+
+
+
+
 }

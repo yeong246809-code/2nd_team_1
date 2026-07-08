@@ -28,4 +28,9 @@ public class NoticeService {
         return noticeRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항입니다."));
     }
+
+    // 공지사항 등록 (admin)
+    public void save(Notice notice) {
+        noticeRepository.save(notice);
+    }
 }

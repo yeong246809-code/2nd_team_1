@@ -38,4 +38,6 @@ public class Banner {
                 .status(status).couponNo(couponNo)
                 .build();
     }
+
+    public void updateStatus(String status) { this.status = status; }
 }

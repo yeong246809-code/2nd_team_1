@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>K-market Admin Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Accordion Smooth Animation from SCREEN_146 */
+        .menu-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, padding 0.3s ease-in-out;
+            opacity: 0;
+        }
+        .menu-item-active .menu-content {
+            max-height: 500px;
+            opacity: 1;
+            padding-top: 4px;
+            padding-bottom: 8px;
+        }
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        .menu-item-active .chevron-icon {
+            transform: rotate(180deg);
+        }
+        /* 모달 애니메이션 */
+        .modal-fade {
+            transition: opacity 0.2s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-fade.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c0ecdc",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed": "#c8e8f2",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "on-surface": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc7",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2c4a52",
+                        "error-container": "#ffdad6",
+                        "primary": "#14333b",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-secondary-fixed": "#002018",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#c0ecdc",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "secondary": "#3e6659",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#acccd5",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary": "#452916",
+                        "surface": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#99b9c2",
+                        "inverse-primary": "#acccd5",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-primary-fixed": "#001f26",
+                        "surface-tint": "#45636b",
+                        "tertiary-container": "#5e3f2a",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-background": "#191c1d",
+                        "on-secondary-container": "#446c5f",
+                        "outline": "#72787a",
+                        "outline-variant": "#c1c7ca",
+                        "on-surface-variant": "#41484a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "surface-variant": "#e1e3e4",
+                        "surface-dim": "#d9dadb",
+                        "surface-container": "#edeeef",
+                        "surface-container-high": "#e7e8e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "80px",
+                        "container-max": "1280px",
+                        "md": "24px",
+                        "lg": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
+<!-- Shared Component: SideNavBar (Updated with Accordion from SCREEN_146) -->
+<aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface dark:bg-inverse-surface border-r border-outline-variant overflow-hidden">
+    <!-- Header -->
+    <div class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0">
+        <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined">storefront</span>
+        </div>
+        <div>
+            <h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">K-market Admin</h2>
+            <p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p>
+        </div>
+    </div>
+    <!-- Main Tabs with Accordions -->
+    <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
+        <!-- 상점 관리 (Active) -->
+        <div class="group/menu menu-item-active">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">store</span>
+                    <span class="font-label-md text-label-md font-bold">상점 관리</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-primary font-bold font-label-md transition-colors" href="#">상점목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">매출현황</a>
+            </div>
+        </div>
+        <!-- 회원 관리 -->
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">group</span>
+                    <span class="font-label-md text-label-md">회원 관리</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">회원목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">포인트관리</a>
+            </div>
+        </div>
+        <!-- 상품 관리 -->
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                    <span class="font-label-md text-label-md">상품 관리</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">상품목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">상품등록</a>
+            </div>
+        </div>
+        <!-- 주문 관리 -->
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span class="font-label-md text-label-md">주문 관리</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">주문현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">배송현황</a>
+            </div>
+        </div>
+        <!-- 쿠폰 관리 -->
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">confirmation_number</span>
+                    <span class="font-label-md text-label-md">쿠폰 관리</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰발급현황</a>
+            </div>
+        </div>
+        <!-- 고객 센터 -->
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">support_agent</span>
+                    <span class="font-label-md text-label-md">고객 센터</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">공지사항</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">자주묻는질문</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">문의하기</a>
+            </div>
+        </div>
+        <!-- 환경 설정 (Placed at bottom as requested) -->
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-label-md text-label-md">환경 설정</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">기본설정</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">배너관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">약관관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">카테고리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">버전관리</a>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="border-t border-outline-variant p-base flex flex-col gap-xs flex-shrink-0">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-label-md text-label-md">시스템 로그</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
+            <span class="material-symbols-outlined">help</span>
+            <span class="font-label-md text-label-md">도움말</span>
+        </a>
+        <button class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+            <span class="material-symbols-outlined text-sm">logout</span>
+            로그아웃
+        </button>
+    </div>
+</aside>
+<!-- Shared Component: TopAppBar -->
+<header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-md z-30 bg-surface-container-lowest dark:bg-surface-container-highest border-b border-outline-variant">
+    <div class="flex items-center gap-md">
+        <h1 class="font-headline-md text-headline-md font-black text-primary dark:text-inverse-primary">K-market Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-sm">
+        <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-high scale-95 active:scale-90 transition-transform">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-high scale-95 active:scale-90 transition-transform">
+            <span class="material-symbols-outlined">mail</span>
+        </button>
+        <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-high scale-95 active:scale-90 transition-transform">
+            <span class="material-symbols-outlined">account_circle</span>
+        </button>
+    </div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 mt-16 p-8 flex-1 w-full bg-white">
+    <div class="flex justify-between items-end border-b-2 border-black pb-3 mb-8">
+        <h1 class="text-2xl font-bold text-black">배너관리</h1>
+        <div class="text-sm text-gray-500 font-medium">HOME > 환경설정 > <strong class="text-black">배너관리</strong></div>
+    </div>
+
+    <div class="max-w-[1200px] flex flex-col gap-6">
+        <div class="flex justify-between items-center">
+            <div class="flex font-bold text-sm" id="bannerTabs">
+                <button onclick="filterBanner('MAIN1', this)" class="px-6 py-3 border border-gray-300 bg-white text-black">메인상단배너</button>
+                <button onclick="filterBanner('MAIN2', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">메인슬라이더배너</button>
+                <button onclick="filterBanner('PRODUCT1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">상품 상세보기 배너</button>
+                <button onclick="filterBanner('MEMBER1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">회원로그인 배너</button>
+                <button onclick="filterBanner('MY1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">마이페이지 배너</button>
+            </div>
+            <button type="button" onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-bold text-sm shadow-md transition-all">
+                + 배너등록
+            </button>
+        </div>
+
+        <table class="w-full border-t border-b border-gray-300 text-center text-sm">
+            <thead class="bg-gray-50 border-b border-gray-300">
+            <tr>
+                <th class="py-3 px-2 w-12"><input type="checkbox" id="selectAll"></th>
+                <th class="py-3 px-2 w-16">번호</th>
+                <th class="py-3 px-2 w-32">이미지</th>
+                <th class="py-3 px-4 text-left">배너정보</th>
+                <th class="py-3 px-4">관리</th>
+            </tr>
+            </thead>
+            <tbody id="bannerTableBody">
+            <tr th:each="b : ${bannerList}" th:data-position="${b.position}" class="banner-row border-b">
+                <td><input type="checkbox" name="bannerIds" th:value="${b.id}"></td>
+                <td th:text="${b.id}">1</td>
+                <td class="py-2 flex justify-center">
+                    <div class="w-16 h-16 border flex items-center justify-center overflow-hidden bg-gray-50">
+                        <img th:if="${b.fileUrl_stored != null}"
+                             th:src="@{/uploads/{filename}(filename=${b.fileUrl_stored})}"
+                             alt="banner" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300">
+                        <div th:if="${b.fileUrl_stored == null}" class="text-[10px] text-gray-400">No Image</div>
+                    </div>
+                </td>
+                <td class="text-left py-3">
+                    <div class="font-bold" th:text="${b.name}">배너명</div>
+                    <div class="text-xs text-gray-500" th:text="${b.sizeType}">1200x80</div>
+                </td>
+                <td>
+                    <form th:action="@{/admin/config/banner/status}" method="post">
+                        <input type="hidden" name="id" th:value="${b.id}">
+                        <button type="submit"
+                                th:text="${b.status}"
+                                th:classappend="${b.status == '활성'} ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-gray-400'"
+                                class="px-3 py-1 border rounded text-xs font-bold transition-all">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+
+<div id="bannerModal" class="modal-fade fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal()"></div>
+
+    <div class="relative bg-white w-[600px] shadow-2xl rounded-sm">
+
+        <div class="bg-gray-700 text-white flex justify-between items-center px-4 py-3">
+            <h2 class="font-bold">배너등록</h2>
+            <button type="button" onclick="closeModal()" class="text-white hover:text-gray-300 font-bold text-xl leading-none">&times;</button>
+        </div>
+
+        <form th:action="@{/admin/config/banner/add}" method="post" enctype="multipart/form-data" class="p-6 flex flex-col gap-3 text-sm">
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너이름</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="name" placeholder="배너명입력" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너크기</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="sizeType" placeholder="배너크기입력 (예: 1200x80)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배경색</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="backgroundColor" placeholder="배너배경색입력 (예: #FFFFFF)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너링크</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="linkUrl" placeholder="배너링크입력 (예: /event/1)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너위치</div>
+                <div class="flex-1 p-2">
+                    <select name="position" class="w-32 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                        <option value="">선택</option>
+                        <option value="MAIN1">MAIN1</option>
+                        <option value="MAIN2">MAIN2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">노출날짜</div>
+                <div class="flex-1 p-2 flex items-center gap-2">
+                    <input type="date" name="startDate" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                    <span>~</span>
+                    <input type="date" name="endDate" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">노출시간</div>
+                <div class="flex-1 p-2 flex items-center gap-2">
+                    <input type="time" name="startTime" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                    <span>~</span>
+                    <input type="time" name="endTime" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-3 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너파일</div>
+                <div class="flex-1 p-2 flex items-center gap-3">
+                    <label class="cursor-pointer bg-gray-200 border border-gray-300 px-3 py-1 text-xs text-gray-700 hover:bg-gray-300">
+                        파일선택
+                        <input type="file" name="file" class="hidden" onchange="updateFileName(this)">
+                    </label>
+                    <span id="fileNameDisplay" class="text-xs text-gray-500">선택된파일없음</span>
+                    <span class="text-xs text-gray-400 ml-auto">노출 위치에 맞는 크기 권장</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 mb-2">
+                <button type="submit" class="bg-gray-700 hover:bg-gray-800 text-white px-10 py-2 font-bold text-base transition-colors shadow-sm">
+                    등록하기
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    /* 메뉴 아코디언 로직 (기존 유지) */
+    function toggleAccordion(button) {
+        const menuItem = button.closest('.group\\/menu');
+        if (!menuItem) return;
+
+        const isActive = menuItem.classList.contains('menu-item-active');
+
+        if (isActive) {
+            menuItem.classList.remove('menu-item-active');
+        } else {
+            document.querySelectorAll('.menu-item-active').forEach(item => {
+                if (item !== menuItem) {
+                    item.classList.remove('menu-item-active');
+                }
+            });
+            menuItem.classList.add('menu-item-active');
+        }
+    }
+
+    /* 전체 선택 체크박스 로직 */
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('input[name="bannerIds"]');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    /* 파일 선택 시 파일명 표시 로직 */
+    function updateFileName(input) {
+        const display = document.getElementById('fileNameDisplay');
+        if (input.files && input.files.length > 0) {
+            display.textContent = input.files[0].name;
+            display.classList.replace('text-gray-500', 'text-gray-900');
+        } else {
+            display.textContent = '선택된파일없음';
+            display.classList.replace('text-gray-900', 'text-gray-500');
+        }
+    }
+
+    /* JS로 이미지를 완벽한 정사각형(1:1비율, 중앙 크롭)으로 처리하는 로직 */
+    document.addEventListener("DOMContentLoaded", function() {
+        const images = document.querySelectorAll('.square-img');
+
+        images.forEach(img => {
+            img.onload = function() {
+                // 이미지가 로드되면 JS를 통해 강제로 스타일 주입 (가로/세로 100% 채우고 넘치는 부분은 잘라냄)
+                this.style.width = '100%';
+                this.style.height = '100%';
+                this.style.objectFit = 'cover';
+                this.style.objectPosition = 'center';
+
+                // 로딩 완료 후 부드럽게 나타나도록 opacity 변경
+                this.classList.remove('opacity-0');
+            };
+
+            // 캐시된 이미지의 경우 onload가 안 탈 수 있으므로 강제 트리거
+            if (img.complete) {
+                img.onload();
+            }
+        });
+    });
+
+    function filterBanner(position, btn) {
+        // 탭 활성 디자인 처리
+        document.querySelectorAll('#bannerTabs button').forEach(b => {
+            b.classList.replace('bg-white', 'bg-gray-200');
+            b.classList.replace('text-black', 'text-gray-600');
+        });
+        btn.classList.replace('bg-gray-200', 'bg-white');
+        btn.classList.replace('text-gray-600', 'text-black');
+
+        // 모든 행을 숨긴 뒤, 해당 position인 행만 보여줌
+        document.querySelectorAll('.banner-row').forEach(row => {
+            if(row.dataset.position === position) {
+                row.style.display = ''; // 보여줌
+            } else {
+                row.style.display = 'none'; // 숨김
+            }
+        });
+    }
+
+    // 페이지 로드 시 기본 탭(MAIN1) 실행
+    document.addEventListener("DOMContentLoaded", () => {
+        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
+    });
+
+    function filterBanner(position, btn) {
+        // 탭 디자인 업데이트
+        document.querySelectorAll('#bannerTabs button').forEach(b => {
+            b.classList.remove('bg-white', 'text-black');
+            b.classList.add('bg-gray-200', 'text-gray-600');
+        });
+        btn.classList.remove('bg-gray-200', 'text-gray-600');
+        btn.classList.add('bg-white', 'text-black');
+
+        // 행 필터링
+        document.querySelectorAll('.banner-row').forEach(row => {
+            row.style.display = (row.getAttribute('data-position') === position) ? '' : 'none';
+        });
+    }
+
+    // 초기 실행
+    document.addEventListener("DOMContentLoaded", () => {
+        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
+    });
+
+    // 모달 제어
+    function openModal() { document.getElementById('bannerModal').classList.add('show'); }
+    function closeModal() { document.getElementById('bannerModal').classList.remove('show'); }
+
+</script>
+</body>
+</html>

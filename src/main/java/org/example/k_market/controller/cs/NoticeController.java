@@ -1,13 +1,12 @@
 package org.example.k_market.controller.cs;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.entity.Notice;
 import org.example.k_market.service.cs.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,5 +31,37 @@ public class NoticeController {
         model.addAttribute("notice", notice);
 
         return "cs/notice/view";
+    }
+
+    // 공지사항 작성 화면
+    // GET /cs/notice/write
+    @GetMapping("/write")
+    public String write(HttpSession session) {
+
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+
+        // 관리자만 작성 화면 접근 가능
+        if (!Boolean.TRUE.equals(isAdmin)) {
+            return "redirect:/cs/notice/list";
+        }
+
+        return "cs/notice/write";
+    }
+
+    // 공지사항 등록 처리
+    // POST /cs/notice/write
+    @PostMapping("/write")
+    public String register(Notice notice, HttpSession session) {
+
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+
+        // 관리자만 등록 가능
+        if (!Boolean.TRUE.equals(isAdmin)) {
+            return "redirect:/cs/notice/list";
+        }
+
+        noticeService.save(notice);
+
+        return "redirect:/cs/notice/list";
     }
 }

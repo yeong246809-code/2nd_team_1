@@ -1,5 +1,6 @@
 package org.example.k_market.controller.admin;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.k_market.dao.CategoryDAO;
@@ -10,6 +11,8 @@ import org.example.k_market.entity.Shop;
 import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.security.MyUserDetails;
 import org.springframework.security.core.Authentication;
+import org.example.k_market.entity.Users;
+import org.example.k_market.repository.UsersRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +44,7 @@ public class AdminProductController {
     private final ProductDAO productDAO;
     private final CategoryDAO categoryDAO;
     private final ShopRepository shopRepository;
+    private final UsersRepository usersRepository;
 
     @GetMapping("/list")
     public String list(Model model,
@@ -89,6 +93,10 @@ public class AdminProductController {
             model.addAttribute("product", product);
         }
 
+        // 이 로그를 확인해서 카테고리가 0개가 아니어야 합니다.
+        log.info("조회된 카테고리 수: " + allCategories.size());
+
+        model.addAttribute("product", new ProductDTO());
         model.addAttribute("allCategories", allCategories);
         model.addAttribute("shops", shopRepository.findAll());
         model.addAttribute("adminUser", isAdmin(authentication));
@@ -183,6 +191,36 @@ public class AdminProductController {
         if (productDTO.getBizType() == null) productDTO.setBizType("1");
         if (productDTO.getRating() == null) productDTO.setRating(BigDecimal.ZERO);
         if (productDTO.getCreatedAt() == null) productDTO.setCreatedAt(LocalDateTime.now());
+                                 HttpSession session) throws IOException { // 💡 HttpSession 추가
+
+        // 1. 로그인한 유저의 정보를 세션(sessUser)에서 가져오기
+        String userId = (String) session.getAttribute("sessUser");
+        if (userId == null) {
+            log.error("로그인 세션이 만료되었습니다.");
+            return "redirect:/member/login";
+        }
+
+        // 2. 유저 정보를 조회하여 shopNo를 자동으로 세팅
+        // (Users 엔티티에서 shopNo를 가져옵니다)
+        org.example.k_market.entity.Users user = usersRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        productDTO.setShopNo(user.getMemberNo());
+
+        // 3. 파일 저장 로직
+        String uploadPath = new File("uploads/").getAbsolutePath() + File.separator;
+        productDTO.setThumb1(saveFile(file1, uploadPath));
+        productDTO.setThumb2(saveFile(file2, uploadPath));
+        productDTO.setThumb3(saveFile(file3, uploadPath));
+
+        // 4. 필수 기본값 설정
+        productDTO.setCreatedAt(LocalDateTime.now());
+        if (productDTO.getBizType() == null) productDTO.setBizType("1");
+        if (productDTO.getRating() == null) productDTO.setRating(java.math.BigDecimal.ZERO);
+
+        // 5. 저장
+        productDAO.save(productDTO);
+        return "redirect:/admin/product/list";
     }
 
     private String saveFile(MultipartFile file, String uploadPath) throws IOException {
