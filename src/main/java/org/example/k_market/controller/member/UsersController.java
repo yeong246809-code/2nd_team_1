@@ -33,16 +33,21 @@ public class UsersController {
     private final EmailVerificationService emailVerificationService;
 
     @GetMapping("/member/login")
-    public String loginPage() {
+    public String loginPage(Authentication authentication) {
+        if (isAuthenticated(authentication)) {
+            if (isAdmin(authentication)) {
+                return "redirect:/admin/index";
+            }
+            return "redirect:/my/index";
+        }
+
         return "member/login";
     }
 
     @GetMapping("/member/session")
     @ResponseBody
     public Map<String, Object> session(Authentication authentication, HttpSession session) {
-        boolean authenticated = authentication != null
-                && authentication.isAuthenticated()
-                && !"anonymousUser".equals(String.valueOf(authentication.getPrincipal()));
+        boolean authenticated = isAuthenticated(authentication);
 
         
         String sessUser = authenticated ? String.valueOf(session.getAttribute("sessUser")) : "";
@@ -150,6 +155,11 @@ public class UsersController {
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam(name = "password_confirm") String passwordConfirm,
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "phone", required = false) String phone,
+            @RequestParam(name = "zip", required = false) String zipCode,
+            @RequestParam(name = "addr1", required = false) String baseAddress,
+            @RequestParam(name = "addr2", required = false) String detailAddress,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         if (!isEmailVerified(email, session)) {
@@ -157,11 +167,16 @@ public class UsersController {
             return "redirect:/member/register";
         }
 
-        String result = registerUser(id, password, passwordConfirm, "USER", "user", "/member/register", redirectAttributes);
-        if (result.startsWith("redirect:/member/welcome")) {
+        try {
+            usersService.registerUser(id, password, passwordConfirm, email, name, phone, zipCode, baseAddress, detailAddress);
+            redirectAttributes.addAttribute("id", id.trim());
+            redirectAttributes.addAttribute("type", "user");
             clearEmailVerification(session);
+            return "redirect:/member/welcome";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addAttribute("joinError", e.getMessage());
+            return "redirect:/member/register";
         }
-        return result;
     }
 
     @PostMapping("/member/registerseller")
@@ -169,27 +184,37 @@ public class UsersController {
             @RequestParam String id,
             @RequestParam String password,
             @RequestParam(name = "password_confirm") String passwordConfirm,
-            RedirectAttributes redirectAttributes) {
-        return registerUser(id, password, passwordConfirm, "SELLER", "seller", "/member/registerseller", redirectAttributes);
-    }
-
-    private String registerUser(
-            String id,
-            String password,
-            String passwordConfirm,
-            String role,
-            String type,
-            String failUrl,
+            @RequestParam(name = "company", required = false) String company,
+            @RequestParam(name = "representative", required = false) String representative,
+            @RequestParam(name = "license_number", required = false) String licenseNumber,
+            @RequestParam(name = "report_number", required = false) String reportNumber,
+            @RequestParam(name = "phone", required = false) String phone,
+            @RequestParam(name = "fax", required = false) String fax,
+            @RequestParam(name = "zip", required = false) String zipCode,
+            @RequestParam(name = "address_main", required = false) String baseAddress,
+            @RequestParam(name = "address_detail", required = false) String detailAddress,
             RedirectAttributes redirectAttributes) {
         try {
-            usersService.register(id, password, passwordConfirm, role);
+            usersService.registerSeller(id, password, passwordConfirm, company, representative, licenseNumber, reportNumber, phone, fax, zipCode, baseAddress, detailAddress);
             redirectAttributes.addAttribute("id", id.trim());
-            redirectAttributes.addAttribute("type", type);
+            redirectAttributes.addAttribute("type", "seller");
             return "redirect:/member/welcome";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addAttribute("joinError", e.getMessage());
-            return "redirect:" + failUrl;
+            return "redirect:/member/registerseller";
         }
+    }
+
+    private boolean isAuthenticated(Authentication authentication) {
+        return authentication != null
+                && authentication.isAuthenticated()
+                && !"anonymousUser".equals(String.valueOf(authentication.getPrincipal()));
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch("ROLE_ADMIN"::equals);
     }
 
     private boolean isValidEmail(String email) {

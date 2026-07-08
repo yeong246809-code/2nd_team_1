@@ -16,7 +16,8 @@ public class Shop {
 
     @Id
     private int memberNo;
-    private int shopNo;
+    @Column(insertable = false, updatable = false)
+    private Integer shopNo;
     private String name;
     private String ceo;
     private String bizNumber;

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "member")
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memberNo;
     private String name;
     private LocalDate birthDate;

@@ -2,8 +2,11 @@ package org.example.k_market.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
+import org.example.k_market.entity.Member;
+import org.example.k_market.entity.Shop;
 import org.example.k_market.entity.Users;
+import org.example.k_market.repository.MemberRepository;
+import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.security.MyUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -22,7 +26,11 @@ import java.util.Optional;
 @Service
 public class UsersService implements UserDetailsService {
 
+    private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(1900, 1, 1);
+
     private final UsersRepository userRepository;
+    private final MemberRepository memberRepository;
+    private final ShopRepository shopRepository;
     private final PasswordEncoder passwordEncoder;
 
     public boolean isIdAvailable(String id) {
@@ -31,6 +39,51 @@ public class UsersService implements UserDetailsService {
 
     @Transactional
     public Users register(String id, String password, String passwordConfirm, String role) {
+        Users user = createUser(id, password, passwordConfirm, role);
+        if ("USER".equalsIgnoreCase(user.getRole())) {
+            saveMemberProfile(user, null, null, null, null, null, null);
+        } else if ("SELLER".equalsIgnoreCase(user.getRole())) {
+            saveShopProfile(user, null, null, null, null, null, null, null, null, null);
+        }
+        return user;
+    }
+
+    @Transactional
+    public Users registerUser(
+            String id,
+            String password,
+            String passwordConfirm,
+            String email,
+            String name,
+            String phone,
+            String zipCode,
+            String baseAddress,
+            String detailAddress) {
+        Users user = createUser(id, password, passwordConfirm, "USER");
+        saveMemberProfile(user, email, name, phone, zipCode, baseAddress, detailAddress);
+        return user;
+    }
+
+    @Transactional
+    public Users registerSeller(
+            String id,
+            String password,
+            String passwordConfirm,
+            String company,
+            String representative,
+            String licenseNumber,
+            String reportNumber,
+            String phone,
+            String fax,
+            String zipCode,
+            String baseAddress,
+            String detailAddress) {
+        Users user = createUser(id, password, passwordConfirm, "SELLER");
+        saveShopProfile(user, company, representative, licenseNumber, reportNumber, phone, fax, zipCode, baseAddress, detailAddress);
+        return user;
+    }
+
+    private Users createUser(String id, String password, String passwordConfirm, String role) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("아이디를 입력해주세요.");
         }
@@ -47,7 +100,7 @@ public class UsersService implements UserDetailsService {
         Users user = Users.builder()
                 .id(id.trim())
                 .pass(passwordEncoder.encode(password))
-                .role(role)
+                .role(normalizeRole(role))
                 .status("ACTIVE")
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
@@ -55,13 +108,87 @@ public class UsersService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    private void saveMemberProfile(
+            Users user,
+            String email,
+            String name,
+            String phone,
+            String zipCode,
+            String baseAddress,
+            String detailAddress) {
+        Member member = Member.builder()
+                .memberNo(user.getMemberNo())
+                .name(trimToNull(name))
+                .birthDate(DEFAULT_BIRTH_DATE)
+                .email(trimToNull(email))
+                .phone(trimToNull(phone))
+                .zipCode(trimToNull(zipCode))
+                .baseAddress(valueOrEmpty(baseAddress))
+                .detailAddress(trimToNull(detailAddress))
+                .gradeNo(1)
+                .points(0)
+                .createdAt(LocalDateTime.now())
+                .status("ACTIVE")
+                .locationPolicyAgreed("Y")
+                .build();
+
+        memberRepository.save(member);
+    }
+
+    private void saveShopProfile(
+            Users user,
+            String company,
+            String representative,
+            String licenseNumber,
+            String reportNumber,
+            String phone,
+            String fax,
+            String zipCode,
+            String baseAddress,
+            String detailAddress) {
+        Shop shop = Shop.builder()
+                .memberNo(user.getMemberNo())
+                .name(trimToNull(company))
+                .ceo(trimToNull(representative))
+                .bizNumber(trimToNull(licenseNumber))
+                .mailOrderNumber(trimToNull(reportNumber))
+                .phone(trimToNull(phone))
+                .fax(trimToNull(fax))
+                .zipCode(trimToNull(zipCode))
+                .baseAddress(valueOrEmpty(baseAddress))
+                .detailAddress(valueOrEmpty(detailAddress))
+                .status("ACTIVE")
+                .manageStatus("PENDING")
+                .rdate(LocalDateTime.now())
+                .build();
+
+        shopRepository.save(shop);
+    }
+
+    private String normalizeRole(String role) {
+        if (role == null || role.trim().isEmpty()) {
+            return "USER";
+        }
+        return role.trim().toUpperCase();
+    }
+
+    private String trimToNull(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return value.trim();
+    }
+
+    private String valueOrEmpty(String value) {
+        String trimmed = trimToNull(value);
+        return trimmed == null ? "" : trimmed;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         log.info("로그인 시도 아이디: " + username);
 
-        // ★ 중요: UserRepository에 findById(String id) 메서드가 반드시 있어야 합니다.
-        // 만약 memberNo로만 찾을 수 있다면, 레포지토리에 findById(String id)를 추가해주세요.
         Optional<Users> optUser = userRepository.findById(username);
 
         if (optUser.isPresent()){

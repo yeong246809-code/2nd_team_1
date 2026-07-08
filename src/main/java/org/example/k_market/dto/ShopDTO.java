@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class ShopDTO {
 
     private int memberNo;
-    private int shopNo;
+    private Integer shopNo;
     private String name;
     private String ceo;
     private String bizNumber;

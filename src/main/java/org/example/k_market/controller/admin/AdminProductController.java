@@ -6,15 +6,31 @@ import org.example.k_market.dao.CategoryDAO;
 import org.example.k_market.dao.ProductDAO;
 import org.example.k_market.dto.CategoryDTO;
 import org.example.k_market.dto.ProductDTO;
+import org.example.k_market.entity.Shop;
+import org.example.k_market.repository.ShopRepository;
+import org.example.k_market.security.MyUserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Controller
@@ -24,10 +40,8 @@ public class AdminProductController {
 
     private final ProductDAO productDAO;
     private final CategoryDAO categoryDAO;
+    private final ShopRepository shopRepository;
 
-    /**
-     * [목록 & 검색]
-     */
     @GetMapping("/list")
     public String list(Model model,
                        @RequestParam(value = "searchType", required = false) String searchType,
@@ -62,58 +76,130 @@ public class AdminProductController {
         return "admin/product/list";
     }
 
-    /**
-     * [등록 폼 이동]
-     */
     @GetMapping("/register")
-    public String register(Model model) {
-        // DB의 모든 카테고리를 조회하여 전달
+    public String register(Model model, Authentication authentication) {
         List<CategoryDTO> allCategories = categoryDAO.findAll();
+        Optional<Shop> currentShop = findCurrentUserShop(authentication);
 
-        model.addAttribute("product", new ProductDTO());
+        if (!model.containsAttribute("product")) {
+            ProductDTO product = new ProductDTO();
+            if (!isAdmin(authentication)) {
+                currentShop.map(Shop::getShopNo).ifPresent(product::setShopNo);
+            }
+            model.addAttribute("product", product);
+        }
+
         model.addAttribute("allCategories", allCategories);
+        model.addAttribute("shops", shopRepository.findAll());
+        model.addAttribute("adminUser", isAdmin(authentication));
+        model.addAttribute("currentShop", currentShop.orElse(null));
         return "admin/product/register";
     }
 
-    // AdminProductController.java
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute("product") ProductDTO productDTO,
                                  @RequestParam("file1") MultipartFile file1,
                                  @RequestParam("file2") MultipartFile file2,
-                                 @RequestParam("file3") MultipartFile file3) throws IOException {
+                                 @RequestParam("file3") MultipartFile file3,
+                                 Authentication authentication,
+                                 RedirectAttributes redirectAttributes) throws IOException {
+        try {
+            validateProduct(productDTO, authentication);
+            applyDefaults(productDTO);
 
-        // 1. 파일 저장 로직 (이전 답변 코드 참고)
-        String uploadPath = new File("uploads/").getAbsolutePath() + File.separator;
-        productDTO.setThumb1(saveFile(file1, uploadPath));
-        productDTO.setThumb2(saveFile(file2, uploadPath));
-        productDTO.setThumb3(saveFile(file3, uploadPath));
+            String uploadPath = new File("uploads").getAbsolutePath();
+            productDTO.setThumb1(saveFile(file1, uploadPath));
+            productDTO.setThumb2(saveFile(file2, uploadPath));
+            productDTO.setThumb3(saveFile(file3, uploadPath));
 
-        // 2. 강제 할당 로직 삭제 (이 부분이 오히려 오류를 만들거나 덮어쓰고 있을 수 있음)
-        // productDTO.setCateNo(sample.getCateNo()); // 이 부분을 삭제하세요!
-
-        // 3. 필수 기본값만 설정
-        productDTO.setCreatedAt(LocalDateTime.now());
-        if (productDTO.getBizType() == null) productDTO.setBizType("1");
-        if (productDTO.getRating() == null) productDTO.setRating(java.math.BigDecimal.ZERO);
-
-        // 4. 저장
-        productDAO.save(productDTO);
-        return "redirect:/admin/product/list";
+            productDAO.save(productDTO);
+            return "redirect:/admin/product/list";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("productError", e.getMessage());
+            redirectAttributes.addFlashAttribute("product", productDTO);
+            return "redirect:/admin/product/register";
+        }
     }
 
-    // 파일 저장 로직 분리
+    private void validateProduct(ProductDTO productDTO, Authentication authentication) {
+        if (productDTO.getCateNo() == null) {
+            throw new IllegalArgumentException("상품 카테고리를 선택해주세요.");
+        }
+        if (categoryDAO.findById(productDTO.getCateNo()).isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 카테고리입니다.");
+        }
+        if (productDTO.getName() == null || productDTO.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("상품명을 입력해주세요.");
+        }
+        if (productDTO.getPrice() == null) {
+            throw new IllegalArgumentException("판매가격을 입력해주세요.");
+        }
+
+        productDTO.setShopNo(resolveShopNo(productDTO.getShopNo(), authentication));
+    }
+
+    private Integer resolveShopNo(Integer requestedShopNo, Authentication authentication) {
+        if (isAdmin(authentication)) {
+            if (requestedShopNo == null) {
+                throw new IllegalArgumentException("상품을 등록할 상점을 선택해주세요.");
+            }
+            return shopRepository.findByShopNo(requestedShopNo)
+                    .map(Shop::getShopNo)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상점입니다."));
+        }
+
+        Shop shop = findCurrentUserShop(authentication)
+                .orElseThrow(() -> new IllegalArgumentException("로그인한 판매자와 연결된 상점이 없습니다."));
+        if (shop.getShopNo() == null) {
+            throw new IllegalArgumentException("상점 번호가 아직 생성되지 않았습니다.");
+        }
+        return shop.getShopNo();
+    }
+
+    private Optional<Shop> findCurrentUserShop(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof MyUserDetails userDetails)) {
+            return Optional.empty();
+        }
+        return shopRepository.findById(userDetails.getUser().getMemberNo());
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication != null
+                && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+    }
+
+    private void applyDefaults(ProductDTO productDTO) {
+        productDTO.setName(productDTO.getName().trim());
+        if (productDTO.getDiscountRate() == null) productDTO.setDiscountRate(0);
+        if (productDTO.getRewardPoints() == null) productDTO.setRewardPoints(0);
+        if (productDTO.getStockQuantity() == null) productDTO.setStockQuantity(0);
+        if (productDTO.getShippingFee() == null) productDTO.setShippingFee(0);
+        if (productDTO.getViewCount() == null) productDTO.setViewCount(0);
+        if (productDTO.getSalesCount() == null) productDTO.setSalesCount(0);
+        if (productDTO.getStatus() == null) productDTO.setStatus("ACTIVE");
+        if (productDTO.getTaxFreeYn() == null) productDTO.setTaxFreeYn("N");
+        if (productDTO.getReceiptYn() == null) productDTO.setReceiptYn("Y");
+        if (productDTO.getBizType() == null) productDTO.setBizType("1");
+        if (productDTO.getRating() == null) productDTO.setRating(BigDecimal.ZERO);
+        if (productDTO.getCreatedAt() == null) productDTO.setCreatedAt(LocalDateTime.now());
+    }
+
     private String saveFile(MultipartFile file, String uploadPath) throws IOException {
         if (file == null || file.isEmpty()) return null;
 
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        File dest = new File(uploadPath + fileName);
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+            throw new IOException("Failed to create upload directory: " + uploadDir.getAbsolutePath());
+        }
+
+        String originalName = file.getOriginalFilename() == null ? "upload" : new File(file.getOriginalFilename()).getName();
+        String fileName = UUID.randomUUID() + "_" + originalName;
+        File dest = new File(uploadDir, fileName);
         file.transferTo(dest);
-        return fileName; // DB에는 파일명만 저장
+        return fileName;
     }
 
-    /**
-     * [수정 폼 이동]
-     */
     @GetMapping("/modify/{prodNo}")
     public String modifyForm(@PathVariable("prodNo") Long prodNo, Model model) {
         log.info("상품 수정 페이지 요청 - prodNo: {}", prodNo);
@@ -126,22 +212,16 @@ public class AdminProductController {
         return "redirect:/admin/product/list";
     }
 
-    /**
-     * [수정 처리] - 에러가 나더라도 콘솔에 원인이 찍히도록 BindingResult 추가
-     */
     @PostMapping("/modify")
     public String modifySubmit(@ModelAttribute ProductDTO productDTO, org.springframework.validation.BindingResult bindingResult) {
-
-        // 만약 타입 바인딩 오류가 발생했다면 콘솔에 에러 로그를 정확히 출력합니다.
         if (bindingResult.hasErrors()) {
-            log.error("====== 상품 수정 바인딩 에러 발생 ======");
+            log.error("상품 수정 바인딩 에러 발생");
             bindingResult.getAllErrors().forEach(error -> log.error(error.toString()));
-            return "admin/product/modify"; // 에러 발생 시 수정 페이지에 그대로 머무름
+            return "admin/product/modify";
         }
 
         log.info("상품 수정 실행 - prodNo: {}", productDTO.getProdNo());
 
-        // 안전하게 영속성 저장을 위해 기존 생성일이 유실되었다면 현재 시간으로 방어 코드 작성
         if (productDTO.getCreatedAt() == null) {
             productDTO.setCreatedAt(LocalDateTime.now());
         }
@@ -150,9 +230,6 @@ public class AdminProductController {
         return "redirect:/admin/product/list";
     }
 
-    /**
-     * [단일 삭제]
-     */
     @PostMapping("/delete/{prodNo}")
     @ResponseBody
     public Map<String, Object> deleteProduct(@PathVariable("prodNo") Long prodNo) {
@@ -164,9 +241,6 @@ public class AdminProductController {
         }
     }
 
-    /**
-     * [일괄 삭제]
-     */
     @PostMapping("/deleteSelected")
     @ResponseBody
     public Map<String, Object> deleteSelectedProducts(@RequestBody List<Long> prodNos) {
