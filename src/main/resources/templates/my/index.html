@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ko" style=""><head>
+﻿<!DOCTYPE html><html lang="ko" style=""><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market 마이페이지</title>
@@ -188,56 +188,10 @@
 </head>
 <body class="font-body-md text-on-surface bg-background min-h-screen">
 <!-- 상단 네비게이션 바 -->
-<header class="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40">
-    <div class="max-w-container-max mx-auto px-xl py-md flex justify-between items-center">
-        <div class="flex items-center gap-base">
-            <a class="text-headline-lg font-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
-        </div>
-        <nav class="hidden md:flex items-center space-x-md">
-            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
-            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
-            <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" th:href="@{/my/index}" href="/my/index">마이페이지</a>
-            <div class="flex items-center gap-xs text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
-                <span class="material-symbols-outlined">shopping_cart</span>
-                <span class="font-label-md text-label-md">장바구니</span>
-            </div>
-        </nav>
-    </div>
-</header>
+<div th:replace="~{my/_shared :: header}"></div>
 <main class="max-w-container-max mx-auto flex px-xl py-lg gap-gutter">
     <!-- 사이드 네비게이션 -->
-    <aside class="w-64 shrink-0 flex flex-col space-y-2 py-md bg-surface-container-low rounded-xl shadow-sm border-r border-outline-variant h-fit sticky top-0">
-        <div class="px-4 pb-4 border-b border-outline-variant mb-2">
-            <h2 class="font-headline-md text-headline-md text-primary">나의쇼핑정보</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant opacity-70" th:text="${loginUserId} != '' ? |${loginUserId}님 환영합니다| : '환영합니다'">환영합니다</p>
-        </div>
-        <nav class="flex flex-col space-y-1">
-            <a class="bg-primary-container text-on-primary-container font-semibold rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
-                <span class="material-symbols-outlined">list_alt</span>
-                전체주문내역
-            </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
-                <span class="material-symbols-outlined">payments</span>
-                포인트내역
-            </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
-                <span class="material-symbols-outlined">confirmation_number</span>
-                쿠폰
-            </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
-                <span class="material-symbols-outlined">rate_review</span>
-                나의리뷰
-            </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
-                <span class="material-symbols-outlined">contact_support</span>
-                문의하기
-            </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" href="#">
-                <span class="material-symbols-outlined">settings</span>
-                나의설정
-            </a>
-        </nav>
-    </aside>
+    <div th:replace="~{my/_shared :: sidebar('')}"></div>
     <!-- 메인 콘텐츠 영역 -->
     <section class="flex-1 space-y-md">
         <!-- 사용자 정보 영역 -->
@@ -281,7 +235,7 @@
             </div>
         </div>
         <!-- 배너 광고 영역 -->
-        <a class="block w-full h-[86px] overflow-hidden rounded-xl shadow-sm" href="#">
+        <a class="block w-full h-[86px] overflow-hidden rounded-xl shadow-sm" th:href="@{/product/list}" href="/product/list">
             <img alt="K-market Promotional Banner" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANeRv9FJSL8KXNjC11NLm2MVPYBKXfBxCazip7olJPJrHQqw4LeY-X7jTyFdy7rPShphtx0vduGaLSWLpeAI7Z9Eaf18ZNe8NrFavStXwoNeT_0Ju3OxHrA24parNlRy13Mmv15Gvhzs2KyMXJroCx337cGaFLJQEvvmukKSLSzPpWYaD43iKDQX_8dZDF_mmhTcwzsqAwYhPGuL7AgAYRzEKotbBvXu-T64WLQhk8QQSP3JQVo_WjS74syX1yg9WOhFavB3uEf75u">
         </a>
         <!-- 최근 주문 내역 -->
@@ -290,7 +244,7 @@
                 <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">
                     최근주문내역
                 </h3>
-                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" href="#">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" th:href="@{/my/order}" href="/my/order">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
             </div>
             <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
                 <table class="w-full text-left border-collapse">
@@ -374,7 +328,7 @@
         <div class="pt-lg">
             <div class="flex justify-between items-end border-b-2 border-primary pb-2 mb-sm">
                 <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">포인트적립내역</h3>
-                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" href="#">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" th:href="@{/my/point}" href="/my/point">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
             </div>
             <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
                 <table class="w-full text-left border-collapse">
@@ -413,7 +367,7 @@
         <div class="pt-lg space-y-sm">
             <div class="flex justify-between items-end border-b-2 border-primary pb-2 mb-sm">
                 <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">나의 문의 내역</h3>
-                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" href="#">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+                <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" th:href="@{/my/myqna}" href="/my/myqna">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
             </div>
             <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
                 <table class="w-full text-left border-collapse">
@@ -471,14 +425,14 @@
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <p class="font-label-md text-label-md text-on-surface font-bold">기본배송지설정</p>
-                        <button class="text-primary font-label-sm text-label-sm hover:underline">변경</button>
+                        <a class="text-primary font-label-sm text-label-sm hover:underline" th:href="@{/my/myinfo}" href="/my/myinfo">변경</a>
                     </div>
                     <p class="font-body-md text-body-md text-on-surface-variant">부산광역시 부산진구 중앙대로 300 한빛빌딩 10층</p>
                 </div>
                 <div class="space-y-2 md:pl-md pt-md md:pt-0">
                     <div class="flex justify-between items-center">
                         <p class="font-label-md text-label-md text-on-surface font-bold">Email 설정</p>
-                        <button class="text-primary font-label-sm text-label-sm hover:underline">변경</button>
+                        <a class="text-primary font-label-sm text-label-sm hover:underline" th:href="@{/my/myinfo}" href="/my/myinfo">변경</a>
                     </div>
                     <p class="font-body-md text-body-md text-on-surface-variant">abc123@naver.com</p>
                     <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
@@ -486,7 +440,7 @@
                 <div class="space-y-2 md:pl-md pt-md md:pt-0">
                     <div class="flex justify-between items-center">
                         <p class="font-label-md text-label-md text-on-surface font-bold">휴대폰 설정</p>
-                        <button class="text-primary font-label-sm text-label-sm hover:underline">변경</button>
+                        <a class="text-primary font-label-sm text-label-sm hover:underline" th:href="@{/my/myinfo}" href="/my/myinfo">변경</a>
                     </div>
                     <p class="font-body-md text-body-md text-on-surface-variant">010 - 1234 - 1001</p>
                     <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
@@ -496,20 +450,7 @@
     </section>
 </main>
 <!-- 푸터 -->
-<footer class="bg-surface-container border-t border-outline-variant mt-xl">
-    <div class="max-w-container-max mx-auto py-lg px-xl flex flex-col items-center space-y-md">
-        <div class="flex space-x-md font-label-md text-label-md text-on-surface-variant">
-            <a class="hover:underline" th:href="@{/company/main}" href="/company/main">회사소개</a>
-            <a class="hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">이용약관</a>
-            <a class="hover:underline font-bold" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
-            <a class="hover:underline" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
-        </div>
-        <div class="text-center space-y-xs">
-            <div class="font-bold text-on-surface font-headline-md mb-2">K-market</div>
-            <p class="font-body-md text-body-md text-on-surface-variant">Copyright © 2025 K-market All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+<div th:replace="~{my/_shared :: footer}"></div>
 <!-- 주문상세정보 모달 (Order Detail Popup) -->
 <div class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 custom-modal" id="order-detail-modal">
     <!-- 배경 오버레이 -->
@@ -855,3 +796,5 @@
     });
 </script><script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>
+
+

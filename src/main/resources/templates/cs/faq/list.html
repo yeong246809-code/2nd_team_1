@@ -104,19 +104,19 @@
     <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
         <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/}">K-market</a>
         <nav class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
-            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">Login</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Join</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/my/home}">My Page</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cart/list}">Cart</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
+            <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/product/cart}">장바구니</a>
         </nav>
         <div class="flex items-center gap-sm text-primary">
             <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/list}">
                 <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
             </a>
-            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/home}">
+            <a class="hidden p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/index}" data-auth-required="true">
                 <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">person</span>
             </a>
-            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/cart/list}">
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/cart}">
                 <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">shopping_cart</span>
             </a>
         </div>
@@ -247,14 +247,14 @@
     <div class="max-w-container-max mx-auto px-md py-lg text-center text-on-surface-variant">
         <h2 class="font-headline-md text-headline-md font-bold text-primary mb-sm">K-market</h2>
         <nav class="flex flex-wrap justify-center gap-x-md gap-y-2 font-label-md text-label-md mb-md">
-            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">About Us</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">Customer Service</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">Privacy Policy</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Terms of Service</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">FAQ</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">Contact</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">회사소개</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">고객센터</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">개인정보처리방침</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">서비스이용약관</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">자주묻는질문</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">문의하기</a>
         </nav>
-        <p class="font-label-sm text-label-sm">© 2024 K-market. All rights reserved.</p>
+        <p class="font-label-sm text-label-sm">© 2024 K-market. 모든 권리 보유.</p>
     </div>
 </footer>
 <script src="/k_market/js/auth-nav.js" th:src="@{/js/auth-nav.js}"></script>

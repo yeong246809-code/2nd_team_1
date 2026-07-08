@@ -72,6 +72,7 @@
         const links = Array.from(container.querySelectorAll('a'));
         const found = links.find(link => matchesPath(link, path));
         if (found) {
+            found.classList.remove('hidden');
             if (options.admin) {
                 found.style.color = '#ba1a1a';
                 found.style.borderBottomColor = '#ba1a1a';
@@ -83,6 +84,19 @@
         const link = makeLink(reference, text, path, options);
         insertBeforeService(container, link);
         return link;
+    }
+
+    function showAuthenticatedOnlyItems() {
+        document.querySelectorAll('[data-auth-required="true"]').forEach(element => {
+            element.classList.remove('hidden');
+        });
+
+        Array.from(document.querySelectorAll('a'))
+            .filter(link => matchesPath(link, '/my/index'))
+            .forEach(link => {
+                link.href = appUrl('/my/index');
+                link.classList.remove('hidden');
+            });
     }
 
     function updateNavigation(session) {
@@ -123,6 +137,7 @@
                 insertBeforeService(container, newMyPageLink);
             } else {
                 myPageLink.href = appUrl('/my/index');
+                myPageLink.classList.remove('hidden');
             }
 
             ensureLink(container, loginLink, '고객센터', '/cs/index', {
@@ -136,6 +151,7 @@
         .then(response => response.ok ? response.json() : null)
         .then(session => {
             if (session && session.authenticated) {
+                showAuthenticatedOnlyItems();
                 updateNavigation(session);
             }
         })

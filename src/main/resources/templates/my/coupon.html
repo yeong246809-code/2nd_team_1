@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html><html lang="ko" style=""><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market - 마이페이지 쿠폰내역</title>
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d9dadb",
+                        "on-secondary-fixed": "#002018",
+                        "secondary": "#3e6659",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#446c5f",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc7",
+                        "on-background": "#191c1d",
+                        "primary-fixed": "#c8e8f2",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "on-surface": "#191c1d",
+                        "tertiary-container": "#5e3f2a",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#001f26",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-container": "#c0ecdc",
+                        "primary-fixed-dim": "#acccd5",
+                        "primary-container": "#2c4a52",
+                        "tertiary": "#452916",
+                        "on-primary-container": "#99b9c2",
+                        "on-surface-variant": "#41484a",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c1c7ca",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "surface-tint": "#45636b",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "primary": "#14333b",
+                        "inverse-primary": "#acccd5",
+                        "outline": "#72787a",
+                        "secondary-fixed": "#c0ecdc",
+                        "surface-variant": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface": "#f8f9fa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "xl": "80px",
+                        "margin-mobile": "16px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .bento-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px -2px rgba(44, 74, 82, 0.06);
+            transition: all 0.3s ease;
+        }
+        .bento-card:hover {
+            box-shadow: 0 10px 30px -4px rgba(44, 74, 82, 0.1);
+            transform: translateY(-2px);
+        }
+        .coupon-table th {
+            border-bottom: 1px solid #e1e3e4;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopNavBar -->
+<div th:replace="~{my/_shared :: header}"></div>
+<main class="max-w-container-max mx-auto px-gutter py-lg flex flex-col md:flex-row gap-md">
+    <!-- SideNavBar -->
+    <div th:replace="~{my/_shared :: sidebar('coupon')}"></div>
+    <!-- Content Area -->
+    <section class="flex-1 space-y-md w-full">
+        <!-- Promotional Banner Area -->
+        <div class="relative w-full h-[86px] rounded-xl overflow-hidden bg-surface-container-high border border-outline-variant flex items-center justify-center">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary to-transparent"></div>
+            <span class="relative font-headline-md text-headline-md text-on-surface-variant opacity-60">Full Width 배너 광고</span>
+            <!-- Background Image Placeholder for Banner -->
+            <div class="absolute inset-0 -z-10 bg-cover bg-center" data-alt="An elegant, wide minimalist banner background with soft teal and navy abstract waves. The lighting is bright and ethereal, perfectly matching a professional corporate light-mode commerce website theme. High-end visual aesthetic for a modern online marketplace." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBBnbKU1lu7Gn3LTYZWrNEPTggySPT-hpj-VQ2nAI5EJYgRkCF5vOCsdgGSqmXGz6x30i8TLXsGlvQTvgw1qAwxISeDitg7QkmQTNAcJ0sbFMGSytt5kEIongXv0bmcEBzpHXYQQUGzvS6xdNZLTl32R31vXWL_jy8jvdu6Nbu4v2ebXd-YO8LgA9-AErdFB5d-1WVf_WoE0JaSEvEToiOhUJyHnWakoWCf5vOM3OvES8Sa-lo0ipXhejjt1OYQW6GFtlzyoeULQKrs')"></div>
+        </div>
+        <!-- Page Title -->
+        <div class="pt-md pb-sm border-b border-outline-variant">
+            <h1 class="font-headline-lg text-headline-lg text-primary">쿠폰내역</h1>
+        </div>
+        <!-- Coupon Table Container -->
+        <div class="bento-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse coupon-table">
+                    <thead class="bg-surface-container-low text-on-surface-variant">
+                    <tr>
+                        <th class="px-md py-4 font-label-md text-label-md">쿠폰명</th>
+                        <th class="px-md py-4 font-label-md text-label-md">할인금액</th>
+                        <th class="px-md py-4 font-label-md text-label-md">적용기준 / 제한조건</th>
+                        <th class="px-md py-4 font-label-md text-label-md text-center">상태</th>
+                        <th class="px-md py-4 font-label-md text-label-md text-right">유효기간</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <!-- Coupon Row 1 -->
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-base">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-on-secondary-container">confirmation_number</span>
+                                </div>
+                                <span class="font-body-md text-body-md font-semibold text-on-surface">1만원 할인 중복 쿠폰</span>
+                            </div>
+                        </td>
+                        <td class="px-md py-base font-headline-md text-headline-md text-primary">10,000원</td>
+                        <td class="px-md py-base font-body-md text-body-md text-on-surface-variant">100,000원 이상 구매시</td>
+                        <td class="px-md py-base text-center">
+                            <span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-secondary text-label-sm font-label-sm">사용가능</span>
+                        </td>
+                        <td class="px-md py-base text-right font-body-md text-body-md text-outline">~ 12/31</td>
+                    </tr>
+                    <!-- Coupon Row 2 -->
+                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                        <td class="px-md py-base">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-on-secondary-container">loyalty</span>
+                                </div>
+                                <span class="font-body-md text-body-md font-semibold text-on-surface">회원가입 축하 5천원 할인쿠폰</span>
+                            </div>
+                        </td>
+                        <td class="px-md py-base font-headline-md text-headline-md text-primary">5,000원</td>
+                        <td class="px-md py-base font-body-md text-body-md text-on-surface-variant">5,000원 이상 구매시</td>
+                        <td class="px-md py-base text-center">
+                            <span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-secondary text-label-sm font-label-sm">사용가능</span>
+                        </td>
+                        <td class="px-md py-base text-right font-body-md text-body-md text-outline">~ 12/31</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Usage Notes Section -->
+        <div class="p-lg bg-surface-container-low rounded-xl border border-outline-variant mt-lg">
+            <div class="flex items-center gap-2 mb-md text-primary">
+                <span class="material-symbols-outlined">info</span>
+                <h3 class="font-headline-md text-headline-md">쿠폰사용안내</h3>
+            </div>
+            <ul class="space-y-sm text-on-surface-variant font-body-md text-body-md">
+                <li class="flex gap-2">
+                    <span class="text-primary">•</span>
+                    <span class="">순금 / 골드바 / 돌반지 / 상품권 등 환금성 카테고리 및 중고상품 및 일부 프로모션 상품에는 쿠폰사용이 제한됩니다.</span>
+                </li>
+                <li class="flex gap-2">
+                    <span class="text-primary">•</span>
+                    <span class="">쿠폰 적용 가능한 금액기준은 판매자 상품별할인과 G마켓 추가할인이 모두 포함된 할인적용가입니다.</span>
+                </li>
+                <li class="flex gap-2">
+                    <span class="text-primary">•</span>
+                    <span class="">중복쿠폰은 판매자 할인, G마켓 할인과 중복 적용 가능하며 하나의 상품당 한 장의 중복쿠폰만 사용 가능합니다.</span>
+                </li>
+                <li class="flex gap-2">
+                    <span class="text-primary">•</span>
+                    <span class="">항공 할인은 항공권 전용 할인으로 결제시점에 할인 혜택을 받을 수 있습니다.</span>
+                </li>
+                <li class="flex gap-2">
+                    <span class="text-primary">•</span>
+                    <span class="">항공권 예약취소 또는 환불시 적용했던 항공할인은 ID당 1회에 한하여 다시 발급됩니다.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+</main>
+<!-- Footer -->
+<div th:replace="~{my/_shared :: footer}"></div>
+<!-- BottomNavBar (Mobile Only Responsive Pivot) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest shadow-[0_-2px_10px_rgba(0,0,0,0.05)] px-gutter py-sm flex justify-around items-center z-50">
+    <a class="flex flex-col items-center gap-xs text-on-surface-variant" th:href="@{/}" href="/">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[10px] font-semibold">홈</span>
+    </a>
+    <a class="flex flex-col items-center gap-xs text-on-surface-variant" th:href="@{/product/search}" href="/product/search">
+        <span class="material-symbols-outlined">search</span>
+        <span class="text-[10px] font-semibold">검색</span>
+    </a>
+    <a class="flex flex-col items-center gap-xs text-primary" th:href="@{/my/index}" href="/my/index">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+        <span class="text-[10px] font-semibold">마이</span>
+    </a>
+</nav>
+<script>
+    // Micro-interaction for table rows
+    document.querySelectorAll('.coupon-table tbody tr').forEach(row => {
+        row.addEventListener('mousedown', () => {
+            row.style.transform = 'scale(0.995)';
+            row.style.transition = 'transform 0.1s';
+        });
+        row.addEventListener('mouseup', () => {
+            row.style.transform = 'scale(1)';
+        });
+    });
+
+    // Add visual scale effect on mousedown for buttons and links
+    document.querySelectorAll('button, a').forEach(el => {
+        el.addEventListener('mousedown', () => {
+            el.style.transform = 'scale(0.97)';
+        });
+        el.addEventListener('mouseup', () => {
+            el.style.transform = 'scale(1)';
+        });
+        el.addEventListener('mouseleave', () => {
+            el.style.transform = 'scale(1)';
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+</body></html>
+

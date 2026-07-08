@@ -136,10 +136,10 @@
     </div>
     <nav class="flex items-center gap-base">
       <div class="hidden md:flex gap-md mr-base">
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/member/login}" href="/member/login">Login</a>
-        <a class="font-label-md text-label-md text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" th:href="@{/member/join}" href="/member/join">Join</a>
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/my/index}" href="/my/index">My Page</a>
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/product/cart}" href="/product/cart">Cart</a>
+        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
+        <a class="font-label-md text-label-md text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" th:href="@{/member/join}" href="/member/join">회원가입</a>
+        <a class="hidden font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
+        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/product/cart}" href="/product/cart">장바구니</a>
       </div>
       <div class="flex gap-sm">
         <button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined text-on-surface-variant">search</span></button>
@@ -254,18 +254,18 @@
     <div class="grid grid-cols-2 md:grid-cols-3 gap-lg">
       <div class="flex flex-col gap-base">
         <h4 class="font-bold text-primary">Service</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/company/main}" href="/company/main">About Us</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/faq/list}" href="/cs/faq/list">FAQ</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/company/main}" href="/company/main">회사소개</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/faq/list}" href="/cs/faq/list">자주묻는질문</a>
       </div>
       <div class="flex flex-col gap-base">
         <h4 class="font-bold text-primary">Support</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/index}" href="/cs/index">Customer Service</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/qna/list}" href="/cs/qna/list">Contact</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/qna/list}" href="/cs/qna/list">문의하기</a>
       </div>
       <div class="flex flex-col gap-base">
         <h4 class="font-bold text-primary">Legal</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md font-semibold" th:href="@{/policy/buyer}" href="/policy/buyer">Privacy Policy</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/policy/buyer}" href="/policy/buyer">Terms of Service</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md font-semibold" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
       </div>
     </div>
   </div>
@@ -275,7 +275,7 @@
       <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">language</span>
       <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">share</span>
     </div>
-    <p class="text-on-surface-variant font-body-md">© 2024 K-market. All rights reserved.</p>
+    <p class="text-on-surface-variant font-body-md">© 2024 K-market. 모든 권리 보유.</p>
   </div>
 </footer>
 <script>

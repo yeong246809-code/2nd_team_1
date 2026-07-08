@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40">
+    <div class="max-w-container-max mx-auto px-xl py-md flex justify-between items-center">
+        <div class="flex items-center gap-base">
+            <a class="text-headline-lg font-headline-lg font-bold text-primary" th:href="@{/}" href="/">K-market</a>
+        </div>
+        <nav class="hidden md:flex items-center space-x-md">
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
+            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
+            <a class="hidden font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
+            <a class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors" th:href="@{/product/cart}" href="/product/cart">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span class="font-label-md text-label-md">장바구니</span>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<aside th:fragment="sidebar(activeMenu)" class="w-64 shrink-0 flex flex-col space-y-2 py-md bg-surface-container-low rounded-xl shadow-sm border-r border-outline-variant h-fit sticky top-24">
+    <div class="px-4 pb-4 border-b border-outline-variant mb-2">
+        <h2 class="font-headline-md text-headline-md text-primary">나의쇼핑정보</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant opacity-70" th:text="${loginUserId} != '' ? |${loginUserId}님 환영합니다| : '환영합니다'">환영합니다</p>
+    </div>
+    <nav class="flex flex-col space-y-1">
+        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'order'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/order}" href="/my/order">
+            <span class="material-symbols-outlined">list_alt</span>
+            전체주문내역
+        </a>
+        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'point'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/point}" href="/my/point">
+            <span class="material-symbols-outlined">payments</span>
+            포인트내역
+        </a>
+        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'coupon'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/coupon}" href="/my/coupon">
+            <span class="material-symbols-outlined">confirmation_number</span>
+            쿠폰
+        </a>
+        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'review'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/review}" href="/my/review">
+            <span class="material-symbols-outlined">rate_review</span>
+            나의리뷰
+        </a>
+        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'myqna'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/myqna}" href="/my/myqna">
+            <span class="material-symbols-outlined">contact_support</span>
+            문의하기
+        </a>
+        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'myinfo'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/myinfo}" href="/my/myinfo">
+            <span class="material-symbols-outlined">settings</span>
+            나의설정
+        </a>
+    </nav>
+</aside>
+
+<footer th:fragment="footer" class="bg-surface-container border-t border-outline-variant mt-xl">
+    <div class="max-w-container-max mx-auto py-lg px-xl flex flex-col items-center space-y-md">
+        <div class="flex space-x-md font-label-md text-label-md text-on-surface-variant">
+            <a class="hover:underline" th:href="@{/company/main}" href="/company/main">회사소개</a>
+            <a class="hover:underline" th:href="@{/policy/buyer}" href="/policy/buyer">이용약관</a>
+            <a class="hover:underline font-bold" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
+            <a class="hover:underline" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
+        </div>
+        <div class="text-center space-y-xs">
+            <div class="font-bold text-on-surface font-headline-md mb-2">K-market</div>
+            <p class="font-body-md text-body-md text-on-surface-variant">Copyright © 2025 K-market All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

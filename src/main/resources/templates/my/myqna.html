@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html><html lang="ko" style=""><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market - 문의하기</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary-fixed": "#ffdcc7",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "primary-fixed-dim": "#acccd5",
+                        "secondary-fixed": "#c0ecdc",
+                        "secondary-container": "#c0ecdc",
+                        "secondary": "#3e6659",
+                        "on-error": "#ffffff",
+                        "primary-container": "#2c4a52",
+                        "on-primary-container": "#99b9c2",
+                        "surface-container-high": "#e7e8e9",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#edeeef",
+                        "on-secondary-container": "#446c5f",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed": "#001f26",
+                        "tertiary": "#452916",
+                        "surface-tint": "#45636b",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-surface-variant": "#41484a",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#002018",
+                        "on-background": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-primary": "#acccd5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed": "#c8e8f2",
+                        "surface-dim": "#d9dadb",
+                        "outline": "#72787a",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c1c7ca",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-container": "#5e3f2a",
+                        "surface-bright": "#f8f9fa",
+                        "primary": "#14333b",
+                        "on-tertiary-fixed": "#2d1605",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-primary-fixed-variant": "#2d4b53"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "lg": "48px",
+                        "xl": "80px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[style*="'FILL' 1"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<div th:replace="~{my/_shared :: header}"></div>
+<!-- Main Layout Container -->
+<div class="flex-1 w-full max-w-container-max mx-auto md:px-gutter flex flex-col md:flex-row gap-lg py-lg">
+    <!-- SideNavBar (Hidden on Mobile, Sticky on Desktop) -->
+    <div th:replace="~{my/_shared :: sidebar('myqna')}"></div>
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full flex flex-col px-margin-mobile md:px-0">
+        <!-- Mobile Header / Title -->
+        <div class="mb-md md:mb-lg flex items-center justify-between">
+            <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">문의하기</h1>
+            <button class="md:hidden p-2 bg-surface-container rounded-full text-primary">
+                <span class="material-symbols-outlined" data-icon="menu">menu</span>
+            </button>
+        </div>
+        <!-- Banner Placeholder -->
+        <div class="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl p-md mb-lg flex items-center justify-center min-h-[120px] shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-fixed/30 to-secondary-fixed/30 opacity-50 group-hover:opacity-70 transition-opacity"></div>
+            <div class="relative z-10 text-center">
+                <p class="font-headline-md text-headline-md text-primary-container opacity-50">배너 광고 영역 (810 x 86)</p>
+            </div>
+        </div>
+        <!-- Inquiry Table Content -->
+        <div class="bg-surface rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col flex-1">
+            <!-- Table Header (Desktop) -->
+            <div class="hidden md:grid grid-cols-12 gap-4 p-4 bg-surface-container-lowest border-b border-outline-variant/40 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-center">
+                <div class="col-span-1">번호</div>
+                <div class="col-span-2">문의채널</div>
+                <div class="col-span-2">문의유형</div>
+                <div class="col-span-4 text-left pl-4">제목</div>
+                <div class="col-span-2">작성일</div>
+                <div class="col-span-1">상태</div>
+            </div>
+            <!-- Table Body / List Items -->
+            <div class="flex flex-col divide-y divide-outline-variant/20">
+                <!-- Item 1 -->
+                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center">
+                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline">1</div>
+                    <div class="flex md:contents justify-between w-full md:w-auto">
+                        <span class="md:hidden font-label-sm text-outline">채널:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface">고객센터</div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto">
+                        <span class="md:hidden font-label-sm text-outline">유형:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant">주문 / 결제</div>
+                    </div>
+                    <div class="flex md:contents justify-start w-full md:w-auto mt-2 md:mt-0 text-left">
+                        <div class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors">
+                            신용카드 결제 중 오류가 난 경우 어떻게 하나요?
+                        </div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
+                        <span class="md:hidden font-label-sm text-outline">작성일:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-outline">2022-12-12</div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
+                        <span class="md:hidden font-label-sm text-outline">상태:</span>
+                        <div class="col-span-1">
+                            <span class="inline-block px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-xs font-medium">검토중</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center">
+                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline">2</div>
+                    <div class="flex md:contents justify-between w-full md:w-auto">
+                        <span class="md:hidden font-label-sm text-outline">채널:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface">고객센터</div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto">
+                        <span class="md:hidden font-label-sm text-outline">유형:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant">주문 / 결제</div>
+                    </div>
+                    <div class="flex md:contents justify-start w-full md:w-auto mt-2 md:mt-0 text-left">
+                        <div class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors">
+                            신용카드 결제 중 오류가 난 경우 어떻게 하나요?
+                        </div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
+                        <span class="md:hidden font-label-sm text-outline">작성일:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-outline">2022-12-12</div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
+                        <span class="md:hidden font-label-sm text-outline">상태:</span>
+                        <div class="col-span-1">
+                            <span class="inline-block px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-xs font-medium">답변완료</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 3 -->
+                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center">
+                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline">3</div>
+                    <div class="flex md:contents justify-between w-full md:w-auto">
+                        <span class="md:hidden font-label-sm text-outline">채널:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface">판매자 게시판</div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto">
+                        <span class="md:hidden font-label-sm text-outline">유형:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant">배송</div>
+                    </div>
+                    <div class="flex md:contents justify-start w-full md:w-auto mt-2 md:mt-0 text-left">
+                        <div class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors">
+                            배송기간이 보통 얼마나 걸리나요?
+                        </div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
+                        <span class="md:hidden font-label-sm text-outline">작성일:</span>
+                        <div class="col-span-2 font-body-md text-body-md text-outline">2022-12-12</div>
+                    </div>
+                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
+                        <span class="md:hidden font-label-sm text-outline">상태:</span>
+                        <div class="col-span-1">
+                            <span class="inline-block px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-xs font-medium">답변완료</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <div class="mt-auto border-t border-outline-variant/30 p-md flex justify-center items-center gap-sm">
+                <button class="px-3 py-1 text-outline hover:text-primary transition-colors font-label-md disabled:opacity-50" disabled="">이전</button>
+                <div class="flex items-center gap-2">
+                    <button class="w-8 h-8 rounded bg-primary text-on-primary font-label-md flex items-center justify-center">1</button>
+                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">2</button>
+                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">3</button>
+                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">4</button>
+                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">5</button>
+                </div>
+                <button class="px-3 py-1 text-on-surface hover:text-primary transition-colors font-label-md">다음</button>
+            </div>
+        </div>
+        <!-- Add Inquiry FAB (Mobile only, contextual) -->
+        <button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-colors z-40">
+            <span class="material-symbols-outlined" data-icon="add">add</span>
+        </button>
+    </main>
+</div>
+<!-- Footer -->
+<div th:replace="~{my/_shared :: footer}"></div>
+
+
+
+
+
+
+
+
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+</body></html>
+

@@ -2,6 +2,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market | 당신을 위한 친절한 온라인 쇼핑몰</title>
+    <base href="/k_market/">
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
@@ -147,6 +148,8 @@
                     <a class="hover:underline" href="member/login">로그인</a>
                     <span class="text-outline-variant">/</span>
                     <a class="hover:underline" href="member/join">회원가입</a>
+                    <span class="hidden text-outline-variant" data-auth-required="true">/</span>
+                    <a class="hidden hover:underline" href="my/index" data-auth-required="true">마이페이지</a>
                     <span class="text-outline-variant">/</span><a href="cs/index" class="hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-sm">support_agent</span>고객센터</a></div>
                 <div class="flex items-center gap-base">
                     <button class="p-2 border border-outline-variant rounded relative">
@@ -412,7 +415,7 @@
                     <p class="">부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
                     <p class="">대표이사 : 홍길동</p>
                     <p class="">사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">0.0.5 SNAPSHOT</p>
+                    <p class="mt-4 text-[10px] text-outline">0.0.6 SNAPSHOT</p>
                 </div>
             </div>
             <!-- Customer Center -->
@@ -451,7 +454,7 @@
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px]">검색</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="my/index">
+    <a class="hidden flex flex-col items-center gap-1 text-on-surface-variant" href="my/index" data-auth-required="true">
         <span class="material-symbols-outlined">person</span>
         <span class="text-[10px]">마이페이지</span>
     </a>
