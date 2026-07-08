@@ -14,14 +14,20 @@ import lombok.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int catNo;
+    private int cateNo;
     private String name;
     private Integer parentNo;
     private int depth;
 
     public CategoryDTO toDTO(){
         return CategoryDTO.builder()
-                .catNo(catNo).name(name).parentNo(parentNo).depth(depth)
+                .cateNo(cateNo).name(name).parentNo(parentNo).depth(depth)
                 .build();
+    }
+
+    public void update(String name, Integer parentNo, int depth) {
+        this.name = name;
+        this.parentNo = parentNo;
+        this.depth = depth;
     }
 }

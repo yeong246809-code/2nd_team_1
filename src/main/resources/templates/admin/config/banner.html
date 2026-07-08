@@ -33,6 +33,16 @@
         .menu-item-active .chevron-icon {
             transform: rotate(180deg);
         }
+        /* 모달 애니메이션 */
+        .modal-fade {
+            transition: opacity 0.2s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-fade.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -284,192 +294,170 @@
     </div>
 </header>
 <!-- Main Canvas -->
-<main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
-    <div class="mb-lg">
-        <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">관리자 메인</h1>
-        <p class="font-body-md text-body-md text-on-surface-variant">쇼핑몰의 주요 현황을 한눈에 파악하세요.</p>
+<main class="ml-64 mt-16 p-8 flex-1 w-full bg-white">
+    <div class="flex justify-between items-end border-b-2 border-black pb-3 mb-8">
+        <h1 class="text-2xl font-bold text-black">배너관리</h1>
+        <div class="text-sm text-gray-500 font-medium">HOME > 환경설정 > <strong class="text-black">배너관리</strong></div>
     </div>
-    <!-- Dashboard Grid Layout -->
-    <div class="flex flex-col gap-lg">
-        <!-- Row 1: Operations and Metrics Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
-            <!-- Operational Status Cards -->
-            <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">운영현황</h3>
-                <div class="grid grid-cols-5 gap-sm">
-                    <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">입금대기</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">12</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">배송준비</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">45</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">취소요청</span>
-                        <span class="font-headline-md text-headline-md text-error font-bold">3</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">교환요청</span>
-                        <span class="font-headline-md text-headline-md text-secondary font-bold">1</span>
-                    </div>
-                    <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">반품요청</span>
-                        <span class="font-headline-md text-headline-md text-tertiary font-bold">2</span>
-                    </div>
-                </div>
-            </section>
-            <!-- Key Metrics Row -->
-            <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">주요 지표 (오늘)</h3>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-sm">
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">주문건수</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">128<span class="text-label-sm font-normal text-on-surface-variant ml-1">건</span></span>
-                    </div>
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">주문금액</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">4.2<span class="text-label-sm font-normal text-on-surface-variant ml-1">M ₩</span></span>
-                    </div>
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">신규 회원</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">24<span class="text-label-sm font-normal text-on-surface-variant ml-1">명</span></span>
-                    </div>
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">방문자 수</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">1,024<span class="text-label-sm font-normal text-on-surface-variant ml-1">명</span></span>
-                    </div>
-                </div>
-            </section>
-        </div>
-        <!-- Row 2: Visual Charts -->
-        <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-            <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">집계현황</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg h-64">
-                <!-- Simple Bar Chart Fake -->
-                <div class="flex flex-col h-full border border-outline-variant rounded p-sm bg-surface">
-                    <span class="font-label-md text-label-md text-on-surface-variant mb-auto">최근 7일 매출 현황</span>
-                    <div class="flex items-end justify-between h-40 gap-2 mt-4 px-2 border-b border-outline-variant">
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 40%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 60%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 45%;"></div>
-                        <div class="w-full bg-primary rounded-t" style="height: 80%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 55%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 70%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 90%;"></div>
-                    </div>
-                    <div class="flex justify-between mt-2 px-2">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">월</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">화</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">수</span>
-                        <span class="font-label-sm text-label-sm text-primary text-[10px] font-bold">목</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">금</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">토</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">일</span>
-                    </div>
-                </div>
-                <!-- Simple Composition -->
-                <div class="flex flex-col h-full border border-outline-variant rounded p-sm bg-surface">
-                    <span class="font-label-md text-label-md text-on-surface-variant mb-auto">기기별 접속 비율</span>
-                    <div class="flex items-center justify-center h-40 gap-4 mt-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-24 bg-primary rounded-lg mb-2"></div>
-                            <span class="font-label-sm text-label-sm text-on-background">모바일</span>
-                            <span class="font-label-sm text-label-sm text-primary">65%</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-12 bg-secondary rounded-lg mb-2"></div>
-                            <span class="font-label-sm text-label-sm text-on-background">PC</span>
-                            <span class="font-label-sm text-label-sm text-secondary">30%</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-6 bg-tertiary rounded-lg mb-2"></div>
-                            <span class="font-label-sm text-label-sm text-on-background">기타</span>
-                            <span class="font-label-sm text-label-sm text-tertiary">5%</span>
-                        </div>
-                    </div>
-                </div>
+
+    <div class="max-w-[1200px] flex flex-col gap-6">
+        <div class="flex justify-between items-center">
+            <div class="flex font-bold text-sm" id="bannerTabs">
+                <button onclick="filterBanner('MAIN1', this)" class="px-6 py-3 border border-gray-300 bg-white text-black">메인상단배너</button>
+                <button onclick="filterBanner('MAIN2', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">메인슬라이더배너</button>
+                <button onclick="filterBanner('PRODUCT1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">상품 상세보기 배너</button>
+                <button onclick="filterBanner('MEMBER1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">회원로그인 배너</button>
+                <button onclick="filterBanner('MY1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">마이페이지 배너</button>
             </div>
-        </section>
-        <!-- Row 3: Lists -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-            <!-- Notice List -->
-            <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-                <div class="flex justify-between items-center border-b border-outline-variant pb-sm mb-sm">
-                    <h3 class="font-headline-md text-headline-md text-on-background">공지사항</h3>
-                    <button class="font-label-sm text-label-sm text-primary hover:underline">더보기 +</button>
-                </div>
-                <ul class="flex flex-col">
-                    <li class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">[시스템] 서버 점검 안내 (10/24)</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.20</span>
-                    </li>
-                    <li class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">신규 배송 정책 변경 사전 안내</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.18</span>
-                    </li>
-                    <li class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">가을 맞이 프로모션 세팅 가이드</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.15</span>
-                    </li>
-                    <li class="py-2 flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">개인정보 처리방침 개정 안내</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.10</span>
-                    </li>
-                </ul>
-            </section>
-            <!-- Customer Inquiry List -->
-            <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-                <div class="flex justify-between items-center border-b border-outline-variant pb-sm mb-sm">
-                    <h3 class="font-headline-md text-headline-md text-on-background">최근 고객문의</h3>
-                    <button class="font-label-sm text-label-sm text-primary hover:underline">더보기 +</button>
-                </div>
-                <ul class="flex flex-col">
-                    <li class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-error-container text-on-error-container font-label-sm text-[10px] px-2 py-0.5 rounded">미답변</span>
-                            <span class="font-body-md text-body-md text-on-background truncate group-hover:text-primary">배송지 변경 가능한가요?</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">홍*동</span>
-                    </li>
-                    <li class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-error-container text-on-error-container font-label-sm text-[10px] px-2 py-0.5 rounded">미답변</span>
-                            <span class="font-body-md text-body-md text-on-background truncate group-hover:text-primary">상품 불량 교환 요청합니다.</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">김*영</span>
-                    </li>
-                    <li class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-surface-dim text-on-surface-variant font-label-sm text-[10px] px-2 py-0.5 rounded border border-outline-variant">답변완료</span>
-                            <span class="font-body-md text-body-md text-on-surface-variant truncate group-hover:text-primary">재입고 일정 문의</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">이*민</span>
-                    </li>
-                    <li class="py-2 flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-surface-dim text-on-surface-variant font-label-sm text-[10px] px-2 py-0.5 rounded border border-outline-variant">답변완료</span>
-                            <span class="font-body-md text-body-md text-on-surface-variant truncate group-hover:text-primary">포인트 사용 방법</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">박*준</span>
-                    </li>
-                </ul>
-            </section>
+            <button type="button" onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-bold text-sm shadow-md transition-all">
+                + 배너등록
+            </button>
         </div>
+
+        <table class="w-full border-t border-b border-gray-300 text-center text-sm">
+            <thead class="bg-gray-50 border-b border-gray-300">
+            <tr>
+                <th class="py-3 px-2 w-12"><input type="checkbox" id="selectAll"></th>
+                <th class="py-3 px-2 w-16">번호</th>
+                <th class="py-3 px-2 w-32">이미지</th>
+                <th class="py-3 px-4 text-left">배너정보</th>
+                <th class="py-3 px-4">관리</th>
+            </tr>
+            </thead>
+            <tbody id="bannerTableBody">
+            <tr th:each="b : ${bannerList}" th:data-position="${b.position}" class="banner-row border-b">
+                <td><input type="checkbox" name="bannerIds" th:value="${b.id}"></td>
+                <td th:text="${b.id}">1</td>
+                <td class="py-2 flex justify-center">
+                    <div class="w-16 h-16 border flex items-center justify-center overflow-hidden bg-gray-50">
+                        <img th:if="${b.fileUrl_stored != null}"
+                             th:src="@{/uploads/{filename}(filename=${b.fileUrl_stored})}"
+                             alt="banner" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300">
+                        <div th:if="${b.fileUrl_stored == null}" class="text-[10px] text-gray-400">No Image</div>
+                    </div>
+                </td>
+                <td class="text-left py-3">
+                    <div class="font-bold" th:text="${b.name}">배너명</div>
+                    <div class="text-xs text-gray-500" th:text="${b.sizeType}">1200x80</div>
+                </td>
+                <td>
+                    <form th:action="@{/admin/config/banner/status}" method="post">
+                        <input type="hidden" name="id" th:value="${b.id}">
+                        <button type="submit"
+                                th:text="${b.status}"
+                                th:classappend="${b.status == '활성'} ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-gray-400'"
+                                class="px-3 py-1 border rounded text-xs font-bold transition-all">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </main>
+
+
+<div id="bannerModal" class="modal-fade fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal()"></div>
+
+    <div class="relative bg-white w-[600px] shadow-2xl rounded-sm">
+
+        <div class="bg-gray-700 text-white flex justify-between items-center px-4 py-3">
+            <h2 class="font-bold">배너등록</h2>
+            <button type="button" onclick="closeModal()" class="text-white hover:text-gray-300 font-bold text-xl leading-none">&times;</button>
+        </div>
+
+        <form th:action="@{/admin/config/banner/add}" method="post" enctype="multipart/form-data" class="p-6 flex flex-col gap-3 text-sm">
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너이름</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="name" placeholder="배너명입력" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너크기</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="sizeType" placeholder="배너크기입력 (예: 1200x80)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배경색</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="backgroundColor" placeholder="배너배경색입력 (예: #FFFFFF)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너링크</div>
+                <div class="flex-1 p-2">
+                    <input type="text" name="linkUrl" placeholder="배너링크입력 (예: /event/1)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너위치</div>
+                <div class="flex-1 p-2">
+                    <select name="position" class="w-32 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                        <option value="">선택</option>
+                        <option value="MAIN1">MAIN1</option>
+                        <option value="MAIN2">MAIN2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">노출날짜</div>
+                <div class="flex-1 p-2 flex items-center gap-2">
+                    <input type="date" name="startDate" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                    <span>~</span>
+                    <input type="date" name="endDate" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">노출시간</div>
+                <div class="flex-1 p-2 flex items-center gap-2">
+                    <input type="time" name="startTime" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                    <span>~</span>
+                    <input type="time" name="endTime" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                </div>
+            </div>
+
+            <div class="flex items-center border border-gray-300">
+                <div class="w-32 bg-gray-100 py-3 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너파일</div>
+                <div class="flex-1 p-2 flex items-center gap-3">
+                    <label class="cursor-pointer bg-gray-200 border border-gray-300 px-3 py-1 text-xs text-gray-700 hover:bg-gray-300">
+                        파일선택
+                        <input type="file" name="file" class="hidden" onchange="updateFileName(this)">
+                    </label>
+                    <span id="fileNameDisplay" class="text-xs text-gray-500">선택된파일없음</span>
+                    <span class="text-xs text-gray-400 ml-auto">노출 위치에 맞는 크기 권장</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 mb-2">
+                <button type="submit" class="bg-gray-700 hover:bg-gray-800 text-white px-10 py-2 font-bold text-base transition-colors shadow-sm">
+                    등록하기
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+    /* 메뉴 아코디언 로직 (기존 유지) */
     function toggleAccordion(button) {
         const menuItem = button.closest('.group\\/menu');
         if (!menuItem) return;
 
         const isActive = menuItem.classList.contains('menu-item-active');
 
-        // Toggle the active class
         if (isActive) {
             menuItem.classList.remove('menu-item-active');
         } else {
-            // Optional: Close other accordions
             document.querySelectorAll('.menu-item-active').forEach(item => {
                 if (item !== menuItem) {
                     item.classList.remove('menu-item-active');
@@ -478,5 +466,96 @@
             menuItem.classList.add('menu-item-active');
         }
     }
+
+    /* 전체 선택 체크박스 로직 */
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('input[name="bannerIds"]');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    /* 파일 선택 시 파일명 표시 로직 */
+    function updateFileName(input) {
+        const display = document.getElementById('fileNameDisplay');
+        if (input.files && input.files.length > 0) {
+            display.textContent = input.files[0].name;
+            display.classList.replace('text-gray-500', 'text-gray-900');
+        } else {
+            display.textContent = '선택된파일없음';
+            display.classList.replace('text-gray-900', 'text-gray-500');
+        }
+    }
+
+    /* JS로 이미지를 완벽한 정사각형(1:1비율, 중앙 크롭)으로 처리하는 로직 */
+    document.addEventListener("DOMContentLoaded", function() {
+        const images = document.querySelectorAll('.square-img');
+
+        images.forEach(img => {
+            img.onload = function() {
+                // 이미지가 로드되면 JS를 통해 강제로 스타일 주입 (가로/세로 100% 채우고 넘치는 부분은 잘라냄)
+                this.style.width = '100%';
+                this.style.height = '100%';
+                this.style.objectFit = 'cover';
+                this.style.objectPosition = 'center';
+
+                // 로딩 완료 후 부드럽게 나타나도록 opacity 변경
+                this.classList.remove('opacity-0');
+            };
+
+            // 캐시된 이미지의 경우 onload가 안 탈 수 있으므로 강제 트리거
+            if (img.complete) {
+                img.onload();
+            }
+        });
+    });
+
+    function filterBanner(position, btn) {
+        // 탭 활성 디자인 처리
+        document.querySelectorAll('#bannerTabs button').forEach(b => {
+            b.classList.replace('bg-white', 'bg-gray-200');
+            b.classList.replace('text-black', 'text-gray-600');
+        });
+        btn.classList.replace('bg-gray-200', 'bg-white');
+        btn.classList.replace('text-gray-600', 'text-black');
+
+        // 모든 행을 숨긴 뒤, 해당 position인 행만 보여줌
+        document.querySelectorAll('.banner-row').forEach(row => {
+            if(row.dataset.position === position) {
+                row.style.display = ''; // 보여줌
+            } else {
+                row.style.display = 'none'; // 숨김
+            }
+        });
+    }
+
+    // 페이지 로드 시 기본 탭(MAIN1) 실행
+    document.addEventListener("DOMContentLoaded", () => {
+        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
+    });
+
+    function filterBanner(position, btn) {
+        // 탭 디자인 업데이트
+        document.querySelectorAll('#bannerTabs button').forEach(b => {
+            b.classList.remove('bg-white', 'text-black');
+            b.classList.add('bg-gray-200', 'text-gray-600');
+        });
+        btn.classList.remove('bg-gray-200', 'text-gray-600');
+        btn.classList.add('bg-white', 'text-black');
+
+        // 행 필터링
+        document.querySelectorAll('.banner-row').forEach(row => {
+            row.style.display = (row.getAttribute('data-position') === position) ? '' : 'none';
+        });
+    }
+
+    // 초기 실행
+    document.addEventListener("DOMContentLoaded", () => {
+        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
+    });
+
+    // 모달 제어
+    function openModal() { document.getElementById('bannerModal').classList.add('show'); }
+    function closeModal() { document.getElementById('bannerModal').classList.remove('show'); }
+
 </script>
-</body></html>
+</body>
+</html>
