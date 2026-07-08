@@ -222,23 +222,60 @@
             </tr>
             </thead>
             <tbody class="divide-y divide-surface-variant">
-            <tr>
-                <td class="py-4 text-primary font-bold">10121211341</td>
-                <td class="py-4">abc123</td>
-                <td class="py-4">김유신</td>
-                <td class="py-4">2</td>
-                <td class="py-4 font-semibold">102,900원</td>
-                <td class="py-4">신용카드</td>
-                <td class="py-4 text-secondary font-bold">결제완료</td>
-                <td class="py-4">2026-07-08</td>
-                <td class="py-4"><button class="border border-primary text-primary px-3 py-1 rounded text-xs hover:bg-primary hover:text-white">배송하기</button></td>
+            <tr th:if="${orderPage.content.isEmpty()}">
+                <td colspan="7" class="py-10 text-center text-on-surface-variant">조회된 주문 내역이 없습니다.</td>
+            </tr>
+            <tr th:each="order : ${orderPage.content}">
+                <td class="py-4 text-primary font-bold" th:text="${order.orderNo}"></td>
+                <td class="py-4" th:text="${order.memberNo}"></td>
+                <td class="py-4" th:text="${order.memberName}"></td> <td class="py-4">1</td> <td class="py-4 font-semibold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}"></td>
+                <td class="py-4" th:text="${order.paymentMethod}"></td>
+                <td class="py-4">
+                        <span th:text="${order.status}"
+                              th:classappend="${order.status == '결제완료' ? 'text-green-600' :
+                                              (order.status == '결제대기' ? 'text-amber-600' : 'text-red-600')}"
+                              class="font-bold px-2 py-1 rounded border">
+                        </span>
+                </td>
+                <td class="py-4" th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd')}"></td>
+                <td class="py-4">
+                    <button class="border border-primary text-primary px-3 py-1 rounded text-xs hover:bg-primary hover:text-white"
+                            th:onclick="|updateStatus('${order.orderNo}', '배송중')|">배송하기</button>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
+    <div class="mt-8 flex justify-center gap-2">
+        <a th:if="${orderPage.hasPrevious()}"
+           th:href="@{/admin/order/list(page=${orderPage.number - 1}, searchType=${searchType}, keyword=${keyword})}"
+           class="px-3 py-1 border rounded">이전</a>
+
+        <span th:each="i : ${#numbers.sequence(0, orderPage.totalPages - 1)}">
+        <a th:href="@{/admin/order/list(page=${i}, searchType=${searchType}, keyword=${keyword})}"
+           th:text="${i + 1}"
+           th:classappend="${i == orderPage.number} ? 'bg-primary text-white' : 'bg-white'"
+           class="px-3 py-1 border rounded">1</a>
+    </span>
+
+        <a th:if="${orderPage.hasNext()}"
+           th:href="@{/admin/order/list(page=${orderPage.number + 1}, searchType=${searchType}, keyword=${keyword})}"
+           class="px-3 py-1 border rounded">다음</a>
+    </div>
 </main>
 
 <script>
+    function updateStatus(orderNo, newStatus) {
+        if(confirm(orderNo + "번 주문 상태를 " + newStatus + "(으)로 변경하시겠습니까?")) {
+            // fetch API를 이용해 서버로 상태 변경 요청
+            fetch(`/admin/order/status?orderNo=${orderNo}&status=${newStatus}`, {
+                method: 'POST'
+            }).then(response => {
+                if(response.ok) location.reload();
+            });
+        }
+    }
+
     function toggleAccordion(button) {
         button.closest('.group\\/menu').classList.toggle('menu-item-active');
     }

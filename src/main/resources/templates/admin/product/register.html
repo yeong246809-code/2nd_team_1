@@ -280,40 +280,58 @@
 
         <div class="mb-8">
             <h2 class="font-bold text-lg mb-4 border-b pb-2">상품 선택 정보</h2>
-            <div id="optionContainer" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4 option-row">
-                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg">
-                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg">
+            <div id="optionContainer" class="space-y-3">
+                <!-- 이제 모든 행이 아래 구조를 따릅니다 -->
+                <div class="grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center">
+                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
+                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg w-full">
+                    <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
                 </div>
-                <div class="grid grid-cols-2 gap-4 option-row">
-                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg">
-                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg">
+                <div class="grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center">
+                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
+                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg w-full">
+                    <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
                 </div>
-                <div class="grid grid-cols-2 gap-4 option-row">
-                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg">
-                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg">
+                <div class="grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center">
+                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
+                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg w-full">
+                    <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
                 </div>
             </div>
             <div class="mt-4 flex justify-end">
-                <button type="button" onclick="addOption()" class="px-4 py-2 bg-secondary text-white rounded-lg text-sm">
-                    + 옵션 추가
-                </button>
+                <button type="button" onclick="addOption()" class="px-4 py-2 bg-primary text-white rounded-lg text-sm flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">add</span>옵션 추가</button>
             </div>
         </div>
 
         <script>
-            // 옵션 추가 기능
             function addOption() {
                 const container = document.getElementById('optionContainer');
                 const newRow = document.createElement('div');
-                newRow.className = 'grid grid-cols-2 gap-4 option-row mt-2';
+                // grid-cols-[1fr,1fr,auto]로 설정하여 입력창 2개는 동일 비율로, 삭제버튼은 딱 필요한 만큼만 차지하게 합니다.
+                newRow.className = 'grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center';
                 newRow.innerHTML = `
-            <input type="text" name="optionName[]" placeholder="옵션명" class="border-outline-variant rounded-lg">
-            <input type="text" name="optionValue[]" placeholder="옵션항목" class="border-outline-variant rounded-lg">
+            <input type="text" name="optionName[]" placeholder="옵션명" class="border-outline-variant rounded-lg w-full">
+            <input type="text" name="optionValue[]" placeholder="옵션항목" class="border-outline-variant rounded-lg w-full">
+            <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
         `;
                 container.appendChild(newRow);
             }
+
+            function removeOption(button) {
+                button.closest('.option-row').remove();
+            }
         </script>
+
+
 
         <div class="mb-8">
             <h2 class="font-bold text-lg mb-4 border-b pb-2">상품정보 제공고시</h2>

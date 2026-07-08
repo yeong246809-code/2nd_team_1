@@ -30,6 +30,8 @@ public class MemberDTO {
     private String memo;
     private String locationPolicyAgreed;
 
+    private String id;
+
     public Member toEntity(){
         return Member.builder()
                 .memberNo(memberNo).name(name).birthDate(birthDate)
@@ -37,7 +39,7 @@ public class MemberDTO {
                 .baseAddress(baseAddress).detailAddress(detailAddress)
                 .gradeNo(gradeNo).points(points).createdAt(createdAt)
                 .status(status).lastLoginAt(lastLoginAt).memo(memo)
-                .locationPolicyAgreed(locationPolicyAgreed)
+                .locationPolicyAgreed(locationPolicyAgreed).id(id)
                 .build();
     }
 }
