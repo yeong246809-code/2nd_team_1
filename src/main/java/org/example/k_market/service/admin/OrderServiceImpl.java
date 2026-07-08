@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
     public boolean updateOrderStatus(String orderNo, String status) {
         try {
             int id = Integer.parseInt(orderNo);
-            Order order = orderRepository.findById((long) id)
+            Order order = orderRepository.findById((Integer) id)
                     .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
             // Order 엔티티에 상태(status) 필드가 있다면 setter 또는 update 메서드 사용
