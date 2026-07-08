@@ -145,14 +145,16 @@
                 </div>
             </div>
             <!-- 작성자 -->
-            <!-- 로그인한 사용자의 Users.id를 화면에만 출력한다 -->
-            <!-- 실제 저장은 Controller에서 session.sessUser.no를 memberNo로 저장한다 -->
+            <!-- 로그인한 사용자 아이디를 화면에만 표시 -->
+            <!-- memberNo는 Controller에서 세션으로 저장 -->
             <div class="grid grid-cols-[120px_1fr] items-center gap-md border-b border-surface-variant pb-md">
                 <label class="font-bold text-on-surface">작성자</label>
-                <input class="w-full border border-outline-variant rounded px-sm py-2 text-on-surface bg-gray-100"
-                       th:value="${session.sessUser.id}"
-                       type="text"
-                       readonly/>
+
+                <input
+                        type="text"
+                        class="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface-container-low text-on-surface"
+                        th:value="${session.sessUser}"
+                        readonly />
             </div>
             <!-- 제목 -->
             <div class="grid grid-cols-[120px_1fr] items-center gap-md border-b border-surface-variant pb-md">
