@@ -18,7 +18,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderNo; // 테이블의 int(11) 구조에 맞춰 long -> int로 변경
 
+    @Column(name = "memberNo", insertable = false, updatable = false)
     private int memberNo;
+
     private String paymentMethod;
     private int totalProductPrice;
     private int totalDiscountPrice;
@@ -27,17 +29,30 @@ public class Order {
     private int totalPaymentPrice;
     private LocalDateTime createdAt;
 
-    public OrderDTO toDTO(){
+    private String status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberNo", insertable = false, updatable = false)
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberNo") // order 테이블의 memberNo 컬럼과 조인
+    private Users user; // Member 대신 User 엔티티 사용
+
+    public OrderDTO toDTO() {
         return OrderDTO.builder()
-                .orderNo(orderNo)
-                .memberNo(memberNo)
-                .paymentMethod(paymentMethod)
-                .totalProductPrice(totalProductPrice)
-                .totalDiscountPrice(totalDiscountPrice)
-                .totalShippingFee(totalShippingFee)
-                .usedPoints(usedPoints)
-                .totalPaymentPrice(totalPaymentPrice)
-                .createdAt(createdAt)
+                .orderNo(this.orderNo)
+                .id(this.member != null ? this.member.getId() : "탈퇴회원")
+                .memberName(this.member != null ? this.member.getName() : "탈퇴회원")
+                .memberNo(this.memberNo)
+                .paymentMethod(this.paymentMethod)
+                .totalProductPrice(this.totalProductPrice)
+                .totalDiscountPrice(this.totalDiscountPrice)
+                .totalShippingFee(this.totalShippingFee)
+                .usedPoints(this.usedPoints)
+                .totalPaymentPrice(this.totalPaymentPrice)
+                .createdAt(this.createdAt)
+                .status(this.status) // 새로 추가한 상태값 반영
                 .build();
     }
 }

@@ -185,24 +185,16 @@
         <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg shrink-0">
             <div class="bg-white standard-border rounded p-md">
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
+
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="checkroom">checkroom</span>
-                        <span class="text-on-surface font-medium">패션/의류</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 bg-secondary-container text-on-secondary-container font-bold rounded" href="#">
-                        <span class="material-symbols-outlined text-on-secondary-container" data-icon="laptop_chromebook">laptop_chromebook</span>
-                        <span class="font-medium">가전/디지털</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="local_grocery_store">local_grocery_store</span>
-                        <span class="text-on-surface font-medium">식품/생필품</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="home">home</span>
-                        <span class="text-on-surface font-medium">홈/문구/취미</span>
+                    <a th:each="c : ${categories}"
+                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
+                       class="category-item flex items-center gap-base py-2 px-2 rounded"
+                       th:href="@{/product/list(cateNo=${c.cateNo})}">
+                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
                     </a>
                 </nav>
+
             </div>
             <!-- Simple Top Ranking -->
             <div class="hidden md:block">
@@ -228,11 +220,12 @@
         <div class="flex-1 min-w-0 flex flex-col gap-xl">
             <!-- Breadcrumb (안전 표기법으로 교체) -->
             <nav class="flex items-center gap-xs text-on-surface-variant text-xs mb-1 border-b border-outline-variant pb-2">
-                <a class="hover:text-primary" href="#">홈</a>
+                <a class="hover:text-primary" th:href="@{/product/list}">홈</a>
                 <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                <a class="hover:text-primary" href="#" th:text="${product?.category}">카테고리</a>
+                <a class="hover:text-primary" th:href="@{/product/list(cateNo=${parentCategory?.cateNo})}"
+                   th:text="${parentCategory != null ? parentCategory.name : ''}">카테고리</a>
                 <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                <span class="text-primary font-bold" th:text="${product?.subcategory}">서브카테고리</span>
+                <span class="text-primary font-bold" th:text="${category != null ? category.name : ''}">서브카테고리</span>
             </nav>
 
             <!-- Product Summary Section -->
@@ -254,11 +247,10 @@
                     </div>
                 </div>
 
-                <!-- Right: Product Information -->
                 <div class="flex-1 flex flex-col gap-md">
                     <div class="flex flex-col gap-xs">
-                        <span class="text-on-surface-variant text-xs">상품코드: <span th:text="${product?.id}">0000</span></span>
-                        <h1 class="text-2xl font-bold text-primary" th:text="${product?.name}">상품명</h1>
+                        <span class="text-on-surface-variant text-xs">상품코드: <span th:text="${product.prodNo}">0000</span></span>
+                        <h1 class="text-2xl font-bold text-primary" th:text="${product.name}">상품명</h1>
                         <div class="flex items-center gap-xs">
                             <div class="flex text-amber-500">
                                 <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
@@ -272,18 +264,22 @@
                     </div>
                     <div class="bg-surface-container-low p-md rounded-lg flex flex-col gap-xs">
                         <div class="flex items-center gap-sm">
-                            <span class="text-2xl font-bold text-error">15%</span>
-                            <span class="text-2xl font-bold text-primary"><span th:text="${product?.price}">0</span>원</span>
+                            <span th:if="${product.discountRate > 0}" class="text-2xl font-bold text-error" th:text="${product.discountRate} + '%'">15%</span>
+                            <span class="text-2xl font-bold text-primary">
+                <span th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')}">0</span>원
+            </span>
                         </div>
-                        <span class="text-on-surface-variant line-through text-sm"><span th:text="${product?.originalPrice}">0</span>원</span>
+                        <span th:if="${product.discountRate > 0}" class="text-on-surface-variant line-through text-sm">
+            <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}">0</span>원
+        </span>
                     </div>
                     <div class="grid grid-cols-2 gap-y-sm text-sm border-y border-outline-variant py-md">
                         <span class="text-on-surface-variant">배송정보</span>
                         <span class="text-on-surface font-bold">무료배송 (내일 도착 보장)</span>
                         <span class="text-on-surface-variant">제조사/원산지</span>
-                        <span class="text-on-surface" th:text="${product?.origin ?: '국산'}">원산지</span>
+                        <span class="text-on-surface">국산</span>
                         <span class="text-on-surface-variant">판매자</span>
-                        <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="${product?.sellerName ?: '협력사'}">판매자명</span>
+                        <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="'상점 No.' + ${product.shopNo}">판매자명</span>
                     </div>
                     <!-- Options & Actions -->
                     <div class="flex flex-col gap-sm">
@@ -303,7 +299,9 @@
                         </div>
                         <div class="text-right">
                             <span class="text-xs text-on-surface-variant">총 상품금액</span>
-                            <h3 class="text-xl font-bold text-primary"><span th:text="${product?.price}">0</span>원</h3>
+                            <h3 class="text-xl font-bold text-primary">
+                                <span th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')}">0</span>원
+                            </h3>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-sm pt-sm">
@@ -347,8 +345,9 @@
                     <table class="w-full text-left border-collapse">
                         <tbody>
                         <tr class="border-b border-outline-variant">
+                            <!-- 규격사양 표 -->
                             <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant w-1/3 text-sm">품명 및 모델명</th>
-                            <td class="p-md text-sm" th:text="${product?.modelName ?: '기본 모델'}">모델명</td>
+                            <td class="p-md text-sm" th:text="${product.name}">모델명</td>
                         </tr>
                         <tr class="border-b border-outline-variant">
                             <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">출시년월</th>

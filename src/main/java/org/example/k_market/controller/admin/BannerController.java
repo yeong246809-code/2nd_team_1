@@ -40,4 +40,12 @@ public class BannerController {
         bannerService.toggleStatus(id);
         return "redirect:/admin/config/banner";
     }
+
+    @PostMapping("/banner/delete")
+    public String deleteBanners(@RequestParam(value = "bannerIds", required = false) List<Long> bannerIds) {
+        if (bannerIds != null) {
+            bannerService.deleteBanners(bannerIds); // 서비스에 deleteBanners 메서드 구현 필요
+        }
+        return "redirect:/admin/config/banner";
+    }
 }

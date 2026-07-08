@@ -40,4 +40,9 @@ public class Shop {
                 .rdate(rdate)
                 .build();
     }
+
+    public void updateStatus(String status) {
+        this.status = status;
+    }
+
 }

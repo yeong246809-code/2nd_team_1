@@ -174,17 +174,14 @@
             </div>
         </div>
     </div>
-
-
 </header>
 
 <main>
-    <!-- [수정완료] 기획서 요구사항 2: 회사소개 서브 메뉴 영역 상단 추가 -->
+    <!-- 회사소개 서브 메뉴 영역 -->
     <div class="w-full bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-4">
             <div class="text-xs text-gray-400">회사소개 &gt; HOME</div>
             <nav class="flex gap-8 text-sm font-medium text-gray-500">
-                <!-- 💡 th:href 부분을 컨트롤러 주소와 똑같이 맞춰줍니다! -->
                 <a th:href="@{/company/main}" class="hover:text-primary transition-colors">HOME</a>
                 <a th:href="@{/company/culture}" class="hover:text-primary transition-colors">기업문화</a>
                 <a th:href="@{/company/story}" class="hover:text-primary transition-colors">소식과 이야기</a>
@@ -194,12 +191,11 @@
         </div>
     </div>
 
-    <!-- Section 1: Brand Vision (기획서 3, 4번 랜드 페이지 이미지 및 타이틀) -->
+    <!-- Section 1: Brand Vision -->
     <section class="relative min-h-[60vh] flex flex-col justify-center items-center px-gutter py-xl bg-surface-container-lowest overflow-hidden">
         <div class="absolute inset-0 z-0 opacity-15 bg-gradient-to-br from-primary-fixed via-surface-container to-background"></div>
 
         <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-xl relative z-10">
-            <!-- 4번: 랜딩 이미지 타이틀 (산뜻한 appear 이펙트 적용) -->
             <div class="flex-1 space-y-lg text-center md:text-left animate-fade-up">
                 <h1 class="font-display-lg text-display-lg text-primary leading-tight tracking-tight">
                     취향을, 브랜드를, <br class="hidden md:block"/>
@@ -214,7 +210,6 @@
                 </p>
             </div>
 
-            <!-- 3번: 메인영역 랜딩 이미지 및 5번 마우스 스크롤 유도형 UI -->
             <div class="flex-1 w-full relative">
                 <div class="aspect-video bg-surface-container rounded-2xl overflow-hidden shadow-2xl border border-outline-variant/40 flex items-center justify-center relative group">
                     <img class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" alt="쇼핑 비주얼 배너" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80"/>
@@ -234,36 +229,78 @@
             <p class="font-body-lg text-body-lg text-on-surface-variant">고객이 원하고 만족하는 서비스를 만들어요</p>
         </div>
 
-        <div class="max-w-7xl mx-auto relative px-4 md:px-12">
-            <div class="flex gap-md overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar">
-                <!-- Slide 1 -->
-                <div class="min-w-[100%] md:min-w-[calc(50%-12px)] snap-center shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/30 flex flex-col p-lg">
-                    <div class="h-52 bg-surface-container rounded-xl overflow-hidden mb-md">
-                        <img class="w-full h-full object-cover" alt="뷰티 상징" src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80"/>
+        <div class="max-w-7xl mx-auto relative px-4 md:px-12 group">
+            <!-- 왼쪽 슬라이드 이동 버튼 -->
+            <button id="service-left-btn" class="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 p-3 rounded-full shadow-lg border border-outline-variant/60 hover:bg-surface-container transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <span class="material-symbols-outlined font-bold text-primary">chevron_left</span>
+            </button>
+
+            <!-- 가로 슬라이드 스크롤 바 박스 -->
+            <!-- grid를 기본으로 주어 슬라이드가 한눈에 정렬되도록 조정했습니다 -->
+            <div id="service-scroll-container" class="flex gap-md overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar scroll-smooth">
+
+                <!-- 1. 패션/의류 -->
+                <div class="w-[calc(100%-16px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/30 flex flex-col p-lg">
+                    <div class="aspect-[16/10] w-full bg-surface-container rounded-xl overflow-hidden mb-md">
+                        <img class="w-full h-full object-cover" alt="패션 상징" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80"/>
                     </div>
-                    <h3 class="font-headline-md text-headline-md text-primary mb-sm font-semibold">뷰티</h3>
+                    <h3 class="font-headline-md text-headline-md text-primary mb-sm font-semibold">패션/의류</h3>
                     <p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
-                        케이마켓은 단순히 상품만을 판매하는 플랫폼이 아니라, 상품에 대한 경험을 함께 제공할 수 있는 플랫폼을 목표로 하고 있어요.
+                        트렌디한 감각을 깨우다. 일상의 가치를 한 단계 높여주는 프리미엄 디자이너 브랜드와 독창적인 감성의 의류 및 아이템을 제안합니다.
                     </p>
-                    <button class="mt-auto text-primary font-label-md text-label-md flex items-center hover:underline w-fit font-bold group">
-                        자세히 보기 <span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    <button class="mt-auto text-primary font-label-md text-label-md flex items-center hover:underline w-fit font-bold group/btn">
+                        자세히 보기 <span class="material-symbols-outlined text-sm ml-1 group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
                     </button>
                 </div>
 
-                <!-- Slide 2 -->
-                <div class="min-w-[100%] md:min-w-[calc(50%-12px)] snap-center shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/30 flex flex-col p-lg">
-                    <div class="h-52 bg-surface-container rounded-xl overflow-hidden mb-md">
-                        <img class="w-full h-full object-cover" alt="그로서리 상징" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80"/>
+                <!-- 2. 가전/디지털 -->
+                <div class="w-[calc(100%-16px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/30 flex flex-col p-lg">
+                    <div class="aspect-[16/10] w-full bg-surface-container rounded-xl overflow-hidden mb-md">
+                        <img class="w-full h-full object-cover" alt="테크 상징" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80"/>
                     </div>
-                    <h3 class="font-headline-md text-headline-md text-primary mb-sm font-semibold">그로서리</h3>
+                    <h3 class="font-headline-md text-headline-md text-primary mb-sm font-semibold">가전/디지털</h3>
                     <p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
-                        신선함의 기준을 높이다. 매일 식탁에 오르는 먹거리부터 특별한 날을 위한 식재료까지, 케이마켓만의 검증 시스템으로 깐깐하게 선별합니다.
+                        내일의 일상을 미리 만나다. 혁신적인 스마트 가전부터 효율성을 극대화하는 테크 인프라까지, 신뢰도 높은 최신 기기를 제공합니다.
                     </p>
-                    <button class="mt-auto text-primary font-label-md text-label-md flex items-center hover:underline w-fit font-bold group">
-                        자세히 보기 <span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    <button class="mt-auto text-primary font-label-md text-label-md flex items-center hover:underline w-fit font-bold group/btn">
+                        자세히 보기 <span class="material-symbols-outlined text-sm ml-1 group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
                     </button>
                 </div>
+
+                <!-- 3. 식품/생필품 -->
+                <div class="w-[calc(100%-16px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/30 flex flex-col p-lg">
+                    <div class="aspect-[16/10] w-full bg-surface-container rounded-xl overflow-hidden mb-md">
+                        <img class="w-full h-full object-cover" alt="그로서리 상징" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80"/>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-primary mb-sm font-semibold">식품/생필품</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+                        신선함의 기준을 높이다. 매일 식탁에 오르는 신선 먹거리부터 꼭 필요한 생활 필수품까지, 깐깐한 기준으로 선별해 배송합니다.
+                    </p>
+                    <button class="mt-auto text-primary font-label-md text-label-md flex items-center hover:underline w-fit font-bold group/btn">
+                        자세히 보기 <span class="material-symbols-outlined text-sm ml-1 group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+
+                <!-- 4. 홈/문구/취미 -->
+                <div class="w-[calc(100%-16px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] snap-center shrink-0 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-outline-variant/30 flex flex-col p-lg">
+                    <div class="aspect-[16/10] w-full bg-surface-container rounded-xl overflow-hidden mb-md">
+                        <img class="w-full h-full object-cover" alt="뷰티 상징" src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80"/>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-primary mb-sm font-semibold">홈/문구/취미</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+                        나만의 라이프를 디자인하다. 지루한 일상에 생기를 불어넣는 아기자기한 디자인 문구, 소품, 그리고 취미 생활을 위한 아이템입니다.
+                    </p>
+                    <button class="mt-auto text-primary font-label-md text-label-md flex items-center hover:underline w-fit font-bold group/btn">
+                        자세히 보기 <span class="material-symbols-outlined text-sm ml-1 group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+
             </div>
+
+            <!-- 오른쪽 슬라이드 이동 버튼 -->
+            <button id="service-right-btn" class="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 p-3 rounded-full shadow-lg border border-outline-variant/60 hover:bg-surface-container transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <span class="material-symbols-outlined font-bold text-primary">chevron_right</span>
+            </button>
         </div>
     </section>
 
@@ -308,7 +345,6 @@
 <!-- Footer 영역 컴포넌트 -->
 <footer th:fragment="footer" class="bg-gray-50 border-t border-gray-200 mt-20 pt-12 pb-20">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Top Policy Links -->
         <div class="flex gap-8 mb-10 text-xs font-bold text-gray-600">
             <a th:href="@{/company/main}" href="/company/main" class="hover:text-primary transition-colors">회사소개</a>
             <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">서비스이용약관</a>
@@ -317,7 +353,6 @@
         </div>
 
         <div class="grid grid-cols-12 gap-8 items-start">
-            <!-- Company Info -->
             <div class="col-span-12 md:col-span-6 lg:col-span-5">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -332,7 +367,6 @@
                 </div>
             </div>
 
-            <!-- Customer Center -->
             <div class="col-span-12 md:col-span-3 lg:col-span-4">
                 <h3 class="font-bold text-gray-800 mb-4 text-sm">고객센터</h3>
                 <div class="space-y-2">
@@ -344,7 +378,6 @@
                 </div>
             </div>
 
-            <!-- Complaints Center -->
             <div class="col-span-12 md:col-span-3 lg:col-span-3">
                 <h3 class="font-bold text-gray-800 mb-4 text-sm">전자금융거래 분쟁 담당</h3>
                 <div class="space-y-2 text-xs text-gray-500 mb-6">
@@ -364,5 +397,39 @@
 </footer>
 
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+
+<!-- 가로 슬라이더 인터랙션 제어 자바스크립트 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const container = document.getElementById("service-scroll-container");
+        const leftBtn = document.getElementById("service-left-btn");
+        const rightBtn = document.getElementById("service-right-btn");
+
+        const getScrollStep = () => {
+            return container.clientWidth * 0.6;
+        };
+
+        leftBtn.addEventListener("click", () => {
+            container.scrollBy({
+                left: -getScrollStep(),
+                behavior: "smooth"
+            });
+        });
+
+        rightBtn.addEventListener("click", () => {
+            container.scrollBy({
+                left: getScrollStep(),
+                behavior: "smooth"
+            });
+        });
+
+        container.addEventListener("wheel", (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                container.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
+    });
+</script>
 </body>
 </html>
