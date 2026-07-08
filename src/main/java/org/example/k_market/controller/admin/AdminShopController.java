@@ -35,23 +35,4 @@ public class AdminShopController {
         return "admin/shop/sales";
     }
     // 기존 AdminShopController 클래스 내부에 추가해주세요.
-
-    @GetMapping("/admin/shop/list")
-    public String getShopList(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            Model model) {
-
-        // 한 페이지에 상점 10개씩 노출되도록 페이징 설정
-        Pageable pageable = PageRequest.of(page, 10);
-
-        // 서비스에서 상점 목록 데이터를 페이징 처리해서 가져옴 (서비스단 구현 필요)
-        // Page<ShopDTO> shopPage = adminShopService.getShopList(pageable);
-
-        // model.addAttribute("shopList", shopPage.getContent());
-        // model.addAttribute("currentPage", page);
-        // model.addAttribute("totalPages", shopPage.getTotalPages());
-
-        return "admin/shop/list"; // 호출할 HTML 파일명 (admin/shop/list.html)
-    }
-
 }

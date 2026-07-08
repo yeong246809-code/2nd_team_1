@@ -303,56 +303,63 @@
     <div class="max-w-[1200px] flex flex-col gap-6">
         <div class="flex justify-between items-center">
             <div class="flex font-bold text-sm" id="bannerTabs">
-                <button onclick="filterBanner('MAIN1', this)" class="px-6 py-3 border border-gray-300 bg-white text-black">메인상단배너</button>
-                <button onclick="filterBanner('MAIN2', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">메인슬라이더배너</button>
-                <button onclick="filterBanner('PRODUCT1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">상품 상세보기 배너</button>
-                <button onclick="filterBanner('MEMBER1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">회원로그인 배너</button>
-                <button onclick="filterBanner('MY1', this)" class="px-6 py-3 border border-l-0 border-gray-300 bg-gray-200 text-gray-600">마이페이지 배너</button>
+                <button onclick="filterBanner('MAIN1', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-white text-black">메인상단배너</button>
+                <button onclick="filterBanner('MAIN2', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-gray-200 text-gray-600">메인슬라이더배너</button>
+                <button onclick="filterBanner('PRODUCT1', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-gray-200 text-gray-600">상품 상세보기 배너</button>
+                <button onclick="filterBanner('MEMBER1', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-gray-200 text-gray-600">회원로그인 배너</button>
+                <button onclick="filterBanner('MY1', this)" class="px-6 py-3 border border-gray-300 bg-gray-200 text-gray-600">마이페이지 배너</button>
             </div>
             <button type="button" onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-bold text-sm shadow-md transition-all">
                 + 배너등록
             </button>
         </div>
 
-        <table class="w-full border-t border-b border-gray-300 text-center text-sm">
-            <thead class="bg-gray-50 border-b border-gray-300">
-            <tr>
-                <th class="py-3 px-2 w-12"><input type="checkbox" id="selectAll"></th>
-                <th class="py-3 px-2 w-16">번호</th>
-                <th class="py-3 px-2 w-32">이미지</th>
-                <th class="py-3 px-4 text-left">배너정보</th>
-                <th class="py-3 px-4">관리</th>
-            </tr>
-            </thead>
-            <tbody id="bannerTableBody">
-            <tr th:each="b : ${bannerList}" th:data-position="${b.position}" class="banner-row border-b">
-                <td><input type="checkbox" name="bannerIds" th:value="${b.id}"></td>
-                <td th:text="${b.id}">1</td>
-                <td class="py-2 flex justify-center">
-                    <div class="w-16 h-16 border flex items-center justify-center overflow-hidden bg-gray-50">
-                        <img th:if="${b.fileUrl_stored != null}"
-                             th:src="@{/uploads/{filename}(filename=${b.fileUrl_stored})}"
-                             alt="banner" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300">
-                        <div th:if="${b.fileUrl_stored == null}" class="text-[10px] text-gray-400">No Image</div>
-                    </div>
-                </td>
-                <td class="text-left py-3">
-                    <div class="font-bold" th:text="${b.name}">배너명</div>
-                    <div class="text-xs text-gray-500" th:text="${b.sizeType}">1200x80</div>
-                </td>
-                <td>
-                    <form th:action="@{/admin/config/banner/status}" method="post">
-                        <input type="hidden" name="id" th:value="${b.id}">
-                        <button type="submit"
+        <form id="bannerForm" th:action="@{/admin/config/banner/delete}" method="post">
+            <table class="w-full border-t border-b border-gray-300 text-center text-sm">
+                <thead class="bg-gray-50 border-b border-gray-300">
+                <tr>
+                    <th class="py-3 px-2 w-12"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
+                    <th class="py-3 px-2 w-16">번호</th>
+                    <th class="py-3 px-2 w-24">이미지</th>
+                    <th class="py-3 px-4 text-left">배너정보</th>
+                    <th class="py-3 px-4">배너위치</th>
+                    <th class="py-3 px-4">날짜/시간</th>
+                    <th class="py-3 px-4">관리</th>
+                </tr>
+                </thead>
+                <tbody id="bannerTableBody">
+                <tr th:each="b : ${bannerList}" th:data-position="${b.position}" class="banner-row border-b">
+                    <td class="py-3 px-2"><input type="checkbox" name="bannerIds" th:value="${b.id}"></td>
+                    <td class="py-3 px-2" th:text="${b.id}">1</td>
+                    <td class="py-2 flex justify-center">
+                        <div class="w-16 h-16 border flex items-center justify-center overflow-hidden bg-gray-50">
+                            <img th:if="${b.fileUrl_stored != null}" th:src="@{/uploads/{filename}(filename=${b.fileUrl_stored})}" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300">
+                        </div>
+                    </td>
+                    <td class="text-left py-3 px-4">
+                        <div class="font-bold" th:text="${b.name}">배너명</div>
+                        <div class="text-xs text-gray-500" th:text="|배너사이즈 : ${b.sizeType}|"></div>
+                        <div class="text-xs text-gray-500" th:text="|배경색 : ${b.backgroundColor}|"></div>
+                    </td>
+                    <td class="py-3 px-4" th:text="${b.position}"></td>
+                    <td class="py-3 px-4 text-xs">
+                        <div th:text="|${b.startDate} ~ ${b.endDate}|"></div>
+                        <div th:text="|${b.startTime} ~ ${b.endTime}|"></div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <button type="button" th:onclick="|location.href='@{/admin/config/banner/status(id=${b.id})}'|"
                                 th:text="${b.status}"
                                 th:classappend="${b.status == '활성'} ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-gray-400'"
-                                class="px-3 py-1 border rounded text-xs font-bold transition-all">
+                                class="px-3 py-1 border rounded text-xs font-bold">
                         </button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="mt-4">
+                <button type="submit" class="bg-gray-500 text-white px-6 py-2 font-bold text-sm hover:bg-gray-600">선택삭제</button>
+            </div>
+        </form>
     </div>
 </main>
 
@@ -474,6 +481,30 @@
     document.getElementById('selectAll').addEventListener('change', function() {
         const checkboxes = document.querySelectorAll('input[name="bannerIds"]');
         checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    function toggleAll(source) {
+        const checkboxes = document.getElementsByName('bannerIds');
+        for (let i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+
+    function filterBanner(position, btn) {
+        document.querySelectorAll('#bannerTabs button').forEach(b => {
+            b.classList.remove('bg-white', 'text-black');
+            b.classList.add('bg-gray-200', 'text-gray-600');
+        });
+        btn.classList.remove('bg-gray-200', 'text-gray-600');
+        btn.classList.add('bg-white', 'text-black');
+
+        document.querySelectorAll('.banner-row').forEach(row => {
+            row.style.display = (row.getAttribute('data-position') === position) ? '' : 'none';
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
     });
 
     /* 파일 선택 시 파일명 표시 로직 */
