@@ -167,68 +167,42 @@
         </div>
     </div>
 </header>
+
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
-    <!-- Sub Nav -->
     <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
-        <a class="font-bold text-primary border-b-2 border-primary py-1" th:href="@{/product/list}" href="/product/list">오늘의 특가</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}" href="/product/list">추천 상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}" href="/product/list">신상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}" href="/product/list">베스트</a>
-        <a class="text-error font-semibold py-1" th:href="@{/product/list}" href="/product/list">세일</a>
+        <a class="font-bold text-primary border-b-2 border-primary py-1" th:href="@{/product/list}">오늘의 특가</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">추천 상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">신상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">베스트</a>
+        <a class="text-error font-semibold py-1" th:href="@{/product/list}">세일</a>
     </nav>
     <div class="flex flex-col md:flex-row gap-lg items-start">
-        <!-- Sidebar Navigation -->
         <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg">
             <div class="bg-white standard-border rounded p-md">
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="checkroom">checkroom</span>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=10)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">checkroom</span>
                         <span class="text-on-surface font-medium">패션/의류</span>
                     </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="laptop_chromebook">laptop_chromebook</span>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=20)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">laptop_chromebook</span>
                         <span class="text-on-surface font-medium">가전/디지털</span>
                     </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="local_grocery_store">local_grocery_store</span>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=30)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">local_grocery_store</span>
                         <span class="text-on-surface font-medium">식품/생필품</span>
                     </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list}" href="/product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="home">home</span>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=40)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">home</span>
                         <span class="text-on-surface font-medium">홈/문구/취미</span>
                     </a>
                 </nav>
             </div>
-            <!-- Simple Top Ranking -->
-            <div class="hidden md:block">
-                <h3 class="font-bold text-lg mb-sm">인기 순위</h3>
-                <div class="flex flex-col gap-sm" id="ranking-list">
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
-                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
-                            <span class="material-symbols-outlined text-xl">image</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate">레드 스포츠 슈즈</p>
-                            <p class="text-primary font-bold text-xs">27,000 KRW</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
-                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
-                            <span class="material-symbols-outlined text-xl">image</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate">모던 스마트워치</p>
-                            <p class="text-primary font-bold text-xs">89,000 KRW</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </aside>
-        <!-- Main Column -->
-        <div class="flex-1 flex flex-col gap-xl"><!-- Main Content: Product List -->
+
+        <div class="flex-1 flex flex-col gap-xl">
             <div class="flex flex-col gap-md">
-                <!-- Breadcrumbs & Title -->
                 <div class="flex justify-between items-end border-b border-outline-variant pb-2">
                     <div>
                         <h2 class="text-2xl font-bold text-primary">상품목록</h2>
@@ -237,219 +211,52 @@
                         <span>HOME</span> &gt; <span>패션/의류</span> &gt; <span class="font-bold text-primary">남성의류</span>
                     </nav>
                 </div>
-                <!-- Sorting Options -->
-                <!-- Product Grid : 테스트용 상품 5개 -->
+
                 <div class="grid grid-cols-1 gap-gutter">
 
-                    <!-- 상품 1 -->
-                    <div class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
-                        <div class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0">
-                            <span class="material-symbols-outlined text-4xl">image</span>
-                        </div>
+                    <div th:each="product : ${products}" class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
+
+                        <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0 overflow-hidden block relative">
+                            <img th:if="${product.thumb1 != null}" th:src="@{/uploads/{file}(file=${product.thumb1})}" class="w-full h-full object-cover" alt="상품 이미지"/>
+                            <span th:if="${product.thumb1 == null}" class="material-symbols-outlined text-4xl">image</span>
+                        </a>
 
                         <div class="flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="text-lg font-bold text-on-surface mb-1">상품명 1</h3>
-                                <p class="text-sm text-on-surface-variant line-clamp-2">
-                                    간단한 상품 설명이 들어가는 자리입니다. 상품의 특징을 한눈에 보여주세요.
+                                <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="hover:underline">
+                                    <h3 th:text="${product.name}" class="text-lg font-bold text-on-surface mb-1">동적 상품명</h3>
+                                </a>
+                                <p th:text="${product.description}" class="text-sm text-on-surface-variant line-clamp-2">
+                                    상품 상세 설명 텍스트 영역입니다.
                                 </p>
                             </div>
 
                             <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
                                 <div class="flex flex-col">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xl font-bold text-primary">27,000 원</span>
-                                        <span class="text-sm text-outline line-through">30,000원</span>
-                                        <span class="text-sm text-error font-bold">10% ↓</span>
+                                        <span th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')} + ' 원'" class="text-xl font-bold text-primary">0 원</span>
+
+                                        <th:block th:if="${product.discountRate > 0}">
+                                            <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'" class="text-sm text-outline line-through">0원</span>
+                                            <span th:text="${product.discountRate} + '% ↓'" class="text-sm text-error font-bold">0% ↓</span>
+                                        </th:block>
                                     </div>
                                     <div class="mt-2">
-                                        <span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
+                                        <span th:if="${product.shippingFee == 0}" class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
+                                        <span th:if="${product.shippingFee > 0}" th:text="'배송비 ' + ${#numbers.formatInteger(product.shippingFee, 3, 'COMMA')} + '원'" class="bg-surface-container text-on-surface-variant text-[10px] px-2 py-0.5 rounded font-bold">배송비</span>
                                     </div>
                                 </div>
 
                                 <div class="flex flex-col items-end gap-1">
                                     <div class="flex items-center gap-1 text-on-surface-variant text-sm">
                                         <span class="material-symbols-outlined text-sm">store</span>
-                                        <span>판매자명</span>
+                                        <span th:text="'상점 No.' + ${product.shopNo}">판매자 식별번호</span>
                                     </div>
-                                    <div class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 상품 2 -->
-                    <div class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
-                        <div class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0">
-                            <span class="material-symbols-outlined text-4xl">image</span>
-                        </div>
-
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-lg font-bold text-on-surface mb-1">상품명 2</h3>
-                                <p class="text-sm text-on-surface-variant line-clamp-2">
-                                    간단한 상품 설명이 들어가는 자리입니다. 상품의 특징을 한눈에 보여주세요.
-                                </p>
-                            </div>
-
-                            <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
-                                <div class="flex flex-col">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xl font-bold text-primary">27,000 원</span>
-                                        <span class="text-sm text-outline line-through">30,000원</span>
-                                        <span class="text-sm text-error font-bold">10% ↓</span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col items-end gap-1">
-                                    <div class="flex items-center gap-1 text-on-surface-variant text-sm">
-                                        <span class="material-symbols-outlined text-sm">store</span>
-                                        <span>판매자명</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 상품 3 -->
-                    <div class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
-                        <div class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0">
-                            <span class="material-symbols-outlined text-4xl">image</span>
-                        </div>
-
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-lg font-bold text-on-surface mb-1">상품명 3</h3>
-                                <p class="text-sm text-on-surface-variant line-clamp-2">
-                                    간단한 상품 설명이 들어가는 자리입니다. 상품의 특징을 한눈에 보여주세요.
-                                </p>
-                            </div>
-
-                            <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
-                                <div class="flex flex-col">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xl font-bold text-primary">27,000 원</span>
-                                        <span class="text-sm text-outline line-through">30,000원</span>
-                                        <span class="text-sm text-error font-bold">10% ↓</span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col items-end gap-1">
-                                    <div class="flex items-center gap-1 text-on-surface-variant text-sm">
-                                        <span class="material-symbols-outlined text-sm">store</span>
-                                        <span>판매자명</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 상품 4 -->
-                    <div class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
-                        <div class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0">
-                            <span class="material-symbols-outlined text-4xl">image</span>
-                        </div>
-
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-lg font-bold text-on-surface mb-1">상품명 4</h3>
-                                <p class="text-sm text-on-surface-variant line-clamp-2">
-                                    간단한 상품 설명이 들어가는 자리입니다. 상품의 특징을 한눈에 보여주세요.
-                                </p>
-                            </div>
-
-                            <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
-                                <div class="flex flex-col">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xl font-bold text-primary">27,000 원</span>
-                                        <span class="text-sm text-outline line-through">30,000원</span>
-                                        <span class="text-sm text-error font-bold">10% ↓</span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col items-end gap-1">
-                                    <div class="flex items-center gap-1 text-on-surface-variant text-sm">
-                                        <span class="material-symbols-outlined text-sm">store</span>
-                                        <span>판매자명</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 상품 5 -->
-                    <div class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
-                        <div class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0">
-                            <span class="material-symbols-outlined text-4xl">image</span>
-                        </div>
-
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-lg font-bold text-on-surface mb-1">상품명 5</h3>
-                                <p class="text-sm text-on-surface-variant line-clamp-2">
-                                    간단한 상품 설명이 들어가는 자리입니다. 상품의 특징을 한눈에 보여주세요.
-                                </p>
-                            </div>
-
-                            <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
-                                <div class="flex flex-col">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xl font-bold text-primary">27,000 원</span>
-                                        <span class="text-sm text-outline line-through">30,000원</span>
-                                        <span class="text-sm text-error font-bold">10% ↓</span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col items-end gap-1">
-                                    <div class="flex items-center gap-1 text-on-surface-variant text-sm">
-                                        <span class="material-symbols-outlined text-sm">store</span>
-                                        <span>판매자명</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-yellow-500 text-sm">star</span>
-                                        <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
+                                    <div class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating}">
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <span class="material-symbols-outlined text-yellow-500 text-sm"
+                                                  th:style="${i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
+                                        </th:block>
                                     </div>
                                 </div>
                             </div>
@@ -457,7 +264,7 @@
                     </div>
 
                 </div>
-                <!-- Pagination -->
+
                 <div class="flex justify-center items-center gap-2 mt-xl">
                     <button class="p-2 text-outline-variant hover:text-primary">&lt; 이전</button>
                     <button class="w-8 h-8 rounded bg-primary text-white font-bold">1</button>
@@ -467,9 +274,11 @@
                     <button class="w-8 h-8 rounded hover:bg-surface-container">5</button>
                     <button class="p-2 text-outline-variant hover:text-primary">다음 &gt;</button>
                 </div>
-            </div></div>
+            </div>
+        </div>
     </div>
 </main>
+
 <!-- Detailed Footer -->
 <footer class="bg-white border-t border-outline-variant mt-xl py-lg">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
@@ -539,7 +348,7 @@
     </a>
 </nav>
 <script>
-    // Focus search interaction
+    // 검색창 포커스 시 부드러운 테두리 효과 처리
     const searchInput = document.querySelector('input[type="text"]');
     if(searchInput) {
         searchInput.addEventListener('focus', () => {

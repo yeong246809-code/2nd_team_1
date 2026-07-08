@@ -3,7 +3,9 @@ package org.example.k_market.controller.product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 // 1. 엔티티와 레포지토리 패키지를 임포트하세요 (본인 프로젝트 경로에 맞추기)
+import org.example.k_market.entity.Category;
 import org.example.k_market.entity.Product;
+import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +20,18 @@ import java.util.Map;
 @RequiredArgsConstructor // Repository 자동 주입을 위해 필수!
 public class ProductIndexController {
 
+    private final CategoryRepository categoryRepository; // 이미 있을 가능성 높음
+    private final ProductRepository productRepository;   // 탭에 열려있던 그거
+
     @GetMapping("/product/list")
-    public String list() {
+    public String list(@RequestParam(required = false) Integer cateNo, Model model) {
+        List<Category> categories = categoryRepository.findByParentNoIsNull(); // 대분류만
+        List<Product> products = (cateNo == null)
+                ? productRepository.findAll()
+                : productRepository.findByCateNo(cateNo);
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("products", products);
         return "product/list";
     }
 
@@ -46,8 +58,22 @@ public class ProductIndexController {
     }
 
     @GetMapping("/product/view")
-    public String view(Model model) {
-        model.addAttribute("product", sampleProduct());
+    public String view(@RequestParam Integer prodNo, Model model) {
+        Product product = productRepository.findById(Long.valueOf(prodNo))
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
+
+        Category category = categoryRepository.findById(product.getCateNo()).orElse(null);
+        Category parentCategory = (category != null && category.getParentNo() != null)
+                ? categoryRepository.findById(category.getParentNo()).orElse(null)
+                : null;
+
+        // 사이드바 활성화 표시용 - 대분류 catNo
+        Integer mainCateNo = (parentCategory != null) ? parentCategory.getCateNo() : (category != null ? category.getCateNo() : null);
+
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
+        model.addAttribute("parentCategory", parentCategory);
+        model.addAttribute("mainCateNo", mainCateNo);
         return "product/view";
     }
 
