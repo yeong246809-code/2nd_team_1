@@ -333,7 +333,7 @@
                     <td class="py-3 px-2" th:text="${b.id}">1</td>
                     <td class="py-2 flex justify-center">
                         <div class="w-16 h-16 border flex items-center justify-center overflow-hidden bg-gray-50">
-                            <img th:if="${b.fileUrl_stored != null}" th:src="@{/uploads/{filename}(filename=${b.fileUrl_stored})}" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300">
+                            <img th:if="${b.fileUrl_stored != null}" th:src="${b.fileUrl_stored}" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300" alt="배너 이미지">
                         </div>
                     </td>
                     <td class="text-left py-3 px-4">
@@ -514,7 +514,7 @@
             display.textContent = input.files[0].name;
             display.classList.replace('text-gray-500', 'text-gray-900');
         } else {
-            display.textContent = '선택된파일없음';
+            display.textContent = '선택된 파일 없음';
             display.classList.replace('text-gray-900', 'text-gray-500');
         }
     }

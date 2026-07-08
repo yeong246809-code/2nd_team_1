@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.UUID;
 
 @Service
@@ -21,7 +22,6 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    // S3에 파일 업로드하고 URL을 반환하는 메서드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         String originalFileName = multipartFile.getOriginalFilename();
         String fileName = dirName + "/" + UUID.randomUUID() + "_" + originalFileName;
@@ -33,14 +33,12 @@ public class S3Uploader {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
 
-        return amazonS3.getUrl(bucket, fileName).toString(); // 업로드된 S3 파일 URL 반환
+        return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    // S3에서 파일 삭제하는 메서드
     public void deleteFile(String fileUrl) {
         try {
-            // URL에서 키(파일명)만 추출해서 삭제
-            String fileName = fileUrl.substring(fileUrl.indexOf("com/") + 4);
+            String fileName = new URL(fileUrl).getPath().replaceFirst("^/", "");
             amazonS3.deleteObject(bucket, fileName);
         } catch (Exception e) {
             System.out.println("S3 파일 삭제 실패: " + e.getMessage());
