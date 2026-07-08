@@ -3,7 +3,7 @@
 <html class="light" lang="ko"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>고객센터 - L-Market</title>
+<title>고객센터 - K -Market</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
@@ -235,7 +235,6 @@
                 24.07.07
             </span>
             </div>
-
             <div class="shrink-0 ml-4 flex flex-col items-end">
 
                 <!-- 답변 상태 -->
@@ -244,15 +243,14 @@
                         ? ' bg-surface-container-high text-on-surface-variant'
                         : ' bg-secondary-container text-on-secondary-container'"
                       th:text="${qna.isAnswered}">
-                답변대기
-            </span>
+                     답변대기
+                 </span>
 
-                <!-- 작성자 번호 임시 출력 -->
-                <!-- 나중에 Member 연관관계 연결하면 Users.id로 변경 가능 -->
-                <span class="font-label-sm text-label-sm text-on-surface-variant"
-                      th:text="${qna.memberNo}">
-                1
-            </span>
+                <!-- 작성자 아이디 마스킹 -->
+                <span class="text-xs text-on-surface-variant"
+                      th:text="${qna.maskedId}">
+
+                </span>
             </div>
         </li>
 

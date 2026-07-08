@@ -1,37 +1,37 @@
 <!-- QnA 목록 조회 -->
 <!-- qna.memberNo와 users.no를 JOIN해서 작성자 id를 함께 가져온다 -->
-<select id="selectAll" resultType="org.example.k_market.dto.QnaDTO">
-    SELECT
-    q.no,
-    q.title,
-    q.content,
-    q.memberNo,
-    q.createdAt,
+<!--<select id="selectAll" resultType="org.example.k_market.dto.QnaDTO">-->
+<!--    SELECT-->
+<!--    q.no,-->
+<!--    q.title,-->
+<!--    q.content,-->
+<!--    q.memberNo,-->
+<!--    q.createdAt,-->
 
-    -- 화면에 출력할 작성자 아이디
-    u.id AS id
+<!--    &#45;&#45; 화면에 출력할 작성자 아이디-->
+<!--    u.id AS id-->
 
-    FROM qna q
-    JOIN users u
-    ON q.memberNo = u.no
-    ORDER BY q.no DESC
-</select>
+<!--    FROM qna q-->
+<!--    JOIN users u-->
+<!--    ON q.memberNo = u.no-->
+<!--    ORDER BY q.no DESC-->
+<!--</select>-->
 
-        <!-- QnA 상세 조회 -->
-        <!-- 상세 화면에서도 작성자 id를 출력해야 하므로 JOIN 필요 -->
-<select id="selectByNo" resultType="org.example.k_market.dto.QnaDTO">
-SELECT
-q.no,
-q.title,
-q.content,
-q.memberNo,
-q.createdAt,
+<!--        &lt;!&ndash; QnA 상세 조회 &ndash;&gt;-->
+<!--        &lt;!&ndash; 상세 화면에서도 작성자 id를 출력해야 하므로 JOIN 필요 &ndash;&gt;-->
+<!--<select id="selectByNo" resultType="org.example.k_market.dto.QnaDTO">-->
+<!--SELECT-->
+<!--q.no,-->
+<!--q.title,-->
+<!--q.content,-->
+<!--q.memberNo,-->
+<!--q.createdAt,-->
 
--- 화면에 출력할 작성자 아이디
-u.id AS id
+<!--&#45;&#45; 화면에 출력할 작성자 아이디-->
+<!--u.id AS id-->
 
-FROM qna q
-JOIN users u
-ON q.memberNo = u.no
-WHERE q.no = #{no}
-</select>
+<!--FROM qna q-->
+<!--JOIN users u-->
+<!--ON q.memberNo = u.no-->
+<!--WHERE q.no = #{no}-->
+<!--</select>-->

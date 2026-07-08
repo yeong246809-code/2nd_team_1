@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>공지사항 보기 - K-market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#001f26",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#c1c7ca",
+                        "tertiary": "#452916",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-tertiary-fixed": "#2d1605",
+                        "background": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdcc7",
+                        "secondary": "#3e6659",
+                        "inverse-surface": "#2e3132",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary-container": "#446c5f",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "on-primary-container": "#99b9c2",
+                        "surface": "#f8f9fa",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-background": "#191c1d",
+                        "primary-fixed": "#c8e8f2",
+                        "outline": "#72787a",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "primary-fixed-dim": "#acccd5",
+                        "surface-tint": "#45636b",
+                        "inverse-primary": "#acccd5",
+                        "secondary-container": "#c0ecdc",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#002018",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-low": "#f3f4f5",
+                        "primary": "#14333b",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#5e3f2a",
+                        "secondary-fixed": "#c0ecdc",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#41484a",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-container": "#2c4a52",
+                        "on-tertiary-container": "#d6ab90",
+                        "secondary-fixed-dim": "#a5d0c0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "xl": "80px",
+                        "lg": "48px",
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "container-max": "1280px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style id="kmarket-cs-common-style">
+        .font-display-lg, .font-headline-lg, .font-headline-md, .font-headline-lg-mobile { font-family: "Plus Jakarta Sans", sans-serif; }
+        .font-body-md, .font-body-lg, .font-label-md, .font-label-sm { font-family: "Be Vietnam Pro", sans-serif; }
+        .text-label-sm { font-size: 12px; line-height: 1.2; font-weight: 600; }
+        .text-label-md { font-size: 14px; line-height: 1.4; letter-spacing: 0.01em; font-weight: 500; }
+        .text-body-md { font-size: 16px; line-height: 1.6; font-weight: 400; }
+        .text-body-lg { font-size: 18px; line-height: 1.6; font-weight: 400; }
+        .text-headline-md { font-size: 20px; line-height: 1.4; font-weight: 600; }
+        .text-headline-lg-mobile { font-size: 24px; line-height: 1.3; font-weight: 600; }
+        .text-headline-lg { font-size: 32px; line-height: 1.3; font-weight: 600; }
+        .text-display-lg { font-size: 48px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px; line-height: 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<header class="bg-surface shadow-sm sticky top-0 z-50 w-full">
+    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
+        <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/}">K-market</a>
+        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
+            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">Login</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Join</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/my/home}">My Page</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cart/list}">Cart</a>
+        </nav>
+        <div class="flex items-center gap-sm text-primary">
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/list}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
+            </a>
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/home}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">person</span>
+            </a>
+            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/cart/list}">
+                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">shopping_cart</span>
+            </a>
+        </div>
+    </div>
+</header>
+<!-- Main -->
+<main class="flex-1 bg-background">
+    <section class="max-w-container-max mx-auto px-md py-xl">
+
+        <!-- Title -->
+        <div class="text-center mb-xl">
+            <h1 class="text-3xl font-bold text-primary mb-sm">공지사항 작성</h1>
+            <p class="text-on-surface-variant text-sm">K-Market의 공지사항과 이벤트 내용을 등록합니다.</p>
+        </div>
+
+        <div class="grid grid-cols-12 gap-lg">
+
+            <!-- Aside -->
+            <aside class="col-span-3">
+                <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+                    <h2 class="text-lg font-bold text-primary mb-md">고객센터</h2>
+
+                    <ul class="space-y-sm text-sm">
+                        <li>
+                            <a th:href="@{/cs/notice/list}"
+                               class="block px-base py-sm rounded-lg bg-primary text-white font-semibold">
+                                공지사항
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/cs/faq/list}"
+                               class="block px-base py-sm rounded-lg hover:bg-surface-variant">
+                                자주하는 질문
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/cs/qna/list}"
+                               class="block px-base py-sm rounded-lg hover:bg-surface-variant">
+                                문의하기
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <section class="col-span-9">
+                <form th:action="@{/cs/notice/write}" method="post"
+                      class="bg-surface rounded-xl border border-outline-variant shadow-sm p-xl">
+
+                    <!-- 작성자 -->
+                    <input type="hidden" name="memberNo" th:value="${session.sessUser.memberNo}">
+
+                    <div class="border-b border-outline-variant pb-md mb-lg">
+                        <h2 class="text-xl font-bold text-primary">공지사항 등록</h2>
+                    </div>
+
+                    <!-- 분류 -->
+                    <div class="mb-lg">
+                        <label class="block text-sm font-semibold mb-sm">분류</label>
+                        <select name="type"
+                                class="w-full h-11 px-base border border-outline-variant rounded-lg bg-white text-sm">
+                            <option value="notice">공지</option>
+                            <option value="event">이벤트</option>
+                            <option value="delivery">배송</option>
+                            <option value="payment">결제</option>
+                            <option value="service">서비스</option>
+                        </select>
+                    </div>
+
+                    <!-- 제목 -->
+                    <div class="mb-lg">
+                        <label class="block text-sm font-semibold mb-sm">제목</label>
+                        <input type="text"
+                               name="title"
+                               placeholder="공지사항 제목을 입력하세요."
+                               class="w-full h-11 px-base border border-outline-variant rounded-lg text-sm focus:outline-none focus:border-primary">
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="mb-lg">
+                        <label class="block text-sm font-semibold mb-sm">내용</label>
+                        <textarea name="content"
+                                  rows="14"
+                                  placeholder="공지사항 내용을 입력하세요."
+                                  class="w-full px-base py-base border border-outline-variant rounded-lg text-sm resize-none focus:outline-none focus:border-primary"></textarea>
+                    </div>
+
+                    <!-- 버튼 -->
+                    <div class="flex justify-end gap-sm pt-md border-t border-outline-variant">
+                        <a th:href="@{/cs/notice/list}"
+                           class="px-lg py-sm border border-outline-variant rounded-lg text-sm hover:bg-surface-variant">
+                            취소
+                        </a>
+
+                        <button type="submit"
+                                class="px-lg py-sm bg-primary text-white rounded-lg text-sm font-semibold hover:opacity-90">
+                            등록하기
+                        </button>
+                    </div>
+
+                </form>
+            </section>
+
+        </div>
+    </section>
+</main>
+<footer class="bg-surface-container-highest w-full mt-lg">
+    <div class="max-w-container-max mx-auto px-md py-lg text-center text-on-surface-variant">
+        <h2 class="font-headline-md text-headline-md font-bold text-primary mb-sm">K-market</h2>
+        <nav class="flex flex-wrap justify-center gap-x-md gap-y-2 font-label-md text-label-md mb-md">
+            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">About Us</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">Customer Service</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">Privacy Policy</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">Terms of Service</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">FAQ</a>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">Contact</a>
+        </nav>
+        <p class="font-label-sm text-label-sm">© 2024 K-market. All rights reserved.</p>
+    </div>
+</footer>
+<script src="/k_market/js/auth-nav.js" th:src="@{/js/auth-nav.js}"></script>
+</body>
+</html>
