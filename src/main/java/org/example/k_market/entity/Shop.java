@@ -31,6 +31,10 @@ public class Shop {
     private String manageStatus;
     private LocalDateTime rdate;
 
+    public enum ShopStatus {
+        ACTIVE, STOPPED, PENDING, DELETED
+    }
+
     public ShopDTO toDTO(){
         return ShopDTO.builder()
                 .memberNo(memberNo).shopNo(shopNo).name(name).ceo(ceo)
