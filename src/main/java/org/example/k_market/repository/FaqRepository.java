@@ -8,4 +8,6 @@ import java.util.List;
 public interface FaqRepository extends JpaRepository<Faq, Integer> {
 
     List<Faq> findByType1OrderByNoAsc(String type1);
+
+    List<Faq> findAllByOrderByNoDesc();
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,5 +31,9 @@ public class Faq {
                 .content(content).viewCount(viewCount).memberNo(memberNo)
                 .createdAt(createdAt)
                 .build();
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }

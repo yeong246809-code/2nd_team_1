@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market Admin - 관리자 공지사항 등록</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .menu-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, padding 0.3s ease-in-out;
+            opacity: 0;
+        }
+        .menu-item-active .menu-content {
+            max-height: 500px;
+            opacity: 1;
+            padding-top: 4px;
+            padding-bottom: 8px;
+        }
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        .menu-item-active .chevron-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c0ecdc",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed": "#c8e8f2",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "on-surface": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc7",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2c4a52",
+                        "error-container": "#ffdad6",
+                        "primary": "#14333b",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-secondary-fixed": "#002018",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#c0ecdc",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "secondary": "#3e6659",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#acccd5",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary": "#452916",
+                        "surface": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#99b9c2",
+                        "inverse-primary": "#acccd5",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-primary-fixed": "#001f26",
+                        "surface-tint": "#45636b",
+                        "tertiary-container": "#5e3f2a",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-background": "#191c1d",
+                        "on-secondary-container": "#446c5f",
+                        "outline": "#72787a",
+                        "outline-variant": "#c1c7ca",
+                        "on-surface-variant": "#41484a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "surface-variant": "#e1e3e4",
+                        "surface-dim": "#d9dadb",
+                        "surface-container": "#edeeef",
+                        "surface-container-high": "#e7e8e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "80px",
+                        "container-max": "1280px",
+                        "md": "24px",
+                        "lg": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Admin CS Notice 공통 보정 CSS - index.html 테마 기준 */
+        .admin-page-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 32px; line-height: 1.3; font-weight: 700; color: #191c1d; }
+        .admin-page-desc { font-family: 'Be Vietnam Pro', sans-serif; font-size: 16px; line-height: 1.6; color: #41484a; }
+        .admin-card { background: #ffffff; border: 1px solid #c1c7ca; border-radius: 0.5rem; padding: 24px; }
+        .admin-section-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; line-height: 1.4; font-weight: 700; color: #14333b; padding-bottom: 12px; border-bottom: 1px solid #c1c7ca; margin-bottom: 24px; }
+        .admin-table { width: 100%; border-top: 1px solid #c1c7ca; border-collapse: collapse; text-align: center; }
+        .admin-table th { background: #f3f4f5; color: #41484a; font-size: 12px; line-height: 1.2; font-weight: 700; padding: 12px 8px; border-bottom: 1px solid #c1c7ca; }
+        .admin-table td { color: #191c1d; font-size: 14px; line-height: 1.4; padding: 12px 8px; border-bottom: 1px solid #e1e3e4; }
+        .admin-table tr:hover td { background: #f8f9fa; }
+        .admin-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 0.5rem; background: #14333b; color: #ffffff; font-size: 14px; font-weight: 600; transition: opacity .2s ease, background .2s ease; }
+        .admin-btn-primary:hover { opacity: .9; }
+        .admin-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 0.5rem; background: #e7e8e9; color: #41484a; font-size: 14px; font-weight: 600; border: 1px solid #c1c7ca; transition: background .2s ease; }
+        .admin-btn-secondary:hover { background: #e1e3e4; }
+        .admin-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 0.5rem; background: #ba1a1a; color: #ffffff; font-size: 14px; font-weight: 600; }
+        .admin-link-primary { color: #14333b; font-weight: 600; }
+        .admin-link-primary:hover { text-decoration: underline; }
+        .admin-link-danger { color: #ba1a1a; font-weight: 600; }
+        .admin-link-danger:hover { text-decoration: underline; }
+        .admin-input, .admin-select, .admin-textarea { width: 100%; border: 1px solid #c1c7ca; border-radius: 0.5rem; background: #ffffff; color: #191c1d; font-size: 14px; line-height: 1.4; padding: 10px 12px; outline: none; transition: border-color .2s ease, box-shadow .2s ease; }
+        .admin-select { width: auto; min-width: 150px; }
+        .admin-input:focus, .admin-select:focus, .admin-textarea:focus { border-color: #14333b; box-shadow: 0 0 0 3px rgba(20, 51, 59, .12); }
+        .admin-label { display: block; margin-bottom: 8px; color: #41484a; font-size: 14px; font-weight: 600; }
+        .admin-form-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid #e1e3e4; }
+        .admin-form-row.content { align-items: start; }
+        .admin-breadcrumb { font-size: 12px; color: #41484a; }
+        .admin-pagination a, .admin-pagination span { min-width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 0.25rem; color: #41484a; font-size: 14px; }
+        .admin-pagination a:hover { background: #e7e8e9; color: #14333b; }
+        .admin-pagination .active { background: #14333b; color: #ffffff; font-weight: 700; }
+        .notice-content-box { min-height: 280px; padding: 24px; border: 1px solid #e1e3e4; border-radius: 0.5rem; background: #f8f9fa; white-space: pre-wrap; line-height: 1.8; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
+<aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface border-r border-outline-variant overflow-hidden">
+    <a class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0 hover:bg-surface-container-low transition-colors" th:href="@{/admin/index}" href="/admin/index">
+        <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined">storefront</span></div>
+        <div><h2 class="font-headline-md text-headline-md font-bold text-primary">K-market Admin</h2><p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p></div>
+    </a>
+    <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">store</span><span class="font-label-md text-label-md">상점 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/index}">상점목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/shop/sales}">매출현황</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">group</span><span class="font-label-md text-label-md">회원 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/index}">회원목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/index}">포인트관리</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">inventory_2</span><span class="font-label-md text-label-md">상품 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/product/list}">상품목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/product/register}">상품등록</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">shopping_cart</span><span class="font-label-md text-label-md">주문 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/shop/sales}">주문현황</a><a class="py-2 hover:text-primary" th:href="@{/admin/index}">배송현황</a></div></div>
+        <div class="group/menu menu-item-active"><button class="w-full flex items-center justify-between px-4 py-3 text-primary bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">support_agent</span><span class="font-label-md text-label-md">고객 센터</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 text-primary font-bold" th:href="@{/admin/cs/notice/list}">공지사항</a><a class="py-2 hover:text-primary" th:href="@{/admin/cs/faq/list}">자주묻는질문</a><a class="py-2 hover:text-primary" th:href="@{/admin/cs/qna/list}">문의하기</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">환경 설정</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/config/basic}">기본설정</a><a class="py-2 hover:text-primary" th:href="@{/admin/config/policy}">약관관리</a></div></div>
+    </div>
+    <div class="border-t border-outline-variant p-base"><a class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high font-label-md" th:href="@{/member/logout}"><span class="material-symbols-outlined text-sm">logout</span>로그아웃</a></div>
+</aside>
+<header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-md z-30 bg-surface-container-lowest border-b border-outline-variant">
+    <h1 class="font-headline-md text-headline-md font-black text-primary">K-market Admin Dashboard</h1>
+    <a class="font-headline-md text-[40px] leading-none font-black text-primary hover:text-on-surface" th:href="@{/static}">메인</a>
+</header>
+
+<main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
+    <div class="mb-md flex justify-between items-end">
+        <div><h1 class="font-headline-lg text-headline-lg mb-2">공지사항 작성</h1><p class="text-on-surface-variant">관리자만 공지사항을 등록할 수 있습니다.</p></div>
+        <nav class="font-label-sm text-label-sm text-on-surface-variant">HOME &gt; 고객센터 &gt; <strong class="text-primary">공지사항</strong></nav>
+    </div>
+    <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
+        <form th:action="@{/admin/cs/notice/write}" method="post" th:object="${notice}">
+
+            <div class="grid grid-cols-[160px_1fr] border-t border-outline-variant border-b border-outline-variant">
+                <label class="bg-surface-container-low p-sm font-bold">유형</label>
+                <div class="p-sm">
+                    <select th:field="*{type}" class="w-60 rounded border-outline-variant" required>
+                        <option value="">유형선택</option>
+                        <option value="고객서비스">고객서비스</option>
+                        <option value="안전거래">안전거래</option>
+                        <option value="위해상품">위해상품</option>
+                        <option value="이벤트">이벤트</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-[160px_1fr] border-b border-outline-variant">
+                <label class="bg-surface-container-low p-sm font-bold">제목</label>
+                <div class="p-sm"><input type="text" th:field="*{title}" class="w-full rounded border-outline-variant" placeholder="제목을 입력하세요" required></div>
+            </div>
+            <div class="grid grid-cols-[160px_1fr] border-b border-outline-variant">
+                <label class="bg-surface-container-low p-sm font-bold">내용</label>
+                <div class="p-sm"><textarea th:field="*{content}" class="w-full min-h-[360px] rounded border-outline-variant" placeholder="내용을 입력하세요" required></textarea></div>
+            </div>
+            <div class="flex justify-end gap-sm mt-md">
+                <a th:href="@{/admin/cs/notice/list}" class="px-4 py-2 rounded border border-outline-variant hover:bg-surface-container-low">취소</a>
+                <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-white">등록하기</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script>
+    function toggleAccordion(button){const menuItem=button.closest('.group\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
+    function checkAll(source){document.querySelectorAll('input[name="nos"]').forEach(chk=>chk.checked=source.checked)}
+</script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+</body>
+</html>
