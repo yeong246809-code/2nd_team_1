@@ -45,4 +45,23 @@ public class Shop {
         this.status = status;
     }
 
+    public void updateProfile(
+            String name,
+            String ceo,
+            String mailOrderNumber,
+            String phone,
+            String fax,
+            String zipCode,
+            String baseAddress,
+            String detailAddress) {
+        this.name = name;
+        this.ceo = ceo;
+        this.mailOrderNumber = mailOrderNumber;
+        this.phone = phone;
+        this.fax = fax;
+        this.zipCode = zipCode;
+        this.baseAddress = baseAddress;
+        this.detailAddress = detailAddress;
+    }
+
 }
