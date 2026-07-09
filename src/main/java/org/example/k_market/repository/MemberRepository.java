@@ -26,5 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     Page<Member> findByNameContaining(String name, Pageable pageable);
     Page<Member> findByEmailContaining(String email, Pageable pageable);
     Page<Member> findByPhoneContaining(String phone, Pageable pageable);
-    List<Member> findByLastLoginAtBeforeAndStatus(LocalDateTime date, String status);
+    List<Member> findByLastLoginAtBeforeAndStatus(
+            LocalDateTime date,
+            MemberAccountStatus status);
 }

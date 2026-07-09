@@ -9,6 +9,7 @@ import org.example.k_market.entity.Users;
 import org.example.k_market.repository.GradeRepository;
 import org.example.k_market.repository.MemberRepository;
 import org.example.k_market.repository.UsersRepository;
+import org.example.k_market.service.member.MemberAccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -100,14 +101,23 @@ public class AdminMemberService {
 
     // 3. 상태 변경 (정상 <-> 중지/휴면) - toBuilder 활용
     public void changeStatus(int memberNo, String status) {
+        MemberAccountStatus accountStatus = MemberAccountStatus.from(status);
+
         Member member = memberRepository.findById(memberNo)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Member updatedMember = member.toBuilder()
-                .status(status) // 상태만 덮어쓰기
+                .status(accountStatus) // 상태만 덮어쓰기
+                .build();
+
+        Users user = usersRepository.findByMemberNo(memberNo)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 계정입니다."));
+        Users updatedUser = user.toBuilder()
+                .status(accountStatus)
                 .build();
 
         memberRepository.save(updatedMember);
+        usersRepository.save(updatedUser);
     }
 
     // 4. 회원 탈퇴 (비활성)
@@ -118,7 +128,7 @@ public class AdminMemberService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 계정입니다."));
 
         Users updatedUser = user.toBuilder()
-                .status("WITHDRAWN")
+                .status(MemberAccountStatus.WITHDRAWN)
                 .build();
 
         usersRepository.save(updatedUser);
