@@ -63,7 +63,7 @@
             <table class="view-table">
                 <tr>
                     <th>분류</th>
-                    <td th:text="${qna.type}">배송</td>
+                    <td th:text="${qna.type1}">배송</td>
                 </tr>
                 <tr>
                     <th>제목</th>
@@ -71,7 +71,7 @@
                 </tr>
                 <tr>
                     <th>작성자</th>
-                    <td th:text="${qna.writer}">user01</td>
+                    <td th:text="${qna.maskedId}">user01</td>
                 </tr>
                 <tr>
                     <th>작성일</th>
@@ -86,11 +86,11 @@
             <section class="answer-area">
                 <h3>관리자 답변</h3>
                 <form th:action="@{/admin/cs/qna/answer/{no}(no=${qna.no})}" method="post">
-                    <textarea name="answer" placeholder="답변 내용을 입력하세요." th:text="${qna.answer}"></textarea>
+                    <textarea name="answer" placeholder="답변 내용을 입력하세요." th:text="${answer != null ? answer.content : ''}"></textarea>
                     <div class="btn-area">
                         <a class="btn" th:href="@{/admin/cs/qna/list}">목록</a>
-                        <a class="btn btn-danger" th:if="${qna.answer != null && !#strings.isEmpty(qna.answer)}" th:href="@{/admin/cs/qna/answer/delete/{no}(no=${qna.no})}" onclick="return confirm('답변을 삭제하시겠습니까?');">답변삭제</a>
-                        <button type="submit" class="btn btn-primary" th:text="${qna.answer != null && !#strings.isEmpty(qna.answer) ? '답변수정' : '답변등록'}">답변등록</button>
+                        <a class="btn btn-danger" th:if="${answer != null}" th:href="@{/admin/cs/qna/answer/delete/{no}(no=${qna.no})}" onclick="return confirm('답변을 삭제하시겠습니까?');">답변삭제</a>
+                        <button type="submit" class="btn btn-primary" th:text="${answer != null ? '답변수정' : '답변등록'}">답변등록</button>
                     </div>
                 </form>
             </section>

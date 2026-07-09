@@ -27,8 +27,12 @@
             links: ["/admin/index", "/admin/index"]
         },
         {
-            base: ["/cs"],
-            links: ["/cs/notice/list", "/cs/faq/list", "/cs/qna/list"]
+            base: ["/admin/cs"],
+            links: [
+                "/admin/cs/notice/list",
+                "/admin/cs/faq/list",
+                "/admin/cs/qna/list"
+            ]
         },
         {
             base: ["/admin/config"],
@@ -72,7 +76,11 @@
     if (aside) {
         const groups = Array.from(aside.querySelectorAll(".group\\/menu"));
         groups.forEach((group, groupIndex) => {
-            const config = nav[groupIndex];
+            const hasCouponGroup = groups.length === nav.length;
+            const configIndex = !hasCouponGroup && groupIndex >= 4
+                ? groupIndex + 1
+                : groupIndex;
+            const config = nav[configIndex];
             if (!config) return;
 
             group.classList.remove("menu-item-active");
@@ -98,6 +106,19 @@
                     setActiveLink(link);
                 }
             });
+        });
+    }
+
+    const main = document.querySelector("main");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (main && !reduceMotion) {
+        main.style.opacity = "0";
+        main.style.transform = "translateY(8px)";
+        main.style.transition = "opacity 220ms ease-out, transform 220ms ease-out";
+
+        window.requestAnimationFrame(() => {
+            main.style.opacity = "1";
+            main.style.transform = "translateY(0)";
         });
     }
 
