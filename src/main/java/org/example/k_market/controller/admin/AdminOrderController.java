@@ -54,4 +54,13 @@ public class AdminOrderController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/detail/{orderNo}")
+    @ResponseBody // 서버가 데이터를 JSON으로 응답하도록 강제합니다.
+    public ResponseEntity<OrderDTO> getOrderDetail(@PathVariable int orderNo) {
+        System.out.println("요청 받은 주문번호: " + orderNo); // 서버 콘솔창에 이 메시지가 뜨는지 확인하세요!
+        return ResponseEntity.ok(orderService.getOrderDetail(orderNo));
+    }
+
+
 }

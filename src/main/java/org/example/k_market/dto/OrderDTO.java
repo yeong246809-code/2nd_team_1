@@ -3,6 +3,7 @@ package org.example.k_market.dto;
 import org.example.k_market.entity.Order;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +27,19 @@ public class OrderDTO {
     private String memberName;
 
     private String status;
+
+    private String recipientName; // 수취인
+    private String recipientPhone; // 수취인 전화번호
+    private String baseAddress; // 배송지 주소
+
+    private int prodNo; // 상품번호
+    private String name; // 상품명
+    private int price; // 가격
+    private int discountRate; // 할인
+    private int stockQuantity; // 수량
+
+    private List<OrderDetailsDTO> orderItems;
+
 
     public Order toEntity(){
         return Order.builder()
