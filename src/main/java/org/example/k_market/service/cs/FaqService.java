@@ -69,4 +69,9 @@ public class FaqService {
     public void delete(int no) {
         faqRepository.deleteById(no);
     }
+
+    @Transactional
+    public void deleteChecked(List<Integer> nos) {
+        faqRepository.deleteAllById(nos);
+    }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>K-market Admin - 관리자 FAQ 목록</title>
+    <title>K-market Admin - 관리자 FAQ 수정하기</title>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
@@ -98,6 +98,7 @@
             </div>
             <div class="flex justify-end gap-sm mt-md">
                 <a th:href="@{/admin/cs/faq/list}" class="px-4 py-2 rounded border border-outline-variant hover:bg-surface-container-low">취소</a>
+                <a th:href="@{/admin/cs/faq/delete/{no}(no=${faq.no})}" onclick="return confirm('삭제하시겠습니까?');" class="px-4 py-2 rounded border border-error text-error hover:bg-error-container">삭제</a>
                 <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-white">수정하기</button>
             </div>
         </form>

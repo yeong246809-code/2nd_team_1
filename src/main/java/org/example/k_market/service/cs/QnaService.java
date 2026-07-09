@@ -3,6 +3,7 @@ package org.example.k_market.service.cs;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.QnaDTO;
 import org.example.k_market.entity.Qna;
+import org.example.k_market.repository.NoticeRepository;
 import org.example.k_market.repository.QnaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,6 +95,35 @@ public class QnaService {
         // 원본 문의글 상태 변경
         parent.setIsAnswered("답변완료");
         qnaRepository.save(parent);
+
+
+    }
+
+    public void saveOrUpdateAnswer(int parentNo, String content) {
+
+        Qna parent = findById(parentNo);
+        Qna answer = findAnswer(parentNo);
+
+        if (answer == null) {
+            answer = Qna.builder()
+                    .title("답변")
+                    .content(content)
+                    .type1(parent.getType1())
+                    .type2(parent.getType2())
+                    .memberNo(1)
+                    .parentNo(parentNo)
+                    .isAnswered("답변완료")
+                    .createdAt(LocalDateTime.now())
+                    .viewCount(0)
+                    .build();
+        } else {
+            answer.setContent(content);
+        }
+
+        qnaRepository.save(answer);
+
+        parent.setIsAnswered("답변완료");
+        qnaRepository.save(parent);
     }
 
     @Transactional
@@ -108,4 +138,10 @@ public class QnaService {
         parent.setIsAnswered("답변대기");
         qnaRepository.save(parent);
     }
+
+    @Transactional
+    public void deleteChecked(List<Integer> nos) {
+        qnaRepository.deleteAllById(nos);
+    }
+
 }

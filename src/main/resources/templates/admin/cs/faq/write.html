@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>K-market Admin - 관리자 FAQ 목록</title>
+    <title>K-market Admin - 관리자 FAQ 작성</title>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
@@ -68,11 +68,11 @@
     </div>
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-        <form th:action="@{/admin/cs/faq/write}" method="post">
+        <form th:action="@{/admin/cs/faq/write}" method="post" th:object="${faq}">
             <div class="grid grid-cols-[160px_1fr] border-t border-outline-variant border-b border-outline-variant">
                 <label class="bg-surface-container-low p-sm font-bold">1차 분류</label>
                 <div class="p-sm">
-                    <select name="type1" class="w-60 rounded border-outline-variant" required>
+                    <select th:field="*{type1}" name="type1" class="w-60 rounded border-outline-variant" required>
                         <option value="">유형선택</option>
                         <option value="회원">회원</option>
                         <option value="쿠폰/이벤트">쿠폰/이벤트</option>
@@ -85,11 +85,11 @@
             </div>
             <div class="grid grid-cols-[160px_1fr] border-b border-outline-variant">
                 <label class="bg-surface-container-low p-sm font-bold">2차 분류</label>
-                <div class="p-sm"><input type="text" name="type2" class="w-full rounded border-outline-variant" placeholder="예) 가입, 로그인, 배송조회" required></div>
+                <div class="p-sm"><input type="text" th:field="*{type2}" name="type2" class="w-full rounded border-outline-variant" placeholder="예) 가입, 로그인, 배송조회" required></div>
             </div>
             <div class="grid grid-cols-[160px_1fr] border-b border-outline-variant">
                 <label class="bg-surface-container-low p-sm font-bold">질문</label>
-                <div class="p-sm"><input type="text" name="title" class="w-full rounded border-outline-variant" placeholder="질문을 입력하세요." required></div>
+                <div class="p-sm"><input type="text" th:field="*{title}" name="title" class="w-full rounded border-outline-variant" placeholder="질문을 입력하세요." required></div>
             </div>
             <div class="grid grid-cols-[160px_1fr] border-b border-outline-variant">
                 <label class="bg-surface-container-low p-sm font-bold">답변</label>

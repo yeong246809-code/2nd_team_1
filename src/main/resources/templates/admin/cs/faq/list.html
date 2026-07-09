@@ -81,42 +81,48 @@
             <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-white font-label-md">검색</button>
         </form>
 
-        <table class="admin-table">
-            <thead class="bg-surface-container-low">
-            <tr class="border-b border-outline-variant font-label-sm text-label-sm text-on-surface-variant">
-                <th class="py-3 w-20">번호</th>
-                <th class="py-3 w-40">1차 분류</th>
-                <th class="py-3 w-40">2차 분류</th>
-                <th class="py-3">질문</th>
-                <th class="py-3 w-28">작성일</th>
-                <th class="py-3 w-24">관리</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${faqs == null || #lists.isEmpty(faqs)}"><td colspan="6" class="py-lg text-on-surface-variant">등록된 FAQ가 없습니다.</td></tr>
-            <tr th:each="faq : ${faqs}" class="border-b border-surface-variant hover:bg-surface transition-colors">
-                <td class="py-3" th:text="${faq.no}">1</td>
-                <td class="py-3" th:text="${faq.type1}">회원</td>
-                <td class="py-3" th:text="${faq.type2}">가입</td>
-                <td class="py-3 text-left">
-                    <a class="hover:text-primary hover:underline" th:href="@{/admin/cs/faq/modify/{no}(no=${faq.no})}" th:text="${faq.title}">질문 제목입니다.</a>
-                </td>
-                <td class="py-3" th:text="${faq.createdAt != null ? #temporals.format(faq.createdAt, 'yy.MM.dd') : '-'}">26.07.09</td>
-                <td class="py-3">
-                    <a class="block text-error hover:underline" th:href="@{/admin/cs/faq/delete/{no}(no=${faq.no})}" onclick="return confirm('삭제하시겠습니까?');">[삭제]</a>
-                    <a class="block text-primary hover:underline" th:href="@{/admin/cs/faq/modify/{no}(no=${faq.no})}">[수정]</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <form th:action="@{/admin/cs/faq/deleteChecked}" method="post" onsubmit="return confirm('선택한 FAQ를 삭제하시겠습니까?');">
+            <table class="admin-table">
+                <thead class="bg-surface-container-low">
+                <tr class="border-b border-outline-variant font-label-sm text-label-sm text-on-surface-variant">
+                    <th class="py-3 w-10"><input type="checkbox" onclick="checkAll(this)"></th>
+                    <th class="py-3 w-20">번호</th>
+                    <th class="py-3 w-40">1차 분류</th>
+                    <th class="py-3 w-40">2차 분류</th>
+                    <th class="py-3">질문</th>
+                    <th class="py-3 w-28">작성일</th>
+                    <th class="py-3 w-24">관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${faqs == null || #lists.isEmpty(faqs)}"><td colspan="7" class="py-lg text-on-surface-variant">등록된 FAQ가 없습니다.</td></tr>
+                <tr th:each="faq : ${faqs}" class="border-b border-surface-variant hover:bg-surface transition-colors">
+                    <td class="py-3"><input type="checkbox" name="nos" th:value="${faq.no}"></td>
+                    <td class="py-3" th:text="${faq.no}">1</td>
+                    <td class="py-3" th:text="${faq.type1}">회원</td>
+                    <td class="py-3" th:text="${faq.type2}">가입</td>
+                    <td class="py-3 text-left">
+                        <a class="hover:text-primary hover:underline" th:href="@{/admin/cs/faq/modify/{no}(no=${faq.no})}" th:text="${faq.title}">질문 제목입니다.</a>
+                    </td>
+                    <td class="py-3" th:text="${faq.createdAt != null ? #temporals.format(faq.createdAt, 'yy.MM.dd') : '-'}">26.07.09</td>
+                    <td class="py-3">
+                        <a class="block text-error hover:underline" th:href="@{/admin/cs/faq/delete/{no}(no=${faq.no})}" onclick="return confirm('삭제하시겠습니까?');">[삭제]</a>
+                        <a class="block text-primary hover:underline" th:href="@{/admin/cs/faq/modify/{no}(no=${faq.no})}">[수정]</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-        <div class="flex justify-end items-center mt-md">
-            <a th:href="@{/admin/cs/faq/write}" class="px-5 py-2 rounded-lg bg-primary text-white font-label-md">작성하기</a>
-        </div>
+            <div class="flex justify-between items-center mt-md">
+                <button type="submit" class="px-4 py-2 rounded bg-surface-container-high text-on-surface-variant font-label-md">선택삭제</button>
+                <a th:href="@{/admin/cs/faq/write}" class="px-5 py-2 rounded-lg bg-primary text-white font-label-md">작성하기</a>
+            </div>
+        </form>
     </section>
 </main>
 
 <script>
+    function checkAll(source){document.querySelectorAll('input[name="nos"]').forEach(chk=>chk.checked=source.checked)}
     function toggleAccordion(button){const menuItem=button.closest('.group\\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
 </script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>

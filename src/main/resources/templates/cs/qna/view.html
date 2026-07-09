@@ -1,254 +1,123 @@
 <!DOCTYPE html>
-
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>K-market - 문의하기 보기</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market Admin - 관리자 QNA 상세</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .menu-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, padding 0.3s ease-in-out; opacity: 0; }
+        .menu-item-active .menu-content { max-height: 500px; opacity: 1; padding-top: 4px; padding-bottom: 8px; }
+        .chevron-icon { transition: transform 0.3s ease; }
+        .menu-item-active .chevron-icon { transform: rotate(180deg); }
+    </style>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
-            theme: {
-                extend: {
+            theme: { extend: {
                     colors: {
-                        "on-secondary": "#ffffff",
-                        "inverse-on-surface": "#f0f1f2",
-                        "secondary-fixed": "#c0ecdc",
-                        "secondary-container": "#c0ecdc",
-                        "error": "#ba1a1a",
-                        "secondary-fixed-dim": "#a5d0c0",
-                        "on-error": "#ffffff",
-                        "on-surface": "#191c1d",
-                        "surface-container": "#edeeef",
-                        "primary-container": "#2c4a52",
-                        "on-error-container": "#93000a",
-                        "secondary": "#3e6659",
-                        "surface-container-lowest": "#ffffff",
-                        "primary": "#14333b",
-                        "surface-container-highest": "#e1e3e4",
-                        "on-primary": "#ffffff",
-                        "tertiary-fixed": "#ffdcc7",
-                        "on-surface-variant": "#41484a",
-                        "tertiary": "#452916",
-                        "on-tertiary": "#ffffff",
-                        "outline": "#72787a",
-                        "surface-container-high": "#e7e8e9",
-                        "on-secondary-fixed": "#002018",
-                        "surface-dim": "#d9dadb",
-                        "on-secondary-fixed-variant": "#264e42",
-                        "on-primary-fixed-variant": "#2d4b53",
-                        "tertiary-container": "#5e3f2a",
-                        "surface-variant": "#e1e3e4",
-                        "on-primary-fixed": "#001f26",
-                        "tertiary-fixed-dim": "#eabda2",
-                        "primary-fixed": "#c8e8f2",
-                        "on-tertiary-container": "#d6ab90",
-                        "inverse-surface": "#2e3132",
-                        "surface-tint": "#45636b",
-                        "on-background": "#191c1d",
-                        "on-tertiary-fixed-variant": "#5f402b",
-                        "on-secondary-container": "#446c5f",
-                        "on-tertiary-fixed": "#2d1605",
-                        "outline-variant": "#c1c7ca",
-                        "error-container": "#ffdad6",
-                        "surface-bright": "#f8f9fa",
-                        "primary-fixed-dim": "#acccd5",
-                        "surface": "#f8f9fa",
-                        "background": "#f8f9fa",
-                        "on-primary-container": "#99b9c2",
-                        "inverse-primary": "#acccd5",
-                        "surface-container-low": "#f3f4f5"
+                        "secondary-container": "#c0ecdc", "surface-container-highest": "#e1e3e4", "primary-fixed": "#c8e8f2", "on-error": "#ffffff", "inverse-surface": "#2e3132", "on-surface": "#191c1d", "on-secondary": "#ffffff", "tertiary-fixed": "#ffdcc7", "surface-bright": "#f8f9fa", "surface-container-lowest": "#ffffff", "primary-container": "#2c4a52", "error-container": "#ffdad6", "primary": "#14333b", "on-tertiary-fixed-variant": "#5f402b", "on-secondary-fixed": "#002018", "background": "#f8f9fa", "secondary-fixed": "#c0ecdc", "tertiary-fixed-dim": "#eabda2", "secondary": "#3e6659", "error": "#ba1a1a", "primary-fixed-dim": "#acccd5", "on-secondary-fixed-variant": "#264e42", "tertiary": "#452916", "surface": "#f8f9fa", "on-tertiary": "#ffffff", "on-primary-container": "#99b9c2", "inverse-primary": "#acccd5", "surface-container-low": "#f3f4f5", "on-tertiary-container": "#d6ab90", "on-primary-fixed": "#001f26", "surface-tint": "#45636b", "tertiary-container": "#5e3f2a", "on-error-container": "#93000a", "secondary-fixed-dim": "#a5d0c0", "on-primary": "#ffffff", "on-tertiary-fixed": "#2d1605", "on-background": "#191c1d", "on-secondary-container": "#446c5f", "outline": "#72787a", "outline-variant": "#c1c7ca", "on-surface-variant": "#41484a", "inverse-on-surface": "#f0f1f2", "on-primary-fixed-variant": "#2d4b53", "surface-variant": "#e1e3e4", "surface-dim": "#d9dadb", "surface-container": "#edeeef", "surface-container-high": "#e7e8e9"
                     },
-                    borderRadius: {
-                        DEFAULT: "0.25rem",
-                        lg: "0.5rem",
-                        xl: "0.75rem",
-                        full: "9999px"
-                    },
-                    spacing: {
-                        xl: "80px",
-                        base: "8px",
-                        sm: "12px",
-                        lg: "48px",
-                        "margin-mobile": "16px",
-                        "container-max": "1280px",
-                        xs: "4px",
-                        md: "24px",
-                        gutter: "24px"
-                    },
-                    fontFamily: {
-                        "label-sm": ["Be Vietnam Pro"],
-                        "headline-md": ["Plus Jakarta Sans"],
-                        "body-md": ["Be Vietnam Pro"],
-                        "body-lg": ["Be Vietnam Pro"],
-                        "headline-lg-mobile": ["Plus Jakarta Sans"],
-                        "label-md": ["Be Vietnam Pro"],
-                        "display-lg": ["Plus Jakarta Sans"],
-                        "headline-lg": ["Plus Jakarta Sans"]
-                    },
-                    fontSize: {
-                        "label-sm": ["12px", {lineHeight: "1.2", fontWeight: "600"}],
-                        "headline-md": ["20px", {lineHeight: "1.4", fontWeight: "600"}],
-                        "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}],
-                        "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}],
-                        "headline-lg-mobile": ["24px", {lineHeight: "1.3", fontWeight: "600"}],
-                        "label-md": ["14px", {lineHeight: "1.4", letterSpacing: "0.01em", fontWeight: "500"}],
-                        "display-lg": ["48px", {lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700"}],
-                        "headline-lg": ["32px", {lineHeight: "1.3", fontWeight: "600"}]
-                    }
-                }
-            }
+                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+                    spacing: { "margin-mobile": "16px", base: "8px", gutter: "24px", xs: "4px", sm: "12px", xl: "80px", "container-max": "1280px", md: "24px", lg: "48px" },
+                    fontFamily: { "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Be Vietnam Pro"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-md": ["Be Vietnam Pro"], "label-md": ["Be Vietnam Pro"], "label-sm": ["Be Vietnam Pro"], "headline-lg": ["Plus Jakarta Sans"] },
+                    fontSize: { "headline-md": ["20px", {lineHeight:"1.4", fontWeight:"600"}], "body-lg": ["18px", {lineHeight:"1.6", fontWeight:"400"}], "headline-lg-mobile": ["24px", {lineHeight:"1.3", fontWeight:"600"}], "display-lg": ["48px", {lineHeight:"1.2", letterSpacing:"-0.02em", fontWeight:"700"}], "body-md": ["16px", {lineHeight:"1.6", fontWeight:"400"}], "label-md": ["14px", {lineHeight:"1.4", letterSpacing:"0.01em", fontWeight:"500"}], "label-sm": ["12px", {lineHeight:"1.2", fontWeight:"600"}], "headline-lg": ["32px", {lineHeight:"1.3", fontWeight:"600"}] }
+                }}
         }
     </script>
-
-    <style id="kmarket-cs-common-style">
-        .font-display-lg, .font-headline-lg, .font-headline-md, .font-headline-lg-mobile { font-family: "Plus Jakarta Sans", sans-serif; }
-        .font-body-md, .font-body-lg, .font-label-md, .font-label-sm { font-family: "Be Vietnam Pro", sans-serif; }
-        .text-label-sm { font-size: 12px; line-height: 1.2; font-weight: 600; }
-        .text-label-md { font-size: 14px; line-height: 1.4; letter-spacing: 0.01em; font-weight: 500; }
-        .text-body-md { font-size: 16px; line-height: 1.6; font-weight: 400; }
-        .text-body-lg { font-size: 18px; line-height: 1.6; font-weight: 400; }
-        .text-headline-md { font-size: 20px; line-height: 1.4; font-weight: 600; }
-        .text-headline-lg-mobile { font-size: 24px; line-height: 1.3; font-weight: 600; }
-        .text-headline-lg { font-size: 32px; line-height: 1.3; font-weight: 600; }
-        .text-display-lg { font-size: 48px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px; line-height: 1; }
+    <style>
+        .admin-table { width: 100%; border-top: 1px solid #c1c7ca; border-collapse: collapse; text-align: center; }
+        .admin-table th { background: #f3f4f5; color: #41484a; font-size: 12px; line-height: 1.2; font-weight: 700; padding: 12px 8px; border-bottom: 1px solid #c1c7ca; }
+        .admin-table td { color: #191c1d; font-size: 14px; line-height: 1.4; padding: 12px 8px; border-bottom: 1px solid #e1e3e4; }
+        .admin-table tr:hover td { background: #f8f9fa; }
+        .admin-view-table { width: 100%; border-top: 1px solid #c1c7ca; border-collapse: collapse; }
+        .admin-view-table th { width: 160px; background: #f3f4f5; color: #41484a; font-size: 14px; font-weight: 700; padding: 14px 16px; border-bottom: 1px solid #c1c7ca; text-align: left; }
+        .admin-view-table td { color: #191c1d; font-size: 14px; padding: 14px 16px; border-bottom: 1px solid #e1e3e4; }
+        .content-box { min-height: 220px; white-space: pre-wrap; line-height: 1.8; }
+        .answer-box { min-height: 180px; white-space: pre-wrap; line-height: 1.8; background: #f8f9fa; border: 1px solid #e1e3e4; border-radius: 0.5rem; padding: 18px; }
+        .status-wait { color: #ba1a1a; font-weight: 700; }
+        .status-done { color: #14333b; font-weight: 700; }
     </style>
 </head>
-<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
-<header class="bg-surface shadow-sm sticky top-0 z-50 w-full">
-    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-        <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/}">K-market</a>
-        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
-            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
-            <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/product/cart}">장바구니</a>
-        </nav>
-        <div class="flex items-center gap-sm text-primary">
-            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/list}">
-                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
-            </a>
-            <a class="hidden p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/index}" data-auth-required="true">
-                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">person</span>
-            </a>
-            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/cart}">
-                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">shopping_cart</span>
-            </a>
-        </div>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
+<aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface border-r border-outline-variant overflow-hidden">
+    <a class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0 hover:bg-surface-container-low transition-colors" th:href="@{/admin/index}" href="/admin/index">
+        <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined">storefront</span></div>
+        <div><h2 class="font-headline-md text-headline-md font-bold text-primary">K-market Admin</h2><p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p></div>
+    </a>
+    <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">store</span><span class="font-label-md text-label-md">상점 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/index}">상점목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/shop/sales}">매출현황</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">group</span><span class="font-label-md text-label-md">회원 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/index}">회원목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/index}">포인트관리</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">inventory_2</span><span class="font-label-md text-label-md">상품 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/product/list}">상품목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/product/register}">상품등록</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">shopping_cart</span><span class="font-label-md text-label-md">주문 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/shop/sales}">주문현황</a><a class="py-2 hover:text-primary" th:href="@{/admin/index}">배송현황</a></div></div>
+        <div class="group/menu menu-item-active"><button class="w-full flex items-center justify-between px-4 py-3 text-primary bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">support_agent</span><span class="font-label-md text-label-md">고객 센터</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/cs/notice/list}">공지사항</a><a class="py-2 hover:text-primary" th:href="@{/admin/cs/faq/list}">자주묻는질문</a><a class="py-2 text-primary font-bold" th:href="@{/admin/cs/qna/list}">문의하기</a></div></div>
+        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">환경 설정</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/config/basic}">기본설정</a><a class="py-2 hover:text-primary" th:href="@{/admin/config/policy}">약관관리</a></div></div>
     </div>
+    <div class="border-t border-outline-variant p-base"><a class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high font-label-md" th:href="@{/member/logout}"><span class="material-symbols-outlined text-sm">logout</span>로그아웃</a></div>
+</aside>
+<header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-md z-30 bg-surface-container-lowest border-b border-outline-variant">
+    <h1 class="font-headline-md text-headline-md font-black text-primary">K-market Admin Dashboard</h1>
+    <a class="font-headline-md text-[40px] leading-none font-black text-primary hover:text-on-surface" th:href="@{/static}">메인</a>
 </header>
-<main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex flex-col md:flex-row gap-xl">
-    <aside class="w-full md:w-64 shrink-0 flex flex-col gap-base">
-        <h2 class="font-headline-md text-headline-md text-primary mb-sm px-sm">고객센터</h2>
-        <nav class="flex flex-col gap-xs">
-            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/notice/list}">
-                <span class="material-symbols-outlined">campaign</span>
-                공지사항
-            </a>
-            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/faq/list}">
-                <span class="material-symbols-outlined">help</span>
-                자주묻는 질문
-            </a>
-            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-primary font-bold bg-secondary-container" th:href="@{/cs/qna/list}">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
-                1:1 문의
-            </a>
-        </nav>
-    </aside>
-    <section class="flex-1 flex flex-col min-w-0">
-        <div class="flex items-center gap-xs font-label-md text-label-md text-outline mb-md">
-            <a class="hover:text-primary" th:href="@{/}">홈</a>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-            <a class="hover:text-primary" th:href="@{/cs/index}">고객센터</a>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-            <a class="hover:text-primary" th:href="@{/cs/qna/list}">문의하기</a>
+
+<main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
+    <div class="mb-md flex justify-between items-end">
+        <div>
+            <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">1:1 문의 상세</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">사용자의 문의 내용을 확인하고 답변을 등록합니다.</p>
         </div>
-        <article class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg flex flex-col">
-            <div class="border-b border-surface-variant pb-md mb-lg">
-<span class="inline-block px-sm py-xs bg-surface-container text-on-surface-variant font-label-sm text-label-sm rounded-md mb-sm" th:text="${qna.type1}">
-                    회원
-                </span>
-                <h1 class="font-headline-lg text-headline-lg text-on-surface mb-sm" th:text="|[${qna.type2}] ${qna.title}|">
-                    [가입] 가입문의내용
-                </h1>
-                <div class="flex items-center gap-sm font-label-md text-label-md text-outline">
+        <nav class="font-label-sm text-label-sm text-on-surface-variant">HOME &gt; 고객센터 &gt; <strong class="text-primary">문의하기</strong></nav>
+    </div>
 
-                    <!-- 작성자 아이디 마스킹 -->
-                    <span th:text="${qna.maskedId}"></span>
+    <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
+        <table class="admin-view-table">
+            <tr>
+                <th>분류</th>
+                <td th:text="${qna.type1 + ' > ' + qna.type2}">배송 &gt; 배송조회</td>
+            </tr>
+            <tr>
+                <th>제목</th>
+                <td th:text="${qna.title}">문의 제목입니다.</td>
+            </tr>
+            <tr>
+                <th>작성자</th>
+                <td th:text="${qna.maskedId}">user**</td>
+            </tr>
+            <tr>
+                <th>작성일</th>
+                <td th:text="${qna.createdAt != null ? #temporals.format(qna.createdAt, 'yyyy.MM.dd HH:mm') : '-'}">2026.07.09 10:00</td>
+            </tr>
+            <tr>
+                <th>문의내용</th>
+                <td><div class="content-box" th:text="${qna.content}">문의 내용입니다.</div></td>
+            </tr>
+        </table>
 
-                    <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+        <div class="mt-lg pt-lg border-t border-outline-variant">
+            <h2 class="font-headline-md text-headline-md text-primary mb-sm">관리자 답변</h2>
 
-                    <span th:text="${#temporals.format(qna.createdAt, 'yy-MM-dd')}">
-                        22-11-21
-                    </span>
+            <div th:if="${answer != null}" class="answer-box mb-md" th:text="${answer.content}">등록된 답변 내용입니다.</div>
+
+            <form th:action="@{/admin/cs/qna/answer/{no}(no=${qna.no})}" method="post">
+                <textarea name="content" class="w-full min-h-[180px] rounded-lg border-outline-variant text-on-surface font-body-md" placeholder="답변 내용을 입력하세요." th:text="${answer != null ? answer.content : ''}" required></textarea>
+                <div class="flex justify-end gap-sm mt-md">
+                    <a th:href="@{/admin/cs/qna/list}" class="px-4 py-2 rounded border border-outline-variant hover:bg-surface-container-low">목록</a>
+                    <a th:if="${answer != null}" th:href="@{/admin/cs/qna/answer/delete/{no}(no=${qna.no})}" onclick="return confirm('답변을 삭제하시겠습니까?');" class="px-4 py-2 rounded border border-error text-error hover:bg-error-container">답변삭제</a>
+                    <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-white" th:text="${answer != null ? '답변수정' : '답변등록'}">답변등록</button>
                 </div>
-            </div>
-            <div class="flex gap-md mb-xl">
-                <div class="w-8 h-8 rounded-full bg-error text-on-error flex items-center justify-center font-headline-md text-label-md shrink-0 shadow-sm">
-                    Q
-                </div>
-                <div class="flex-1 pt-xs">
-                    <p class="font-body-lg text-body-lg text-on-surface whitespace-pre-wrap leading-relaxed" th:text="${qna.content}">
-                        회원가입하고 싶어요. 어떻게해야하나요?
-                    </p>
-                </div>
-            </div>
-            <div class="flex gap-md bg-surface-container-low p-md rounded-lg border border-surface-variant">
-                <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-md text-label-md shrink-0 shadow-sm">
-                    A
-                </div>
-                <div class="flex-1 pt-xs flex flex-col gap-xs">
-                    <p class="font-body-md text-body-md text-on-surface whitespace-pre-wrap leading-relaxed" th:if="${answer != null}" th:text="${answer.content}">
-                        답변 내용
-                    </p>
-                    <p class="font-body-md text-body-md text-on-surface-variant whitespace-pre-wrap leading-relaxed" th:if="${answer == null}">
-                        답변대기중입니다.
-                    </p>
-                </div>
-            </div>
-
-            <!-- 답변 등록 폼 : admin 로그인 시에만 출력 -->
-            <div class="mt-6" th:if="${session.sessUser == 'admin' and answer == null}">
-                <form method="post" th:action="@{/cs/qna/answer}">
-                    <input name="parentNo" th:value="${qna.no}" type="hidden"/>
-
-                    <textarea class="w-full border rounded-lg p-3"
-                              name="content"
-                              placeholder="답변을 입력하세요"
-                              rows="5"></textarea>
-
-                    <div class="mt-3 text-right">
-                        <button class="bg-primary text-white px-5 py-2 rounded-lg" type="submit">
-                            답변등록
-                        </button>
-                    </div>
-                </form>
-
-        </article>
-        <div class="flex justify-center mt-xl">
-            <a class="inline-flex items-center justify-center px-xl py-sm bg-surface-variant text-on-surface-variant hover:bg-outline-variant hover:text-on-surface font-label-md text-label-md rounded-lg transition-colors duration-200 border border-outline-variant" th:href="@{/cs/qna/list}">
-                목록
-            </a>
+            </form>
         </div>
     </section>
 </main>
-<footer class="bg-surface-container-highest w-full mt-lg">
-    <div class="max-w-container-max mx-auto px-md py-lg text-center text-on-surface-variant">
-        <h2 class="font-headline-md text-headline-md font-bold text-primary mb-sm">K-market</h2>
-        <nav class="flex flex-wrap justify-center gap-x-md gap-y-2 font-label-md text-label-md mb-md">
-            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">회사소개</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">고객센터</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">개인정보처리방침</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">서비스이용약관</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">자주묻는질문</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">문의하기</a>
-        </nav>
-        <p class="font-label-sm text-label-sm">© 2024 K-market. 모든 권리 보유.</p>
-    </div>
-</footer>
+
+<script>
+    function toggleAccordion(button){const menuItem=button.closest('.group\\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
+</script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body>
 </html>
