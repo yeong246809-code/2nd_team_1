@@ -122,78 +122,167 @@
         </div>
         <!-- Settings Form -->
         <div class="bg-surface rounded-xl p-lg shadow-sm border border-outline-variant">
-            <div class="grid grid-cols-[120px_1fr] gap-y-md items-center border-b border-outline-variant pb-lg mb-lg">
-                <div class="font-label-md text-on-surface-variant">사용자 ID</div>
-                <div class="font-body-md" th:text="${myInfoUserId} ?: '-'">chh****</div>
-                <div class="font-label-md text-on-surface-variant">비밀번호</div>
-                <div>
-                    <button class="px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">비밀번호 수정</button>
-                </div>
-                <div class="font-label-md text-on-surface-variant">이름</div>
-                <div class="font-body-md" th:text="${myInfoName}">김*학</div>
-                <div class="font-label-md text-on-surface-variant">생년월일</div>
-                <div class="font-body-md" th:text="${myInfoBirthDate}">1983년 05월 03일</div>
-                <div class="font-label-md text-on-surface-variant">이메일</div>
-                <div class="flex gap-sm items-center flex-wrap">
-                    <input class="h-10 min-w-[140px] flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" placeholder="이메일 아이디" type="text" th:value="${myInfoEmailLocal}" value="chhak0503">
-                    <span class="">@</span>
-                    <input class="h-10 min-w-[160px] flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" placeholder="이메일 도메인" type="text" th:value="${myInfoEmailDomain}" value="naver.com">
-                    <select class="h-10 w-40 px-sm pr-8 py-xs border border-outline rounded-lg bg-surface font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
-                        <option>직접입력</option>
-                    </select>
-                    <button class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
-                </div>
-                <div class="font-label-md text-on-surface-variant mt-sm">휴대폰</div>
-                <div class="flex gap-sm items-center flex-wrap mt-sm">
-                    <select class="h-10 w-24 px-sm pr-8 py-xs border border-outline rounded-lg bg-surface font-body-md text-on-surface focus:border-primary outline-none">
-                        <option th:value="${myInfoPhoneFirst}" th:text="${myInfoPhoneFirst}">010</option>
-                    </select>
-                    <span class="">-</span>
-                    <input class="h-10 w-28 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md text-center focus:border-primary outline-none" placeholder="0000" type="text" th:value="${myInfoPhoneMiddle}" value="1234">
-                    <span class="">-</span>
-                    <input class="h-10 w-28 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md text-center focus:border-primary outline-none" placeholder="0000" type="text" th:value="${myInfoPhoneLast}" value="5678">
-                    <button class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
-                </div>
-                <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">주소</div>
-                <div class="flex flex-col gap-sm mt-sm">
-                    <div class="flex gap-sm">
-                        <input class="px-sm py-xs border border-outline rounded-lg bg-surface font-body-md w-32 focus:border-primary outline-none" placeholder="우편번호" type="text" th:value="${myInfoZipCode}">
-                        <button class="px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors bg-surface-container-low">주소검색</button>
+            <p class="mb-md rounded-lg bg-secondary-container px-md py-sm text-on-secondary-container font-label-md"
+               th:if="${myInfoMessage}" th:text="${myInfoMessage}">회원 정보가 수정되었습니다.</p>
+            <p class="mb-md rounded-lg bg-error-container px-md py-sm text-on-error-container font-label-md"
+               th:if="${myInfoError}" th:text="${myInfoError}">회원 정보 수정에 실패했습니다.</p>
+
+            <form id="myInfoUpdateForm" th:action="@{/my/myinfo}" method="post">
+                <div class="grid grid-cols-[120px_1fr] gap-y-md items-center border-b border-outline-variant pb-lg mb-lg">
+                    <div class="font-label-md text-on-surface-variant">사용자 ID</div>
+                    <div class="font-body-md" th:text="${myInfoUserId} ?: '-'">user01</div>
+
+                    <div class="font-label-md text-on-surface-variant">비밀번호</div>
+                    <div>
+                        <a class="inline-flex px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors"
+                           th:href="@{/member/find/changePassword}">비밀번호 수정</a>
                     </div>
-                    <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[56px] focus:border-primary outline-none resize-y" placeholder="기본주소" th:text="${myInfoBaseAddress}"></textarea>
-                    <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[72px] focus:border-primary outline-none resize-y" placeholder="상세주소" th:text="${myInfoDetailAddress}"></textarea>
-                </div>
-                <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">소셜 로그인</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm mt-sm">
-                    <div class="border border-outline-variant rounded-lg bg-surface-container-lowest px-md py-sm flex items-center justify-between">
-                        <div class="flex items-center gap-sm">
-                            <span class="w-8 h-8 rounded-full bg-[#03C75A] text-white font-bold flex items-center justify-center">N</span>
-                            <div>
-                                <p class="font-label-md text-label-md text-on-surface">네이버</p>
-                                <p class="font-label-sm text-label-sm text-on-surface-variant">SNS 로그인 상태</p>
+
+                    <th:block th:unless="${myInfoSeller}">
+                        <div class="font-label-md text-on-surface-variant">이름</div>
+                        <div class="font-body-md" th:text="${myInfoName}">홍길동</div>
+                        <input name="name" type="hidden" th:value="${myInfoName}">
+
+                        <div class="font-label-md text-on-surface-variant">생년월일</div>
+                        <div class="font-body-md" th:text="${myInfoBirthDate}">-</div>
+
+                        <div class="font-label-md text-on-surface-variant">이메일</div>
+                        <div class="flex gap-sm items-center flex-wrap">
+                            <input class="h-10 min-w-[140px] flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                   name="emailLocal" required placeholder="이메일 아이디" type="text" th:value="${myInfoEmailLocal}">
+                            <span>@</span>
+                            <input class="h-10 min-w-[160px] flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                   id="my-email-domain" name="emailDomain" required placeholder="이메일 도메인" type="text" th:value="${myInfoEmailDomain}">
+                            <select class="h-10 w-40 px-sm pr-8 py-xs border border-outline rounded-lg bg-surface font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                    id="my-email-domain-select">
+                                <option value="">직접입력</option>
+                                <option value="naver.com">naver.com</option>
+                                <option value="gmail.com">gmail.com</option>
+                                <option value="daum.net">daum.net</option>
+                            </select>
+                            <div class="basis-full h-0"></div>
+                            <button type="submit" class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
+                        </div>
+
+                        <div class="font-label-md text-on-surface-variant mt-sm">휴대폰</div>
+                        <div class="flex gap-sm items-center flex-wrap mt-sm">
+                            <select class="h-10 w-24 px-sm pr-8 py-xs border border-outline rounded-lg bg-surface font-body-md text-on-surface focus:border-primary outline-none"
+                                    name="phoneFirst">
+                                <option value="010" th:selected="${myInfoPhoneFirst == '010'}">010</option>
+                                <option value="011" th:selected="${myInfoPhoneFirst == '011'}">011</option>
+                                <option value="016" th:selected="${myInfoPhoneFirst == '016'}">016</option>
+                                <option value="017" th:selected="${myInfoPhoneFirst == '017'}">017</option>
+                                <option value="018" th:selected="${myInfoPhoneFirst == '018'}">018</option>
+                                <option value="019" th:selected="${myInfoPhoneFirst == '019'}">019</option>
+                            </select>
+                            <span>-</span>
+                            <input class="h-10 w-28 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md text-center focus:border-primary outline-none"
+                                   name="phoneMiddle" required maxlength="4" inputmode="numeric" placeholder="0000" type="text" th:value="${myInfoPhoneMiddle}">
+                            <span>-</span>
+                            <input class="h-10 w-28 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md text-center focus:border-primary outline-none"
+                                   name="phoneLast" required maxlength="4" inputmode="numeric" placeholder="0000" type="text" th:value="${myInfoPhoneLast}">
+                            <button type="submit" class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
+                        </div>
+
+                        <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">주소</div>
+                        <div class="flex flex-col gap-sm mt-sm">
+                            <div class="flex gap-sm">
+                                <input class="px-sm py-xs border border-outline rounded-lg bg-surface font-body-md w-32 focus:border-primary outline-none"
+                                       id="my-zip" name="zipCode" readonly placeholder="우편번호" type="text" th:value="${myInfoZipCode}">
+                                <button class="px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors bg-surface-container-low"
+                                        type="button" onclick="Postcode('my-zip', 'my-base-address', 'my-detail-address')">주소검색</button>
+                            </div>
+                            <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[56px] focus:border-primary outline-none resize-y"
+                                      id="my-base-address" name="baseAddress" placeholder="기본주소" th:text="${myInfoBaseAddress}"></textarea>
+                            <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[72px] focus:border-primary outline-none resize-y"
+                                      id="my-detail-address" name="detailAddress" placeholder="상세주소" th:text="${myInfoDetailAddress}"></textarea>
+                        </div>
+
+                        <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">소셜 로그인</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm mt-sm">
+                            <div class="border border-outline-variant rounded-lg bg-surface-container-lowest px-md py-sm flex items-center justify-between">
+                                <div class="flex items-center gap-sm">
+                                    <span class="w-8 h-8 rounded-full bg-[#03C75A] text-white font-bold flex items-center justify-center">N</span>
+                                    <div>
+                                        <p class="font-label-md text-label-md text-on-surface">네이버</p>
+                                        <p class="font-label-sm text-label-sm text-on-surface-variant">SNS 로그인 상태</p>
+                                    </div>
+                                </div>
+                                <span class="px-sm py-xs rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant"
+                                      th:classappend="${naverConnected} ? ' bg-secondary-container text-on-secondary-container' : ''"
+                                      th:text="${naverConnected} ? '연결됨' : '미연결'">미연결</span>
+                            </div>
+                            <div class="border border-outline-variant rounded-lg bg-surface-container-lowest px-md py-sm flex items-center justify-between">
+                                <div class="flex items-center gap-sm">
+                                    <span class="w-8 h-8 rounded-full bg-[#FEE500] text-[#3c1e1e] font-bold flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+                                    </span>
+                                    <div>
+                                        <p class="font-label-md text-label-md text-on-surface">카카오</p>
+                                        <p class="font-label-sm text-label-sm text-on-surface-variant">SNS 로그인 상태</p>
+                                    </div>
+                                </div>
+                                <span class="px-sm py-xs rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant"
+                                      th:classappend="${kakaoConnected} ? ' bg-secondary-container text-on-secondary-container' : ''"
+                                      th:text="${kakaoConnected} ? '연결됨' : '미연결'">미연결</span>
                             </div>
                         </div>
-                        <span class="px-sm py-xs rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant" th:classappend="${naverConnected} ? ' bg-secondary-container text-on-secondary-container' : ''" th:text="${naverConnected} ? '연결됨' : '미연결'">미연결</span>
-                    </div>
-                    <div class="border border-outline-variant rounded-lg bg-surface-container-lowest px-md py-sm flex items-center justify-between">
-                        <div class="flex items-center gap-sm">
-                            <span class="w-8 h-8 rounded-full bg-[#FEE500] text-[#3c1e1e] font-bold flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
-                            </span>
-                            <div>
-                                <p class="font-label-md text-label-md text-on-surface">카카오</p>
-                                <p class="font-label-sm text-label-sm text-on-surface-variant">SNS 로그인 상태</p>
-                            </div>
+                    </th:block>
+
+                    <th:block th:if="${myInfoSeller}">
+                        <div class="font-label-md text-on-surface-variant">상호명</div>
+                        <div class="flex gap-sm items-center">
+                            <input class="h-10 flex-1 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary outline-none"
+                                   name="shopName" required type="text" th:value="${myInfoShopName}" placeholder="상호명">
+                            <button type="submit" class="h-10 whitespace-nowrap px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors">수정하기</button>
                         </div>
-                        <span class="px-sm py-xs rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant" th:classappend="${kakaoConnected} ? ' bg-secondary-container text-on-secondary-container' : ''" th:text="${kakaoConnected} ? '연결됨' : '미연결'">미연결</span>
-                    </div>
+
+                        <div class="font-label-md text-on-surface-variant">대표자</div>
+                        <input class="h-10 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary outline-none"
+                               name="ceo" required type="text" th:value="${myInfoCeo}" placeholder="대표자명">
+
+                        <div class="font-label-md text-on-surface-variant">사업자등록번호</div>
+                        <div>
+                            <input class="h-10 w-full px-sm py-xs border border-outline-variant rounded-lg bg-surface-container-high font-body-md text-on-surface-variant cursor-not-allowed"
+                                   readonly type="text" th:value="${myInfoBizNumber}" aria-label="사업자등록번호">
+                            <p class="mt-xs text-label-sm text-on-surface-variant">사업자등록번호는 관리자 확인이 필요한 정보라 직접 수정할 수 없습니다.</p>
+                        </div>
+
+                        <div class="font-label-md text-on-surface-variant">통신판매업 신고번호</div>
+                        <input class="h-10 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary outline-none"
+                               name="mailOrderNumber" type="text" th:value="${myInfoMailOrderNumber}" placeholder="통신판매업 신고번호">
+
+                        <div class="font-label-md text-on-surface-variant">대표 전화번호</div>
+                        <input class="h-10 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary outline-none"
+                               name="shopPhone" type="tel" th:value="${myInfoShopPhone}" placeholder="02-0000-0000">
+
+                        <div class="font-label-md text-on-surface-variant">팩스 번호</div>
+                        <input class="h-10 px-sm py-xs border border-outline rounded-lg bg-surface font-body-md focus:border-primary outline-none"
+                               name="fax" type="tel" th:value="${myInfoFax}" placeholder="02-0000-0000">
+
+                        <div class="font-label-md text-on-surface-variant mt-sm self-start pt-xs">사업장 주소</div>
+                        <div class="flex flex-col gap-sm mt-sm">
+                            <div class="flex gap-sm">
+                                <input class="px-sm py-xs border border-outline rounded-lg bg-surface font-body-md w-32 focus:border-primary outline-none"
+                                       id="shop-zip" name="shopZipCode" readonly placeholder="우편번호" type="text" th:value="${myInfoShopZipCode}">
+                                <button class="px-md py-xs border border-outline rounded-lg text-on-surface font-label-md hover:bg-surface-container-low transition-colors bg-surface-container-low"
+                                        type="button" onclick="Postcode('shop-zip', 'shop-base-address', 'shop-detail-address')">주소검색</button>
+                            </div>
+                            <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[56px] focus:border-primary outline-none resize-y"
+                                      id="shop-base-address" name="shopBaseAddress" placeholder="기본주소" th:text="${myInfoShopBaseAddress}"></textarea>
+                            <textarea class="px-sm py-sm border border-outline rounded-lg bg-surface font-body-md w-full min-h-[72px] focus:border-primary outline-none resize-y"
+                                      id="shop-detail-address" name="shopDetailAddress" placeholder="상세주소" th:text="${myInfoShopDetailAddress}"></textarea>
+                        </div>
+                    </th:block>
                 </div>
-            </div>
+            </form>
+
             <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-sm items-center mt-xl">
-                <form class="order-2 sm:order-1 sm:justify-self-start" th:action="@{/my/withdraw}" method="post" onsubmit="return confirm('회원 탈퇴 후에는 같은 아이디로 로그인할 수 없습니다. 탈퇴하시겠습니까?');">
+                <form class="order-2 sm:order-1 sm:justify-self-start" th:action="@{/my/withdraw}" method="post"
+                      onsubmit="return confirm('회원 탈퇴 후에는 같은 아이디로 로그인할 수 없습니다. 탈퇴하시겠습니까?');">
                     <button type="submit" class="inline-flex h-10 min-w-[96px] items-center justify-center whitespace-nowrap px-md border border-error-container text-on-error-container font-label-md rounded-lg hover:bg-error-container transition-colors">탈퇴하기</button>
                 </form>
-                <button class="order-1 sm:order-2 inline-flex h-11 w-full sm:w-auto min-w-[160px] items-center justify-center px-xl bg-primary-container text-on-primary font-label-md rounded-lg hover:bg-primary transition-colors">수정하기</button>
+                <button form="myInfoUpdateForm" type="submit" class="order-1 sm:order-2 inline-flex h-11 w-full sm:w-auto min-w-[160px] items-center justify-center px-xl bg-primary-container text-on-primary font-label-md rounded-lg hover:bg-primary transition-colors">수정하기</button>
                 <div class="hidden sm:block order-3"></div>
             </div>
         </div>
@@ -211,6 +300,23 @@
 
 
 
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script th:src="@{/js/postcode.js}" src="/js/postcode.js"></script>
+<script>
+    const emailDomainSelect = document.getElementById('my-email-domain-select');
+    const emailDomainInput = document.getElementById('my-email-domain');
+    if (emailDomainSelect && emailDomainInput) {
+        emailDomainSelect.addEventListener('change', () => {
+            if (emailDomainSelect.value) {
+                emailDomainInput.value = emailDomainSelect.value;
+            }
+            emailDomainInput.readOnly = Boolean(emailDomainSelect.value);
+            if (!emailDomainSelect.value) {
+                emailDomainInput.focus();
+            }
+        });
+    }
+</script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>
 

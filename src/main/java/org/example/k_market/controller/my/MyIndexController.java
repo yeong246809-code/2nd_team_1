@@ -3,13 +3,17 @@ package org.example.k_market.controller.my;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.dto.MyInfoUpdateDTO;
 import org.example.k_market.entity.Member;
+import org.example.k_market.entity.Shop;
 import org.example.k_market.entity.SnsAccount;
 import org.example.k_market.entity.Users;
 import org.example.k_market.repository.MemberRepository;
+import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.repository.SnsAccountRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.service.member.MemberWithdrawalService;
+import org.example.k_market.service.member.MyInfoService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +37,10 @@ public class MyIndexController {
 
     private final UsersRepository usersRepository;
     private final MemberRepository memberRepository;
+    private final ShopRepository shopRepository;
     private final SnsAccountRepository snsAccountRepository;
     private final MemberWithdrawalService memberWithdrawalService;
+    private final MyInfoService myInfoService;
 
     @GetMapping("/my/index")
     public String index(Authentication authentication, HttpSession session, Model model) {
@@ -74,9 +80,32 @@ public class MyIndexController {
 
     @GetMapping("/my/myinfo")
     public String myinfo(Authentication authentication, HttpSession session, Model model) {
+        if (!isAuthenticated(authentication)) {
+            return "redirect:/member/login";
+        }
+
         addLoginModel(authentication, session, model);
         addMyInfoModel(authentication, model);
         return "my/myinfo";
+    }
+
+    @PostMapping("/my/myinfo")
+    public String updateMyInfo(
+            Authentication authentication,
+            MyInfoUpdateDTO dto,
+            RedirectAttributes redirectAttributes) {
+        if (!isAuthenticated(authentication)) {
+            return "redirect:/member/login";
+        }
+
+        try {
+            myInfoService.update(authentication.getName(), dto);
+            redirectAttributes.addFlashAttribute("myInfoMessage", "회원 정보가 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("myInfoError", e.getMessage());
+        }
+
+        return "redirect:/my/myinfo";
     }
 
     @PostMapping("/my/withdraw")
@@ -126,14 +155,22 @@ public class MyIndexController {
     private void addMyInfoModel(Authentication authentication, Model model) {
         Optional<Users> user = currentUser(authentication);
         Optional<Member> member = user.flatMap(value -> memberRepository.findById(value.getMemberNo()));
+        boolean seller = user
+                .map(Users::getRole)
+                .map(role -> "SELLER".equalsIgnoreCase(role))
+                .orElse(false);
+        Optional<Shop> shop = seller
+                ? user.flatMap(value -> shopRepository.findById(value.getMemberNo()))
+                : Optional.empty();
 
         String email = member.map(Member::getEmail).orElse("");
         String[] emailParts = splitEmail(email);
         String phone = member.map(Member::getPhone).orElse("");
         String[] phoneParts = splitPhone(phone);
 
+        model.addAttribute("myInfoSeller", seller);
         model.addAttribute("myInfoUserId", user.map(Users::getId).orElse(""));
-        model.addAttribute("myInfoName", valueOrDash(member.map(Member::getName).orElse("")));
+        model.addAttribute("myInfoName", member.map(Member::getName).orElse(""));
         model.addAttribute("myInfoBirthDate", formatBirthDate(member.map(Member::getBirthDate).orElse(null)));
         model.addAttribute("myInfoEmailLocal", emailParts[0]);
         model.addAttribute("myInfoEmailDomain", emailParts[1]);
@@ -143,6 +180,16 @@ public class MyIndexController {
         model.addAttribute("myInfoZipCode", member.map(Member::getZipCode).orElse(""));
         model.addAttribute("myInfoBaseAddress", member.map(Member::getBaseAddress).orElse(""));
         model.addAttribute("myInfoDetailAddress", member.map(Member::getDetailAddress).orElse(""));
+
+        model.addAttribute("myInfoShopName", shop.map(Shop::getName).orElse(""));
+        model.addAttribute("myInfoCeo", shop.map(Shop::getCeo).orElse(""));
+        model.addAttribute("myInfoBizNumber", shop.map(Shop::getBizNumber).orElse(""));
+        model.addAttribute("myInfoMailOrderNumber", shop.map(Shop::getMailOrderNumber).orElse(""));
+        model.addAttribute("myInfoShopPhone", shop.map(Shop::getPhone).orElse(""));
+        model.addAttribute("myInfoFax", shop.map(Shop::getFax).orElse(""));
+        model.addAttribute("myInfoShopZipCode", shop.map(Shop::getZipCode).orElse(""));
+        model.addAttribute("myInfoShopBaseAddress", shop.map(Shop::getBaseAddress).orElse(""));
+        model.addAttribute("myInfoShopDetailAddress", shop.map(Shop::getDetailAddress).orElse(""));
 
         int memberNo = user.map(Users::getMemberNo).orElse(0);
         List<SnsAccount> snsAccounts = memberNo == 0 ? List.of() : snsAccountRepository.findAllByMemberNo(memberNo);
