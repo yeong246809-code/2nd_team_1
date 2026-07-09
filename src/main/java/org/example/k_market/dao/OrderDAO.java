@@ -4,6 +4,7 @@ import org.example.k_market.dto.OrderDTO;
 import org.example.k_market.entity.Order;
 import org.example.k_market.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -30,11 +31,9 @@ public class OrderDAO {
                 .map(Order::toDTO);
     }
 
-    public List<OrderDTO> findAll(Pageable pageable) {
-        return orderRepository.findAllWithMember(pageable)
-                .stream()
-                .map(Order::toDTO)
-                .toList();
+    public Page<Order> findAll(Pageable pageable) {
+        // 복잡한 JOIN FETCH 없이 기본 findAll 사용
+        return orderRepository.findAll(pageable);
     }
 
     public void deleteById(Integer orderNo) {

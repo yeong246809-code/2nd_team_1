@@ -3,9 +3,7 @@ package org.example.k_market.service.admin;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.SiteConfigDTO;
 import org.example.k_market.entity.SiteConfig;
-import org.example.k_market.entity.Version;
 import org.example.k_market.repository.SiteConfigRepository;
-import org.example.k_market.repository.VersionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,22 +22,14 @@ import java.util.UUID;
 public class SiteConfigService {
 
     private final SiteConfigRepository siteConfigRepository;
-    private final VersionRepository versionRepository;
 
     // 일반 이미지 경로
     private final String UPLOAD_PATH = new File("uploads/").getAbsolutePath() + File.separator;
 
     // 1. 단일 설정 데이터 가져오기 (무조건 Update를 위해, 없으면 빈 객체 생성)
     public SiteConfigDTO getSiteConfig() {
-        SiteConfig config = siteConfigRepository.findById(1).orElse(new SiteConfig());
+        SiteConfig config = siteConfigRepository.findTopByOrderByIdAsc().orElse(new SiteConfig());
         return config.getId() == 0 ? new SiteConfigDTO() : config.toDTO();
-    }
-
-    // 2. 가장 최신 사이트 버전 가져오기
-    public String getLatestVersionCode() {
-        Version latestVersion = versionRepository.findTopByOrderByIdDesc();
-        String s = (latestVersion != null) ? latestVersion.getVersionCode() : null;
-        return s;
     }
 
     // --- 각 파트별 부분 Update 로직 (무조건 Update) ---
@@ -119,8 +109,8 @@ public class SiteConfigService {
     }
 
     private SiteConfig getOrCreateConfig() {
-        return siteConfigRepository.findById(1)
-                .orElse(SiteConfig.builder().id(1).build());
+        return siteConfigRepository.findTopByOrderByIdAsc()
+                .orElseGet(() -> siteConfigRepository.save(SiteConfig.builder().build()));
     }
 
     private String resizeAndSave(MultipartFile file, Integer targetWidth, Integer targetHeight) throws IOException {

@@ -152,16 +152,7 @@
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-2xl font-bold text-primary">공지사항</h3>
 
-            <!-- 관리자 전용 공지사항 작성 버튼 -->
-            <!-- 관리자 전용 공지사항 작성 버튼 -->
-            <!-- SecurityConfig에서 로그인 성공 시 session.isAdmin 값을 저장함 -->
-            <!-- Thymeleaf Security Dialect 없이도 동작하도록 세션값만 사용 -->
-            <a th:if="${session.isAdmin == true}"
-               th:href="@{/cs/notice/write}"
-               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-all">
-                <span class="material-symbols-outlined text-[18px]">edit_square</span>
-                공지사항 작성
-            </a>
+
         </div>
 
         <!-- Type Filter -->

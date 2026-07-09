@@ -1,9 +1,11 @@
 package org.example.k_market.service.cs;
 
 import lombok.RequiredArgsConstructor;
+import org.example.k_market.dto.NoticeDTO;
 import org.example.k_market.entity.Notice;
 import org.example.k_market.repository.NoticeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,5 +34,23 @@ public class NoticeService {
     // 공지사항 등록 (admin)
     public void save(Notice notice) {
         noticeRepository.save(notice);
+    }
+
+    //공지사항 수정
+    @Transactional
+    public Notice update(int no, NoticeDTO dto) {
+        Notice notice = findById(no);
+
+        notice.setType(dto.getType());
+        notice.setTitle(dto.getTitle());
+        notice.setContent(dto.getContent());
+
+        return notice;
+    }
+
+    // 공지사항 삭제
+    @Transactional
+    public void delete(int no) {
+        noticeRepository.deleteById(no);
     }
 }
