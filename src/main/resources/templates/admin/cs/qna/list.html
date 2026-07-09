@@ -88,13 +88,13 @@
                 </tr>
                 <tr th:each="qna : ${qnas}">
                     <td th:text="${qna.no}">1</td>
-                    <td th:text="${qna.type}">배송</td>
+                    <td th:text="${qna.type1}">배송</td>
                     <td class="title"><a th:href="@{/admin/cs/qna/view/{no}(no=${qna.no})}" th:text="${qna.title}">문의 제목입니다.</a></td>
-                    <td th:text="${qna.writer}">user01</td>
+                    <td th:text="${qna.maskedId}">user01</td>
                     <td th:text="${#temporals.format(qna.createdAt, 'yyyy-MM-dd')}">2026-07-08</td>
                     <td>
-                        <span class="status done" th:if="${qna.answer != null && !#strings.isEmpty(qna.answer)}">답변완료</span>
-                        <span class="status wait" th:unless="${qna.answer != null && !#strings.isEmpty(qna.answer)}">답변대기</span>
+                        <span class="status done" th:if="${qna.isAnswered == '답변완료'}">답변완료</span>
+                        <span class="status wait" th:unless="${qna.isAnswered == '답변완료'}" th:text="${qna.isAnswered}">답변대기</span>
                     </td>
                 </tr>
                 </tbody>

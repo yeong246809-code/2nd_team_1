@@ -96,3 +96,18 @@
                 <label class="bg-surface-container-low p-sm font-bold">답변</label>
                 <div class="p-sm"><textarea th:field="*{content}" class="w-full min-h-[360px] rounded border-outline-variant" placeholder="답변 내용을 입력하세요." required></textarea></div>
             </div>
+            <div class="flex justify-end gap-sm mt-md">
+                <a th:href="@{/admin/cs/faq/list}" class="px-4 py-2 rounded border border-outline-variant hover:bg-surface-container-low">취소</a>
+                <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-white">수정하기</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script>
+    function toggleAccordion(button){const menuItem=button.closest('.group\\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
+</script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+<script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
+</body>
+</html>
