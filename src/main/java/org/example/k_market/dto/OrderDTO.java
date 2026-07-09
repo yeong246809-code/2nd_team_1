@@ -1,5 +1,6 @@
 package org.example.k_market.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.example.k_market.entity.Order;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -11,11 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDTO {
 
     private int orderNo; // 엔티티와 동일하게 long -> int로 변경!
     private String id;
     private int memberNo;
+    private String orderName;
     private String paymentMethod;
     private int totalProductPrice;
     private int totalDiscountPrice;
@@ -45,6 +48,7 @@ public class OrderDTO {
         return Order.builder()
                 .orderNo(orderNo)
                 .memberNo(memberNo)
+                .orderName(orderName)
                 .paymentMethod(paymentMethod)
                 .totalProductPrice(totalProductPrice)
                 .totalDiscountPrice(totalDiscountPrice)

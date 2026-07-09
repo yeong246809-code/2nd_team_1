@@ -24,6 +24,8 @@ public class OrderDetailsDTO {
 
     private String prodName;
 
+    private String orderName;
+
     private int TotalPaymentPrice;
 
     public OrderDetails toEntity(){
@@ -31,7 +33,7 @@ public class OrderDetailsDTO {
                 .orderDetailNo(orderDetailNo).orderNo(orderNo).productNo(productNo)
                 .shopNo(shopNo).quantity(quantity).price(price)
                 .discountPrice(discountPrice).shippingFee(shippingFee)
-                .rewardPoints(rewardPoints).status(status)
+                .rewardPoints(rewardPoints).status(status).orderName(orderName)
                 .build();
     }
 }

@@ -20,6 +20,7 @@ public class Order {
 
     @Column(name = "memberNo", insertable = false, updatable = false)
     private int memberNo;
+    private String orderName;
 
     private String paymentMethod;
     private int totalProductPrice;
@@ -30,29 +31,28 @@ public class Order {
     private LocalDateTime createdAt;
 
     private String status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberNo", insertable = false, updatable = false)
-    private Member member;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberNo", insertable = false, updatable = false) // order 테이블의 memberNo 컬럼과 조인
     private Users user; // Member 대신 User 엔티티 사용
 
+    @Transient
+    private String recipientName; // 수취인
+
+    @Transient
+    private String recipientPhone; // 수취인 전화번호
+
+    @Transient
+    private String baseAddress; // 배송지 주소
+
     public OrderDTO toDTO() {
         return OrderDTO.builder()
                 .orderNo(this.orderNo)
-                // .id(this.member != null ? this.member.getId() : "탈퇴회원")
-                // .memberName(this.member != null ? this.member.getName() : "탈퇴회원")
-                .recipientName(toDTO().getRecipientName())
-                .recipientPhone(toDTO().getRecipientPhone())
-                .baseAddress(toDTO().getBaseAddress())
-                .prodNo(toDTO().getProdNo())
-                .name(toDTO().getName())
-                .price(toDTO().getPrice())
-                .discountRate(toDTO().getDiscountRate())
-                .stockQuantity(toDTO().getStockQuantity())
+                .orderName(this.orderName)
                 .memberNo(this.memberNo)
+                .id(this.user != null ? this.user.getId() : "비회원")
+                .recipientName(this.recipientName)
+                .recipientPhone(this.recipientPhone)
+                .baseAddress(this.baseAddress)
                 .paymentMethod(this.paymentMethod)
                 .totalProductPrice(this.totalProductPrice)
                 .totalDiscountPrice(this.totalDiscountPrice)
@@ -60,7 +60,7 @@ public class Order {
                 .usedPoints(this.usedPoints)
                 .totalPaymentPrice(this.totalPaymentPrice)
                 .createdAt(this.createdAt)
-                .status(this.status) // 새로 추가한 상태값 반영
+                .status(this.status)
                 .build();
     }
 }

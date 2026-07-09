@@ -1,284 +1,565 @@
 <!DOCTYPE html>
+
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
+
     <meta charset="utf-8"/>
+
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
     <title>K-market Admin Dashboard - 주문현황</title>
+
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
+
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
     <style>
+
         .material-symbols-outlined {
+
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+
         }
+
         /* Accordion Smooth Animation */
+
         .menu-content {
+
             max-height: 0;
+
             overflow: hidden;
+
             transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, padding 0.3s ease-in-out;
+
             opacity: 0;
+
         }
+
         .menu-item-active .menu-content {
+
             max-height: 500px;
+
             opacity: 1;
+
             padding-top: 4px;
+
             padding-bottom: 8px;
+
         }
+
         .chevron-icon {
+
             transition: transform 0.3s ease;
+
         }
+
         .menu-item-active .chevron-icon {
+
             transform: rotate(180deg);
+
         }
+
     </style>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
     <script id="tailwind-config">
+
         tailwind.config = {
+
             darkMode: "class",
+
             theme: {
+
                 extend: {
+
                     "colors": {
+
                         "secondary-container": "#c0ecdc", "surface-container-highest": "#e1e3e4", "primary-fixed": "#c8e8f2", "on-error": "#ffffff",
+
                         "inverse-surface": "#2e3132", "on-surface": "#191c1d", "on-secondary": "#ffffff", "tertiary-fixed": "#ffdcc7",
+
                         "surface-bright": "#f8f9fa", "surface-container-lowest": "#ffffff", "primary-container": "#2c4a52", "error-container": "#ffdad6",
+
                         "primary": "#14333b", "on-tertiary-fixed-variant": "#5f402b", "on-secondary-fixed": "#002018", "background": "#f8f9fa",
+
                         "secondary-fixed": "#c0ecdc", "tertiary-fixed-dim": "#eabda2", "secondary": "#3e6659", "error": "#ba1a1a",
+
                         "primary-fixed-dim": "#acccd5", "on-secondary-fixed-variant": "#264e42", "tertiary": "#452916", "surface": "#f8f9fa",
+
                         "on-tertiary": "#ffffff", "on-primary-container": "#99b9c2", "inverse-primary": "#acccd5", "surface-container-low": "#f3f4f5",
+
                         "on-tertiary-container": "#d6ab90", "on-primary-fixed": "#001f26", "surface-tint": "#45636b", "tertiary-container": "#5e3f2a",
+
                         "on-error-container": "#93000a", "secondary-fixed-dim": "#a5d0c0", "on-primary": "#ffffff", "on-tertiary-fixed": "#2d1605",
+
                         "on-background": "#191c1d", "on-secondary-container": "#446c5f", "outline": "#72787a", "outline-variant": "#c1c7ca",
+
                         "on-surface-variant": "#41484a", "inverse-on-surface": "#f0f1f2", "on-primary-fixed-variant": "#2d4b53", "surface-variant": "#e1e3e4",
+
                         "surface-dim": "#d9dadb", "surface-container": "#edeeef", "surface-container-high": "#e7e8e9"
+
                     },
+
                     "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+
                     "spacing": { "margin-mobile": "16px", "base": "8px", "gutter": "24px", "xs": "4px", "sm": "12px", "xl": "80px", "container-max": "1280px", "md": "24px", "lg": "48px" },
+
                     "fontFamily": { "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Be Vietnam Pro"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-md": ["Be Vietnam Pro"], "label-md": ["Be Vietnam Pro"], "label-sm": ["Be Vietnam Pro"], "headline-lg": ["Plus Jakarta Sans"] },
+
                     "fontSize": { "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}], "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}], "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}], "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}], "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}], "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}], "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}], "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}] }
+
                 }
+
             }
+
         }
+
     </script>
+
 </head>
+
 <body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
+
 <aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface dark:bg-inverse-surface border-r border-outline-variant overflow-hidden">
+
     <div class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0">
+
         <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+
             <span class="material-symbols-outlined">storefront</span>
+
         </div>
+
         <div>
+
             <h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">K-market Admin</h2>
+
             <p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p>
+
         </div>
+
     </div>
+
+
 
     <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
+
         <div class="group/menu">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined">store</span>
+
                     <span class="font-label-md text-label-md">상점 관리</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/list}">상점목록</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/sales}">매출현황</a>
+
             </div>
+
         </div>
 
+
+
         <div class="group/menu">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined">group</span>
+
                     <span class="font-label-md text-label-md">회원 관리</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">회원목록</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">포인트관리</a>
+
             </div>
+
         </div>
 
+
+
         <div class="group/menu">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined">inventory_2</span>
+
                     <span class="font-label-md text-label-md">상품 관리</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon text-primary">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/list}">상품목록</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/register}">상품등록</a>
+
             </div>
+
         </div>
+
+
 
         <div class="group/menu menu-item-active">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+
                     <span class="font-label-md text-label-md font-bold text-primary">주문 관리</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon text-primary">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-primary font-bold font-label-md transition-colors" th:href="@{/admin/order/list}">주문현황</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/order/delivery}">배송현황</a>
+
             </div>
+
         </div>
 
+
+
         <div class="group/menu">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined">confirmation_number</span>
+
                     <span class="font-label-md text-label-md">쿠폰 관리</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰목록</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰발급현황</a>
+
             </div>
+
         </div>
 
+
+
         <div class="group/menu">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined">support_agent</span>
+
                     <span class="font-label-md text-label-md">고객 센터</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">공지사항</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">자주묻는질문</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">문의하기</a>
+
             </div>
+
         </div>
 
+
+
         <div class="group/menu">
+
             <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
+
                 <div class="flex items-center gap-3">
+
                     <span class="material-symbols-outlined">settings</span>
+
                     <span class="font-label-md text-label-md">환경 설정</span>
+
                 </div>
+
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+
             </button>
+
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">기본설정</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">배너관리</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">약관관리</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">카테고리</a>
+
                 <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">버전관리</a>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <div class="border-t border-outline-variant p-base flex flex-col gap-xs flex-shrink-0">
+
         <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
+
             <span class="material-symbols-outlined">history</span>
+
             <span class="font-label-md text-label-md">시스템 로그</span>
+
         </a>
+
         <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
+
             <span class="material-symbols-outlined">help</span>
+
             <span class="font-label-md text-label-md">도움말</span>
+
         </a>
+
         <button class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+
             <span class="material-symbols-outlined text-sm">logout</span>로그아웃
+
         </button>
+
     </div>
+
 </aside>
 
+
+
 <header class="fixed top-0 right-0 left-64 h-16 flex items-center px-md z-30 bg-surface-container-lowest border-b border-outline-variant">
+
     <h1 class="font-headline-md font-black text-primary">K-market Admin Dashboard</h1>
+
 </header>
 
+
+
 <main class="ml-64 mt-16 p-lg flex-1">
+
     <div class="mb-lg border-b pb-sm">
+
         <h1 class="font-headline-lg text-headline-lg text-on-background">주문현황</h1>
+
     </div>
+
+
 
     <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md shadow-sm">
+
         <div class="mb-md flex gap-sm pb-md border-b">
+
             <input type="text" placeholder="주문번호 입력" class="border-outline-variant rounded-lg w-64"/>
+
             <button class="bg-primary text-white px-6 py-2 rounded-lg">검색</button>
+
         </div>
+
+
 
         <table class="w-full border-collapse text-center">
+
             <thead class="bg-surface-container">
+
             <tr class="text-label-md">
+
                 <th class="py-4">주문번호</th>
+
                 <th class="py-4">주문자</th>
+
                 <th class="py-4">주문자명</th>
+
                 <th class="py-4">건수</th>
+
                 <th class="py-4">합계</th>
+
                 <th class="py-4">결제수단</th>
+
                 <th class="py-4">주문상태</th>
+
                 <th class="py-4">주문일</th>
+
                 <th class="py-4">배송</th>
+
             </tr>
+
             </thead>
+
             <tbody class="divide-y divide-surface-variant">
+
             <tr th:if="${orderPage.content.isEmpty()}">
+
                 <td colspan="7" class="py-10 text-center text-on-surface-variant">조회된 주문 내역이 없습니다.</td>
+
             </tr>
+
             <tr th:each="order : ${orderPage.content}">
+
                 <td class="py-4 text-primary font-bold cursor-pointer hover:underline"
+
                     th:text="${order.orderNo}"
+
                     th:onclick="|openPopup(${order.orderNo})|">
+
                 </td>
+
                 <td class="py-4" th:text="${order.id}"></td>
-                <td class="py-4" th:text="${order.memberName}"></td> <td class="py-4">1</td> <td class="py-4 font-semibold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}"></td>
+
+                <td class="py-4" th:text="${order.orderName}"></td> <td class="py-4">1</td> <td class="py-4 font-semibold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}"></td>
+
                 <td class="py-4" th:text="${order.paymentMethod}"></td>
+
                 <td class="py-4">
-                        <span th:text="${order.status}"
-                              th:classappend="${order.status == '결제완료' ? 'text-green-600' :
-                                              (order.status == '결제대기' ? 'text-amber-600' : 'text-red-600')}"
-                              class="font-bold px-2 py-1 rounded border">
-                        </span>
+
+<span th:text="${order.status}"
+
+      th:classappend="${order.status == '결제완료' ? 'text-green-600' :
+
+(order.status == '결제대기' ? 'text-amber-600' : 'text-red-600')}"
+
+      class="font-bold px-2 py-1 rounded border">
+
+</span>
+
                 </td>
+
                 <td class="py-4" th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd')}"></td>
+
                 <td class="py-4">
+
                     <button class="border border-primary text-primary px-3 py-1 rounded text-xs hover:bg-primary hover:text-white"
+
                             th:onclick="|updateStatus('${order.orderNo}', '배송중')|">배송하기</button>
+
                 </td>
+
             </tr>
+
             </tbody>
+
         </table>
+
     </div>
+
     <div class="mt-8 flex justify-center gap-2">
+
         <a th:if="${orderPage.hasPrevious()}"
+
            th:href="@{/admin/order/list(page=${orderPage.number - 1}, searchType=${searchType}, keyword=${keyword})}"
+
            class="px-3 py-1 border rounded">이전</a>
 
+
+
         <span th:each="i : ${#numbers.sequence(0, orderPage.totalPages - 1)}">
-        <a th:href="@{/admin/order/list(page=${i}, searchType=${searchType}, keyword=${keyword})}"
-           th:text="${i + 1}"
-           th:classappend="${i == orderPage.number} ? 'bg-primary text-white' : 'bg-white'"
-           class="px-3 py-1 border rounded">1</a>
-    </span>
+
+<a th:href="@{/admin/order/list(page=${i}, searchType=${searchType}, keyword=${keyword})}"
+
+   th:text="${i + 1}"
+
+   th:classappend="${i == orderPage.number} ? 'bg-primary text-white' : 'bg-white'"
+
+   class="px-3 py-1 border rounded">1</a>
+
+</span>
+
+
 
         <a th:if="${orderPage.hasNext()}"
+
            th:href="@{/admin/order/list(page=${orderPage.number + 1}, searchType=${searchType}, keyword=${keyword})}"
+
            class="px-3 py-1 border rounded">다음</a>
+
     </div>
+
 </main>
 
+
+
 <div id="orderDetailPopup" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+
     <div class="bg-white rounded-lg w-[800px] shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+
         <div class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
+
             <h2 class="text-lg font-bold">주문상세 <span id="popupOrderNo" class="ml-2 font-normal"></span></h2>
+
             <button onclick="closePopup()" class="text-white text-xl">&times;</button>
+
         </div>
 
+
+
         <div class="p-6 overflow-y-auto space-y-8">
+
             <div>
+
                 <h3 class="font-bold border-b-2 border-black pb-2 mb-3">상품정보</h3>
+
                 <table class="w-full text-sm border-t border-gray-300">
+
                     <thead class="bg-gray-50">
+
                     <tr>
                         <th class="py-2 border-b">상품번호</th>
                         <th class="py-2 border-b">상품명</th>
@@ -315,13 +596,12 @@
         </div>
     </div>
 </div>
-
 <script th:inline="javascript">
     // Thymeleaf가 자동으로 서버의 Context Path를 포함한 루트 경로를 생성합니다.
     const contextPath = /*[[@{/}]]*/ '/';
-
     function updateStatus(orderNo, newStatus) {
         if(confirm(orderNo + "번 주문 상태를 " + newStatus + "(으)로 변경하시겠습니까?")) {
+
             fetch(`${contextPath}admin/order/status?orderNo=${orderNo}&status=${newStatus}`, {
                 method: 'POST'
             }).then(response => {
@@ -329,13 +609,13 @@
             });
         }
     }
-
     function toggleAccordion(button) {
         button.closest('.group\\/menu').classList.toggle('menu-item-active');
     }
 
     function openPopup(orderNo) {
-        // 수정된 경로 적용
+
+    // 수정된 경로 적용
         fetch(`${contextPath}admin/order/detail/${orderNo}`)
             .then(res => {
                 if (!res.ok) throw new Error("서버 응답 오류");
@@ -345,24 +625,33 @@
                 document.getElementById('popupOrderNo').innerText = data.orderNo;
                 document.getElementById('p-orderNo').innerText = data.orderNo;
                 document.getElementById('p-payment').innerText = data.paymentMethod;
-                document.getElementById('p-member').innerText = data.memberName;
+                document.getElementById('p-member').innerText = data.name;
                 document.getElementById('p-status').innerText = data.status;
 
                 document.getElementById('p-receiver').innerText = data.receiver || '정보없음';
                 document.getElementById('p-phone').innerText = data.phone || '정보없음';
-                document.getElementById('p-address').innerText = data.address || '정보없음';
+                document.getElementById('p-address').innerText = data.baseAddress || '정보없음';
+                document.getElementById('p-member').innerText = data.members || '정보없음';
 
                 const productList = document.getElementById('popupProductList');
                 productList.innerHTML = data.orderItems.map(item => `
                     <tr class="text-center">
-                        <td class="py-2">${item.productNo}</td>
-                        <td class="py-2">${item.productName || '상품명 확인 필요'}</td>
-                        <td class="py-2">${item.price.toLocaleString()}원</td>
-                        <td class="py-2">${item.discountPrice.toLocaleString()}원</td>
-                        <td class="py-2">${item.quantity}</td>
-                        <td class="py-2 font-bold">${item.totalPaymentPrice.toLocaleString()}원</td>
+
+                    <td class="py-2">${item.productNo}</td>
+
+                    <td class="py-2">${item.prodName || '상품명 확인 필요'}</td>
+
+                    <td class="py-2">${item.price.toLocaleString()}원</td>
+
+                    <td class="py-2">${item.discountPrice.toLocaleString()}원</td>
+
+                    <td class="py-2">${item.quantity}</td>
+
+                    <td class="py-2 font-bold">${item.totalPaymentPrice.toLocaleString()}원</td>
+
                     </tr>
-                `).join('');
+
+                    `).join('');
 
                 document.getElementById('orderDetailPopup').classList.remove('hidden');
             })
@@ -370,12 +659,12 @@
                 console.error(err);
                 alert("상세 정보를 불러오는 데 실패했습니다.");
             });
+
     }
 
     function closePopup() {
         document.getElementById('orderDetailPopup').classList.add('hidden');
     }
-</script>
-<script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
-</body>
+        </script>
+    </body>
 </html>

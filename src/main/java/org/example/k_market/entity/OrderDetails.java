@@ -25,12 +25,17 @@ public class OrderDetails {
     private int rewardPoints;
     private String status;
 
+    @Transient
+    private String prodName;
+
+    private String orderName;
+
     public OrderDetailsDTO toDTO(){
         return OrderDetailsDTO.builder()
                 .orderDetailNo(orderDetailNo).orderNo(orderNo).productNo(productNo)
                 .shopNo(shopNo).quantity(quantity).price(price)
                 .discountPrice(discountPrice).shippingFee(shippingFee)
-                .rewardPoints(rewardPoints).status(status)
+                .rewardPoints(rewardPoints).status(status).orderName(orderName)
                 .build();
     }
 }
