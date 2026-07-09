@@ -126,5 +126,6 @@
     function toggleAccordion(button){const menuItem=button.closest('.group\\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
 </script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+<script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
 </body>
 </html>

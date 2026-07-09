@@ -98,22 +98,42 @@
             </tr>
         </table>
 
-        <div class="mt-lg pt-lg border-t border-outline-variant">
-            <h2 class="font-headline-md text-headline-md text-primary mb-sm">관리자 답변</h2>
+            <table class="view-table">
+                <tr>
+                    <th>분류</th>
+                    <td th:text="${qna.type1}">배송</td>
+                </tr>
+                <tr>
+                    <th>제목</th>
+                    <td th:text="${qna.title}">문의 제목입니다.</td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td th:text="${qna.maskedId}">user01</td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td th:text="${#temporals.format(qna.createdAt, 'yyyy-MM-dd HH:mm')}">2026-07-08 10:00</td>
+                </tr>
+                <tr>
+                    <th>문의내용</th>
+                    <td><div class="content-box" th:text="${qna.content}">문의 내용입니다.</div></td>
+                </tr>
+            </table>
 
-            <div th:if="${answer != null}" class="answer-box mb-md" th:text="${answer.content}">등록된 답변 내용입니다.</div>
-
-            <form th:action="@{/admin/cs/qna/answer/{no}(no=${qna.no})}" method="post">
-                <textarea name="content" class="w-full min-h-[180px] rounded-lg border-outline-variant text-on-surface font-body-md" placeholder="답변 내용을 입력하세요." th:text="${answer != null ? answer.content : ''}" required></textarea>
-                <div class="flex justify-end gap-sm mt-md">
-                    <a th:href="@{/admin/cs/qna/list}" class="px-4 py-2 rounded border border-outline-variant hover:bg-surface-container-low">목록</a>
-                    <a th:if="${answer != null}" th:href="@{/admin/cs/qna/answer/delete/{no}(no=${qna.no})}" onclick="return confirm('답변을 삭제하시겠습니까?');" class="px-4 py-2 rounded border border-error text-error hover:bg-error-container">답변삭제</a>
-                    <button type="submit"class="px-5 py-2 rounded-lg bg-primary text-white"> 답변등록 </button>
-                </div>
-            </form>
-        </div>
-    </section>
-</main>
+            <section class="answer-area">
+                <h3>관리자 답변</h3>
+                <form th:action="@{/admin/cs/qna/answer/{no}(no=${qna.no})}" method="post">
+                    <textarea name="answer" placeholder="답변 내용을 입력하세요." th:text="${answer != null ? answer.content : ''}"></textarea>
+                    <div class="btn-area">
+                        <a class="btn" th:href="@{/admin/cs/qna/list}">목록</a>
+                        <a class="btn btn-danger" th:if="${answer != null}" th:href="@{/admin/cs/qna/answer/delete/{no}(no=${qna.no})}" onclick="return confirm('답변을 삭제하시겠습니까?');">답변삭제</a>
+                        <button type="submit" class="btn btn-primary" th:text="${answer != null ? '답변수정' : '답변등록'}">답변등록</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
 
 <script>
     function toggleAccordion(button){const menuItem=button.closest('.group\\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
