@@ -28,7 +28,6 @@ public class Shop {
     private String baseAddress;
     private String detailAddress;
     private String status;
-    private String manageStatus;
     private LocalDateTime rdate;
 
     public enum ShopStatus {
@@ -40,13 +39,17 @@ public class Shop {
                 .memberNo(memberNo).shopNo(shopNo).name(name).ceo(ceo)
                 .bizNumber(bizNumber).mailOrderNumber(mailOrderNumber)
                 .phone(phone).fax(fax).zipCode(zipCode).baseAddress(baseAddress)
-                .detailAddress(detailAddress).status(status).manageStatus(manageStatus)
+                .detailAddress(detailAddress).status(status)
                 .rdate(rdate)
                 .build();
     }
 
     public void updateStatus(String status) {
         this.status = status;
+    }
+
+    public void delete() {
+        this.status = "DELETE";
     }
 
 }

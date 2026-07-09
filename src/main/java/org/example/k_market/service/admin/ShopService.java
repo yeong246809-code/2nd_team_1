@@ -22,15 +22,24 @@ public class ShopService {
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             switch (searchType) {
-                case "name": shops = shopRepository.findByNameContaining(keyword); break;
-                case "ceo": shops = shopRepository.findByCeoContaining(keyword); break;
-                case "bizNumber": shops = shopRepository.findByBizNumberContaining(keyword); break;
-                case "phone": shops = shopRepository.findByPhoneContaining(keyword); break;
-                default: shops = shopRepository.findAll();
+                case "name":
+                    shops = shopRepository.findActiveByName(keyword);
+                    break;
+                case "ceo":
+                    shops = shopRepository.findActiveByCeo(keyword);
+                    break;
+                case "bizNumber":
+                    shops = shopRepository.findActiveByBizNumber(keyword);
+                    break;
+                case "phone":
+                    shops = shopRepository.findActiveByPhone(keyword);
+                    break;
+                default:
+                    shops = shopRepository.findAllActiveShops();
             }
         } else {
-            // 검색어가 없으면 전체 조회
-            shops = shopRepository.findAll();
+            // 검색어가 없으면 전체 활성 상점 조회
+            shops = shopRepository.findAllActiveShops();
         }
 
         // Entity 리스트를 DTO 리스트로 변환하여 반환
@@ -46,11 +55,10 @@ public class ShopService {
         shop.updateStatus(status); // 변경 감지(Dirty Checking)로 자동 UPDATE 쿼리 실행
     }
 
-    // 상점 일괄 삭제
+    // 상점 비활
     @Transactional
     public void deleteShops(List<Integer> memberNos) {
-        // 관련된 Users 데이터를 지워야 한다면 UsersRepository를 주입받아 함께 지워야 합니다.
-        // 현재는 상점(Shop) 정보만 일괄 삭제하도록 구현되어 있습니다.
-        shopRepository.deleteAllById(memberNos);
+        List<Shop> shops = shopRepository.findAllById(memberNos);
+        shops.forEach(Shop::delete); // Shop 엔티티의 delete() 호출
     }
 }

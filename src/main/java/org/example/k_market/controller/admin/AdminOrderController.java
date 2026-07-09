@@ -23,7 +23,7 @@ public class AdminOrderController {
     private final OrderService orderService; // 주문 관련 비즈니스 로직 처리
 
     // 1. 주문 목록 조회
-// 수정된 Controller 메서드
+    // 수정된 Controller 메서드
     @GetMapping("/list")
     public String list(Model model,
                        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,

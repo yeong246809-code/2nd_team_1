@@ -7,6 +7,7 @@ import org.example.k_market.service.member.UsersService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -43,10 +44,9 @@ public class ShopController {
 
     // 3. 상점 일괄 삭제 (선택 삭제)
     @PostMapping("/delete")
-    public String deleteShops(@RequestParam(value = "memberNos", required = false) List<Integer> memberNos) {
-        if (memberNos != null && !memberNos.isEmpty()) {
-            shopService.deleteShops(memberNos);
-        }
+    public String delete(@RequestParam List<Integer> memberNos, RedirectAttributes redirectAttributes) {
+        shopService.deleteShops(memberNos);
+        redirectAttributes.addFlashAttribute("message", "선택한 상점이 삭제(비활성)되었습니다.");
         return "redirect:/admin/shop/list";
     }
 

@@ -16,6 +16,7 @@ public class OrderDTO {
     private int orderNo; // 엔티티와 동일하게 long -> int로 변경!
     private String id;
     private int memberNo;
+    private String orderName;
     private String paymentMethod;
     private int totalProductPrice;
     private int totalDiscountPrice;
@@ -45,6 +46,7 @@ public class OrderDTO {
         return Order.builder()
                 .orderNo(orderNo)
                 .memberNo(memberNo)
+                .orderName(orderName)
                 .paymentMethod(paymentMethod)
                 .totalProductPrice(totalProductPrice)
                 .totalDiscountPrice(totalDiscountPrice)
