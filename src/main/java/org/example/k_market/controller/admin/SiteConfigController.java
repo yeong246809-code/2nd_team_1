@@ -3,6 +3,7 @@ package org.example.k_market.controller.admin;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.SiteConfigDTO;
 import org.example.k_market.service.admin.SiteConfigService;
+import org.example.k_market.service.admin.VersionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,13 @@ import java.io.IOException;
 public class SiteConfigController {
 
     private final SiteConfigService siteConfigService;
+    private final VersionService versionService;
 
     // 1. 설정 화면 출력 (GET)
     @GetMapping
     public String basicConfigPage(Model model) {
         SiteConfigDTO config = siteConfigService.getSiteConfig();
-        String latestVersion = siteConfigService.getLatestVersionCode();
+        String latestVersion = versionService.getLatestVersionCode();
 
         model.addAttribute("config", config);
         model.addAttribute("latestVersion", latestVersion);

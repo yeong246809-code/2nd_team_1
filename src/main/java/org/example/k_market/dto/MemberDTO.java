@@ -2,6 +2,7 @@ package org.example.k_market.dto;
 
 import org.example.k_market.entity.Member;
 import lombok.*;
+import org.example.k_market.service.member.MemberAccountStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -38,7 +39,8 @@ public class MemberDTO {
                 .gender(gender).email(email).phone(phone).zipCode(zipCode)
                 .baseAddress(baseAddress).detailAddress(detailAddress)
                 .gradeNo(gradeNo).points(points).createdAt(createdAt)
-                .status(status).lastLoginAt(lastLoginAt).memo(memo)
+                .status(MemberAccountStatus.from(status))
+                .lastLoginAt(lastLoginAt).memo(memo)
                 .locationPolicyAgreed(locationPolicyAgreed).id(id)
                 .build();
     }

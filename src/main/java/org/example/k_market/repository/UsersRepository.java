@@ -1,6 +1,7 @@
 package org.example.k_market.repository;
 
 import org.example.k_market.entity.Users;
+import org.example.k_market.service.member.MemberAccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,8 +24,5 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Users u SET u.status = :status WHERE u.memberNo = :memberNo")
-    void updateStatus(@Param("memberNo") int memberNo, @Param("status") String status);
-
-    Page<Users> findByIdContaining(String id, Pageable pageable);
-    List<Users> findAllByMemberNoIn(List<Integer> memberNos);
+    void updateStatus(@Param("memberNo") int memberNo, @Param("status") MemberAccountStatus status);
 }

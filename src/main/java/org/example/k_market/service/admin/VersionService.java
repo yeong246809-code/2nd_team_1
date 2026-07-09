@@ -26,6 +26,14 @@ public class VersionService {
         return versionRepository.findAllVersionsWithUserId();
     }
 
+    public String getLatestVersionCode() {
+        return versionRepository.findAll().stream()
+                .map(Version::getVersionCode)
+                .filter(code -> code != null && !code.isBlank())
+                .max(VersionCodeComparator.INSTANCE)
+                .orElse(null);
+    }
+
     // 2. 버전 등록 (로그인 정보 반영)
     @Transactional
     public void insertVersion(VersionDTO versionDTO) {

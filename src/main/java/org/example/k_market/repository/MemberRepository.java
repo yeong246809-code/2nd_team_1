@@ -1,6 +1,7 @@
 package org.example.k_market.repository;
 
 import org.example.k_market.entity.Member;
+import org.example.k_market.service.member.MemberAccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("UPDATE Member m SET m.status = :status, m.memo = :memo WHERE m.memberNo = :memberNo")
     void updateWithdrawalStatus(
             @Param("memberNo") int memberNo,
-            @Param("status") String status,
+            @Param("status") MemberAccountStatus status,
             @Param("memo") String memo);
 
     Page<Member> findByNameContaining(String name, Pageable pageable);
