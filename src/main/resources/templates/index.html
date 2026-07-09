@@ -137,6 +137,8 @@
                      th:src="@{/uploads/{file}(file=${siteConfig.headerLogo_stored})}"
                      class="h-10 w-auto max-w-48 object-contain"
                      alt="K-market 헤더 로고">
+                <span th:if="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
+                      class="text-3xl font-extrabold text-primary">K-market</span>
                 <span th:unless="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
                       class="text-3xl font-extrabold text-primary"
                       th:text="${siteConfig.title != null and !siteConfig.title.isBlank() ? siteConfig.title : 'K-market'}">K-market</span>

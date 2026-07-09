@@ -159,8 +159,7 @@ public class UsersService implements UserDetailsService {
                 .zipCode(trimToNull(zipCode))
                 .baseAddress(valueOrEmpty(baseAddress))
                 .detailAddress(valueOrEmpty(detailAddress))
-                .status("ACTIVE")
-                .manageStatus("PENDING")
+                .status("PENDING")
                 .rdate(LocalDateTime.now())
                 .build();
 

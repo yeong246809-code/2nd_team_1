@@ -187,21 +187,11 @@
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
 
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=10)}">
-                        <span class="material-symbols-outlined text-on-surface-variant">checkroom</span>
-                        <span class="text-on-surface font-medium">패션/의류</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=20)}">
-                        <span class="material-symbols-outlined text-on-surface-variant">laptop_chromebook</span>
-                        <span class="text-on-surface font-medium">가전/디지털</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=30)}">
-                        <span class="material-symbols-outlined text-on-surface-variant">local_grocery_store</span>
-                        <span class="text-on-surface font-medium">식품/생필품</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=40)}">
-                        <span class="material-symbols-outlined text-on-surface-variant">home</span>
-                        <span class="text-on-surface font-medium">홈/문구/취미</span>
+                    <a th:each="c : ${categories}"
+                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
+                       class="category-item flex items-center gap-base py-2 px-2 rounded"
+                       th:href="@{/product/list(cateNo=${c.cateNo})}">
+                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
                     </a>
                 </nav>
 
@@ -429,11 +419,10 @@
                                 <span class="text-xs text-on-surface-variant" th:text="${#temporals.format(review.createdAt, 'yyyy.MM.dd')}">2024.05.12</span>
                             </div>
                             <div class="flex text-amber-500">
-                            <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                  class="material-symbols-outlined text-[16px]"
-                                  th:style="'font-variation-settings: \'FILL\' ' + (${i <= review.rating} ? '1' : '0') + ';'">
-                                star
-                            </span>
+                                <span th:each="i : ${#numbers.sequence(1, review.rating)}"
+                                      class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span th:each="i : ${#numbers.sequence(1, 5 - review.rating)}"
+                                      class="material-symbols-outlined text-[16px]">star</span>
                             </div>
                         </div>
                         <p class="text-sm text-on-surface-variant leading-relaxed" th:text="${review.content}">리뷰 내용</p>
@@ -446,18 +435,19 @@
             <div class="scroll-mt-[130px] mb-xl" id="qa">
                 <div class="flex items-center justify-between mb-md">
                     <h3 class="text-lg font-bold text-primary">상품 Q&amp;A</h3>
-                    <button class="text-primary font-bold text-sm flex items-center gap-xs hover:underline" th:onclick="|location.href='@{/product/qna/write(prodNo=${product.prodNo})}'|">
+                    <button class="text-primary font-bold text-sm flex items-center gap-xs hover:underline" th:onclick="|location.href='@{/cs/qna/write(productNo=${product.prodNo})}'|">
                         문의하기 <span class="material-symbols-outlined text-[18px]">edit</span>
                     </button>
                 </div>
                 <div class="flex flex-col gap-sm" th:if="${qnaList != null and !qnaList.isEmpty()}">
-                    <!-- qnaList: 상품 Q&A 목록. Qna 엔티티에 productNo가 없어서 연결 방식(type1/type2) 확인 후 컨트롤러에서 채워야 함 -->
+                    <!-- qnaList: ProductIndexController.view()에서
+                         qnaRepository.findByProductNoAndParentNoOrderByNoDesc(product.getProdNo(), 0)로 조회해서 담아줌 -->
                     <div class="bg-white border border-outline-variant p-md rounded-xl" th:each="qna : ${qnaList}">
                         <div class="flex justify-between items-start mb-xs">
                             <div class="flex items-center gap-sm">
                                 <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                                      th:classappend="${qna.isAnswered == 'Y'} ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'"
-                                      th:text="${qna.isAnswered == 'Y'} ? '답변완료' : '답변대기'">답변상태</span>
+                                      th:classappend="${qna.isAnswered == '답변완료'} ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'"
+                                      th:text="${qna.isAnswered == '답변완료'} ? '답변완료' : '답변대기'">답변상태</span>
                                 <span class="text-sm font-bold text-on-surface" th:text="${qna.maskedId}">writer**</span>
                             </div>
                             <span class="text-xs text-on-surface-variant" th:text="${#temporals.format(qna.createdAt, 'yyyy.MM.dd')}">2024.05.12</span>

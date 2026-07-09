@@ -28,21 +28,48 @@ public class Shop {
     private String baseAddress;
     private String detailAddress;
     private String status;
-    private String manageStatus;
     private LocalDateTime rdate;
+
+    public enum ShopStatus {
+        ACTIVE, STOPPED, PENDING, DELETED
+    }
 
     public ShopDTO toDTO(){
         return ShopDTO.builder()
                 .memberNo(memberNo).shopNo(shopNo).name(name).ceo(ceo)
                 .bizNumber(bizNumber).mailOrderNumber(mailOrderNumber)
                 .phone(phone).fax(fax).zipCode(zipCode).baseAddress(baseAddress)
-                .detailAddress(detailAddress).status(status).manageStatus(manageStatus)
+                .detailAddress(detailAddress).status(status)
                 .rdate(rdate)
                 .build();
     }
 
     public void updateStatus(String status) {
         this.status = status;
+    }
+
+    public void updateProfile(
+            String name,
+            String ceo,
+            String mailOrderNumber,
+            String phone,
+            String fax,
+            String zipCode,
+            String baseAddress,
+            String detailAddress) {
+        this.name = name;
+        this.ceo = ceo;
+        this.mailOrderNumber = mailOrderNumber;
+        this.phone = phone;
+        this.fax = fax;
+        this.zipCode = zipCode;
+        this.baseAddress = baseAddress;
+        this.detailAddress = detailAddress;
+    }
+
+}
+    public void delete() {
+        this.status = "DELETE";
     }
 
 }
