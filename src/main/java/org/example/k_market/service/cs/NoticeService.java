@@ -53,4 +53,9 @@ public class NoticeService {
     public void delete(int no) {
         noticeRepository.deleteById(no);
     }
+
+    @Transactional
+    public void deleteChecked(List<Integer> nos) {
+        noticeRepository.deleteAllById(nos);
+    }
 }

@@ -5,10 +5,12 @@ import lombok.extern.log4j.Log4j2;
 import org.example.k_market.entity.Cart;
 import org.example.k_market.entity.Category;
 import org.example.k_market.entity.Product;
+import org.example.k_market.entity.Qna;
 import org.example.k_market.entity.Review;
 import org.example.k_market.repository.CartRepository;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
+import org.example.k_market.repository.QnaRepository;
 import org.example.k_market.repository.ReviewRepository;
 import org.example.k_market.security.MyUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +33,7 @@ public class ProductIndexController {
     private final ProductRepository productRepository;   // 탭에 열려있던 그거
     private final CartRepository cartRepository;         // 신규 주입
     private final ReviewRepository reviewRepository;     // 신규 주입
+    private final QnaRepository qnaRepository;           // 신규 주입
 
     @GetMapping("/product/list")
     public String list(@RequestParam(required = false) Integer cateNo, Model model) {
@@ -79,14 +82,18 @@ public class ProductIndexController {
         // 사이드바 활성화 표시용 - 대분류 catNo
         Integer mainCateNo = (parentCategory != null) ? parentCategory.getCateNo() : (category != null ? category.getCateNo() : null);
 
-        // 상품후기 목록 (최신순) - ReviewRepository에 findByProductNoOrderByCreatedAtDesc 메서드 추가 필요
+        // 상품후기 목록 (최신순)
         List<Review> reviewList = reviewRepository.findByProductNoOrderByCreatedAtDesc(product.getProdNo());
+
+        // 상품 Q&A 목록 (해당 상품에 달린 문의 원글만, parentNo=0)
+        List<Qna> qnaList = qnaRepository.findByProductNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
 
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
         model.addAttribute("parentCategory", parentCategory);
         model.addAttribute("mainCateNo", mainCateNo);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("qnaList", qnaList);
         return "product/view";
     }
 

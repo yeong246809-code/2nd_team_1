@@ -3,6 +3,8 @@ package org.example.k_market.entity;
 import jakarta.persistence.*;
 import org.example.k_market.dto.FaqDTO;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,7 +25,10 @@ public class Faq {
     private String content;
     private int viewCount;
     private int memberNo;
+    @CreationTimestamp
+    @Column(name = "createdAt", updatable = false)
     private LocalDateTime createdAt;
+
 
     public FaqDTO toDTO(){
         return FaqDTO.builder()

@@ -3,12 +3,15 @@ package org.example.k_market.controller.admin;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.NoticeDTO;
-import org.example.k_market.entity.Notice;
 import org.example.k_market.entity.Users;
+import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.service.cs.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminNoticeController {
 
     private final NoticeService noticeService;
+    private final UsersRepository usersRepository;
 
     // 목록
     @GetMapping("/list")
@@ -38,16 +42,25 @@ public class AdminNoticeController {
 
     // 작성 화면
     @GetMapping("/write")
-    public String write(){
+    public String write(Model model) {
+
+        model.addAttribute("notice", new NoticeDTO());
 
         return "admin/cs/notice/write";
     }
 
     // 작성
     @PostMapping("/write")
-    public String write(NoticeDTO dto, HttpSession session){
+    public String write(NoticeDTO dto, HttpSession session) {
 
-        Users user = (Users) session.getAttribute("sessUser");
+        String sessUser = (String) session.getAttribute("sessUser");
+
+        if (sessUser == null) {
+            return "redirect:/member/login";
+        }
+
+        Users user = usersRepository.findById(sessUser)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         dto.setMemberNo(user.getMemberNo());
         dto.setViewCount(0);
@@ -81,6 +94,16 @@ public class AdminNoticeController {
     public String delete(@PathVariable int no){
 
         noticeService.delete(no);
+
+        return "redirect:/admin/cs/notice/list";
+    }
+
+    @PostMapping("/deleteChecked")
+    public String deleteChecked(@RequestParam(value = "nos", required = false) List<Integer> nos) {
+
+        if (nos != null && !nos.isEmpty()) {
+            noticeService.deleteChecked(nos);
+        }
 
         return "redirect:/admin/cs/notice/list";
     }

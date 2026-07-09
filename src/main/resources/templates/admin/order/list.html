@@ -231,7 +231,7 @@
                     th:onclick="|openPopup(${order.orderNo})|">
                 </td>
                 <td class="py-4" th:text="${order.id}"></td>
-                <td class="py-4" th:text="${order.memberName}"></td> <td class="py-4">1</td> <td class="py-4 font-semibold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}"></td>
+                <td class="py-4" th:text="${order.orderName}"></td> <td class="py-4">1</td> <td class="py-4 font-semibold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}"></td>
                 <td class="py-4" th:text="${order.paymentMethod}"></td>
                 <td class="py-4">
                         <span th:text="${order.status}"
