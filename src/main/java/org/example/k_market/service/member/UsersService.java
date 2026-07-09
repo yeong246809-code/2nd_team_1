@@ -103,7 +103,7 @@ public class UsersService implements UserDetailsService {
                 .id(id.trim())
                 .pass(passwordEncoder.encode(password))
                 .role(normalizeRole(role))
-                .status("ACTIVE")
+                .status(MemberAccountStatus.ACTIVE)
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
 
@@ -130,7 +130,7 @@ public class UsersService implements UserDetailsService {
                 .gradeNo(defaultMemberGradeService.getDefaultGradeNo())
                 .points(0)
                 .createdAt(LocalDateTime.now())
-                .status("ACTIVE")
+                .status(MemberAccountStatus.ACTIVE)
                 .locationPolicyAgreed("Y")
                 .build();
 

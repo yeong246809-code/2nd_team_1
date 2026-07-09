@@ -50,7 +50,7 @@ public class SnsLoginService {
                 .id(createLoginId(profile, 0))
                 .pass(createSocialOnlyPassword())
                 .role("USER")
-                .status("ACTIVE")
+                .status(MemberAccountStatus.ACTIVE)
                 .createdAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
 
@@ -71,7 +71,7 @@ public class SnsLoginService {
                 .gradeNo(defaultMemberGradeService.getDefaultGradeNo())
                 .points(0)
                 .createdAt(LocalDateTime.now())
-                .status("ACTIVE")
+                .status(MemberAccountStatus.ACTIVE)
                 .locationPolicyAgreed("N")
                 .build();
 

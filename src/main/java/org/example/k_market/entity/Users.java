@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.example.k_market.dto.OrderClaimDTO;
 import lombok.*;
 import org.example.k_market.dto.UsersDTO;
+import org.example.k_market.service.member.MemberAccountStatus;
 
 import java.time.LocalDateTime;
 
@@ -21,10 +22,13 @@ public class Users {
     private String id;
     private String pass;
     private String role;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MemberAccountStatus status;
     private String createdAt;
 
     public UsersDTO toDto() {
-        return UsersDTO.builder().memberNo(memberNo).id(id).pass(pass).role(role).status(status).createdAt(createdAt).build();
+        return UsersDTO.builder().memberNo(memberNo).id(id).pass(pass).role(role)
+                .status(status == null ? null : status.name())
+                .createdAt(createdAt).build();
     }
 }

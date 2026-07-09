@@ -1,8 +1,11 @@
-<!DOCTYPE html><html class="light" lang="ko"><head>
+<!DOCTYPE html><html class="light" lang="ko" xmlns:th="http://www.thymeleaf.org"><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>K-market | 당신을 위한 친절한 온라인 쇼핑몰</title>
-    <base href="/k_market/">
+    <title th:text="${siteConfig.title != null and !siteConfig.title.isBlank() ? siteConfig.title : 'K-market | 당신을 위한 친절한 온라인 쇼핑몰'}">K-market | 당신을 위한 친절한 온라인 쇼핑몰</title>
+    <base th:href="@{/}" href="/k_market/">
+    <link th:if="${siteConfig.favicon_stored != null and !siteConfig.favicon_stored.isBlank()}"
+          th:href="@{/uploads/{file}(file=${siteConfig.favicon_stored})}"
+          rel="icon" type="image/x-icon">
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
@@ -129,12 +132,15 @@
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
         <div class="flex justify-between items-center gap-md">
             <!-- Brand -->
-            <div class="flex items-center gap-2">
-                <div class="logo-area w-8 h-8 placeholder-image rounded">
-                    <span class="material-symbols-outlined text-sm">storefront</span>
-                </div>
-                <a class="text-3xl font-extrabold text-primary shrink-0" href="./">K-market</a>
-            </div>
+            <a class="flex items-center gap-2 shrink-0" th:href="@{/}" href="./">
+                <img th:if="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
+                     th:src="@{/uploads/{file}(file=${siteConfig.headerLogo_stored})}"
+                     class="h-10 w-auto max-w-48 object-contain"
+                     alt="K-market 헤더 로고">
+                <span th:unless="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
+                      class="text-3xl font-extrabold text-primary"
+                      th:text="${siteConfig.title != null and !siteConfig.title.isBlank() ? siteConfig.title : 'K-market'}">K-market</span>
+            </a>
             <!-- Search Bar -->
             <div class="hidden md:flex flex-1 max-w-lg relative">
                 <input class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" placeholder="어떤 상품을 찾으시나요?" type="text">
@@ -409,13 +415,29 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
             <!-- Company Info -->
             <div class="flex flex-col md:flex-row gap-md items-start">
-                <div class="footer-logo w-24 h-24 flex items-center justify-center rounded shrink-0"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHhDONLhp5mGghb1YVJhkjtH5tccoKVAGDpOW-NEWjeCk_kZqm-4f9CV2EWNapGwU5Lf5urhgtyPnPSEhaO68WLL4wdxxPVfRH9ivlORUO3uhaKKa8rNylsbszg07YUymMwSVU0CKRUtMVWaNdIz_ZzCxXr2QeDQukEK_kN_TjaT5F1iLmmiIl8ogyThpwYW13dwSTvo2RGiQ7OmmH81OUFrGZ0WEKpyWqdgSDc-cGagNDO1RMv0bWnYPzO-FFtsqGypcoGMjEyfnz" alt="K-market 로고" class="w-full h-full object-contain"></div>
+                <div class="footer-logo w-32 h-24 flex items-center justify-center rounded shrink-0">
+                    <img th:if="${siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
+                         th:src="@{/uploads/{file}(file=${siteConfig.footerLogo_stored})}"
+                         alt="K-market 푸터 로고"
+                         class="w-full h-full object-contain">
+                    <span th:unless="${siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
+                          class="material-symbols-outlined text-4xl text-outline">storefront</span>
+                </div>
                 <div class="text-sm text-on-surface-variant space-y-1">
-                    <h2 class="text-xl font-bold text-primary mb-2">(주)케이마켓</h2>
-                    <p class="">부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
-                    <p class="">대표이사 : 홍길동</p>
-                    <p class="">사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">0.0.6 SNAPSHOT</p>
+                    <h2 class="text-xl font-bold text-primary mb-2"
+                        th:text="${siteConfig.companyName != null and !siteConfig.companyName.isBlank() ? siteConfig.companyName : '(주)케이마켓'}">(주)케이마켓</h2>
+                    <p th:text="|${siteConfig.baseAddress ?: ''} ${siteConfig.detailAddress ?: ''}|">부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
+                    <p>대표이사 : <span th:text="${siteConfig.ceo ?: '-'}">홍길동</span></p>
+                    <p>사업자등록번호 : <span th:text="${siteConfig.bizNumber ?: '-'}">123-45-12345</span></p>
+                    <p th:if="${siteConfig.mailOrderNumber != null and !siteConfig.mailOrderNumber.isBlank()}">
+                        통신판매업신고 : <span th:text="${siteConfig.mailOrderNumber}"></span>
+                    </p>
+                    <p class="mt-4 text-[10px] text-outline">
+                        Version <span th:text="${latestVersion != null and !latestVersion.isBlank() ? latestVersion : '등록된 버전 없음'}">0.0.6-SNAPSHOT</span>
+                    </p>
+                    <p class="text-[10px] text-outline"
+                       th:if="${siteConfig.copyright != null and !siteConfig.copyright.isBlank()}"
+                       th:text="${siteConfig.copyright}">Copyright © K-market. All rights reserved.</p>
                 </div>
             </div>
             <!-- Customer Center -->
@@ -423,13 +445,15 @@
                 <h3 class="font-bold text-lg text-primary">고객센터</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-md text-sm text-on-surface-variant">
                     <div>
-                        <p class="font-bold text-on-surface">Tel : 1234-5678</p>
-                        <p class="">평일 09:00 ~ 18:00</p>
-                        <p class="">점심 12:00 ~ 13:00</p>
+                        <p class="font-bold text-on-surface">Tel : <span th:text="${siteConfig.csPhone ?: '-'}">1234-5678</span></p>
+                        <p th:text="${siteConfig.csHours ?: '운영시간 정보가 등록되지 않았습니다.'}">평일 09:00 ~ 18:00</p>
+                        <p th:if="${siteConfig.csEmail != null and !siteConfig.csEmail.isBlank()}">
+                            Email : <a class="hover:underline" th:href="|mailto:${siteConfig.csEmail}|" th:text="${siteConfig.csEmail}"></a>
+                        </p>
                     </div>
                     <div>
                         <p class="font-bold text-on-surface">전자금융거래 분쟁 담당</p>
-                        <p class="">1234-1234 (365일 09:00 ~ 18:00)</p>
+                        <p th:text="${siteConfig.finDisputeManager ?: '담당자 정보가 등록되지 않았습니다.'}">1234-1234 (365일 09:00 ~ 18:00)</p>
                     </div>
                 </div>
                 <div class="flex gap-4 mt-4">

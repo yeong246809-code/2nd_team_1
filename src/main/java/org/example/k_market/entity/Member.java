@@ -3,6 +3,7 @@ package org.example.k_market.entity;
 import jakarta.persistence.*;
 import org.example.k_market.dto.MemberDTO;
 import lombok.*;
+import org.example.k_market.service.member.MemberAccountStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -27,7 +28,8 @@ public class Member {
     private int gradeNo;
     private int points;
     private LocalDateTime createdAt;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MemberAccountStatus status;
     private LocalDateTime lastLoginAt;
     private String memo;
     private String locationPolicyAgreed;
@@ -41,7 +43,8 @@ public class Member {
                 .gender(gender).email(email).phone(phone).zipCode(zipCode)
                 .baseAddress(baseAddress).detailAddress(detailAddress)
                 .gradeNo(gradeNo).points(points).createdAt(createdAt)
-                .status(status).lastLoginAt(lastLoginAt).memo(memo)
+                .status(status == null ? null : status.name())
+                .lastLoginAt(lastLoginAt).memo(memo)
                 .locationPolicyAgreed(locationPolicyAgreed).id(id)
                 .build();
     }
