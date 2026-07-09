@@ -6,10 +6,7 @@ import org.example.k_market.dto.OrderDetailsDTO;
 import org.example.k_market.entity.Order;
 import org.example.k_market.entity.OrderDetails;
 import org.example.k_market.entity.Users;
-import org.example.k_market.repository.MemberRepository;
-import org.example.k_market.repository.OrderDetailsRepository;
-import org.example.k_market.repository.OrderRepository;
-import org.example.k_market.repository.UsersRepository;
+import org.example.k_market.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +23,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailsRepository orderDetailsRepository;
     private final UsersRepository usersRepository; // 아이디(ID)용
     private final MemberRepository memberRepository; // 이름(Name)용
+    private final ProductRepository productRepository;
+    private final DeliveriesRepository deliveriesRepository;
 
     @Override
     public Page<OrderDTO> findOrderList(Pageable pageable, String searchType, String keyword) {
@@ -69,22 +68,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO getOrderDetail(int orderNo) {
-        // 1. 주문 기본 정보 조회
+        // 1. 주문 조회
         Order order = orderRepository.findById(orderNo)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
         OrderDTO dto = order.toDTO();
 
-        // 2. 회원 정보 세팅
-        usersRepository.findByMemberNo(order.getMemberNo()).ifPresent(u -> dto.setId(u.getId()));
-        memberRepository.findById(order.getMemberNo()).ifPresent(m -> dto.setMemberName(m.getName()));
+        // 2. 주문자명 (Order 엔티티 우선)
+        dto.setMemberName(order.getOrderName() != null ? order.getOrderName() : "비회원");
 
-        // 3. 주문 상세(order_details) 조회
-        // 서비스 로직에서 안전하게 처리
+        // 3. 회원 ID (Users)
+        usersRepository.findByMemberNo(order.getMemberNo())
+                .ifPresent(u -> dto.setId(u.getId()));
+
+        // 4. 배송 정보 (Deliveries 테이블에서 조회 - 핵심!)
+        deliveriesRepository.findByOrderNo(orderNo).ifPresent(d -> {
+            dto.setRecipientName(d.getRecipientName());
+            dto.setRecipientPhone(d.getRecipientPhone());
+            dto.setBaseAddress(d.getBaseAddress());
+        });
+
+        // 5. 상품 상세 (OrderDetails)
         List<OrderDetails> details = orderDetailsRepository.findByOrderNo(orderNo);
-        if (details == null) {
-            // 리스트가 null이면 빈 리스트로 초기화하여 에러 방지
-            details = new ArrayList<>();
-        }
+        if (details == null) details = new ArrayList<>();
 
         List<OrderDetailsDTO> detailDTOs = details.stream().map(detail -> {
             OrderDetailsDTO dDto = new OrderDetailsDTO();
@@ -92,12 +98,14 @@ public class OrderServiceImpl implements OrderService {
             dDto.setPrice(detail.getPrice());
             dDto.setDiscountPrice(detail.getDiscountPrice());
             dDto.setQuantity(detail.getQuantity());
-            // 가격 계산
             dDto.setTotalPaymentPrice((detail.getPrice() * detail.getQuantity()) - detail.getDiscountPrice());
+
+            productRepository.findById(detail.getProductNo())
+                    .ifPresent(p -> dDto.setProdName(p.getName()));
             return dDto;
         }).toList();
 
-        dto.setOrderItems(detailDTOs); // OrderDTO의 필드명에 맞춰 설정
+        dto.setOrderItems(detailDTOs);
         return dto;
     }
 }

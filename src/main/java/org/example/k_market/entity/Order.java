@@ -35,11 +35,24 @@ public class Order {
     @JoinColumn(name = "memberNo", insertable = false, updatable = false) // order 테이블의 memberNo 컬럼과 조인
     private Users user; // Member 대신 User 엔티티 사용
 
+    @Transient
+    private String recipientName; // 수취인
+
+    @Transient
+    private String recipientPhone; // 수취인 전화번호
+
+    @Transient
+    private String baseAddress; // 배송지 주소
+
     public OrderDTO toDTO() {
         return OrderDTO.builder()
                 .orderNo(this.orderNo)
                 .orderName(this.orderName)
                 .memberNo(this.memberNo)
+                .id(this.user != null ? this.user.getId() : "비회원")
+                .recipientName(this.recipientName)
+                .recipientPhone(this.recipientPhone)
+                .baseAddress(this.baseAddress)
                 .paymentMethod(this.paymentMethod)
                 .totalProductPrice(this.totalProductPrice)
                 .totalDiscountPrice(this.totalDiscountPrice)
