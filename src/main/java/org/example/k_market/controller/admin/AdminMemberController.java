@@ -68,12 +68,13 @@ public class AdminMemberController {
     @GetMapping("/deactivate")
     public String deactivateMember(@RequestParam int memberNo, RedirectAttributes redirectAttributes) {
         try {
-            AdminMemberService.deactivateMember(memberNo);
+            adminMemberService.deactivateMember(memberNo);
             redirectAttributes.addFlashAttribute("message", "해당 회원의 개인정보가 삭제(비활성) 처리되었습니다.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "비활성 처리 중 오류가 발생했습니다.");
         }
         return "redirect:/admin/member/list";
+    }
 
     // 5. 선택 수정 (등급 일괄 변경)
     @PostMapping("/bulkUpdateGrade")
