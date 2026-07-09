@@ -67,7 +67,6 @@ public class Shop {
         this.detailAddress = detailAddress;
     }
 
-}
     public void delete() {
         this.status = "DELETE";
     }
