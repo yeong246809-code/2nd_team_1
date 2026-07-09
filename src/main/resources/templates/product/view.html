@@ -187,11 +187,21 @@
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
 
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a th:each="c : ${categories}"
-                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
-                       class="category-item flex items-center gap-base py-2 px-2 rounded"
-                       th:href="@{/product/list(cateNo=${c.cateNo})}">
-                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=10)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">checkroom</span>
+                        <span class="text-on-surface font-medium">패션/의류</span>
+                    </a>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=20)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">laptop_chromebook</span>
+                        <span class="text-on-surface font-medium">가전/디지털</span>
+                    </a>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=30)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">local_grocery_store</span>
+                        <span class="text-on-surface font-medium">식품/생필품</span>
+                    </a>
+                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" th:href="@{/product/list(cateNo=40)}">
+                        <span class="material-symbols-outlined text-on-surface-variant">home</span>
+                        <span class="text-on-surface font-medium">홈/문구/취미</span>
                     </a>
                 </nav>
 
@@ -233,17 +243,24 @@
                 <!-- Left: Product Image Area -->
                 <div class="flex-1">
                     <div class="bg-surface-container-lowest rounded-xl aspect-square relative overflow-hidden shadow-sm flex items-center justify-center group border border-outline-variant">
-                        <img alt="Product Hero" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpBJNn9EyouvPVTBdkbE60RX_8SzyB2fFu9g73_oSYOFmg2J4ofhtfId8sQ1MoxHHkeZb6yqDVSU5gii0yWu-fljC6_G3pxU2l3oLMsu7kXxSPXblV4MSnvs3qZp_WqdZnrsDLoEFUtS0UJqTwB56M4IkZB2mjYptQPuJrwxjGflFhmCXk7EhNaf6sqVp0kfMdpkfhwBnaR2bPcjENXT1GwX0iUv_65Ryx-yRd5_-sSBwAUeR5s6IM1lzoTd3CD8-rCj4POnZ6qypC"/>
+                        <img id="mainProductImage" th:alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             th:src="@{${product.thumb1} ?: '/images/no-image.png'}"/>
                         <div class="absolute bottom-md right-md bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]">zoom_in</span>
                             <span class="text-xs font-semibold">확대보기</span>
                         </div>
                     </div>
+                    <!-- Product 엔티티에 thumb1~thumb3까지 3개 이미지 컬럼이 있으므로 그대로 사용. null이면 해당 썸네일은 표시 안 함 -->
                     <div class="flex gap-sm mt-md overflow-x-auto scroll-hide">
-                        <div class="w-20 h-20 bg-surface-container border-2 border-primary rounded-lg flex-shrink-0"></div>
-                        <div class="w-20 h-20 bg-surface-container rounded-lg flex-shrink-0"></div>
-                        <div class="w-20 h-20 bg-surface-container rounded-lg flex-shrink-0"></div>
-                        <div class="w-20 h-20 bg-surface-container rounded-lg flex-shrink-0"></div>
+                        <img th:if="${product.thumb1 != null}" th:src="@{${product.thumb1}}" th:alt="${product.name} + ' 이미지 1'"
+                             class="w-20 h-20 object-cover bg-surface-container border-2 border-primary rounded-lg flex-shrink-0 cursor-pointer"
+                             th:onclick="|document.getElementById('mainProductImage').src=this.src|"/>
+                        <img th:if="${product.thumb2 != null}" th:src="@{${product.thumb2}}" th:alt="${product.name} + ' 이미지 2'"
+                             class="w-20 h-20 object-cover bg-surface-container rounded-lg flex-shrink-0 cursor-pointer"
+                             th:onclick="|document.getElementById('mainProductImage').src=this.src|"/>
+                        <img th:if="${product.thumb3 != null}" th:src="@{${product.thumb3}}" th:alt="${product.name} + ' 이미지 3'"
+                             class="w-20 h-20 object-cover bg-surface-container rounded-lg flex-shrink-0 cursor-pointer"
+                             th:onclick="|document.getElementById('mainProductImage').src=this.src|"/>
                     </div>
                 </div>
 
@@ -252,14 +269,26 @@
                         <span class="text-on-surface-variant text-xs">상품코드: <span th:text="${product.prodNo}">0000</span></span>
                         <h1 class="text-2xl font-bold text-primary" th:text="${product.name}">상품명</h1>
                         <div class="flex items-center gap-xs">
-                            <div class="flex text-amber-500">
-                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[18px]">star_half</span>
+                            <!-- product.rating(0~5, Double) 값을 CSS width로 채워서 표시. 루프/정수변환 없이 안전하게 처리 -->
+                            <div class="relative inline-flex" style="font-family: 'Material Symbols Outlined';">
+                                <div class="flex text-surface-container-high">
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                </div>
+                                <div class="flex text-amber-500 absolute top-0 left-0 overflow-hidden"
+                                     th:style="'width: ' + ${(product.rating != null ? product.rating : 0) / 5 * 100} + '%'">
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                </div>
                             </div>
-                            <span class="text-xs text-on-surface-variant font-semibold">4.5 (824 리뷰)</span>
+                            <span class="text-xs text-on-surface-variant font-semibold"
+                                  th:text="${#numbers.formatDecimal(product.rating != null ? product.rating : 0, 1, 1)} + ' (' + ${reviewList != null ? #lists.size(reviewList) : 0} + ' 리뷰)'">4.5 (824 리뷰)</span>
                         </div>
                     </div>
                     <div class="bg-surface-container-low p-md rounded-lg flex flex-col gap-xs">
@@ -282,38 +311,43 @@
                         <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="'상점 No.' + ${product.shopNo}">판매자명</span>
                     </div>
                     <!-- Options & Actions -->
-                    <div class="flex flex-col gap-sm">
-                        <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
-                        <select class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
-                            <option value="">색상/사이즈를 선택하세요</option>
-                            <option value="1">블랙 / Large (+0원)</option>
-                            <option value="2">실버 / Medium (+5,000원)</option>
-                            <option value="3">골드 / Small (+10,000원)</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center justify-between py-sm px-md bg-surface-container-high rounded-lg">
-                        <div class="flex items-center gap-md border border-outline-variant bg-white rounded-md overflow-hidden">
-                            <button class="p-1 hover:bg-surface-variant"><span class="material-symbols-outlined text-sm">remove</span></button>
-                            <span class="text-sm font-bold px-2">1</span>
-                            <button class="p-1 hover:bg-surface-variant"><span class="material-symbols-outlined text-sm">add</span></button>
+                    <form th:action="@{/product/cart/add}" method="post">
+                        <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
+
+                        <div class="flex flex-col gap-sm mb-md">
+                            <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
+                            <select class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
+                                <option value="">색상/사이즈를 선택하세요</option>
+                                <option value="1">블랙 / Large (+0원)</option>
+                                <option value="2">실버 / Medium (+5,000원)</option>
+                                <option value="3">골드 / Small (+10,000원)</option>
+                            </select>
                         </div>
-                        <div class="text-right">
-                            <span class="text-xs text-on-surface-variant">총 상품금액</span>
-                            <h3 class="text-xl font-bold text-primary">
-                                <span th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')}">0</span>원
-                            </h3>
+                        <div class="flex items-center justify-between py-sm px-md bg-surface-container-high rounded-lg">
+                            <div class="flex items-center gap-md border border-outline-variant bg-white rounded-md overflow-hidden">
+                                <button type="button" class="p-1 hover:bg-surface-variant" onclick="changeQty(-1)"><span class="material-symbols-outlined text-sm">remove</span></button>
+                                <input type="number" id="qtyInput" name="quantity" value="1" min="1" class="text-sm font-bold w-10 text-center border-0 focus:outline-none" oninput="updateTotalPrice()"/>
+                                <button type="button" class="p-1 hover:bg-surface-variant" onclick="changeQty(1)"><span class="material-symbols-outlined text-sm">add</span></button>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-on-surface-variant">총 상품금액</span>
+                                <h3 class="text-xl font-bold text-primary">
+                                    <span id="totalPrice" th:data-unit-price="${product.price * (100 - product.discountRate) / 100}"
+                                          th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')}">0</span>원
+                                </h3>
+                            </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-sm pt-sm">
-                        <button class="py-3 px-4 bg-white border-2 border-primary text-primary font-bold rounded-lg hover:bg-surface-container transition-all flex items-center justify-center gap-xs">
-                            <span class="material-symbols-outlined">shopping_cart</span>
-                            장바구니
-                        </button>
-                        <button class="py-3 px-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-xs shadow-md">
-                            <span class="material-symbols-outlined">bolt</span>
-                            바로구매
-                        </button>
-                    </div>
+                        <div class="grid grid-cols-2 gap-sm pt-sm">
+                            <button type="submit" class="py-3 px-4 bg-white border-2 border-primary text-primary font-bold rounded-lg hover:bg-surface-container transition-all flex items-center justify-center gap-xs">
+                                <span class="material-symbols-outlined">shopping_cart</span>
+                                장바구니
+                            </button>
+                            <button type="submit" th:formaction="@{/product/order/direct}" class="py-3 px-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-xs shadow-md">
+                                <span class="material-symbols-outlined">bolt</span>
+                                바로구매
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -322,20 +356,24 @@
                 <nav class="flex gap-lg">
                     <button class="text-sm py-3 border-b-2 border-primary text-primary font-bold" onclick="scrollToSection('desc')">상세정보</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('specs')">규격사양</button>
-                    <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('reviews')">상품후기 (824)</button>
-                    <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('qa')">Q&amp;A</button>
+                    <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('reviews')"
+                            th:text="'상품후기 (' + ${reviewList != null ? #lists.size(reviewList) : 0} + ')'">상품후기 (824)</button>
+                    <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('qa')"
+                            th:text="'Q&amp;A (' + ${qnaList != null ? #lists.size(qnaList) : 0} + ')'">Q&amp;A</button>
                 </nav>
             </div>
 
             <!-- Detail Sections -->
             <div class="mb-xl scroll-mt-[130px]" id="desc">
                 <h3 class="text-lg font-bold text-primary mb-md">상품 상세 정보</h3>
-                <div class="bg-surface-container rounded-xl min-h-[500px] flex items-center justify-center border border-dashed border-outline relative overflow-hidden">
-                    <img alt="Product Detail Feature" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7_1ISGxDZdWnqUf8CRrNMEOcSANZxCj2Sf2BQVUJbD7VMRl4ULtlc9mSghIoM3cbDBZTOQUSuc3a5gUeJ3kh5TnPEP5VCcIWx3dQ-banuzqdHHhRHXNjLbZsIqtTNaViGamHOYQe-wzEY-RreO3Oi3UOaDibpHKEhLrsw8Va73uwDRBsbbA2mXCbyp1aa8mYQcwxOvoeCBvAngKfYaDS02AJK9NajvOqj6D74-Yjs3Me4j9RpxaEDfBIHiEJGUNbLVd4FL2Z8Ccca"/>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white p-lg text-center">
-                        <p class="text-3xl font-bold mb-sm">최첨단 기술의 집약체</p>
-                        <p class="max-w-xl text-sm leading-relaxed">K-market의 엄격한 품질 테스트를 통과한 최우수 상품입니다. 일상을 변화시키는 혁신적인 성능을 경험해보세요.</p>
+                <div class="bg-surface-container rounded-xl min-h-[500px] border border-dashed border-outline relative overflow-hidden">
+                    <!-- product.description: 짧은 요약 설명 -->
+                    <p th:if="${product.description != null}" class="p-md text-sm text-on-surface-variant" th:text="${product.description}">요약 설명</p>
+                    <!-- product.detailContent: 관리자가 등록한 상세 설명 본문(HTML) -->
+                    <div class="p-lg" th:utext="${product.detailContent}">
+                        상품 상세 설명이 여기에 표시됩니다.
                     </div>
+                    <p th:if="${product.detailContent == null}" class="p-md text-sm text-on-surface-variant">등록된 상세 설명이 없습니다.</p>
                 </div>
             </div>
 
@@ -345,74 +383,90 @@
                     <table class="w-full text-left border-collapse">
                         <tbody>
                         <tr class="border-b border-outline-variant">
-                            <!-- 규격사양 표 -->
                             <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant w-1/3 text-sm">품명 및 모델명</th>
                             <td class="p-md text-sm" th:text="${product.name}">모델명</td>
                         </tr>
-                        <tr class="border-b border-outline-variant">
-                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">출시년월</th>
-                            <td class="p-md text-sm">2024년 03월</td>
-                        </tr>
-                        <tr class="border-b border-outline-variant">
-                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">정격전압 / 소비전력</th>
-                            <td class="p-md text-sm">100-240V, 50/60Hz, 15W</td>
-                        </tr>
-                        <tr class="border-b border-outline-variant">
-                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">크기 / 무게</th>
-                            <td class="p-md text-sm">180 x 220 x 80 mm / 340g</td>
-                        </tr>
-                        <tr>
-                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">품질보증기준</th>
-                            <td class="p-md text-sm">구매일로부터 1년 무상 A/S</td>
+                        <!-- specList: 상품별 규격사양 key-value 목록 (product_spec 테이블 등에서 조회) -->
+                        <tr th:each="spec, stat : ${specList}" th:classappend="${!stat.last} ? 'border-b border-outline-variant' : ''">
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm" th:text="${spec.specName}">사양명</th>
+                            <td class="p-md text-sm" th:text="${spec.specValue}">사양값</td>
                         </tr>
                         </tbody>
                     </table>
+                    <p th:if="${specList == null or specList.isEmpty()}" class="text-sm text-on-surface-variant p-md">등록된 규격사양 정보가 없습니다.</p>
                 </div>
             </div>
 
             <div class="scroll-mt-[130px] mb-xl" id="reviews">
                 <div class="flex items-center justify-between mb-md">
                     <h3 class="text-lg font-bold text-primary">상품 후기</h3>
-                    <button class="text-primary font-bold text-sm flex items-center gap-xs hover:underline">
-                        전체보기 <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                </div>
+
+                <!-- 후기 작성 폼 (로그인 사용자만 노출하고 싶다면 sec:authorize="isAuthenticated()"로 감싸세요) -->
+                <form th:action="@{/product/review/add}" method="post" class="bg-white border border-outline-variant rounded-xl p-md mb-md flex flex-col gap-sm">
+                    <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
+                    <div class="flex items-center gap-sm">
+                        <label class="text-sm font-semibold text-on-surface-variant">평점</label>
+                        <select name="rating" class="border border-outline-variant rounded p-xs text-sm">
+                            <option value="5">★★★★★ (5)</option>
+                            <option value="4">★★★★☆ (4)</option>
+                            <option value="3">★★★☆☆ (3)</option>
+                            <option value="2">★★☆☆☆ (2)</option>
+                            <option value="1">★☆☆☆☆ (1)</option>
+                        </select>
+                    </div>
+                    <textarea name="content" required maxlength="1000" rows="3" placeholder="상품에 대한 후기를 남겨주세요."
+                              class="w-full border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none"></textarea>
+                    <button type="submit" class="self-end py-2 px-4 bg-primary text-white font-bold rounded-lg text-sm">후기 등록</button>
+                </form>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-md" th:if="${reviewList != null and !reviewList.isEmpty()}">
+                    <!-- reviewList: 상품 리뷰 목록 (review 테이블에서 productNo로 조회) -->
+                    <div class="bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow" th:each="review : ${reviewList}">
+                        <div class="flex justify-between items-start mb-sm">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-on-surface" th:text="'회원' + ${review.memberNo}">회원1</span>
+                                <span class="text-xs text-on-surface-variant" th:text="${#temporals.format(review.createdAt, 'yyyy.MM.dd')}">2024.05.12</span>
+                            </div>
+                            <div class="flex text-amber-500">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                  class="material-symbols-outlined text-[16px]"
+                                  th:style="'font-variation-settings: \'FILL\' ' + (${i <= review.rating} ? '1' : '0') + ';'">
+                                star
+                            </span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-on-surface-variant leading-relaxed" th:text="${review.content}">리뷰 내용</p>
+                    </div>
+                </div>
+                <p th:if="${reviewList == null or reviewList.isEmpty()}" class="text-sm text-on-surface-variant">등록된 후기가 없습니다.</p>
+            </div>
+
+            <!-- Q&A Section -->
+            <div class="scroll-mt-[130px] mb-xl" id="qa">
+                <div class="flex items-center justify-between mb-md">
+                    <h3 class="text-lg font-bold text-primary">상품 Q&amp;A</h3>
+                    <button class="text-primary font-bold text-sm flex items-center gap-xs hover:underline" th:onclick="|location.href='@{/product/qna/write(prodNo=${product.prodNo})}'|">
+                        문의하기 <span class="material-symbols-outlined text-[18px]">edit</span>
                     </button>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-                    <!-- Review Card 1 -->
-                    <div class="bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-sm">
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold text-on-surface">kim****</span>
-                                <span class="text-xs text-on-surface-variant">2024.05.12</span>
+                <div class="flex flex-col gap-sm" th:if="${qnaList != null and !qnaList.isEmpty()}">
+                    <!-- qnaList: 상품 Q&A 목록. Qna 엔티티에 productNo가 없어서 연결 방식(type1/type2) 확인 후 컨트롤러에서 채워야 함 -->
+                    <div class="bg-white border border-outline-variant p-md rounded-xl" th:each="qna : ${qnaList}">
+                        <div class="flex justify-between items-start mb-xs">
+                            <div class="flex items-center gap-sm">
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                                      th:classappend="${qna.isAnswered == 'Y'} ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'"
+                                      th:text="${qna.isAnswered == 'Y'} ? '답변완료' : '답변대기'">답변상태</span>
+                                <span class="text-sm font-bold text-on-surface" th:text="${qna.maskedId}">writer**</span>
                             </div>
-                            <div class="flex text-amber-500">
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                            </div>
+                            <span class="text-xs text-on-surface-variant" th:text="${#temporals.format(qna.createdAt, 'yyyy.MM.dd')}">2024.05.12</span>
                         </div>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">배송도 빠르고 제품 퀄리티가 기대 이상이네요. 특히 색감이 화면보다 실물이 훨씬 고급스러워요. 아주 만족합니다!</p>
-                    </div>
-                    <!-- Review Card 2 -->
-                    <div class="bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-sm">
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold text-on-surface">lee12**</span>
-                                <span class="text-xs text-on-surface-variant">2024.05.10</span>
-                            </div>
-                            <div class="flex text-amber-500">
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="material-symbols-outlined text-[16px]">star</span>
-                            </div>
-                        </div>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">가성비 최고인 것 같아요. 포장도 꼼꼼하게 잘 되어서 왔습니다. 주변에도 추천하고 싶네요.</p>
+                        <p class="text-sm font-semibold text-on-surface mb-xs" th:text="${qna.title}">문의 제목</p>
+                        <p class="text-sm text-on-surface-variant mb-sm" th:text="${qna.content}">문의 내용</p>
                     </div>
                 </div>
+                <p th:if="${qnaList == null or qnaList.isEmpty()}" class="text-sm text-on-surface-variant">등록된 문의가 없습니다.</p>
             </div>
         </div>
     </div>
@@ -490,6 +544,24 @@
 
 <!-- th:inline="none" 추가로 자바스크립트 중괄호 매핑 무시 조치 -->
 <script th:inline="none">
+    // 상품 단가(할인 적용가)는 #totalPrice의 data-unit-price 속성에서 읽어옴 (th:inline 충돌 방지)
+    function changeQty(delta) {
+        const qtyInput = document.getElementById('qtyInput');
+        let value = parseInt(qtyInput.value, 10) || 1;
+        value = Math.max(1, value + delta);
+        qtyInput.value = value;
+        updateTotalPrice();
+    }
+
+    function updateTotalPrice() {
+        const qtyInput = document.getElementById('qtyInput');
+        const totalEl = document.getElementById('totalPrice');
+        const unitPrice = parseInt(totalEl.dataset.unitPrice, 10) || 0;
+        let value = parseInt(qtyInput.value, 10) || 1;
+        if (value < 1) { value = 1; qtyInput.value = 1; }
+        totalEl.textContent = (unitPrice * value).toLocaleString('ko-KR');
+    }
+
     // Focus search interaction
     const searchInput = document.querySelector('input[type="text"]');
     if(searchInput) {
