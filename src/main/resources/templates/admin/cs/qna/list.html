@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 QNA 목록 | K-market</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f6f8; color: #333; font-size: 14px; }
+        a { color: inherit; text-decoration: none; }
+        .admin-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+        .admin-header { height: 64px; background: #263238; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
+        .admin-header h1 { font-size: 22px; font-weight: 700; }
+        .admin-header nav { display: flex; gap: 20px; font-size: 13px; color: #dfe6e9; }
+        .admin-container { flex: 1; display: flex; max-width: 1280px; width: 100%; margin: 0 auto; padding: 24px; gap: 24px; }
+        .admin-aside { width: 220px; background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 18px 0; height: fit-content; }
+        .admin-aside h2 { font-size: 16px; padding: 0 20px 14px; border-bottom: 1px solid #eceff1; color: #222; }
+        .admin-aside a { display: block; padding: 12px 20px; color: #555; font-size: 14px; }
+        .admin-aside a:hover, .admin-aside a.active { background: #f1f8e9; color: #2e7d32; font-weight: 700; }
+        .admin-content { flex: 1; background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 28px; }
+        .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid #333; }
+        .page-head h2 { font-size: 24px; color: #222; }
+        .page-head p { margin-top: 6px; color: #777; font-size: 13px; }
+        .status { display: inline-block; padding: 4px 9px; border-radius: 12px; font-size: 12px; }
+        .status.wait { background: #fff3e0; color: #ef6c00; }
+        .status.done { background: #e8f5e9; color: #2e7d32; }
+        table { width: 100%; border-collapse: collapse; border-top: 1px solid #555; }
+        th, td { border-bottom: 1px solid #e5e8eb; padding: 14px 10px; text-align: center; vertical-align: middle; }
+        th { background: #fafafa; color: #333; font-weight: 700; }
+        td.title { text-align: left; }
+        td.title a:hover { color: #2e7d32; text-decoration: underline; }
+        .empty { padding: 50px 0; color: #888; text-align: center; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 24px; }
+        .pagination a, .pagination strong { min-width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+        .pagination strong { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+        .admin-footer { height: 54px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 12px; }
+    </style>
+</head>
+<body>
+<div class="admin-wrap">
+    <header class="admin-header">
+        <h1><a th:href="@{/admin}">K-market Admin</a></h1>
+        <nav>
+            <a th:href="@{/}">쇼핑몰 홈</a>
+            <a th:href="@{/admin/cs/notice/list}">고객센터 관리</a>
+            <a th:href="@{/member/logout}">Logout</a>
+        </nav>
+    </header>
+
+    <div class="admin-container">
+        <aside class="admin-aside">
+            <h2>고객센터 관리</h2>
+            <a th:href="@{/admin/cs/notice/list}">공지사항</a>
+            <a th:href="@{/admin/cs/faq/list}">자주묻는 질문</a>
+            <a class="active" th:href="@{/admin/cs/qna/list}">1:1 문의</a>
+        </aside>
+
+        <main class="admin-content">
+            <div class="page-head">
+                <div>
+                    <h2>1:1 문의 목록</h2>
+                    <p>사용자가 등록한 문의를 확인하고 답변을 관리합니다.</p>
+                </div>
+            </div>
+
+            <table>
+                <colgroup>
+                    <col style="width: 8%;">
+                    <col style="width: 14%;">
+                    <col>
+                    <col style="width: 14%;">
+                    <col style="width: 14%;">
+                    <col style="width: 12%;">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>분류</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${qnas == null || #lists.isEmpty(qnas)}">
+                    <td colspan="6" class="empty">등록된 문의가 없습니다.</td>
+                </tr>
+                <tr th:each="qna : ${qnas}">
+                    <td th:text="${qna.no}">1</td>
+                    <td th:text="${qna.type}">배송</td>
+                    <td class="title"><a th:href="@{/admin/cs/qna/view/{no}(no=${qna.no})}" th:text="${qna.title}">문의 제목입니다.</a></td>
+                    <td th:text="${qna.writer}">user01</td>
+                    <td th:text="${#temporals.format(qna.createdAt, 'yyyy-MM-dd')}">2026-07-08</td>
+                    <td>
+                        <span class="status done" th:if="${qna.answer != null && !#strings.isEmpty(qna.answer)}">답변완료</span>
+                        <span class="status wait" th:unless="${qna.answer != null && !#strings.isEmpty(qna.answer)}">답변대기</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination" th:if="${pageResponseDTO != null}">
+                <a th:if="${pageResponseDTO.prev}" th:href="@{/admin/cs/qna/list(pg=${pageResponseDTO.start - 1})}">이전</a>
+                <th:block th:each="num : ${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                    <strong th:if="${num == pageResponseDTO.pg}" th:text="${num}">1</strong>
+                    <a th:unless="${num == pageResponseDTO.pg}" th:href="@{/admin/cs/qna/list(pg=${num})}" th:text="${num}">2</a>
+                </th:block>
+                <a th:if="${pageResponseDTO.next}" th:href="@{/admin/cs/qna/list(pg=${pageResponseDTO.end + 1})}">다음</a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="admin-footer">Copyright © K-market Admin. All rights reserved.</footer>
+</div>
+</body>
+</html>

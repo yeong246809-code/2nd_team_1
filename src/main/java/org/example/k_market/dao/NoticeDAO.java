@@ -1,4 +1,4 @@
-package org.example.k_market.dao;
+/*package org.example.k_market.dao;
 
 import org.example.k_market.dto.NoticeDTO;
 import org.example.k_market.entity.Notice;
@@ -43,3 +43,4 @@ public class NoticeDAO {
         }
     }
 }
+*/
