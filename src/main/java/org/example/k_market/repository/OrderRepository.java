@@ -18,7 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<OrderDetails> findByOrderNo(int orderNo);
 
-    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.user LEFT JOIN FETCH o.member")
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.user")
     Page<Order> findAllWithJoin(Pageable pageable);
 
 }
