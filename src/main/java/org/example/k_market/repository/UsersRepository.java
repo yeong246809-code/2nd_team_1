@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface UsersRepository extends JpaRepository<Users, Integer> {
     Optional<Users> findById(String id); // 이 한 줄로 아이디 조회 기능 끝!
 
+    Optional<Users> findByMemberNo(int memberNo);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Users u SET u.id = :id WHERE u.memberNo = :memberNo")
     void updateLoginId(@Param("memberNo") int memberNo, @Param("id") String id);

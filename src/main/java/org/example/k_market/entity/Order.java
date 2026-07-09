@@ -36,14 +36,22 @@ public class Order {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberNo") // order 테이블의 memberNo 컬럼과 조인
+    @JoinColumn(name = "memberNo", insertable = false, updatable = false) // order 테이블의 memberNo 컬럼과 조인
     private Users user; // Member 대신 User 엔티티 사용
 
     public OrderDTO toDTO() {
         return OrderDTO.builder()
                 .orderNo(this.orderNo)
-                .id(this.member != null ? this.member.getId() : "탈퇴회원")
-                .memberName(this.member != null ? this.member.getName() : "탈퇴회원")
+                // .id(this.member != null ? this.member.getId() : "탈퇴회원")
+                // .memberName(this.member != null ? this.member.getName() : "탈퇴회원")
+                .recipientName(toDTO().getRecipientName())
+                .recipientPhone(toDTO().getRecipientPhone())
+                .baseAddress(toDTO().getBaseAddress())
+                .prodNo(toDTO().getProdNo())
+                .name(toDTO().getName())
+                .price(toDTO().getPrice())
+                .discountRate(toDTO().getDiscountRate())
+                .stockQuantity(toDTO().getStockQuantity())
                 .memberNo(this.memberNo)
                 .paymentMethod(this.paymentMethod)
                 .totalProductPrice(this.totalProductPrice)
