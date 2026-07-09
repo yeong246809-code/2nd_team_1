@@ -248,7 +248,7 @@
           <td class="py-4 px-2"><input type="checkbox" name="chkProduct" th:value="${product.prodNo}" class="rounded text-primary focus:ring-primary"/></td>
           <td class="py-2 px-2 flex justify-center">
             <div class="w-12 h-12 rounded border border-outline-variant bg-surface-container overflow-hidden flex items-center justify-center">
-              <img th:if="${product.thumb1 != null && product.thumb1 != ''}" th:src="@{/uploads/{img}(img=${product.thumb1})}" alt="상품이미지" class="w-full h-full object-cover"/>
+                <img th:if="${product.thumb1 != null && product.thumb1 != ''}" th:src="@{'/uploads' + ${product.thumb1}}" alt="상품이미지" class="w-full h-full object-cover"/>
               <span th:if="${product.thumb1 == null || product.thumb1 == ''}" class="material-symbols-outlined text-outline text-xl">image</span>
             </div>
           </td>

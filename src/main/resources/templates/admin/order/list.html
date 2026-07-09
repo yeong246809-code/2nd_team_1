@@ -226,8 +226,11 @@
                 <td colspan="7" class="py-10 text-center text-on-surface-variant">조회된 주문 내역이 없습니다.</td>
             </tr>
             <tr th:each="order : ${orderPage.content}">
-                <td class="py-4 text-primary font-bold" th:text="${order.orderNo}"></td>
-                <td class="py-4" th:text="${order.memberNo}"></td>
+                <td class="py-4 text-primary font-bold cursor-pointer hover:underline"
+                    th:text="${order.orderNo}"
+                    th:onclick="|openPopup(${order.orderNo})|">
+                </td>
+                <td class="py-4" th:text="${order.id}"></td>
                 <td class="py-4" th:text="${order.memberName}"></td> <td class="py-4">1</td> <td class="py-4 font-semibold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}"></td>
                 <td class="py-4" th:text="${order.paymentMethod}"></td>
                 <td class="py-4">
@@ -264,11 +267,62 @@
     </div>
 </main>
 
-<script>
+<div id="orderDetailPopup" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg w-[800px] shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
+            <h2 class="text-lg font-bold">주문상세 <span id="popupOrderNo" class="ml-2 font-normal"></span></h2>
+            <button onclick="closePopup()" class="text-white text-xl">&times;</button>
+        </div>
+
+        <div class="p-6 overflow-y-auto space-y-8">
+            <div>
+                <h3 class="font-bold border-b-2 border-black pb-2 mb-3">상품정보</h3>
+                <table class="w-full text-sm border-t border-gray-300">
+                    <thead class="bg-gray-50">
+                    <tr>
+                        <th class="py-2 border-b">상품번호</th>
+                        <th class="py-2 border-b">상품명</th>
+                        <th class="py-2 border-b">가격</th>
+                        <th class="py-2 border-b">할인</th>
+                        <th class="py-2 border-b">수량</th>
+                        <th class="py-2 border-b">결제금액</th>
+                    </tr>
+                    </thead>
+                    <tbody id="popupProductList">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold border-b-2 border-black pb-2 mb-3">결제정보</h3>
+                    <div class="text-sm space-y-1">
+                        <p><strong>주문번호:</strong> <span id="p-orderNo"></span></p>
+                        <p><strong>결제방법:</strong> <span id="p-payment"></span></p>
+                        <p><strong>주문자:</strong> <span id="p-member"></span></p>
+                        <p class="text-blue-600 font-bold" id="p-status"></p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-bold border-b-2 border-black pb-2 mb-3">배송정보</h3>
+                    <div class="text-sm space-y-1">
+                        <p><strong>수취인:</strong> <span id="p-receiver"></span></p>
+                        <p><strong>연락처:</strong> <span id="p-phone"></span></p>
+                        <p><strong>배송지 주소:</strong> <span id="p-address"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // Thymeleaf가 자동으로 서버의 Context Path를 포함한 루트 경로를 생성합니다.
+    const contextPath = /*[[@{/}]]*/ '/';
+
     function updateStatus(orderNo, newStatus) {
         if(confirm(orderNo + "번 주문 상태를 " + newStatus + "(으)로 변경하시겠습니까?")) {
-            // fetch API를 이용해 서버로 상태 변경 요청
-            fetch(`/admin/order/status?orderNo=${orderNo}&status=${newStatus}`, {
+            fetch(`${contextPath}admin/order/status?orderNo=${orderNo}&status=${newStatus}`, {
                 method: 'POST'
             }).then(response => {
                 if(response.ok) location.reload();
@@ -278,6 +332,48 @@
 
     function toggleAccordion(button) {
         button.closest('.group\\/menu').classList.toggle('menu-item-active');
+    }
+
+    function openPopup(orderNo) {
+        // 수정된 경로 적용
+        fetch(`${contextPath}admin/order/detail/${orderNo}`)
+            .then(res => {
+                if (!res.ok) throw new Error("서버 응답 오류");
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById('popupOrderNo').innerText = data.orderNo;
+                document.getElementById('p-orderNo').innerText = data.orderNo;
+                document.getElementById('p-payment').innerText = data.paymentMethod;
+                document.getElementById('p-member').innerText = data.memberName;
+                document.getElementById('p-status').innerText = data.status;
+
+                document.getElementById('p-receiver').innerText = data.receiver || '정보없음';
+                document.getElementById('p-phone').innerText = data.phone || '정보없음';
+                document.getElementById('p-address').innerText = data.address || '정보없음';
+
+                const productList = document.getElementById('popupProductList');
+                productList.innerHTML = data.orderItems.map(item => `
+                    <tr class="text-center">
+                        <td class="py-2">${item.productNo}</td>
+                        <td class="py-2">${item.productName || '상품명 확인 필요'}</td>
+                        <td class="py-2">${item.price.toLocaleString()}원</td>
+                        <td class="py-2">${item.discountPrice.toLocaleString()}원</td>
+                        <td class="py-2">${item.quantity}</td>
+                        <td class="py-2 font-bold">${item.totalPaymentPrice.toLocaleString()}원</td>
+                    </tr>
+                `).join('');
+
+                document.getElementById('orderDetailPopup').classList.remove('hidden');
+            })
+            .catch(err => {
+                console.error(err);
+                alert("상세 정보를 불러오는 데 실패했습니다.");
+            });
+    }
+
+    function closePopup() {
+        document.getElementById('orderDetailPopup').classList.add('hidden');
     }
 </script>
 </body>

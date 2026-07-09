@@ -22,6 +22,10 @@ public class OrderDetailsDTO {
     private int rewardPoints;
     private String status;
 
+    private String prodName;
+
+    private int TotalPaymentPrice;
+
     public OrderDetails toEntity(){
         return OrderDetails.builder()
                 .orderDetailNo(orderDetailNo).orderNo(orderNo).productNo(productNo)
