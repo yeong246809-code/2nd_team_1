@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 public enum SnsProvider {
     NAVER("naver", "@n"),
-    KAKAO("kakao", "@k");
+    KAKAO("kakao", "@k"),
+    GOOGLE("google", "@g");
 
     private final String registrationId;
     private final String idSuffix;

@@ -1,13 +1,18 @@
 package org.example.k_market.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.k_market.service.member.CustomOAuth2UserService;
+import org.example.k_market.service.member.MemberLoginActivityService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.util.UriUtils;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -28,6 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(
             HttpSecurity httpSecurity,
             CustomOAuth2UserService customOAuth2UserService,
+            MemberLoginActivityService memberLoginActivityService,
             ObjectProvider<ClientRegistrationRepository> clientRegistrationRepository) throws Exception {
 
         // 로그인 설정
@@ -46,6 +53,15 @@ public class SecurityConfig {
                     // 💡 현재 애플리케이션의 Context Path 가져오기 (예: "/k_market")
                     String contextPath = request.getContextPath();
                     String userId = authentication.getName();
+                    boolean dormantReleased;
+                    try {
+                        dormantReleased = memberLoginActivityService.recordSuccessfulLogin(userId);
+                    } catch (DisabledException e) {
+                        SecurityContextHolder.clearContext();
+                        request.getSession().invalidate();
+                        redirectLoginFailure(request, response, loginFailureMessage(e), false);
+                        return;
+                    }
                     request.getSession().setAttribute("sessUser", userId);
 
                     boolean isAdmin = authentication.getAuthorities().stream()
@@ -60,7 +76,7 @@ public class SecurityConfig {
                         response.sendRedirect(contextPath + "/admin/index");
                     } else {
                         // 일반 유저 메인 페이지
-                        response.sendRedirect(contextPath + "/my/index");
+                        response.sendRedirect(contextPath + "/my/index" + dormantReleasedQuery(dormantReleased));
                     }
                 })
         );
@@ -79,11 +95,20 @@ public class SecurityConfig {
                     .successHandler((request, response, authentication) -> {
                         String contextPath = request.getContextPath();
                         String userId = authentication.getName();
+                        boolean dormantReleased;
+                        try {
+                            dormantReleased = memberLoginActivityService.recordSuccessfulLogin(userId);
+                        } catch (DisabledException e) {
+                            SecurityContextHolder.clearContext();
+                            request.getSession().invalidate();
+                            redirectLoginFailure(request, response, loginFailureMessage(e), true);
+                            return;
+                        }
 
                         request.getSession().setAttribute("sessUser", userId);
                         request.getSession().setAttribute("isAdmin", false);
 
-                        response.sendRedirect(contextPath + "/my/index");
+                        response.sendRedirect(contextPath + "/my/index" + dormantReleasedQuery(dormantReleased));
                     })
             );
         }
@@ -136,6 +161,23 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    private void redirectLoginFailure(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String message,
+            boolean sns) throws IOException {
+        String queryName = sns ? "snsMessage" : "loginMessage";
+        String errorValue = sns ? "sns" : "true";
+        response.sendRedirect(request.getContextPath()
+                + "/member/login?error=" + errorValue
+                + "&" + queryName + "="
+                + UriUtils.encode(message, StandardCharsets.UTF_8));
+    }
+
+    private String dormantReleasedQuery(boolean dormantReleased) {
+        return dormantReleased ? "?dormantReleased=true" : "";
     }
 
     private String oauthFailureMessage(Exception exception) {

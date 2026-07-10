@@ -47,6 +47,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return switch (provider) {
             case NAVER -> extractNaverProfile(attributes);
             case KAKAO -> extractKakaoProfile(attributes);
+            case GOOGLE -> extractGoogleProfile(attributes);
         };
     }
 
@@ -70,6 +71,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 getString(kakaoAccount, "email"),
                 firstNonBlank(getString(kakaoAccount, "name"), getString(profile, "nickname")),
                 getString(kakaoAccount, "phone_number"));
+    }
+
+    private SnsProfile extractGoogleProfile(Map<String, Object> attributes) {
+        return new SnsProfile(
+                SnsProvider.GOOGLE,
+                getString(attributes, "sub"),
+                getString(attributes, "email"),
+                getString(attributes, "name"),
+                null);
     }
 
     @SuppressWarnings("unchecked")

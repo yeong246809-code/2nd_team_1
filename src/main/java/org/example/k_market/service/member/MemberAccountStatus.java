@@ -20,7 +20,7 @@ public enum MemberAccountStatus {
     }
 
     public boolean canLogin() {
-        return this == ACTIVE;
+        return this == ACTIVE || this == INACTIVE;
     }
 
     public static MemberAccountStatus from(String value) {
