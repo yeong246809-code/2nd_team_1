@@ -2,7 +2,7 @@ package org.example.k_market.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,8 +37,9 @@ public class Qna {
 
     private Integer viewCount;
 
+
     // 신규 추가: 이 문의가 특정 상품에 대한 문의일 경우 상품번호 저장 (일반 1:1 문의는 null)
-    private Long productNo;
+    private Long prodNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(

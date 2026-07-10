@@ -64,9 +64,9 @@ public class QnaController {
     }
 
     // 문의 작성 화면
-    // 상품 상세페이지의 "문의하기"에서 넘어올 때 productNo를 받아 write 폼에 hidden 값으로 채워줌
+    // 상품 상세페이지의 "문의하기"에서 넘어올 때 prodNo를 받아 write 폼에 hidden 값으로 채워줌
     @GetMapping("/write")
-    public String write(@RequestParam(required = false) Long productNo,
+    public String write(@RequestParam(required = false) Long prodNo,
                         Model model,
                         HttpSession session) {
 
@@ -78,7 +78,7 @@ public class QnaController {
             return "redirect:/member/login";
         }
 
-        model.addAttribute("productNo", productNo); // null이면 일반 1:1문의, 값 있으면 상품문의
+        model.addAttribute("prodNo", prodNo); // null이면 일반 1:1문의, 값 있으면 상품문의
         return "cs/qna/write";
     }
 
@@ -104,8 +104,8 @@ public class QnaController {
         qnaService.save(qnaDTO);
 
         // 상품문의였으면 해당 상품 상세페이지로, 아니면 기존처럼 목록으로
-        if (qnaDTO.getProductNo() != null) {
-            return "redirect:/product/view?prodNo=" + qnaDTO.getProductNo();
+        if (qnaDTO.getProdNo() != null) {
+            return "redirect:/product/view?prodNo=" + qnaDTO.getProdNo();
         }
         return "redirect:/cs/qna/list";
     }

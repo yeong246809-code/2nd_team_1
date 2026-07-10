@@ -21,6 +21,7 @@ public interface QnaRepository extends JpaRepository<Qna, Integer> {
     List<Qna> findTop5ByParentNoOrderByNoDesc(int parentNo);
 
     // 신규 추가: 특정 상품에 대한 문의 원글만 최신순 조회 (parentNo=0 -> 답변글 제외)
-    List<Qna> findByProductNoAndParentNoOrderByNoDesc(Long productNo, int parentNo);
+    List<Qna> findByProdNoAndParentNoOrderByNoDesc(Long prodNo, int parentNo);
+
 
 }

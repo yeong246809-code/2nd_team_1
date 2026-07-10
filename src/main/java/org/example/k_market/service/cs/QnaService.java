@@ -3,7 +3,6 @@ package org.example.k_market.service.cs;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.QnaDTO;
 import org.example.k_market.entity.Qna;
-import org.example.k_market.repository.NoticeRepository;
 import org.example.k_market.repository.QnaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,26 +31,14 @@ public class QnaService {
     // 문의 상세 조회
     public Qna findById(int no) {
         return qnaRepository.findById(no)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 문의글입니다."));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("존재하지 않는 문의글입니다."));
     }
 
     // QnA 글 등록
-    // Controller에서 받은 DTO를 Entity로 변환한 뒤 Repository로 저장한다.
-    public void save(QnaDTO qnaDTO) {
-
-        Qna qna = Qna.builder()
-                .type1(qnaDTO.getType1())
-                .type2(qnaDTO.getType2())
-                .title(qnaDTO.getTitle())
-                .content(qnaDTO.getContent())
-                .memberNo(qnaDTO.getMemberNo())
-                .parentNo(0)
-                .isAnswered("답변대기")
-                .viewCount(0)
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        qnaRepository.save(qna);
+    // prodNo는 QnaDTO.toEntity()에서 Entity로 전달되어야 한다.
+    public void save(QnaDTO dto) {
+        qnaRepository.save(dto.toEntity());
     }
 
     // 답변 출력
@@ -60,7 +47,7 @@ public class QnaService {
         return qnaRepository.findByParentNo(parentNo).orElse(null);
     }
 
-    // 문의글 답변 등록
+    // 문의글 답변 등록 및 수정
     @Transactional
     public void saveAnswer(int parentNo, String content) {
 
@@ -68,10 +55,9 @@ public class QnaService {
             throw new IllegalArgumentException("답변 내용을 입력해주세요.");
         }
 
-        // 원본 문의글 조회
         Qna parent = findById(parentNo);
-
         Qna answer = findAnswer(parentNo);
+
         if (answer == null) {
             answer = Qna.builder()
                     .title("답변")
@@ -79,6 +65,7 @@ public class QnaService {
                     .type1(parent.getType1())
                     .type2(parent.getType2())
                     .memberNo(1)
+                    .prodNo(parent.getProdNo())
                     .parentNo(parentNo)
                     .isAnswered("답변완료")
                     .createdAt(LocalDateTime.now())
@@ -89,17 +76,19 @@ public class QnaService {
             answer.setCreatedAt(LocalDateTime.now());
         }
 
-        // 답변글 저장
         qnaRepository.save(answer);
 
-        // 원본 문의글 상태 변경
         parent.setIsAnswered("답변완료");
         qnaRepository.save(parent);
-
-
     }
 
+    // 답변 등록 또는 수정
+    @Transactional
     public void saveOrUpdateAnswer(int parentNo, String content) {
+
+        if (content == null || content.isBlank()) {
+            throw new IllegalArgumentException("답변 내용을 입력해주세요.");
+        }
 
         Qna parent = findById(parentNo);
         Qna answer = findAnswer(parentNo);
@@ -111,6 +100,7 @@ public class QnaService {
                     .type1(parent.getType1())
                     .type2(parent.getType2())
                     .memberNo(1)
+                    .prodNo(parent.getProdNo())
                     .parentNo(parentNo)
                     .isAnswered("답변완료")
                     .createdAt(LocalDateTime.now())
@@ -118,6 +108,7 @@ public class QnaService {
                     .build();
         } else {
             answer.setContent(content);
+            answer.setCreatedAt(LocalDateTime.now());
         }
 
         qnaRepository.save(answer);
@@ -126,8 +117,10 @@ public class QnaService {
         qnaRepository.save(parent);
     }
 
+    // 답변 삭제
     @Transactional
     public void deleteAnswer(int parentNo) {
+
         Qna parent = findById(parentNo);
         Qna answer = findAnswer(parentNo);
 
@@ -139,9 +132,9 @@ public class QnaService {
         qnaRepository.save(parent);
     }
 
+    // 선택 문의 삭제
     @Transactional
     public void deleteChecked(List<Integer> nos) {
         qnaRepository.deleteAllById(nos);
     }
-
 }

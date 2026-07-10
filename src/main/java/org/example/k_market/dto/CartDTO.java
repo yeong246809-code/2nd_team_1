@@ -14,14 +14,14 @@ public class CartDTO {
 
     private long cartNo;
     private int memberNo;
-    private long productNo;
+    private long prodNo;
     private Long optItemNo;
     private int quantity;
     private LocalDateTime createdAt;
 
     public Cart toEntity(){
         return Cart.builder()
-                .cartNo(cartNo).memberNo(memberNo).productNo(productNo)
+                .cartNo(cartNo).memberNo(memberNo).prodNo(prodNo)
                 .optItemNo(optItemNo).quantity(quantity).createdAt(createdAt)
                 .build();
     }
