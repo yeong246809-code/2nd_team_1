@@ -264,19 +264,17 @@
 <main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
 
     <div class="flex justify-between items-end mb-lg border-b border-outline-variant pb-2">
-        <h1 class="font-headline-lg text-headline-lg font-bold text-on-background">회원목록</h1>
+        <h1 class="font-headline-lg text-headline-lg font-bold text-on-background">포인트관리</h1>
         <div class="font-label-sm text-on-surface-variant">
-            HOME > 회원관리 > <span class="text-primary font-bold">회원목록</span>
+            HOME > 회원관리 > <span class="text-primary font-bold">포인트관리</span>
         </div>
     </div>
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md mb-md">
-        <form th:action="@{/admin/member/list}" method="get" class="flex gap-2 items-center">
+        <form th:action="@{/admin/member/point}" method="get" class="flex gap-2 items-center">
             <select name="searchType" class="border border-outline-variant rounded p-2 text-sm focus:ring-primary focus:border-primary">
                 <option value="id" th:selected="${searchType == 'id'}">아이디</option>
                 <option value="name" th:selected="${searchType == 'name'}">이름</option>
-                <option value="email" th:selected="${searchType == 'email'}">이메일</option>
-                <option value="phone" th:selected="${searchType == 'phone'}">휴대폰</option>
             </select>
             <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어 입력" class="border border-outline-variant rounded p-2 text-sm w-64 focus:ring-primary focus:border-primary">
             <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white font-label-md px-4 py-2 rounded transition-colors">검색</button>
@@ -284,295 +282,77 @@
     </section>
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-        <form id="bulkForm" th:action="@{/admin/member/bulkUpdateGrade}" method="post">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-surface border-b border-outline-variant font-label-md text-on-surface-variant">
+        <form id="deleteForm" th:action="@{/admin/member/point/delete}" method="post">
+            <table class="w-full text-center border-collapse">
+                <thead class="bg-surface border-b border-t border-outline-variant font-label-md text-on-surface-variant">
                 <tr>
-                    <th class="p-3 text-center w-12"><input type="checkbox" id="selectAll" class="rounded text-primary"></th>
-                    <th class="p-3 text-center w-16">번호</th>
+                    <th class="p-3 w-12"><input type="checkbox" id="selectAll" class="rounded text-primary"></th>
+                    <th class="p-3 w-16">번호</th>
                     <th class="p-3">아이디</th>
                     <th class="p-3">이름</th>
-                    <th class="p-3 text-center">성별</th>
-                    <th class="p-3 text-center">등급</th>
-                    <th class="p-3 text-right">포인트</th>
-                    <th class="p-3">이메일</th>
-                    <th class="p-3">휴대폰</th>
-                    <th class="p-3 text-center">가입일</th>
-                    <th class="p-3 text-center">상태</th>
-                    <th class="p-3 text-center w-24">관리</th>
+                    <th class="p-3">지급 포인트</th>
+                    <th class="p-3">잔여 포인트</th>
+                    <th class="p-3">지급 내용</th>
+                    <th class="p-3">지급 날짜</th>
                 </tr>
                 </thead>
-                <tbody class="font-body-md">
-                <tr th:each="member : ${members}" class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+                <tbody class="font-body-md text-on-background">
+                <tr th:each="point : ${pointList}" class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
                     <td class="p-3 text-center">
-                        <input type="checkbox" name="selectedMemberNos" th:value="${member.memberNo}" class="rounded text-primary memberCheckbox">
+                        <input type="checkbox" name="selectedPointNos" th:value="${point.pointNo}" class="rounded text-primary pointCheckbox">
                     </td>
-                    <td class="p-3 text-center" th:text="${member.memberNo}">1</td>
-                    <td class="p-3" th:text="${member.id}">abc1234</td>
-                    <td class="p-3" th:text="${member.name}">홍길동</td>
-                    <td class="p-3 text-center" th:text="${member.gender == 'M' ? '남' : (member.gender == 'F' ? '여' : '-')}">남</td>
-                    <td class="p-3 text-center">
-                        <select th:name="'grade_' + ${member.memberNo}" class="border border-outline-variant rounded text-sm p-1">
-                            <option value="1" th:selected="${member.gradeNo == 1}">FAMILY</option>
-                            <option value="2" th:selected="${member.gradeNo == 2}">SILVER</option>
-                            <option value="3" th:selected="${member.gradeNo == 3}">GOLD</option>
-                            <option value="4" th:selected="${member.gradeNo == 4}">VIP</option>
-                            <option value="5" th:selected="${member.gradeNo == 5}">VVIP</option>
-                        </select>
-                    </td>
-                    <td class="p-3 text-right" th:text="${#numbers.formatInteger(member.points, 0, 'COMMA')}">1,000</td>
-                    <td class="p-3 text-sm" th:text="${member.email}">email@test.com</td>
-                    <td class="p-3 text-sm" th:text="${member.phone}">010-1234-5678</td>
-                    <td class="p-3 text-center text-sm text-on-surface-variant" th:text="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01</td>
-
-                    <td class="p-3 text-center font-bold text-sm">
-                        <span th:if="${member.status == 'ACTIVE'}" class="text-green-600">정상</span>
-                        <span th:if="${member.status == 'STOPPED'}" class="text-red-600">중지</span>
-                        <span th:if="${member.status == 'INACTIVE'}" class="text-orange-500">휴면</span>
-                        <span th:if="${member.status == 'WITHDRAWN'}" class="text-gray-400">탈퇴</span>
-                    </td>
-
-                    <td class="p-3 text-center text-sm">
-                        <div class="flex flex-col gap-1 items-center justify-center">
-                            <button th:if="${member.status != 'WITHDRAWN'}"
-                                     type="button" class="hover:text-primary hover:underline font-medium"
-                                     th:data-no="${member.memberNo}"
-                                     th:data-id="${member.id}"
-                                     th:data-name="${member.name}"
-                                     th:data-gender="${member.gender}"
-                                     th:data-grade="${member.gradeNo}"
-                                     th:data-status="${member.status}"
-                                     th:data-email="${member.email}"
-                                     th:data-phone="${member.phone}"
-                                     th:data-zip="${member.zipCode}"
-                                     th:data-addr1="${member.baseAddress}"
-                                     th:data-addr2="${member.detailAddress}"
-                                     th:data-created="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
-                                     th:data-login="${#temporals.format(member.lastLoginAt, 'yyyy-MM-dd HH:mm:ss')}"
-                                     th:data-memo="${member.memo}"
-                                     onclick="openModal(this)">[ 수정 ]</button>
-
-                            <a th:if="${member.status == 'ACTIVE'}" th:href="@{/admin/member/changeStatus(memberNo=${member.memberNo}, status='STOPPED')}" class="hover:text-red-600 hover:underline text-gray-500">[ 중지 ]</a>
-
-                            <a th:if="${member.status == 'STOPPED' or member.status == 'INACTIVE'}" th:href="@{/admin/member/changeStatus(memberNo=${member.memberNo}, status='ACTIVE')}" class="hover:text-green-600 hover:underline text-gray-500">[ 재개 ]</a>
-
-                            <a th:if="${member.status == 'WITHDRAWN'}" th:href="@{/admin/member/deactivate(memberNo=${member.memberNo})}" class="hover:text-red-600 hover:underline text-gray-500">[ 비활성 ]</a>
-                        </div>
-                    </td>
+                    <td class="p-3 font-bold" th:text="${point.pointNo}">5</td>
+                    <td class="p-3" th:text="${point.id}">abc1234</td>
+                    <td class="p-3" th:text="${point.name}">정우성</td>
+                    <td class="p-3" th:text="${#numbers.formatInteger(point.amount, 0, 'COMMA')}">1,000</td>
+                    <td class="p-3" th:text="${#numbers.formatInteger(point.remainedAmount, 0, 'COMMA')}">15,000</td>
+                    <td class="p-3 text-sm text-gray-600" th:text="${point.description}">구매확정 포인트 지급</td>
+                    <td class="p-3 text-sm text-on-surface-variant" th:text="${#temporals.format(point.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 00:00:00</td>
                 </tr>
-                <tr th:if="${members.isEmpty()}">
-                    <td colspan="12" class="p-8 text-center text-on-surface-variant">조회된 회원이 없습니다.</td>
+
+                <tr th:if="${pointList == null or pointList.isEmpty()}">
+                    <td colspan="8" class="p-8 text-center text-on-surface-variant">조회된 포인트 내역이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
 
             <div class="flex justify-between items-center mt-4">
-                <button type="button" onclick="submitBulkForm()" class="bg-gray-400 hover:bg-gray-500 text-white font-label-md px-4 py-2 rounded transition-colors">선택수정</button>
+                <button type="button" onclick="submitDeleteForm()" class="bg-[#b5b5b5] hover:bg-gray-500 text-white font-label-md px-6 py-2 rounded transition-colors shadow-sm">선택삭제</button>
 
-                <div class="flex items-center gap-2 text-sm">
+                <div class="flex items-center gap-2 text-sm font-label-md">
                     <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">이전</a>
                     <a href="#" class="px-2 py-1 font-bold underline text-primary">1</a>
                     <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">2</a>
                     <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">3</a>
+                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">4</a>
+                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">5</a>
                     <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">다음</a>
                 </div>
 
                 <div class="w-[88px]"></div> </div>
         </form>
     </section>
-    <div id="editModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-surface rounded-lg shadow-lg w-full max-w-2xl overflow-hidden font-body-md">
-            <!-- 모달 헤더 -->
-            <div class="flex justify-between items-center bg-[#4b5155] text-white p-4">
-                <h2 class="font-headline-md text-lg font-bold">회원수정</h2>
-                <button type="button" onclick="closeModal()" class="text-white hover:text-gray-300 font-bold text-xl">X</button>
-            </div>
-
-            <!-- 폼 -->
-            <form id="editForm" th:action="@{/admin/member/update}" method="post" class="bg-surface-container-lowest p-6">
-                <!-- 식별자 Hidden 값 -->
-                <input type="hidden" id="modal_memberNo" name="memberNo">
-
-                <table class="w-full text-sm border-collapse">
-                    <colgroup>
-                        <col class="w-32 bg-gray-100">
-                        <col class="w-auto">
-                    </colgroup>
-                    <tbody>
-                    <tr class="border-b border-t border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">아이디</td>
-                        <td class="p-3"><span id="modal_id_display" class="text-gray-600"></span></td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">이름</td>
-                        <td class="p-3">
-                            <input type="text" id="modal_name" name="name" class="border border-outline-variant rounded p-1.5 w-48 focus:ring-primary focus:border-primary">
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">성별</td>
-                        <td class="p-3 flex items-center gap-4">
-                            <label class="flex items-center gap-1 cursor-pointer">
-                                <input type="radio" id="gender_M" name="gender" value="M" class="text-primary focus:ring-primary"> 남
-                            </label>
-                            <label class="flex items-center gap-1 cursor-pointer">
-                                <input type="radio" id="gender_F" name="gender" value="F" class="text-primary focus:ring-primary"> 여
-                            </label>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">등급</td>
-                        <td class="p-3 flex items-center gap-2">
-                            <span id="modal_grade_display" class="text-gray-600 inline-block w-24"></span>
-                            <span class="text-xs text-gray-500">등급 수정은 회원 목록에서 선택수정 가능</span>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">상태</td>
-                        <td class="p-3">
-                            <span id="modal_status_display" class="font-bold"></span>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">EMAIL</td>
-                        <td class="p-3">
-                            <input type="email" id="modal_email" name="email" class="border border-outline-variant rounded p-1.5 w-64 focus:ring-primary focus:border-primary">
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">휴대폰</td>
-                        <td class="p-3">
-                            <input type="text" id="modal_phone" name="phone" class="border border-outline-variant rounded p-1.5 w-48 focus:ring-primary focus:border-primary">
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">우편번호</td>
-                        <td class="p-3 flex items-center gap-2">
-                            <input type="text" id="modal_zipCode" name="zipCode" class="border border-outline-variant rounded p-1.5 w-32 focus:ring-primary focus:border-primary">
-                            <button type="button" class="text-green-600 text-sm hover:underline" onclick="Postcode('modal_zipCode', 'modal_baseAddress', 'modal_detailAddress')">검색</button>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">기본주소</td>
-                        <td class="p-3">
-                            <input type="text" id="modal_baseAddress" name="baseAddress" class="border border-outline-variant rounded p-1.5 w-full focus:ring-primary focus:border-primary">
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">상세주소</td>
-                        <td class="p-3">
-                            <input type="text" id="modal_detailAddress" name="detailAddress" class="border border-outline-variant rounded p-1.5 w-full focus:ring-primary focus:border-primary">
-                        </td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">가입일</td>
-                        <td class="p-3"><span id="modal_created_display" class="text-gray-600"></span></td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">최근로그인날짜</td>
-                        <td class="p-3"><span id="modal_login_display" class="text-gray-600"></span></td>
-                    </tr>
-                    <tr class="border-b border-outline-variant">
-                        <td class="p-3 font-bold text-gray-700">기타</td>
-                        <td class="p-3">
-                            <textarea id="modal_memo" name="memo" rows="3" placeholder="회원에 대한 기타 정보 입력" class="border border-outline-variant rounded p-1.5 w-full focus:ring-primary focus:border-primary resize-none"></textarea>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!-- 버튼 영역 -->
-                <div class="mt-4 flex justify-center py-2">
-                    <button type="submit" class="bg-[#38a169] hover:bg-green-700 text-white font-bold py-2 px-12 rounded shadow-md transition-colors">수정하기</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</main>
-<script th:inline="javascript">
-    // 전체선택 체크박스
+</main><script th:inline="javascript">
+    // 전체 선택 체크박스 동작
     document.getElementById('selectAll').addEventListener('change', function() {
-        const checkboxes = document.querySelectorAll('.memberCheckbox');
+        const checkboxes = document.querySelectorAll('.pointCheckbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
     });
 
-    // 선택 수정 폼 제출
-    function submitBulkForm() {
-        const checked = document.querySelectorAll('.memberCheckbox:checked');
+    // 선택 삭제 폼 제출
+    function submitDeleteForm() {
+        const checked = document.querySelectorAll('.pointCheckbox:checked');
         if(checked.length === 0) {
-            alert('수정할 회원을 선택해주세요.');
+            alert('삭제할 포인트 내역을 선택해주세요.');
             return;
         }
-        document.getElementById('bulkForm').submit();
-    }
 
-    // 모달 열기 및 데이터 매핑
-    function openModal(btn) {
-        const data = btn.dataset;
-
-        // 수정 가능 항목 (Input / Textarea) 매핑
-        document.getElementById('modal_memberNo').value = data.no;
-        document.getElementById('modal_name').value = data.name || '';
-        document.getElementById('modal_email').value = data.email || '';
-        document.getElementById('modal_phone').value = data.phone || '';
-        document.getElementById('modal_zipCode').value = data.zip || '';
-        document.getElementById('modal_baseAddress').value = data.addr1 || '';
-        document.getElementById('modal_detailAddress').value = data.addr2 || '';
-        document.getElementById('modal_memo').value = data.memo || '';
-
-        // 성별 라디오 버튼
-        if (data.gender === 'M') {
-            document.getElementById('gender_M').checked = true;
-        } else if (data.gender === 'F') {
-            document.getElementById('gender_F').checked = true;
-        } else {
-            document.getElementById('gender_M').checked = false;
-            document.getElementById('gender_F').checked = false;
+        if(confirm('선택하신 포인트 내역을 삭제하시겠습니까?\n(해당 내역은 삭제되며, 지급되었던 포인트는 회원 데이터에서 차감/회수됩니다.)')) {
+            // 확인을 누르면 폼이 서버의 /admin/member/point/delete 로 제출됩니다.
+            document.getElementById('deleteForm').submit();
         }
-
-        // 수정 불가 항목 (화면 표시용 span) 매핑
-        document.getElementById('modal_id_display').innerText = data.id || '-';
-        document.getElementById('modal_created_display').innerText = data.created || '-';
-        document.getElementById('modal_login_display').innerText = data.login || '-';
-
-        // 등급 텍스트 변환
-        const gradeMap = { '1': 'FAMILY', '2': 'SILVER', '3': 'GOLD', '4': 'VIP', '5': 'VVIP' };
-        document.getElementById('modal_grade_display').innerText = gradeMap[data.grade] || '-';
-
-        // 상태 텍스트 및 색상 변환
-        const statusEl = document.getElementById('modal_status_display');
-        switch(data.status) {
-            case 'ACTIVE':
-                statusEl.innerText = '정상';
-                statusEl.className = 'font-bold text-green-600';
-                break;
-            case 'STOPPED':
-                statusEl.innerText = '중지';
-                statusEl.className = 'font-bold text-red-600';
-                break;
-            case 'INACTIVE':
-                statusEl.innerText = '휴면';
-                statusEl.className = 'font-bold text-orange-500';
-                break;
-            case 'WITHDRAWN':
-                statusEl.innerText = '탈퇴';
-                statusEl.className = 'font-bold text-gray-400';
-                break;
-            default:
-                statusEl.innerText = '-';
-                statusEl.className = 'font-bold';
-        }
-
-        // 모달 표시
-        document.getElementById('editModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-        document.getElementById('editModal').classList.add('hidden');
     }
 </script>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script th:src="@{/js/postcode.js}" src="/js/postcode.js"></script>
 <script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
 </body>
 </html>
