@@ -29,4 +29,16 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     List<Member> findByLastLoginAtBeforeAndStatus(
             LocalDateTime date,
             MemberAccountStatus status);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Member m SET m.lastLoginAt = :lastLoginAt WHERE m.memberNo = :memberNo")
+    void updateLastLoginAt(
+            @Param("memberNo") int memberNo,
+            @Param("lastLoginAt") LocalDateTime lastLoginAt);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Member m SET m.status = :status WHERE m.memberNo = :memberNo")
+    void updateStatus(
+            @Param("memberNo") int memberNo,
+            @Param("status") MemberAccountStatus status);
 }

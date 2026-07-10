@@ -195,6 +195,7 @@ public class MyIndexController {
         List<SnsAccount> snsAccounts = memberNo == 0 ? List.of() : snsAccountRepository.findAllByMemberNo(memberNo);
         model.addAttribute("naverConnected", hasProvider(snsAccounts, "naver"));
         model.addAttribute("kakaoConnected", hasProvider(snsAccounts, "kakao"));
+        model.addAttribute("googleConnected", hasProvider(snsAccounts, "google"));
     }
 
     private Optional<Users> currentUser(Authentication authentication) {

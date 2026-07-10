@@ -194,6 +194,10 @@
     <div th:replace="~{my/_shared :: sidebar('')}"></div>
     <!-- 메인 콘텐츠 영역 -->
     <section class="flex-1 space-y-md">
+        <div th:if="${param.dormantReleased}" class="bg-secondary-container border border-secondary-fixed-dim text-on-secondary-container rounded-lg px-md py-sm flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <p class="font-label-md text-label-md">휴면 계정이 해제되었습니다. 다시 정상적으로 서비스를 이용할 수 있습니다.</p>
+        </div>
         <!-- 사용자 정보 영역 -->
         <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-md flex flex-col md:flex-row md:items-center md:justify-between gap-md">
             <div class="space-y-xs">

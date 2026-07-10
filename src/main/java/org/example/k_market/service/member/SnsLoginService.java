@@ -23,6 +23,7 @@ public class SnsLoginService {
 
     private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(1900, 1, 1);
     private static final int NAVER_LOGIN_ID_MAX_LENGTH = 8;
+    private static final int GOOGLE_LOGIN_ID_MAX_LENGTH = 10;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private final SnsAccountRepository snsAccountRepository;
@@ -123,7 +124,18 @@ public class SnsLoginService {
 
     private String buildLoginId(SnsProfile profile, String normalizedProviderId, int sequence) {
         if (profile.provider() == SnsProvider.NAVER) {
-            return compactNaverLoginId(normalizedProviderId, profile.provider().idSuffix(), sequence);
+            return compactSnsLoginId(
+                    normalizedProviderId,
+                    profile.provider().idSuffix(),
+                    sequence,
+                    NAVER_LOGIN_ID_MAX_LENGTH);
+        }
+        if (profile.provider() == SnsProvider.GOOGLE) {
+            return compactSnsLoginId(
+                    normalizedProviderId,
+                    profile.provider().idSuffix(),
+                    sequence,
+                    GOOGLE_LOGIN_ID_MAX_LENGTH);
         }
 
         if (sequence == 0) {
@@ -132,11 +144,11 @@ public class SnsLoginService {
         return normalizedProviderId + "-" + sequence + profile.provider().idSuffix();
     }
 
-    private String compactNaverLoginId(String normalizedProviderId, String suffix, int sequence) {
+    private String compactSnsLoginId(String normalizedProviderId, String suffix, int sequence, int maxLength) {
         String sequenceToken = sequence == 0 ? "" : Integer.toString(sequence, 36);
-        int maxBaseLength = NAVER_LOGIN_ID_MAX_LENGTH - suffix.length() - sequenceToken.length();
+        int maxBaseLength = maxLength - suffix.length() - sequenceToken.length();
         if (maxBaseLength < 1) {
-            sequenceToken = sequenceToken.substring(sequenceToken.length() - (NAVER_LOGIN_ID_MAX_LENGTH - suffix.length() - 1));
+            sequenceToken = sequenceToken.substring(sequenceToken.length() - (maxLength - suffix.length() - 1));
             maxBaseLength = 1;
         }
 

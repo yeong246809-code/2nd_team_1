@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.example.k_market.service.member.EmailVerificationService;
 import org.example.k_market.service.member.UsersService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +34,7 @@ public class UsersController {
 
     private final UsersService usersService;
     private final EmailVerificationService emailVerificationService;
+    private final ObjectProvider<ClientRegistrationRepository> clientRegistrationRepository;
 
     @GetMapping("/member/login")
     public String loginPage(
@@ -56,6 +59,7 @@ public class UsersController {
         model.addAttribute("snsMessage", (snsMessage == null || snsMessage.isBlank())
                 ? "SNS 로그인에 실패했습니다. 설정을 확인해주세요."
                 : snsMessage);
+        model.addAttribute("googleLoginEnabled", hasClientRegistration("google"));
 
         return "member/login";
     }
@@ -231,6 +235,11 @@ public class UsersController {
         return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch("ROLE_ADMIN"::equals);
+    }
+
+    private boolean hasClientRegistration(String registrationId) {
+        ClientRegistrationRepository repository = clientRegistrationRepository.getIfAvailable();
+        return repository != null && repository.findByRegistrationId(registrationId) != null;
     }
 
     private boolean isValidEmail(String email) {
