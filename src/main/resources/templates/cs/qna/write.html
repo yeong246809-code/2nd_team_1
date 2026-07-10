@@ -123,7 +123,7 @@
               class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex flex-col gap-md">
 
             <!-- 상품문의가 아니면 productNo가 null로 넘어가서 일반 1:1문의로 저장됨 -->
-            <input type="hidden" name="productNo" th:value="${productNo}"/>
+            <input type="hidden" name="prodNo" th:value="${prodNo}"/>
             <!-- 원글은 항상 parentNo=0 -->
             <input type="hidden" name="parentNo" value="0"/>
             <!-- 답변 전이므로 기본값 -->

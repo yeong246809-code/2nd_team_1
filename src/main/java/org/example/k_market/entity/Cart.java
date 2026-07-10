@@ -17,14 +17,14 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long cartNo;
     private int memberNo;
-    private long productNo;
+    private long prodNo;
     private Long optItemNo;
     private int quantity;
     private LocalDateTime createdAt;
 
     public CartDTO toDTO(){
         return CartDTO.builder()
-                .cartNo(cartNo).memberNo(memberNo).productNo(productNo)
+                .cartNo(cartNo).memberNo(memberNo).prodNo(prodNo)
                 .optItemNo(optItemNo).quantity(quantity).createdAt(createdAt)
                 .build();
     }

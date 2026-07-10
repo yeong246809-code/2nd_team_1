@@ -27,14 +27,14 @@ public class QnaDTO {
     private LocalDateTime createdAt;
 
     // 신규 추가: 상품 상세페이지에서 넘어온 문의일 경우 상품번호 (일반 1:1문의는 null)
-    private Long productNo;
+    private Long prodNo;
 
     public Qna toEntity(){
         return Qna.builder()
                 .no(no).type1(type1).type2(type2).title(title)
                 .content(content).memberNo(memberNo).parentNo(parentNo)
                 .isAnswered(isAnswered).viewCount(viewCount).createdAt(createdAt)
-                .productNo(productNo)
+                .prodNo(prodNo)
                 .build();
     }
 }

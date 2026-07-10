@@ -1,18 +1,15 @@
 package org.example.k_market.controller.admin;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.k_market.entity.Product;
 import org.example.k_market.entity.Qna;
+import org.example.k_market.repository.UsersRepository;
+import org.example.k_market.service.ProductService;
 import org.example.k_market.service.cs.QnaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,19 +17,43 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminQnaController {
 
     private final QnaService qnaService;
+    private final UsersRepository usersRepository;
+    private final ProductService productService;
 
-    // 문의 목록
+    // 문의 리스트
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
+
+        String sessUser = (String) session.getAttribute("sessUser");
+
+        if (sessUser == null) {
+            return "redirect:/member/login";
+        }
+
+        if (!"admin".equals(sessUser)) {
+            return "redirect:/";
+        }
 
         model.addAttribute("qnas", qnaService.findAll());
 
         return "admin/cs/qna/list";
     }
 
-    // 문의 상세 + 답변 조회
+    // 관리자 문의 상세
     @GetMapping("/view/{no}")
-    public String view(@PathVariable int no, Model model) {
+    public String view(@PathVariable int no,
+                       Model model,
+                       HttpSession session) {
+
+        String sessUser = (String) session.getAttribute("sessUser");
+
+        if (sessUser == null) {
+            return "redirect:/member/login";
+        }
+
+        if (!"admin".equals(sessUser)) {
+            return "redirect:/";
+        }
 
         Qna qna = qnaService.findById(no);
         Qna answer = qnaService.findAnswer(no);
@@ -40,37 +61,53 @@ public class AdminQnaController {
         model.addAttribute("qna", qna);
         model.addAttribute("answer", answer);
 
+        // 상품이 연결된 문의인 경우에만 상품 조회
+        if (qna.getProdNo() != null) {
+
+            Product product = productService.findById(qna.getProdNo());
+
+            model.addAttribute("product", product);
+        }
+
         return "admin/cs/qna/view";
+
+
     }
 
-    // 답변 등록
+    // 답변 등록 및 수정
     @PostMapping("/answer/{no}")
     public String answer(@PathVariable int no,
-                         @RequestParam String content) {
+                         @RequestParam String content,
+                         HttpSession session) {
 
+        String sessUser = (String) session.getAttribute("sessUser");
 
-        qnaService.saveOrUpdateAnswer(no, content);
+        if (sessUser == null) {
+            return "redirect:/member/login";
+        }
+
+        if (!"admin".equals(sessUser)) {
+            return "redirect:/admin/cs/qna/view/" + no;
+        }
+
+        qnaService.saveAnswer(no, content);
 
         return "redirect:/admin/cs/qna/view/" + no;
     }
 
-
-    //답변 삭제
+    // 답변 삭제
     @GetMapping("/answer/delete/{no}")
-    public String deleteAnswer(@PathVariable int no) {
+    public String deleteAnswer(@PathVariable int no,
+                               HttpSession session) {
+
+        String sessUser = (String) session.getAttribute("sessUser");
+
+        if (!"admin".equals(sessUser)) {
+            return "redirect:/admin/cs/qna/view/" + no;
+        }
 
         qnaService.deleteAnswer(no);
 
         return "redirect:/admin/cs/qna/view/" + no;
-    }
-
-    @PostMapping("/deleteChecked")
-    public String deleteChecked(@RequestParam(value = "nos", required = false) List<Integer> nos) {
-
-        if (nos != null && !nos.isEmpty()) {
-            qnaService.deleteChecked(nos);
-        }
-
-        return "redirect:/admin/cs/qna/list";
     }
 }

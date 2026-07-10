@@ -16,7 +16,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long reviewNO; 
-    private long productNo;
+    private long prodNo;
     private int memberNo;
     private int rating;
     private String content;
@@ -27,7 +27,7 @@ public class Review {
 
     public ReviewDTO toDTO(){
         return ReviewDTO.builder()
-                .reviewNO(reviewNO).productNo(productNo).memberNo(memberNo)
+                .reviewNO(reviewNO).prodNo(prodNo).memberNo(memberNo)
                 .rating(rating).content(content).imageUrl1(imageUrl1)
                 .imageUrl2(imageUrl2).imageUrl3(imageUrl3).createdAt(createdAt)
                 .build();

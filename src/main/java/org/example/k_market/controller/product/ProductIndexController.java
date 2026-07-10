@@ -83,10 +83,10 @@ public class ProductIndexController {
         Integer mainCateNo = (parentCategory != null) ? parentCategory.getCateNo() : (category != null ? category.getCateNo() : null);
 
         // 상품후기 목록 (최신순)
-        List<Review> reviewList = reviewRepository.findByProductNoOrderByCreatedAtDesc(product.getProdNo());
+        List<Review> reviewList = reviewRepository.findByProdNoOrderByCreatedAtDesc(product.getProdNo());
 
         // 상품 Q&A 목록 (해당 상품에 달린 문의 원글만, parentNo=0)
-        List<Qna> qnaList = qnaRepository.findByProductNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
+        List<Qna> qnaList = qnaRepository.findByProdNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
 
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
@@ -112,7 +112,7 @@ public class ProductIndexController {
 
         Cart cart = Cart.builder()
                 .memberNo(userDetails.getUser().getMemberNo())
-                .productNo(prodNo)
+                .prodNo(prodNo)
                 .quantity(quantity)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -167,7 +167,7 @@ public class ProductIndexController {
         }
 
         Review review = Review.builder()
-                .productNo(prodNo)
+                .prodNo(prodNo)
                 .memberNo(userDetails.getUser().getMemberNo())
                 .rating(rating)
                 .content(content)
