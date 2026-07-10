@@ -16,12 +16,13 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderNo; // 테이블의 int(11) 구조에 맞춰 long -> int로 변경
+    private int orderNo;
 
-    @Column(name = "memberNo", insertable = false, updatable = false)
+    // memberNo는 User 엔티티와의 연관관계를 통해 관리되므로 별도 필드로 두기보다는
+    // getter/setter를 통해 user 엔티티에서 접근하는 것을 권장합니다.
     private int memberNo;
-    private String orderName;
 
+    private String orderName;
     private String paymentMethod;
     private int totalProductPrice;
     private int totalDiscountPrice;
@@ -30,19 +31,33 @@ public class Order {
     private int totalPaymentPrice;
     private LocalDateTime createdAt;
 
+    // 상태 변경을 위한 메서드 (명칭 수정)
+    @Setter
     private String status;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberNo", insertable = false, updatable = false) // order 테이블의 memberNo 컬럼과 조인
-    private Users user; // Member 대신 User 엔티티 사용
+    @JoinColumn(name = "memberNo", insertable = false, updatable = false)
+    private Users user;
 
-    @Transient
-    private String recipientName; // 수취인
+    private String recipientName;
+    private String recipientPhone;
+    private String zipCode;        // 추가
+    private String baseAddress;
+    private String detailAddress;  // 추가
+    private String memo;           // 추가
 
-    @Transient
-    private String recipientPhone; // 수취인 전화번호
+    // --- 수정 및 추가 메서드 ---
 
-    @Transient
-    private String baseAddress; // 배송지 주소
+    // 서비스에서 배송 정보를 엔티티에 일시적으로 담아 DTO로 넘길 때 사용
+    public void setDeliveryInfo(String recipientName, String recipientPhone, String zipCode,
+                                String baseAddress, String detailAddress, String memo) {
+        this.recipientName = recipientName;
+        this.recipientPhone = recipientPhone;
+        this.zipCode = zipCode;
+        this.baseAddress = baseAddress;
+        this.detailAddress = detailAddress;
+        this.memo = memo;
+    }
 
     public OrderDTO toDTO() {
         return OrderDTO.builder()
@@ -52,7 +67,10 @@ public class Order {
                 .id(this.user != null ? this.user.getId() : "비회원")
                 .recipientName(this.recipientName)
                 .recipientPhone(this.recipientPhone)
+                .zipCode(this.zipCode)
                 .baseAddress(this.baseAddress)
+                .detailAddress(this.detailAddress)
+                .memo(this.memo)
                 .paymentMethod(this.paymentMethod)
                 .totalProductPrice(this.totalProductPrice)
                 .totalDiscountPrice(this.totalDiscountPrice)

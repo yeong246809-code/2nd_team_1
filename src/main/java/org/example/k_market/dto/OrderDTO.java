@@ -15,7 +15,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDTO {
 
-    private int orderNo; // 엔티티와 동일하게 long -> int로 변경!
+    private int orderNo;
     private String id;
     private int memberNo;
     private String orderName;
@@ -26,23 +26,20 @@ public class OrderDTO {
     private int usedPoints;
     private int totalPaymentPrice;
     private LocalDateTime createdAt;
-
-    private String memberName;
-
     private String status;
 
-    private String recipientName; // 수취인
-    private String recipientPhone; // 수취인 전화번호
-    private String baseAddress; // 배송지 주소
+    private String recipientName;    // 수령인
+    private String recipientPhone;   // 연락처
+    private String zipCode;          // 우편번호 (추가됨)
+    private String baseAddress;      // 기본주소
+    private String detailAddress;    // 상세주소 (추가됨)
+    private String memo;             // 기타(메모) (추가됨)
 
-    private int prodNo; // 상품번호
-    private String name; // 상품명
-    private int price; // 가격
-    private int discountRate; // 할인
-    private int stockQuantity; // 수량
+    // 회원 이름 (엔티티 외에 조인 등으로 가져오는 경우)
+    private String memberName;
 
+    // 상품 정보는 상세 리스트로 충분합니다.
     private List<OrderDetailsDTO> orderItems;
-
 
     public Order toEntity(){
         return Order.builder()
@@ -57,6 +54,11 @@ public class OrderDTO {
                 .totalPaymentPrice(totalPaymentPrice)
                 .createdAt(createdAt)
                 .status(status)
+                .recipientName(recipientName)
+                .zipCode(zipCode)
+                .baseAddress(baseAddress)
+                .detailAddress(detailAddress)
+                .memo(memo)
                 .build();
     }
 }
