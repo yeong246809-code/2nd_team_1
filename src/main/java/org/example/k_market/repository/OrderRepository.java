@@ -13,12 +13,12 @@ import java.util.List;
 // OrderRepository.java
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-    Page<Order> findByOrderNoContaining(int orderNo, Pageable pageable);
-    Page<Order> findAll(Pageable pageable);
+    // OrderDetails 관련 메서드 삭제
 
-    List<OrderDetails> findByOrderNo(int orderNo);
-
-    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.user")
+    // FETCH JOIN을 사용하면 N+1 문제를 방지하고 한 번의 쿼리로 User 정보를 가져올 수 있습니다.
+    @Query(value = "SELECT o FROM Order o LEFT JOIN FETCH o.user",
+            countQuery = "SELECT count(o) FROM Order o")
     Page<Order> findAllWithJoin(Pageable pageable);
-
 }
+
+

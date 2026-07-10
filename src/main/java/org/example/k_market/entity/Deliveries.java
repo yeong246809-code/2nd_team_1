@@ -20,14 +20,30 @@ public class Deliveries {
     private long orderDetailNo;
     private String trackingNumber;
     private String courierName;
+
+    @Transient
     private String recipientName;
+
+    @Transient
     private String recipientPhone;
+
+    @Transient
     private String zipCode;
+
+    @Transient
     private String baseAddress;
+
+    @Transient
     private String detailAddress;
+
+    @Transient
     private String deliveryStatus;
+
+    @Transient
     private String memo;
+
     private LocalDateTime shippedAt;
+
 
     public DeliveriesDTO toDTO(){
         return DeliveriesDTO.builder()
