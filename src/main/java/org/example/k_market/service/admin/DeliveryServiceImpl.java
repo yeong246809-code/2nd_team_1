@@ -1,9 +1,9 @@
 package org.example.k_market.service.admin;
 
 import lombok.RequiredArgsConstructor;
-import org.example.k_market.dto.DeliveriesDTO;
+import org.example.k_market.dto.DeliveryDTO;
 import org.example.k_market.entity.Order;
-import org.example.k_market.repository.DeliveriesRepository;
+import org.example.k_market.repository.DeliveryRepository;
 import org.example.k_market.repository.OrderRepository;
 import org.example.k_market.service.admin.DeliveryService;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeliveryServiceImpl implements DeliveryService {
 
-    private final DeliveriesRepository deliveryRepository;
+    private final DeliveryRepository deliveryRepository;
     private final OrderRepository orderRepository;
 
     @Override
     @Transactional
-    public void registerDelivery(DeliveriesDTO deliveryDTO) {
+    public void registerDelivery(DeliveryDTO deliveryDTO) {
         // 1. 배송 정보 저장
         deliveryRepository.save(deliveryDTO.toEntity());
 
@@ -29,4 +29,5 @@ public class DeliveryServiceImpl implements DeliveryService {
         order.setStatus("배송중");
         // orderRepository.save(order); // @Transactional이 있다면 자동 반영(Dirty Checking)됨
     }
+
 }
