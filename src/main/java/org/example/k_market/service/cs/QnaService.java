@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.QnaDTO;
 import org.example.k_market.entity.Qna;
 import org.example.k_market.repository.QnaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,38 +19,49 @@ public class QnaService {
 
     private final QnaRepository qnaRepository;
 
-    // 문의 목록 조회
-    // parentNo가 0인 원글만 조회해서 답변글은 목록에 출력되지 않도록 한다.
+    // 사용자 문의 목록 페이지 조회
+    // 화면의 pg는 1부터 시작하지만 PageRequest는 0부터 시작한다.
+    @Transactional(readOnly = true)
+    public Page<Qna> findAll(int pg, int size) {
+
+        int pageIndex = Math.max(pg - 1, 0);
+
+        PageRequest pageable = PageRequest.of(
+                pageIndex,
+                size,
+                Sort.by(Sort.Direction.DESC, "no")
+        );
+
+        return qnaRepository.findAllByParentNo(0, pageable);
+    }
+
+    // 페이지네이션이 필요 없는 기존 호출을 위한 메서드
+    @Transactional(readOnly = true)
     public List<Qna> findAll() {
         return qnaRepository.findAllByParentNoOrderByNoDesc(0);
     }
 
-    // 고객센터 메인 문의글 최신 5개 조회
-    // parentNo가 0인 원글만 가져온다.
+    @Transactional(readOnly = true)
     public List<Qna> findTop5() {
         return qnaRepository.findTop5ByParentNoOrderByNoDesc(0);
     }
 
-    // 문의 상세 조회
+    @Transactional(readOnly = true)
     public Qna findById(int no) {
         return qnaRepository.findById(no)
                 .orElseThrow(() ->
                         new IllegalArgumentException("존재하지 않는 문의글입니다."));
     }
 
-    // QnA 글 등록
-    // prodNo는 QnaDTO.toEntity()에서 Entity로 전달되어야 한다.
     public void save(QnaDTO dto) {
         qnaRepository.save(dto.toEntity());
     }
 
-    // 답변 출력
-    // parentNo가 현재 문의글 번호인 답변글을 조회한다.
+    @Transactional(readOnly = true)
     public Qna findAnswer(int parentNo) {
         return qnaRepository.findByParentNo(parentNo).orElse(null);
     }
 
-    // 문의글 답변 등록 및 수정
     @Transactional
     public void saveAnswer(int parentNo, String content) {
 
@@ -82,42 +96,11 @@ public class QnaService {
         qnaRepository.save(parent);
     }
 
-    // 답변 등록 또는 수정
     @Transactional
     public void saveOrUpdateAnswer(int parentNo, String content) {
-
-        if (content == null || content.isBlank()) {
-            throw new IllegalArgumentException("답변 내용을 입력해주세요.");
-        }
-
-        Qna parent = findById(parentNo);
-        Qna answer = findAnswer(parentNo);
-
-        if (answer == null) {
-            answer = Qna.builder()
-                    .title("답변")
-                    .content(content)
-                    .type1(parent.getType1())
-                    .type2(parent.getType2())
-                    .memberNo(1)
-                    .prodNo(parent.getProdNo())
-                    .parentNo(parentNo)
-                    .isAnswered("답변완료")
-                    .createdAt(LocalDateTime.now())
-                    .viewCount(0)
-                    .build();
-        } else {
-            answer.setContent(content);
-            answer.setCreatedAt(LocalDateTime.now());
-        }
-
-        qnaRepository.save(answer);
-
-        parent.setIsAnswered("답변완료");
-        qnaRepository.save(parent);
+        saveAnswer(parentNo, content);
     }
 
-    // 답변 삭제
     @Transactional
     public void deleteAnswer(int parentNo) {
 
@@ -132,7 +115,6 @@ public class QnaService {
         qnaRepository.save(parent);
     }
 
-    // 선택 문의 삭제
     @Transactional
     public void deleteChecked(List<Integer> nos) {
         qnaRepository.deleteAllById(nos);
