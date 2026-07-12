@@ -140,8 +140,7 @@
                 <span th:if="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
                       class="text-3xl font-extrabold text-primary">K-market</span>
                 <span th:unless="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
-                      class="text-3xl font-extrabold text-primary"
-                      th:text="${siteConfig.title != null and !siteConfig.title.isBlank() ? siteConfig.title : 'K-market'}">K-market</span>
+                      class="text-3xl font-extrabold text-primary">K-market</span>
             </a>
             <!-- Search Bar -->
             <div class="hidden md:flex flex-1 max-w-lg relative">
@@ -183,49 +182,39 @@
     </nav>
     <div class="flex flex-col md:flex-row gap-lg items-start">
         <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg">
+        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg shrink-0">
             <div class="bg-white standard-border rounded p-md">
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="checkroom">checkroom</span>
-                        <span class="text-on-surface font-medium">패션/의류</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="laptop_chromebook">laptop_chromebook</span>
-                        <span class="text-on-surface font-medium">가전/디지털</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="local_grocery_store">local_grocery_store</span>
-                        <span class="text-on-surface font-medium">식품/생필품</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="product/list">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="home">home</span>
-                        <span class="text-on-surface font-medium">홈/문구/취미</span>
+                    <a th:each="c : ${categories}"
+                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
+                       class="category-item flex items-center gap-base py-2 px-2 rounded"
+                       th:href="@{/product/list(cateNo=${c.cateNo})}">
+                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
                     </a>
                 </nav>
             </div>
             <!-- Simple Top Ranking -->
             <div class="hidden md:block">
-                <h3 class="font-bold text-lg mb-sm">인기 순위</h3>
+                <h3 class="font-bold text-lg mb-sm">실시간 인기 상품</h3>
                 <div class="flex flex-col gap-sm" id="ranking-list">
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
-                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
-                            <span class="material-symbols-outlined text-xl">image</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate">레드 스포츠 슈즈</p>
-                            <p class="text-primary font-bold text-xs">27,000 KRW</p>
-                        </div>
+                    <a th:each="item, stat : ${rankingProducts}"
+                       th:href="@{/product/view(prodNo=${item.prodNo})}"
+                       class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
+                        <span class="font-bold text-secondary px-1" th:text="${stat.count}">1</span>
+                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate" th:text="${item.name}">인기 상품명</p>
+                    </a>
+                    <div th:if="${rankingProducts == null or rankingProducts.isEmpty()}" class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
+                        <span class="font-bold text-secondary px-1">1</span>
+                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate">아이폰 15 프로 자급제</p>
                     </div>
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
-                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
-                            <span class="material-symbols-outlined text-xl">image</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate">모던 스마트워치</p>
-                            <p class="text-primary font-bold text-xs">89,000 KRW</p>
-                        </div>
+                    <div th:if="${rankingProducts == null or rankingProducts.isEmpty()}" class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
+                        <span class="font-bold text-secondary px-1">2</span>
+                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate">고급 호텔식 타월 세트</p>
+                    </div>
+                    <div th:if="${rankingProducts == null or rankingProducts.isEmpty()}" class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
+                        <span class="font-bold text-secondary px-1">3</span>
+                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate">친환경 무라벨 생수 2L</p>
                     </div>
                 </div>
             </div>

@@ -140,19 +140,24 @@
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
         <div class="flex justify-between items-center gap-md">
             <!-- Brand -->
-            <div class="flex items-center gap-2">
-                <div class="logo-area w-8 h-8 placeholder-image rounded">
+            <a class="flex items-center gap-2 shrink-0" th:href="@{/}" href="/">
+                <img th:if="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
+                     th:src="@{/uploads/{file}(file=${siteConfig.headerLogo_stored})}"
+                     class="h-10 w-auto max-w-48 object-contain"
+                     alt="K-market">
+                <span th:unless="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
+                      class="logo-area w-8 h-8 placeholder-image rounded">
                     <span class="material-symbols-outlined text-sm">storefront</span>
-                </div>
-                <a class="text-3xl font-extrabold text-primary shrink-0" href="/">K-market</a>
-            </div>
+                </span>
+                <span class="text-3xl font-extrabold text-primary shrink-0">K-market</span>
+            </a>
             <!-- Search Bar -->
-            <div class="hidden md:flex flex-1 max-w-lg relative">
-                <input class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" placeholder="어떤 상품을 찾으시나요?" th:value="${keyword}" type="text"/>
-                <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded">
+            <form class="hidden md:flex flex-1 max-w-lg relative" th:action="@{/product/search}" action="/product/search" method="get">
+                <input name="keyword" class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" placeholder="어떤 상품을 찾으시나요?" th:value="${keyword}" type="text"/>
+                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded">
                     <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
                 </button>
-            </div>
+            </form>
             <!-- Simple Utility -->
             <div class="flex items-center gap-md">
                 <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
@@ -181,11 +186,11 @@
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
     <!-- Sub Nav -->
     <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">오늘의 특가</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">추천 상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">신상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" href="#">베스트</a>
-        <a class="text-error font-semibold py-1" href="#">세일</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">오늘의 특가</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">추천 상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">신상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">베스트</a>
+        <a class="text-error font-semibold py-1" th:href="@{/product/list}">세일</a>
     </nav>
 
     <div class="flex flex-col md:flex-row gap-lg items-start">
@@ -194,21 +199,11 @@
             <div class="bg-white standard-border rounded p-md">
                 <h2 class="font-bold text-lg mb-sm">카테고리</h2>
                 <nav class="flex flex-col gap-1" id="category-menu">
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="checkroom">checkroom</span>
-                        <span class="text-on-surface font-medium">패션/의류</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="laptop_chromebook">laptop_chromebook</span>
-                        <span class="text-on-surface font-medium">가전/디지털</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="local_grocery_store">local_grocery_store</span>
-                        <span class="text-on-surface font-medium">식품/생필품</span>
-                    </a>
-                    <a class="category-item flex items-center gap-base py-2 px-2 hover:bg-surface-container rounded" href="#">
-                        <span class="material-symbols-outlined text-on-surface-variant" data-icon="home">home</span>
-                        <span class="text-on-surface font-medium">홈/문구/취미</span>
+                    <a th:each="c : ${categories}"
+                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
+                       class="category-item flex items-center gap-base py-2 px-2 rounded"
+                       th:href="@{/product/list(cateNo=${c.cateNo})}">
+                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
                     </a>
                 </nav>
             </div>
@@ -462,15 +457,25 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
             <!-- Company Info -->
             <div class="flex flex-col md:flex-row gap-md items-start">
-                <div class="footer-logo w-24 h-24 placeholder-image flex items-center justify-center rounded shrink-0">
-                    <span class="material-symbols-outlined text-4xl">storefront</span>
+                <div class="footer-logo w-24 h-24 placeholder-image flex items-center justify-center rounded shrink-0 overflow-hidden">
+                    <img th:if="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
+                         th:src="@{/uploads/{file}(file=${siteConfig.footerLogo_stored})}"
+                         class="w-full h-full object-contain"
+                         alt="K-market">
+                    <span th:unless="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
+                          class="material-symbols-outlined text-4xl">storefront</span>
                 </div>
                 <div class="text-sm text-on-surface-variant space-y-1">
-                    <h2 class="text-xl font-bold text-primary mb-2">(주)케이마켓</h2>
-                    <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
-                    <p>대표이사 : 홍길동</p>
-                    <p>사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">© 2025 K-market. 모든 권리 보유.</p>
+                    <h2 class="text-xl font-bold text-primary mb-2"
+                        th:text="${siteConfig != null and siteConfig.companyName != null and !siteConfig.companyName.isBlank() ? siteConfig.companyName : '(주)케이마켓'}">(주)케이마켓</h2>
+                    <p th:text="|${siteConfig != null and siteConfig.baseAddress != null ? siteConfig.baseAddress : ''} ${siteConfig != null and siteConfig.detailAddress != null ? siteConfig.detailAddress : ''}|">부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
+                    <p>대표이사 : <span th:text="${siteConfig != null and siteConfig.ceo != null and !siteConfig.ceo.isBlank() ? siteConfig.ceo : '-'}">홍길동</span></p>
+                    <p>사업자등록번호 : <span th:text="${siteConfig != null and siteConfig.bizNumber != null and !siteConfig.bizNumber.isBlank() ? siteConfig.bizNumber : '-'}">123-45-12345</span></p>
+                    <p th:if="${siteConfig != null and siteConfig.mailOrderNumber != null and !siteConfig.mailOrderNumber.isBlank()}">통신판매업신고 : <span th:text="${siteConfig.mailOrderNumber}"></span></p>
+                    <p class="mt-4 text-[10px] text-outline">Version <span th:text="${latestVersion != null and !latestVersion.isBlank() ? latestVersion : '등록된 버전 없음'}">0.0.6-SNAPSHOT</span></p>
+                    <p class="text-[10px] text-outline"
+                       th:if="${siteConfig != null and siteConfig.copyright != null and !siteConfig.copyright.isBlank()}"
+                       th:text="${siteConfig.copyright}">© 2025 K-market. 모든 권리 보유.</p>
                 </div>
             </div>
             <!-- Customer Center -->
@@ -478,13 +483,13 @@
                 <h3 class="font-bold text-lg text-primary">고객센터</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-md text-sm text-on-surface-variant">
                     <div>
-                        <p class="font-bold text-on-surface">Tel : 1234-5678</p>
-                        <p>평일 09:00 ~ 18:00</p>
-                        <p>점심 12:00 ~ 13:00</p>
+                        <p class="font-bold text-on-surface">Tel : <span th:text="${siteConfig != null and siteConfig.csPhone != null and !siteConfig.csPhone.isBlank() ? siteConfig.csPhone : '-'}">1234-5678</span></p>
+                        <p th:text="${siteConfig != null and siteConfig.csHours != null and !siteConfig.csHours.isBlank() ? siteConfig.csHours : '운영시간 정보가 등록되지 않았습니다.'}">평일 09:00 ~ 18:00</p>
+                        <p th:if="${siteConfig != null and siteConfig.csEmail != null and !siteConfig.csEmail.isBlank()}">Email : <a class="hover:underline" th:href="|mailto:${siteConfig.csEmail}|" th:text="${siteConfig.csEmail}"></a></p>
                     </div>
                     <div>
                         <p class="font-bold text-on-surface">전자금융거래 분쟁 담당</p>
-                        <p>1234-1234 (365일 09:00 ~ 18:00)</p>
+                        <p th:text="${siteConfig != null and siteConfig.finDisputeManager != null and !siteConfig.finDisputeManager.isBlank() ? siteConfig.finDisputeManager : '담당자 정보가 등록되지 않았습니다.'}">1234-1234 (365일 09:00 ~ 18:00)</p>
                     </div>
                 </div>
                 <div class="flex gap-4 mt-4">
@@ -502,11 +507,11 @@
         <span class="material-symbols-outlined">home</span>
         <span class="text-[10px] font-bold">홈</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/product/list}" href="/product/list">
         <span class="material-symbols-outlined">grid_view</span>
         <span class="text-[10px]">메뉴</span>
     </a>
-    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" th:href="@{/product/search}" href="/product/search">
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px]">검색</span>
     </a>

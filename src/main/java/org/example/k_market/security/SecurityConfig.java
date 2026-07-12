@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.util.UriUtils;
 
@@ -133,12 +134,16 @@ public class SecurityConfig {
                 //셀러 권한 필요하면 여기에 추가
                 .requestMatchers("/admin/product/**").hasAnyRole("ADMIN", "SELLER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/my/**").authenticated()
                 .requestMatchers("/cs/notice/write").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );
 
         // 예외 처리 (JavaScript로 alert 띄우고 리다이렉트)
+        LoginUrlAuthenticationEntryPoint loginEntryPoint = new LoginUrlAuthenticationEntryPoint("/member/login");
         httpSecurity.exceptionHandling( exception -> exception
+                .defaultAuthenticationEntryPointFor(loginEntryPoint, new AntPathRequestMatcher("/admin/**"))
+                .defaultAuthenticationEntryPointFor(loginEntryPoint, new AntPathRequestMatcher("/my/**"))
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     String contextPath = request.getContextPath();
 

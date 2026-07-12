@@ -37,12 +37,11 @@ public class ProductIndexController {
 
     @GetMapping("/product/list")
     public String list(@RequestParam(required = false) Integer cateNo, Model model) {
-        List<Category> categories = categoryRepository.findByParentNoIsNull(); // 대분류만
         List<Product> products = (cateNo == null)
                 ? productRepository.findAll()
                 : productRepository.findByCateNo(cateNo);
 
-        model.addAttribute("categories", categories);
+        addProductLayout(model, cateNo);
         model.addAttribute("products", products);
         return "product/list";
     }
@@ -65,6 +64,7 @@ public class ProductIndexController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
+        addProductLayout(model, null);
 
         return "product/search";
     }
@@ -89,11 +89,10 @@ public class ProductIndexController {
         List<Qna> qnaList = qnaRepository.findByProdNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
 
         model.addAttribute("product", product);
-        model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
         model.addAttribute("parentCategory", parentCategory);
-        model.addAttribute("mainCateNo", mainCateNo);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("qnaList", qnaList);
+        addProductLayout(model, mainCateNo);
         return "product/view";
     }
 
@@ -139,11 +138,13 @@ public class ProductIndexController {
 
         model.addAttribute("product", product);
         model.addAttribute("quantity", quantity);
+        addProductLayout(model, product.getCateNo());
         return "product/order";
     }
 
     @GetMapping("/product/cart")
-    public String cart() {
+    public String cart(Model model) {
+        addProductLayout(model, null);
         return "product/cart";
     }
 
@@ -151,6 +152,7 @@ public class ProductIndexController {
     public String order(Model model) {
         model.addAttribute("product", sampleProduct());
         model.addAttribute("order", Map.of("totalPrice", "24,650"));
+        addProductLayout(model, null);
         return "product/order";
     }
 
@@ -191,5 +193,11 @@ public class ProductIndexController {
                 Map.entry("modelName", "KM-SAMPLE-001"),
                 Map.entry("description", "샘플 상품 설명")
         );
+    }
+
+    private void addProductLayout(Model model, Integer mainCateNo) {
+        model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
+        model.addAttribute("mainCateNo", mainCateNo);
+        model.addAttribute("rankingProducts", productRepository.findTop3ByOrderBySalesCountDesc());
     }
 }
