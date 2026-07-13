@@ -424,9 +424,13 @@
                                 <span class="text-xs text-on-surface-variant" th:text="${#temporals.format(review.createdAt, 'yyyy.MM.dd')}">2024.05.12</span>
                             </div>
                             <div class="flex text-amber-500">
+                                <!-- 노란색 채워진 별 -->
                                 <span th:each="i : ${#numbers.sequence(1, review.rating)}"
                                       class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span th:each="i : ${#numbers.sequence(1, 5 - review.rating)}"
+
+                                <!-- 빈 별 (평점이 5점 미만일 때만 동작하도록 조건 추가) -->
+                                <span th:if="${review.rating < 5}"
+                                      th:each="i : ${#numbers.sequence(1, 5 - review.rating)}"
                                       class="material-symbols-outlined text-[16px]">star</span>
                             </div>
                         </div>

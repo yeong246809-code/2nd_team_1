@@ -115,7 +115,43 @@
 <body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
 
 <!-- Header 영역 컴포넌트 -->
-<div th:replace="~{layout/site :: header}"></div>
+<header th:fragment="header" class="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Top Utility Bar -->
+        <div class="flex justify-end gap-4 py-2 text-xs text-gray-500 border-b border-gray-100">
+            <a th:href="@{/member/login}" href="/member/login" class="hover:text-primary transition-colors">로그인</a>
+            <a th:href="@{/member/join}" href="/member/join" class="hover:text-primary transition-colors">회원가입</a>
+            <a th:href="@{/my/index}" href="/my/index" class="hidden hover:text-primary transition-colors" data-auth-required="true">마이페이지</a>
+            <a th:href="@{/product/cart}" href="/product/cart" class="flex items-center gap-1 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-sm">shopping_cart</span>
+                장바구니
+                <span class="bg-primary text-white px-1.5 py-0.5 rounded-full text-[10px] font-bold">3</span>
+            </a>
+        </div>
+
+        <!-- Main Header Content -->
+        <div class="flex items-center justify-between py-6">
+            <!-- Logo -->
+            <a th:href="@{/}" href="/" class="text-3xl font-black text-primary tracking-tighter">
+                K-market
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl mx-12">
+                <form th:action="@{/product/search}" action="/product/search" method="GET" class="relative">
+                    <input type="text" name="keyword" placeholder="어떤 상품을 찾으시나요?"
+                           class="w-full h-12 pl-4 pr-12 rounded-lg border-2 border-primary focus:outline-none text-sm bg-white text-on-background">
+                    <button type="submit" class="absolute right-0 top-0 h-full px-4 text-primary hover:bg-gray-50 rounded-r-lg transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</header>
+
 <main class="max-w-7xl mx-auto px-4 py-8">
 
     <!-- 기획서 요구사항 1: 회사소개 서브 메인메뉴 영역 및 현재 페이지 하이라이트 -->
@@ -149,6 +185,14 @@
         </div>
     </div>
 
+    <!-- 관리자 전용 글쓰기 버튼 -->
+    <div class="flex justify-end mb-4" th:if="${isAdmin}">
+        <a th:href="@{/company/recruit/write}"
+           class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
+            + 채용공고 등록
+        </a>
+    </div>
+
     <!-- 기획서 요구사항 2: 채용 공고 게시판 구현 (리스트 출력 기능) -->
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
         <div class="overflow-x-auto">
@@ -162,77 +206,126 @@
                     <th class="py-4 px-6">제목</th>
                     <th class="py-4 px-6 text-center w-24">상태</th>
                     <th class="py-4 px-6 text-center w-56">모집기간</th>
+                    <th class="py-4 px-6 text-center w-32" th:if="${isAdmin}">관리</th>
                 </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-gray-100 text-gray-600">
-                <!-- 공고 4 -->
-                <tr class="hover:bg-gray-50/80 transition-colors cursor-pointer group">
-                    <td class="py-5 px-6 text-center font-medium text-gray-400">4</td>
-                    <td class="py-5 px-6 font-semibold text-gray-900">광고사업</td>
-                    <td class="py-5 px-6">경력 4 ~ 15년</td>
-                    <td class="py-5 px-6">정규직</td>
-                    <td class="py-5 px-6 font-medium text-gray-900 group-hover:text-primary transition-colors">광고 플랫폼 기획</td>
-                    <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center justify-center bg-green-100 text-green-700 px-2.5 py-1 rounded text-xs font-bold">모집중</span>
-                    </td>
-                    <td class="py-5 px-6 text-center text-gray-400 text-xs">2026-07-01 ~ 2026-07-31</td>
+                <tr th:if="${recruits == null || #lists.isEmpty(recruits)}">
+                    <td colspan="8" class="py-10 text-center text-gray-400">등록된 채용 공고가 없습니다.</td>
                 </tr>
-                <!-- 공고 3 -->
-                <tr class="hover:bg-gray-50/80 transition-colors cursor-pointer group">
-                    <td class="py-5 px-6 text-center font-medium text-gray-400">3</td>
-                    <td class="py-5 px-6 font-semibold text-gray-900">IT</td>
-                    <td class="py-5 px-6">경력 2 ~ 15년</td>
-                    <td class="py-5 px-6">정규직</td>
-                    <td class="py-5 px-6 font-medium text-gray-900 group-hover:text-primary transition-colors">IT 인재 상시 영입(경력)</td>
-                    <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center justify-center bg-green-100 text-green-700 px-2.5 py-1 rounded text-xs font-bold">모집중</span>
-                    </td>
-                    <td class="py-5 px-6 text-center text-gray-400 text-xs">2026-06-15 ~ 2026-12-31</td>
-                </tr>
-                <!-- 공고 2 -->
-                <tr class="hover:bg-gray-50/80 transition-colors text-gray-400 bg-gray-50/30">
-                    <td class="py-5 px-6 text-center">2</td>
-                    <td class="py-5 px-6">운영</td>
-                    <td class="py-5 px-6">무관</td>
-                    <td class="py-5 px-6">계약직</td>
-                    <td class="py-5 px-6 line-through">인기 아르바이트 모집</td>
-                    <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center justify-center bg-gray-200 text-gray-500 px-2.5 py-1 rounded text-xs font-bold">종료</span>
-                    </td>
-                    <td class="py-5 px-6 text-center text-xs">2026-05-01 ~ 2026-05-15</td>
-                </tr>
-                <!-- 공고 1 -->
-                <tr class="hover:bg-gray-50/80 transition-colors text-gray-400 bg-gray-50/30">
-                    <td class="py-5 px-6 text-center">1</td>
-                    <td class="py-5 px-6">경영</td>
-                    <td class="py-5 px-6">신입</td>
-                    <td class="py-5 px-6">계약직</td>
-                    <td class="py-5 px-6 line-through">경영지원 직원 채용 공고</td>
-                    <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center justify-center bg-gray-200 text-gray-500 px-2.5 py-1 rounded text-xs font-bold">종료</span>
-                    </td>
-                    <td class="py-5 px-6 text-center text-xs">2026-04-10 ~ 2026-04-25</td>
-                </tr>
+                <th:block th:each="r, iter : ${recruits}">
+                    <tr th:classappend="${r.status == '종료'} ? 'text-gray-400 bg-gray-50/30' : ''"
+                        class="hover:bg-gray-50/80 transition-colors">
+                        <td class="py-5 px-6 text-center font-medium text-gray-400" th:text="${r.id}">4</td>
+                        <td class="py-5 px-6 font-semibold text-gray-900" th:text="${r.department}">광고사업</td>
+                        <td class="py-5 px-6" th:text="${r.experienceType}">경력 4 ~ 15년</td>
+                        <td class="py-5 px-6" th:text="${r.employmentType}">정규직</td>
+                        <td class="py-5 px-6 font-medium text-gray-900">
+                            <button type="button"
+                                    th:onclick="|toggleDetail('detail-${r.id}')|"
+                                    class="text-left hover:text-primary hover:underline transition-colors"
+                                    th:text="${r.title}"
+                                    th:classappend="${r.status == '종료'} ? 'line-through' : ''">광고 플랫폼 기획</button>
+                        </td>
+                        <td class="py-5 px-6 text-center">
+                            <span th:if="${r.status != '종료'}" class="inline-flex items-center justify-center bg-green-100 text-green-700 px-2.5 py-1 rounded text-xs font-bold" th:text="${r.status}">모집중</span>
+                            <span th:if="${r.status == '종료'}" class="inline-flex items-center justify-center bg-gray-200 text-gray-500 px-2.5 py-1 rounded text-xs font-bold">종료</span>
+                        </td>
+                        <td class="py-5 px-6 text-center text-gray-400 text-xs"
+                            th:text="${#temporals.format(r.startDate, 'yyyy-MM-dd')} + ' ~ ' + ${#temporals.format(r.endDate, 'yyyy-MM-dd')}">2026-07-01 ~ 2026-07-31</td>
+                        <td class="py-5 px-6 text-center" th:if="${isAdmin}">
+                            <div class="flex justify-center gap-2">
+                                <a th:href="@{/company/recruit/edit(id=${r.id})}" class="text-xs font-bold text-primary hover:underline">수정</a>
+                                <form th:action="@{/company/recruit/delete}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');" class="inline">
+                                    <input type="hidden" name="id" th:value="${r.id}"/>
+                                    <button type="submit" class="text-xs font-bold text-error hover:underline">삭제</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- 클릭하면 펼쳐지는 상세 내용 행 (기본 숨김) -->
+                    <tr th:id="|detail-${r.id}|" class="hidden bg-gray-50/60">
+                        <td class="py-6 px-6" colspan="8">
+                            <div class="text-sm text-gray-900 leading-relaxed whitespace-pre-wrap" th:text="${r.content}">
+                                채용 상세 내용
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
+
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- 페이지네이션 컨트롤 -->
-    <div class="flex justify-center items-center gap-2 my-12 text-sm font-medium">
-        <a href="#" class="px-3 py-1.5 text-gray-400 hover:text-primary transition-colors flex items-center gap-0.5">이전</a>
-        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white">1</a>
-        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all">2</a>
-        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all">3</a>
-        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all">4</a>
-        <a href="#" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all">5</a>
-        <a href="#" class="px-3 py-1.5 text-gray-600 hover:text-primary transition-colors flex items-center gap-0.5">다음</a>
-    </div>
-
 </main>
 
 <!-- Footer 영역 컴포넌트 -->
-<div th:replace="~{layout/site :: footer}"></div>
+<footer th:fragment="footer" class="bg-gray-50 border-t border-gray-200 mt-20 pt-12 pb-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Top Policy Links -->
+        <div class="flex gap-8 mb-10 text-xs font-bold text-gray-600">
+            <a th:href="@{/company/main}" href="/company/main" class="hover:text-primary transition-colors">회사소개</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">서비스이용약관</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="text-primary font-black">개인정보처리방침</a>
+            <a th:href="@{/policy/buyer}" href="/policy/buyer" class="hover:text-primary transition-colors">전자금융거래약관</a>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-start">
+            <!-- Company Info -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-5">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-400">storefront</span>
+                    </div>
+                    <h2 class="text-xl font-black text-gray-800">(주)케이마켓</h2>
+                </div>
+                <div class="space-y-1.5 text-xs text-gray-500 leading-relaxed">
+                    <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
+                    <p>대표이사 : 홍길동 | 사업자등록번호 : 123-45-12345</p>
+                    <p class="mt-4 opacity-60">© 2026 K-market. 모든 권리 보유.</p>
+                </div>
+            </div>
+
+            <!-- Customer Center -->
+            <div class="col-span-12 md:col-span-3 lg:col-span-4">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">고객센터</h3>
+                <div class="space-y-2">
+                    <p class="text-lg font-black text-primary">Tel : 1234-5678</p>
+                    <div class="text-xs text-gray-500 space-y-1">
+                        <p>평일 09:00 - 18:00</p>
+                        <p>점심 12:00 - 13:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaints Center -->
+            <div class="col-span-12 md:col-span-3 lg:col-span-3">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">전자금융거래 분쟁 담당</h3>
+                <div class="space-y-2 text-xs text-gray-500 mb-6">
+                    <p>1234-1234 (365일 09:00 - 18:00)</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-sm transition-all text-gray-400 hover:text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">share</span>
+                    </button>
+                    <button class="p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-sm transition-all text-gray-400 hover:text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">mail</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+<script>
+    function toggleDetail(id) {
+        const row = document.getElementById(id);
+        if (row) {
+            row.classList.toggle('hidden');
+        }
+    }
+</script>
 </body>
 </html>
