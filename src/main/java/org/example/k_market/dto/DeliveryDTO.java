@@ -48,6 +48,9 @@ public class DeliveryDTO {
 
     private int quantity;
 
+    private String productImage; // 상품 썸네일 경로
+    private String name;  // 판매자(상호명)
+
 
     // 엔티티 변환 메서드 (빌더 사용)
     public Deliveries toEntity() {

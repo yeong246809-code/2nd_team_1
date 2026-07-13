@@ -18,7 +18,5 @@ public interface DeliveryRepository extends JpaRepository<Deliveries, Long> {
     List<Deliveries> findAllDeliveryInfo();
 
 
-
-
-
+    Deliveries findByTrackingNumber(String trackingNumber);
 }
