@@ -266,172 +266,191 @@
         <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">관리자 메인</h1>
         <p class="font-body-md text-body-md text-on-surface-variant">쇼핑몰의 주요 현황을 한눈에 파악하세요.</p>
     </div>
-    <!-- Dashboard Grid Layout -->
+
     <div class="flex flex-col gap-lg">
-        <!-- Row 1: Operations and Metrics Grid -->
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
-            <!-- Operational Status Cards -->
             <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">운영현황</h3>
+                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">운영현황 (주문상세 기준)</h3>
                 <div class="grid grid-cols-5 gap-sm">
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">입금대기</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">12</span>
+                        <span class="font-headline-md text-headline-md text-primary font-bold" th:text="${todayStats != null ? todayStats.pendingDeposit : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">배송준비</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">45</span>
+                        <span class="font-headline-md text-headline-md text-primary font-bold" th:text="${todayStats != null ? todayStats.preparingDelivery : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">취소요청</span>
-                        <span class="font-headline-md text-headline-md text-error font-bold">3</span>
+                        <span class="font-headline-md text-headline-md text-error font-bold" th:text="${todayStats != null ? todayStats.cancelRequest : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">교환요청</span>
-                        <span class="font-headline-md text-headline-md text-secondary font-bold">1</span>
+                        <span class="font-headline-md text-headline-md text-secondary font-bold" th:text="${todayStats != null ? todayStats.exchangeRequest : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">반품요청</span>
-                        <span class="font-headline-md text-headline-md text-tertiary font-bold">2</span>
+                        <span class="font-headline-md text-headline-md text-tertiary font-bold" th:text="${todayStats != null ? todayStats.returnRequest : 0}">0</span>
                     </div>
                 </div>
             </section>
-            <!-- Key Metrics Row -->
+
             <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">주요 지표 (오늘)</h3>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-sm">
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">주문건수</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">128<span class="text-label-sm font-normal text-on-surface-variant ml-1">건</span></span>
+                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">주요 지표 (오늘 / 어제)</h3>
+                <div class="grid grid-cols-5 gap-2 text-center">
+                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+                        <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">주문건수</span>
+                        <span class="font-headline-md text-sm text-primary font-bold">
+                            <span th:text="${todayStats != null ? todayStats.orderCount : 0}">0</span>
+                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.orderCount : 0}">0</span></span>
+                        </span>
                     </div>
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">주문금액</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">4.2<span class="text-label-sm font-normal text-on-surface-variant ml-1">M ₩</span></span>
+                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+                        <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">주문금액</span>
+                        <span class="font-headline-md text-sm text-primary font-bold truncate">
+                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.orderAmount, 0, 'COMMA') : 0}">0</span>
+                        </span>
+                        <span class="text-[10px] text-gray-400 truncate">어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.orderAmount, 0, 'COMMA') : 0}">0</span></span>
                     </div>
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">신규 회원</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">24<span class="text-label-sm font-normal text-on-surface-variant ml-1">명</span></span>
+                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+                        <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">회원가입</span>
+                        <span class="font-headline-md text-sm text-primary font-bold">
+                            <span th:text="${todayStats != null ? todayStats.memberJoinCount : 0}">0</span>
+                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.memberJoinCount : 0}">0</span></span>
+                        </span>
                     </div>
-                    <div class="flex flex-col bg-surface p-sm rounded border border-outline-variant">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">방문자 수</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold">1,024<span class="text-label-sm font-normal text-on-surface-variant ml-1">명</span></span>
+                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+                        <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">방문자수</span>
+                        <span class="font-headline-md text-sm text-primary font-bold">
+                            <span th:text="${todayStats != null ? todayStats.visitorCount : 0}">0</span>
+                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.visitorCount : 0}">0</span></span>
+                        </span>
+                    </div>
+                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+                        <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">문의게시글</span>
+                        <span class="font-headline-md text-sm text-primary font-bold">
+                            <span th:text="${todayStats != null ? todayStats.qnaCount : 0}">0</span>
+                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.qnaCount : 0}">0</span></span>
+                        </span>
                     </div>
                 </div>
             </section>
         </div>
-        <!-- Row 2: Visual Charts -->
+
         <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-            <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">집계현황</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg h-64">
-                <!-- Simple Bar Chart Fake -->
+            <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">집계 및 매출 현황 (최근 5일)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg min-h-[16rem]">
+
                 <div class="flex flex-col h-full border border-outline-variant rounded p-sm bg-surface">
-                    <span class="font-label-md text-label-md text-on-surface-variant mb-auto">최근 7일 매출 현황</span>
-                    <div class="flex items-end justify-between h-40 gap-2 mt-4 px-2 border-b border-outline-variant">
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 40%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 60%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 45%;"></div>
-                        <div class="w-full bg-primary rounded-t" style="height: 80%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 55%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 70%;"></div>
-                        <div class="w-full bg-primary-fixed rounded-t" style="height: 90%;"></div>
-                    </div>
-                    <div class="flex justify-between mt-2 px-2">
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">월</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">화</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">수</span>
-                        <span class="font-label-sm text-label-sm text-primary text-[10px] font-bold">목</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">금</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">토</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">일</span>
+                    <span class="font-label-md text-label-md text-on-surface-variant mb-3">최근 5일 주문 · 결제 · 취소 집계</span>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center text-xs border-collapse">
+                            <thead>
+                            <tr class="border-b border-outline-variant text-on-surface-variant bg-surface-container-low">
+                                <th class="py-1.5 font-semibold">날짜</th>
+                                <th class="py-1.5 font-semibold text-blue-600">주문(건)</th>
+                                <th class="py-1.5 font-semibold text-green-600">결제(건)</th>
+                                <th class="py-1.5 font-semibold text-red-600">취소(건)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="daily : ${dailySummaryList}" class="border-b border-outline-variant/50 hover:bg-white transition-colors">
+                                <td class="py-1.5 font-medium" th:text="${daily.date}">07-13</td>
+                                <td class="py-1.5 font-bold text-blue-600" th:text="${daily.orderCount}">0</td>
+                                <td class="py-1.5 font-bold text-green-600" th:text="${daily.payCount}">0</td>
+                                <td class="py-1.5 font-bold text-red-600" th:text="${daily.cancelCount}">0</td>
+                            </tr>
+                            <tr th:if="${dailySummaryList == null or dailySummaryList.isEmpty()}">
+                                <td colspan="4" class="py-6 text-gray-400">집계 데이터가 없습니다.</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <!-- Simple Composition -->
+
                 <div class="flex flex-col h-full border border-outline-variant rounded p-sm bg-surface">
-                    <span class="font-label-md text-label-md text-on-surface-variant mb-auto">기기별 접속 비율</span>
-                    <div class="flex items-center justify-center h-40 gap-4 mt-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-16 h-24 bg-primary rounded-lg mb-2"></div>
-                            <span class="font-label-sm text-label-sm text-on-background">모바일</span>
-                            <span class="font-label-sm text-label-sm text-primary">65%</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-24 h-12 bg-secondary rounded-lg mb-2"></div>
-                            <span class="font-label-sm text-label-sm text-on-background">PC</span>
-                            <span class="font-label-sm text-label-sm text-secondary">30%</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 h-6 bg-tertiary rounded-lg mb-2"></div>
-                            <span class="font-label-sm text-label-sm text-on-background">기타</span>
-                            <span class="font-label-sm text-label-sm text-tertiary">5%</span>
+                    <span class="font-label-md text-label-md text-on-surface-variant mb-3">5일간 주요 카테고리 매출 (Top 3 + 기타)</span>
+
+                    <div class="flex flex-col gap-3 my-auto px-2">
+                        <th:block th:each="sales, stat : ${topSalesList}">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between text-xs font-medium">
+                                    <span class="text-on-background font-bold flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full"
+                                              th:classappend="${stat.index == 0 ? 'bg-primary' : (stat.index == 1 ? 'bg-secondary' : (stat.index == 2 ? 'bg-tertiary' : 'bg-gray-400'))}"></span>
+                                        <span th:text="${sales.categoryName}">가전</span>
+                                    </span>
+                                    <span class="text-on-surface-variant font-semibold">
+                                        <span th:text="${#numbers.formatInteger(sales.totalSales, 0, 'COMMA')}">0</span>원
+                                        (<span th:text="${sales.percentage}">0</span>%)
+                                    </span>
+                                </div>
+                                <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-500"
+                                         th:style="'width: ' + ${sales.percentage} + '%;'"
+                                         th:classappend="${stat.index == 0 ? 'bg-primary' : (stat.index == 1 ? 'bg-secondary' : (stat.index == 2 ? 'bg-tertiary' : 'bg-gray-400'))}"></div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <div th:if="${topSalesList == null or topSalesList.isEmpty()}" class="py-12 text-center text-xs text-gray-400">
+                            매출 집계 데이터가 없습니다.
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
-        <!-- Row 3: Lists -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-            <!-- Notice List -->
+
             <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
                 <div class="flex justify-between items-center border-b border-outline-variant pb-sm mb-sm">
                     <h3 class="font-headline-md text-headline-md text-on-background">공지사항</h3>
-                    <button class="font-label-sm text-label-sm text-primary hover:underline">더보기 +</button>
+                    <a th:href="@{/admin/cs/notice/list}" class="font-label-sm text-label-sm text-primary hover:underline">더보기 +</a>
                 </div>
                 <ul class="flex flex-col">
-                    <li class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">[시스템] 서버 점검 안내 (10/24)</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.20</span>
+                    <li th:each="notice, stat : ${noticeList}" th:if="${stat.index < 5}"
+                        class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded"
+                        th:onclick="|location.href='@{/admin/cs/notice/view/{no}(no=${notice.no})}'|">
+                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary"
+                              th:text="${'[' + notice.type + '] ' + notice.title}">[안내] 공지사항 제목</span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant"
+                              th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}">2026.07.13</span>
                     </li>
-                    <li class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">신규 배송 정책 변경 사전 안내</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.18</span>
-                    </li>
-                    <li class="py-2 border-b border-surface-variant flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">가을 맞이 프로모션 세팅 가이드</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.15</span>
-                    </li>
-                    <li class="py-2 flex justify-between items-center group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <span class="font-body-md text-body-md text-on-background truncate max-w-[70%] group-hover:text-primary">개인정보 처리방침 개정 안내</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">2023.10.10</span>
+                    <li th:if="${noticeList == null or noticeList.isEmpty()}" class="py-8 text-center text-sm text-gray-400">
+                        등록된 공지사항이 없습니다.
                     </li>
                 </ul>
             </section>
-            <!-- Customer Inquiry List -->
+
             <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
                 <div class="flex justify-between items-center border-b border-outline-variant pb-sm mb-sm">
-                    <h3 class="font-headline-md text-headline-md text-on-background">최근 고객문의</h3>
-                    <button class="font-label-sm text-label-sm text-primary hover:underline">더보기 +</button>
+                    <h3 class="font-headline-md text-headline-md text-on-background">최근 고객문의 (QnA)</h3>
+                    <a th:href="@{/admin/cs/qna/list}" class="font-label-sm text-label-sm text-primary hover:underline">더보기 +</a>
                 </div>
                 <ul class="flex flex-col">
-                    <li class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-error-container text-on-error-container font-label-sm text-[10px] px-2 py-0.5 rounded">미답변</span>
-                            <span class="font-body-md text-body-md text-on-background truncate group-hover:text-primary">배송지 변경 가능한가요?</span>
+                    <li th:each="qna, stat : ${qnaList}" th:if="${stat.index < 5}"
+                        class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded"
+                        th:onclick="|location.href='@{/admin/cs/qna/view/{no}(no=${qna.no})}'|">
+                        <div class="flex items-center gap-3 truncate max-w-[75%]">
+                            <span th:if="${qna.isAnswered == 'N' or qna.isAnswered == '미답변'}"
+                                  class="bg-error-container text-on-error-container font-label-sm text-[10px] px-2 py-0.5 rounded flex-shrink-0">미답변</span>
+                            <span th:unless="${qna.isAnswered == 'N' or qna.isAnswered == '미답변'}"
+                                  class="bg-surface-dim text-on-surface-variant font-label-sm text-[10px] px-2 py-0.5 rounded border border-outline-variant flex-shrink-0">답변완료</span>
+                            <span class="font-body-md text-body-md text-on-background truncate group-hover:text-primary"
+                                  th:text="${'[' + qna.type1 + '] ' + qna.title}">[문의] 질문 내용</span>
                         </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">홍*동</span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant flex-shrink-0 ml-2"
+                              th:text="${qna.id != null ? (qna.id.length() > 3 ? qna.id.substring(0, 3) + '**' : qna.id) : '익명'}">홍*동</span>
                     </li>
-                    <li class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-error-container text-on-error-container font-label-sm text-[10px] px-2 py-0.5 rounded">미답변</span>
-                            <span class="font-body-md text-body-md text-on-background truncate group-hover:text-primary">상품 불량 교환 요청합니다.</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">김*영</span>
-                    </li>
-                    <li class="py-2 border-b border-surface-variant flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-surface-dim text-on-surface-variant font-label-sm text-[10px] px-2 py-0.5 rounded border border-outline-variant">답변완료</span>
-                            <span class="font-body-md text-body-md text-on-surface-variant truncate group-hover:text-primary">재입고 일정 문의</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">이*민</span>
-                    </li>
-                    <li class="py-2 flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors px-2 -mx-2 rounded">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-surface-dim text-on-surface-variant font-label-sm text-[10px] px-2 py-0.5 rounded border border-outline-variant">답변완료</span>
-                            <span class="font-body-md text-body-md text-on-surface-variant truncate group-hover:text-primary">포인트 사용 방법</span>
-                        </div>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant">박*준</span>
+                    <li th:if="${qnaList == null or qnaList.isEmpty()}" class="py-8 text-center text-sm text-gray-400">
+                        최근 접수된 고객문의가 없습니다.
                     </li>
                 </ul>
             </section>
+
         </div>
     </div>
 </main>
