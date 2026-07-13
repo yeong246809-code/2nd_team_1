@@ -26,4 +26,8 @@ public interface QnaRepository extends JpaRepository<Qna, Integer> {
 
     // 상품별 문의 원글 조회
     List<Qna> findByProdNoAndParentNoOrderByNoDesc(Long prodNo, int parentNo);
+
+    Page<Qna> findByMemberNoAndParentNoOrderByNoDesc(Integer memberNo, Integer parentNo, Pageable pageable);
+
+    long countByMemberNoAndParentNo(Integer memberNo, Integer parentNo);
 }

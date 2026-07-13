@@ -125,66 +125,7 @@
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
 
 <!-- TopNavBar -->
-<header class="bg-surface shadow-sm sticky top-0 z-50 w-full transition-all duration-200 ease-in-out">
-    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-
-        <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2"
-           th:href="@{/}"
-           href="/">
-            K-market
-        </a>
-
-        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md">
-            <a class="text-on-surface-variant hover:text-primary transition-colors"
-               th:if="${session.sessUser == null}"
-               th:href="@{/member/login}"
-               href="/member/login">Login</a>
-
-            <a class="text-on-surface-variant hover:text-primary transition-colors"
-               th:if="${session.sessUser == null}"
-               th:href="@{/member/register}"
-               href="/member/register">Join</a>
-
-            <a class="text-on-surface-variant hover:text-primary transition-colors"
-               th:if="${session.sessUser != null}"
-               th:href="@{/member/logout}"
-               href="/member/logout">Logout</a>
-
-            <a class="text-on-surface-variant hover:text-primary transition-colors"
-               th:href="@{/my/home}"
-               href="/my/home">My Page</a>
-
-            <a class="text-on-surface-variant hover:text-primary transition-colors"
-               th:href="@{/cart/list}"
-               href="/cart/list">Cart</a>
-        </nav>
-
-        <div class="flex items-center gap-sm">
-            <a class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-variant"
-               th:href="@{/cart/list}"
-               href="/cart/list"
-               aria-label="장바구니">
-                <span class="material-symbols-outlined"
-                      style="font-variation-settings: 'FILL' 0;">shopping_cart</span>
-            </a>
-
-            <a class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-variant"
-               th:href="@{/my/home}"
-               href="/my/home"
-               aria-label="마이페이지">
-                <span class="material-symbols-outlined"
-                      style="font-variation-settings: 'FILL' 0;">person</span>
-            </a>
-
-            <button type="button"
-                    class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-variant md:hidden">
-                <span class="material-symbols-outlined"
-                      style="font-variation-settings: 'FILL' 0;">menu</span>
-            </button>
-        </div>
-    </div>
-</header>
-
+<div th:replace="~{layout/site :: header}"></div>
 <!-- Main Content Area -->
 <div class="flex-grow w-full max-w-container-max mx-auto flex flex-col md:flex-row py-lg px-margin-mobile md:px-gutter gap-gutter">
 
@@ -385,53 +326,6 @@
 </div>
 
 <!-- Footer -->
-<footer class="bg-surface-container-highest w-full mt-auto py-lg px-md flex flex-col items-center gap-md">
-
-    <div class="font-headline-md text-headline-md font-bold text-primary mb-2">
-        K-market
-    </div>
-
-    <div class="flex flex-wrap justify-center gap-x-md gap-y-2 font-body-md text-body-md text-on-surface-variant mb-4 max-w-2xl text-center">
-        <a class="hover:text-primary underline transition-colors duration-200"
-           th:href="@{/about}"
-           href="/about">About Us</a>
-
-        <a class="hover:text-primary underline transition-colors duration-200"
-           th:href="@{/cs/notice/list}"
-           href="/cs/notice/list">Customer Service</a>
-
-        <a class="hover:text-primary underline transition-colors duration-200 font-semibold text-primary"
-           th:href="@{/policy/privacy}"
-           href="/policy/privacy">Privacy Policy</a>
-
-        <a class="hover:text-primary underline transition-colors duration-200"
-           th:href="@{/policy/terms}"
-           href="/policy/terms">Terms of Service</a>
-
-        <a class="hover:text-primary underline transition-colors duration-200"
-           th:href="@{/cs/faq/list}"
-           href="/cs/faq/list">FAQ</a>
-
-        <a class="hover:text-primary underline transition-colors duration-200"
-           th:href="@{/cs/qna/write}"
-           href="/cs/qna/write">Contact</a>
-    </div>
-
-    <div class="text-center font-label-sm text-label-sm text-outline-variant max-w-container-max w-full border-t border-surface-variant pt-md flex flex-col md:flex-row justify-between items-center gap-4">
-
-        <div class="flex items-center gap-4 text-left">
-            <div class="w-12 h-12 bg-surface-variant rounded"></div>
-            <div>
-                <p class="font-medium text-on-surface-variant">(주)케이마켓</p>
-                <p>부산광역시 부산진구 중앙대로 300</p>
-            </div>
-        </div>
-
-        <div>
-            © 2024 K-market. All rights reserved.
-        </div>
-    </div>
-</footer>
-
+<div th:replace="~{layout/site :: footer}"></div>
 </body>
 </html>

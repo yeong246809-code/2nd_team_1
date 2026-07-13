@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>K-market Admin - 관리자 QNA 상세</title>
+    <title>K-market - 문의 상세</title>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
@@ -30,94 +30,81 @@
                 }}
         }
     </script>
-    <style>
-        .admin-table { width: 100%; border-top: 1px solid #c1c7ca; border-collapse: collapse; text-align: center; }
-        .admin-table th { background: #f3f4f5; color: #41484a; font-size: 12px; line-height: 1.2; font-weight: 700; padding: 12px 8px; border-bottom: 1px solid #c1c7ca; }
-        .admin-table td { color: #191c1d; font-size: 14px; line-height: 1.4; padding: 12px 8px; border-bottom: 1px solid #e1e3e4; }
-        .admin-table tr:hover td { background: #f8f9fa; }
-        .admin-view-table { width: 100%; border-top: 1px solid #c1c7ca; border-collapse: collapse; }
-        .admin-view-table th { width: 160px; background: #f3f4f5; color: #41484a; font-size: 14px; font-weight: 700; padding: 14px 16px; border-bottom: 1px solid #c1c7ca; text-align: left; }
-        .admin-view-table td { color: #191c1d; font-size: 14px; padding: 14px 16px; border-bottom: 1px solid #e1e3e4; }
-        .content-box { min-height: 220px; white-space: pre-wrap; line-height: 1.8; }
-        .answer-box { min-height: 180px; white-space: pre-wrap; line-height: 1.8; background: #f8f9fa; border: 1px solid #e1e3e4; border-radius: 0.5rem; padding: 18px; }
-        .status-wait { color: #ba1a1a; font-weight: 700; }
-        .status-done { color: #14333b; font-weight: 700; }
-    </style>
 </head>
-<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
-<aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface border-r border-outline-variant overflow-hidden">
-    <a class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0 hover:bg-surface-container-low transition-colors" th:href="@{/admin/index}" href="/admin/index">
-        <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined">storefront</span></div>
-        <div><h2 class="font-headline-md text-headline-md font-bold text-primary">K-market Admin</h2><p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p></div>
-    </a>
-    <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
-        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">store</span><span class="font-label-md text-label-md">상점 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/index}">상점목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/shop/sales}">매출현황</a></div></div>
-        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">group</span><span class="font-label-md text-label-md">회원 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/index}">회원목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/index}">포인트관리</a></div></div>
-        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">inventory_2</span><span class="font-label-md text-label-md">상품 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/product/list}">상품목록</a><a class="py-2 hover:text-primary" th:href="@{/admin/product/register}">상품등록</a></div></div>
-        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">shopping_cart</span><span class="font-label-md text-label-md">주문 관리</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/shop/sales}">주문현황</a><a class="py-2 hover:text-primary" th:href="@{/admin/index}">배송현황</a></div></div>
-        <div class="group/menu menu-item-active"><button class="w-full flex items-center justify-between px-4 py-3 text-primary bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">support_agent</span><span class="font-label-md text-label-md">고객 센터</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/cs/notice/list}">공지사항</a><a class="py-2 hover:text-primary" th:href="@{/admin/cs/faq/list}">자주묻는질문</a><a class="py-2 text-primary font-bold" th:href="@{/admin/cs/qna/list}">문의하기</a></div></div>
-        <div class="group/menu"><button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg" type="button" onclick="toggleAccordion(this)"><div class="flex items-center gap-3"><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">환경 설정</span></div><span class="material-symbols-outlined text-sm chevron-icon">expand_more</span></button><div class="menu-content flex flex-col gap-1 pl-12 pr-4"><a class="py-2 hover:text-primary" th:href="@{/admin/config/basic}">기본설정</a><a class="py-2 hover:text-primary" th:href="@{/admin/config/policy}">약관관리</a></div></div>
-    </div>
-    <div class="border-t border-outline-variant p-base"><a class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high font-label-md" th:href="@{/member/logout}"><span class="material-symbols-outlined text-sm">logout</span>로그아웃</a></div>
-</aside>
-<header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-md z-30 bg-surface-container-lowest border-b border-outline-variant">
-    <h1 class="font-headline-md text-headline-md font-black text-primary">K-market Admin Dashboard</h1>
-    <a class="font-headline-md text-[40px] leading-none font-black text-primary hover:text-on-surface" th:href="@{/static}">메인</a>
-</header>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex flex-col">
+<div th:replace="~{layout/site :: header}"></div>
+<main class="flex-grow w-full max-w-container-max mx-auto px-md md:px-lg py-lg grid grid-cols-1 md:grid-cols-12 gap-lg relative">
+    <aside class="md:col-span-3 hidden md:flex flex-col gap-base">
+        <h2 class="font-headline-md text-headline-md text-primary mb-sm px-sm">고객센터</h2>
+        <nav class="flex flex-col gap-xs">
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/notice/list}">
+                <span class="material-symbols-outlined">campaign</span>
+                공지사항
+            </a>
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" th:href="@{/cs/faq/list}">
+                <span class="material-symbols-outlined">help</span>
+                자주묻는 질문
+            </a>
+            <a class="font-label-md text-label-md rounded-lg p-sm flex items-center gap-sm transition-all duration-200 text-primary font-bold bg-secondary-container" th:href="@{/cs/qna/list}">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+                1:1 문의
+            </a>
+        </nav>
+    </aside>
 
-<main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
-    <div class="mb-md flex justify-between items-end">
-        <div>
-            <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">1:1 문의 상세</h1>
-            <p class="font-body-md text-body-md text-on-surface-variant">사용자의 문의 내용을 확인하고 답변을 등록합니다.</p>
+    <section class="col-span-1 md:col-span-9 bg-surface rounded-xl p-md md:p-lg shadow-[0_4px_24px_rgba(44,74,82,0.04)] ring-1 ring-outline-variant/20">
+        <nav class="flex items-center gap-sm text-on-surface-variant font-label-sm mb-lg">
+            <a class="hover:text-primary transition-colors" th:href="@{/}">홈</a>
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">고객센터</a>
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            <span class="text-primary font-bold">1:1 문의</span>
+        </nav>
+
+        <div class="border-b border-outline-variant/30 pb-md mb-lg">
+            <div class="flex items-center gap-sm mb-sm">
+                <span class="px-sm py-xs bg-secondary-container text-on-secondary-container font-label-sm rounded-full"
+                      th:text="${qna.type2 != null and !qna.type2.isBlank() ? '[' + qna.type2 + ']' : (qna.type1 != null and !qna.type1.isBlank() ? '[' + qna.type1 + ']' : '[문의]')}">[문의]</span>
+                <span class="px-sm py-xs rounded-full font-label-sm"
+                      th:classappend="${answer != null} ? ' bg-primary text-white' : ' bg-surface-variant text-on-surface-variant'"
+                      th:text="${answer != null ? '답변완료' : '답변대기'}">답변대기</span>
+            </div>
+
+            <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm"
+                th:text="${qna.title}">문의 제목입니다.</h1>
+
+            <div class="flex flex-wrap items-center gap-md text-on-surface-variant font-label-md">
+                <span class="flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[16px]">person</span>
+                    <span th:text="${qna.maskedId}">user**</span>
+                </span>
+                <span class="flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                    <span th:text="${qna.createdAt != null ? #temporals.format(qna.createdAt, 'yyyy.MM.dd') : '-'}">2026.07.09</span>
+                </span>
+            </div>
         </div>
-        <nav class="font-label-sm text-label-sm text-on-surface-variant">HOME &gt; 고객센터 &gt; <strong class="text-primary">문의하기</strong></nav>
-    </div>
 
-    <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
-        <table class="admin-view-table">
-            <tr>
-                <th>분류</th>
-                <td th:text="${qna.type1 + ' > ' + qna.type2}">배송 &gt; 배송조회</td>
-            </tr>
-            <tr>
-                <th>제목</th>
-                <td th:text="${qna.title}">문의 제목입니다.</td>
-            </tr>
-            <tr>
-                <th>작성자</th>
-                <td th:text="${qna.maskedId}">user**</td>
-            </tr>
-            <tr>
-                <th>작성일</th>
-                <td th:text="${qna.createdAt != null ? #temporals.format(qna.createdAt, 'yyyy.MM.dd HH:mm') : '-'}">2026.07.09 10:00</td>
-            </tr>
-            <tr>
-                <th>문의내용</th>
-                <td><div class="content-box" th:text="${qna.content}">문의 내용입니다.</div></td>
-            </tr>
-        </table>
+        <div class="prose max-w-none text-on-surface font-body-md leading-relaxed min-h-[260px] whitespace-pre-wrap"
+             th:text="${qna.content}">문의 내용입니다.</div>
 
-        <div class="mt-lg pt-lg border-t border-outline-variant">
-            <h2 class="font-headline-md text-headline-md text-primary mb-sm">관리자 답변</h2>
+        <div class="mt-lg pt-lg border-t border-outline-variant/30">
+            <h2 class="font-headline-md text-headline-md text-primary mb-sm">답변</h2>
+            <div th:if="${answer != null}"
+                 class="bg-surface-container-low rounded-lg border border-outline-variant/40 p-md text-on-surface font-body-md leading-relaxed whitespace-pre-wrap"
+                 th:text="${answer.content}">등록된 답변 내용입니다.</div>
+            <div th:unless="${answer != null}"
+                 class="bg-surface-container-low rounded-lg border border-dashed border-outline-variant p-md text-on-surface-variant font-body-md">
+                아직 등록된 답변이 없습니다.
+            </div>
+        </div>
 
-            <div th:if="${answer != null}" class="answer-box mb-md" th:text="${answer.content}">등록된 답변 내용입니다.</div>
-
-            <form th:action="@{/admin/cs/qna/answer/{no}(no=${qna.no})}" method="post">
-                <textarea name="content" class="w-full min-h-[180px] rounded-lg border-outline-variant text-on-surface font-body-md" placeholder="답변 내용을 입력하세요." th:text="${answer != null ? answer.content : ''}" required></textarea>
-                <div class="flex justify-end gap-sm mt-md">
-                    <a th:href="@{/admin/cs/qna/list}" class="px-4 py-2 rounded border border-outline-variant hover:bg-surface-container-low">목록</a>
-                    <a th:if="${answer != null}" th:href="@{/admin/cs/qna/answer/delete/{no}(no=${qna.no})}" onclick="return confirm('답변을 삭제하시겠습니까?');" class="px-4 py-2 rounded border border-error text-error hover:bg-error-container">답변삭제</a>
-                    <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-white" th:text="${answer != null ? '답변수정' : '답변등록'}">답변등록</button>
-                </div>
-            </form>
+        <div class="mt-xl pt-lg border-t border-outline-variant/30 flex justify-center">
+            <a class="inline-flex items-center justify-center px-lg py-sm bg-surface-variant hover:bg-surface-container-high text-on-surface-variant font-label-md rounded-full transition-all duration-200"
+               th:href="@{/cs/qna/list}">목록</a>
         </div>
     </section>
 </main>
-
-<script>
-    function toggleAccordion(button){const menuItem=button.closest('.group\\/menu'); if(!menuItem)return; const active=menuItem.classList.contains('menu-item-active'); if(active){menuItem.classList.remove('menu-item-active')}else{document.querySelectorAll('.menu-item-active').forEach(item=>{if(item!==menuItem)item.classList.remove('menu-item-active')}); menuItem.classList.add('menu-item-active')}}
-</script>
-<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+<div th:replace="~{layout/site :: footer}"></div>
 </body>
 </html>

@@ -182,39 +182,7 @@
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
 <!-- TopNavBar -->
-<header class="w-full bg-surface dark:bg-surface-dim full-width top-0 z-50">
-    <div class="bg-surface-container-lowest text-on-surface-variant text-sm py-2">
-        <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex justify-end gap-md">
-            <a class="hover:text-primary transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/member/join}" href="/member/join">회원가입</a>
-            <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
-            <a class="hover:text-primary transition-colors flex items-center gap-xs" th:href="@{/product/cart}" href="/product/cart">
-                <span class="material-symbols-outlined text-[18px]">shopping_cart</span>장바구니
-            </a>
-        </div>
-    </div>
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md flex flex-col md:flex-row items-center justify-between gap-base border-b border-outline-variant dark:border-on-surface-variant pb-md">
-        <!-- Logo area -->
-        <div class="flex-shrink-0 w-48">
-            <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-inverse-primary tracking-tight" th:href="@{/}" href="/">K-market</a>
-        </div>
-        <!-- Search Bar -->
-        <div class="flex-grow max-w-2xl mx-md relative w-full">
-            <input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-3 px-6 pr-12 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="검색어를 입력하세요" type="text"/>
-            <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-on-surface-variant hover:text-primary">
-                <span class="material-symbols-outlined">search</span>
-            </button>
-        </div>
-    </div>
-    <!-- Navigation Links -->
-    <nav class="max-w-container-max mx-auto px-margin-mobile md:px-gutter flex gap-md mt-sm overflow-x-auto no-scrollbar pb-sm">
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">히트상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">추천상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">신상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">인기상품</a>
-        <a class="text-on-surface-variant dark:text-outline-variant font-label-md text-label-md hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors px-sm py-xs rounded whitespace-nowrap" th:href="@{/product/list}" href="/product/list">할인상품</a>
-    </nav>
-</header>
+<div th:replace="~{layout/site :: header}"></div>
 <!-- Main Content Layout -->
 <main class="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-gutter py-lg flex flex-col md:flex-row gap-lg">
     <!-- SideNavBar -->
@@ -278,19 +246,6 @@
     </div>
 </main>
 <!-- Footer -->
-<footer class="w-full bg-surface-container-highest dark:bg-inverse-surface border-t border-outline-variant mt-auto">
-    <div class="max-w-container-max mx-auto py-lg px-margin-mobile flex flex-col md:flex-row justify-between items-center gap-md">
-        <div class="flex flex-col items-center md:items-start gap-sm">
-            <img class="h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="L-market brand logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMXDyT8bw5KWJybWkX38nDH9zkHzFl1zu_oBPqQx83an2MRGhj_2ha7bdwAJmtJb_nx5ZAaZg4KBbTA0dRWMOa-q8Zh66S-wOtq-3d9Kx4LaW5EDSUwuSS76f03Zki8i0GqYCYkQVOrcuW-AhB9irg1NGB7wb7xGl5tyOCimItLWi6Rnnx4josjKEXBeUqE8qoDBdKiN49xyaCaoJPpJUzYeElyqXkUv3J8QnggVH-1NxQimKO3o4f5R9W2REn9ubjuXrZOw2C8edZ"/>
-            <div class="flex gap-md font-label-sm text-label-sm">
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/company/main}" href="/company/main">회사소개</a>
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/policy/buyer}" href="/policy/buyer">서비스 이용약관</a>
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
-                <a class="text-on-surface-variant hover:text-primary font-bold hover:underline opacity-80 hover:opacity-100 transition-opacity" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
-            </div>
-        </div>
-        <p class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant text-center md:text-right">© 2025 K-market. 모든 권리 보유.</p>
-    </div>
-</footer>
+<div th:replace="~{layout/site :: footer}"></div>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

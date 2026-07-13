@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="ko" style=""><head>
+<!DOCTYPE html><html lang="ko" style=""><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market - 문의하기</title>
@@ -112,7 +112,7 @@
 </head>
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
 <!-- TopNavBar -->
-<div th:replace="~{my/_shared :: header}"></div>
+<div th:replace="~{layout/site :: header}"></div>
 <!-- Main Layout Container -->
 <div class="flex-1 w-full max-w-container-max mx-auto md:px-gutter flex flex-col md:flex-row gap-lg py-lg">
     <!-- SideNavBar (Hidden on Mobile, Sticky on Desktop) -->
@@ -126,13 +126,7 @@
                 <span class="material-symbols-outlined" data-icon="menu">menu</span>
             </button>
         </div>
-        <!-- Banner Placeholder -->
-        <div class="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl p-md mb-lg flex items-center justify-center min-h-[120px] shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
-            <div class="absolute inset-0 bg-gradient-to-r from-primary-fixed/30 to-secondary-fixed/30 opacity-50 group-hover:opacity-70 transition-opacity"></div>
-            <div class="relative z-10 text-center">
-                <p class="font-headline-md text-headline-md text-primary-container opacity-50">배너 광고 영역 (810 x 86)</p>
-            </div>
-        </div>
+        <div th:replace="~{my/_shared :: banner}"></div>
         <!-- Inquiry Table Content -->
         <div class="bg-surface rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col flex-1">
             <!-- Table Header (Desktop) -->
@@ -146,109 +140,64 @@
             </div>
             <!-- Table Body / List Items -->
             <div class="flex flex-col divide-y divide-outline-variant/20">
-                <!-- Item 1 -->
-                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center">
-                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline">1</div>
-                    <div class="flex md:contents justify-between w-full md:w-auto">
-                        <span class="md:hidden font-label-sm text-outline">채널:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-on-surface">고객센터</div>
-                    </div>
-                    <div class="flex md:contents justify-between w-full md:w-auto">
-                        <span class="md:hidden font-label-sm text-outline">유형:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant">주문 / 결제</div>
-                    </div>
-                    <div class="flex md:contents justify-start w-full md:w-auto mt-2 md:mt-0 text-left">
-                        <div class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors">
-                            신용카드 결제 중 오류가 난 경우 어떻게 하나요?
-                        </div>
-                    </div>
-                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
-                        <span class="md:hidden font-label-sm text-outline">작성일:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-outline">2022-12-12</div>
-                    </div>
-                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
-                        <span class="md:hidden font-label-sm text-outline">상태:</span>
-                        <div class="col-span-1">
-                            <span class="inline-block px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-xs font-medium">검토중</span>
-                        </div>
-                    </div>
+                <div th:if="${qnaBlock == null or qnaBlock.page.empty}" class="p-lg text-center text-on-surface-variant">
+                    문의 내역이 없습니다.
                 </div>
-                <!-- Item 2 -->
-                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center">
-                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline">2</div>
+                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center"
+                     th:each="qna, stat : ${qnaBlock.page.content}">
+                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline" th:text="${(qnaBlock.currentPage - 1) * qnaBlock.page.size + stat.count}">1</div>
                     <div class="flex md:contents justify-between w-full md:w-auto">
                         <span class="md:hidden font-label-sm text-outline">채널:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-on-surface">고객센터</div>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface" th:text="${qna.channel}">고객센터</div>
                     </div>
                     <div class="flex md:contents justify-between w-full md:w-auto">
                         <span class="md:hidden font-label-sm text-outline">유형:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant">주문 / 결제</div>
+                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant" th:text="${qna.type}">주문 / 결제</div>
                     </div>
                     <div class="flex md:contents justify-start w-full md:w-auto mt-2 md:mt-0 text-left">
-                        <div class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors">
+                        <a class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors"
+                           th:href="@{/cs/qna/view/{no}(no=${qna.no})}"
+                           th:text="${qna.title}">
                             신용카드 결제 중 오류가 난 경우 어떻게 하나요?
-                        </div>
+                        </a>
                     </div>
                     <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
                         <span class="md:hidden font-label-sm text-outline">작성일:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-outline">2022-12-12</div>
+                        <div class="col-span-2 font-body-md text-body-md text-outline" th:text="${qna.createdAt != null ? #temporals.format(qna.createdAt, 'yyyy-MM-dd') : '-'}">2022-12-12</div>
                     </div>
                     <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
                         <span class="md:hidden font-label-sm text-outline">상태:</span>
                         <div class="col-span-1">
-                            <span class="inline-block px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-xs font-medium">답변완료</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Item 3 -->
-                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center">
-                    <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline">3</div>
-                    <div class="flex md:contents justify-between w-full md:w-auto">
-                        <span class="md:hidden font-label-sm text-outline">채널:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-on-surface">판매자 게시판</div>
-                    </div>
-                    <div class="flex md:contents justify-between w-full md:w-auto">
-                        <span class="md:hidden font-label-sm text-outline">유형:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-on-surface-variant">배송</div>
-                    </div>
-                    <div class="flex md:contents justify-start w-full md:w-auto mt-2 md:mt-0 text-left">
-                        <div class="col-span-4 font-body-md text-body-md text-on-background font-medium md:pl-4 truncate w-full cursor-pointer hover:text-primary transition-colors">
-                            배송기간이 보통 얼마나 걸리나요?
-                        </div>
-                    </div>
-                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
-                        <span class="md:hidden font-label-sm text-outline">작성일:</span>
-                        <div class="col-span-2 font-body-md text-body-md text-outline">2022-12-12</div>
-                    </div>
-                    <div class="flex md:contents justify-between w-full md:w-auto mt-2 md:mt-0">
-                        <span class="md:hidden font-label-sm text-outline">상태:</span>
-                        <div class="col-span-1">
-                            <span class="inline-block px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-xs font-medium">답변완료</span>
+                            <span th:class="${qna.statusLabel == '답변완료' ? 'inline-block px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-xs font-medium' : 'inline-block px-2 py-1 bg-surface-container-high text-on-surface-variant rounded text-xs font-medium'}"
+                                  th:text="${qna.statusLabel}">검토중</span>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Pagination -->
-            <div class="mt-auto border-t border-outline-variant/30 p-md flex justify-center items-center gap-sm">
-                <button class="px-3 py-1 text-outline hover:text-primary transition-colors font-label-md disabled:opacity-50" disabled="">이전</button>
+            <div class="mt-auto border-t border-outline-variant/30 p-md flex justify-center items-center gap-sm" th:if="${qnaBlock != null}">
+                <a class="px-3 py-1 text-outline hover:text-primary transition-colors font-label-md"
+                   th:classappend="${qnaBlock.currentPage <= 1} ? ' pointer-events-none opacity-50'"
+                   th:href="@{/my/myqna(pg=${qnaBlock.currentPage - 1})}">이전</a>
                 <div class="flex items-center gap-2">
-                    <button class="w-8 h-8 rounded bg-primary text-on-primary font-label-md flex items-center justify-center">1</button>
-                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">2</button>
-                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">3</button>
-                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">4</button>
-                    <button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center">5</button>
+                    <a th:each="pageNo : ${#numbers.sequence(qnaBlock.startPage, qnaBlock.endPage)}"
+                       th:href="@{/my/myqna(pg=${pageNo})}"
+                       th:text="${pageNo}"
+                       th:class="${pageNo == qnaBlock.currentPage ? 'w-8 h-8 rounded bg-primary text-on-primary font-label-md flex items-center justify-center' : 'w-8 h-8 rounded text-on-surface hover:bg-surface-container-high transition-colors font-label-md flex items-center justify-center'}">1</a>
                 </div>
-                <button class="px-3 py-1 text-on-surface hover:text-primary transition-colors font-label-md">다음</button>
+                <a class="px-3 py-1 text-on-surface hover:text-primary transition-colors font-label-md"
+                   th:classappend="${qnaBlock.currentPage >= qnaBlock.page.totalPages} ? ' pointer-events-none opacity-50'"
+                   th:href="@{/my/myqna(pg=${qnaBlock.currentPage + 1})}">다음</a>
             </div>
         </div>
         <!-- Add Inquiry FAB (Mobile only, contextual) -->
-        <button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-colors z-40">
+        <a th:href="@{/cs/qna/write}" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-colors z-40">
             <span class="material-symbols-outlined" data-icon="add">add</span>
-        </button>
+        </a>
     </main>
 </div>
 <!-- Footer -->
-<div th:replace="~{my/_shared :: footer}"></div>
+<div th:replace="~{layout/site :: footer}"></div>
 
 
 

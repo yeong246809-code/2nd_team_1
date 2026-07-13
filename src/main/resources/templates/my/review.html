@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="ko" style=""><head>
+<!DOCTYPE html><html lang="ko" style=""><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market - 나의리뷰</title>
@@ -111,7 +111,7 @@
 </head>
 <body class="bg-background text-on-background font-body-md">
 <!-- [상단 헤더] TopNavBar 시작 -->
-<div th:replace="~{my/_shared :: header}"></div>
+<div th:replace="~{layout/site :: header}"></div>
 <!-- [상단 헤더] TopNavBar 종료 -->
 <main class="max-w-container-max mx-auto flex min-h-screen">
     <!-- [사이드바] SideNavBar 시작 -->
@@ -119,11 +119,7 @@
     <!-- [사이드바] SideNavBar 종료 -->
     <!-- [메인 콘텐츠] Content Area 시작 -->
     <section class="flex-1 p-xl">
-        <!-- 상단 배너 광고 영역 -->
-        <div class="w-full h-[86px] rounded-xl overflow-hidden mb-lg shadow-sm bg-surface-container-high relative flex items-center justify-center">
-            <img class="absolute inset-0 w-full h-full object-cover opacity-80" data-alt="A clean and modern horizontal promotional banner advertisement for an e-commerce platform. The banner features a soft teal and navy blue background with abstract geometric shapes. Minimalist white typography highlights a seasonal sale event. The overall mood is sophisticated, professional, and clear, following the Serene Commerce design system's aesthetic with high-quality white space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1IC_pBygNmI9stI9UdJT354-UyuGFponchWAO7zBLuwC-mm7qF_BfMGbZcBCu02-Gc8gPU-X4jqeIGjpX7C-sr2WzfYf9FVI0Xz67JgqXlXTmhvC1rLRJYclbjixA5lzxIY_eoSOAMYPKazkowqQMdNdOa6tegIDYyvZS95QSUI7Tq6UqWywN7Nej9rXRgYIueLz6RHF9F6E6ZPpQyEUrCLUxI0hp0KGti2eEHk2Ijfmtk0c4pAgo1uHI8a8yT3YVfGYxq-3OKMSV">
-            <div class="relative z-10 text-primary-container font-headline-md opacity-30">810 × 86 배너 광고</div>
-        </div>
+        <div th:replace="~{my/_shared :: banner}"></div>
         <!-- 제목 섹션 -->
         <div class="flex items-center space-x-sm mb-md border-b border-outline-variant pb-sm">
             <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span>
@@ -131,97 +127,88 @@
         </div>
         <!-- 리뷰 리스트 테이블 -->
         <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full table-fixed text-left border-collapse">
+                <colgroup>
+                    <col class="w-[9%]">
+                    <col class="w-[26%]">
+                    <col class="w-[31%]">
+                    <col class="w-[14%]">
+                    <col class="w-[13%]">
+                    <col class="w-[7%]">
+                </colgroup>
                 <thead class="bg-surface-container text-on-surface-variant">
                 <tr>
-                    <th class="py-md px-md font-label-md w-20 text-center">번호</th>
-                    <th class="py-md px-md font-label-md w-48">상품명</th>
-                    <th class="py-md px-md font-label-md">내용</th>
-                    <th class="py-md px-md font-label-md w-32 text-center">평점</th>
-                    <th class="py-md px-md font-label-md w-32 text-center">작성일</th>
+                    <th class="py-md px-md font-label-md text-center whitespace-nowrap">번호</th>
+                    <th class="py-md px-md font-label-md whitespace-nowrap">상품명</th>
+                    <th class="py-md px-md font-label-md whitespace-nowrap">내용</th>
+                    <th class="py-md px-md font-label-md text-center whitespace-nowrap">평점</th>
+                    <th class="py-md px-md font-label-md text-center whitespace-nowrap">작성일</th>
+                    <th class="py-md px-sm font-label-md text-center whitespace-nowrap">관리</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant">
-                <!-- 리뷰 1 -->
-                <tr class="hover:bg-surface-bright transition-colors">
-                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm">1</td>
-                    <td class="py-md px-md">
-                        <a class="text-primary hover:underline font-medium" href="#">상품번호 / 상품명 01</a>
-                    </td>
-                    <td class="py-md px-md text-on-surface-variant">배송이 빠릅니다. 잘 사용하겠습니다. 품질이 아주 만족스럽네요.</td>
-                    <td class="py-md px-md text-center">
-                        <div class="flex justify-center">
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
-                        </div>
-                    </td>
-                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm">2022-12-10</td>
+                <tr th:if="${myReviewMessage}">
+                    <td colspan="6" class="py-sm px-md text-center text-secondary" th:text="${myReviewMessage}"></td>
                 </tr>
-                <!-- 리뷰 2 -->
-                <tr class="hover:bg-surface-bright transition-colors">
-                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm">2</td>
-                    <td class="py-md px-md">
-                        <a class="text-primary hover:underline font-medium" href="#">상품번호 / 상품명 05</a>
-                    </td>
-                    <td class="py-md px-md text-on-surface-variant">포장도 꼼꼼하고 가격 대비 훌륭합니다. 다음에 또 구매할게요.</td>
-                    <td class="py-md px-md text-center">
-                        <div class="flex justify-center">
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                        </div>
-                    </td>
-                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm">2022-12-06</td>
+                <tr th:if="${reviewBlock == null or reviewBlock.page.empty}">
+                    <td colspan="6" class="py-lg px-md text-center text-on-surface-variant">작성한 리뷰가 없습니다.</td>
                 </tr>
-                <!-- 리뷰 3 -->
-                <tr class="hover:bg-surface-bright transition-colors">
-                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm">3</td>
-                    <td class="py-md px-md">
-                        <a class="text-primary hover:underline font-medium" href="#">상품번호 / 상품명 12</a>
+                <tr class="hover:bg-surface-bright transition-colors" th:each="review, stat : ${reviewBlock.page.content}">
+                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm" th:text="${(reviewBlock.currentPage - 1) * reviewBlock.page.size + stat.count}">1</td>
+                    <td class="py-md px-md min-w-0">
+                        <a class="block truncate text-primary hover:underline font-medium whitespace-nowrap"
+                           th:href="@{/product/view(prodNo=${review.productNo})}"
+                           th:title="${review.productNo + ' / ' + review.productName}"
+                           th:text="${review.productNo + ' / ' + review.productName}">상품번호 / 상품명 01</a>
                     </td>
-                    <td class="py-md px-md text-on-surface-variant">색상이 사진보다 실물이 훨씬 예쁘네요. 사이즈도 딱 맞아요.</td>
+                    <td class="py-md px-md min-w-0">
+                        <span class="block truncate text-on-surface-variant whitespace-nowrap"
+                              th:title="${review.content}"
+                              th:text="${review.content}">배송이 빠릅니다.</span>
+                    </td>
                     <td class="py-md px-md text-center">
-                        <div class="flex justify-center">
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined active-star text-sm">star</span>
-                            <span class="material-symbols-outlined text-outline-variant text-sm">star</span>
+                        <div class="flex justify-center whitespace-nowrap">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                  th:class="${i <= review.rating ? 'material-symbols-outlined active-star text-sm' : 'material-symbols-outlined text-outline-variant text-sm'}">star</span>
                         </div>
                     </td>
-                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm">2022-12-06</td>
+                    <td class="py-md px-md text-center text-on-surface-variant font-label-sm whitespace-nowrap" th:text="${review.createdAt != null ? #temporals.format(review.createdAt, 'yyyy-MM-dd') : '-'}">2022-12-10</td>
+                    <td class="py-md px-sm text-center">
+                        <form th:action="@{/my/review/delete}" method="post">
+                            <input type="hidden" name="reviewNo" th:value="${review.reviewNo}">
+                            <button type="submit" class="h-9 px-3 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container whitespace-nowrap">삭제</button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <!-- 하단 페이지네이션 -->
-        <nav class="mt-lg flex justify-center items-center space-x-base">
-            <button class="flex items-center px-3 py-1 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group">
+        <nav class="mt-lg flex justify-center items-center space-x-base" th:if="${reviewBlock != null}">
+            <a class="flex items-center px-3 py-1 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group"
+               th:classappend="${reviewBlock.currentPage <= 1} ? ' pointer-events-none opacity-50'"
+               th:href="@{/my/review(pg=${reviewBlock.currentPage - 1})}">
                 <span class="material-symbols-outlined text-sm mr-1 group-hover:-translate-x-1 transition-transform">chevron_left</span>
                 <span class="font-label-md">이전</span>
-            </button>
+            </a>
             <div class="flex items-center space-x-1">
-                <a class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold shadow-md" href="#">1</a>
-                <a class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">2</a>
-                <a class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">3</a>
-                <a class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">4</a>
-                <a class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">5</a>
+                <a th:each="pageNo : ${#numbers.sequence(reviewBlock.startPage, reviewBlock.endPage)}"
+                   th:href="@{/my/review(pg=${pageNo})}"
+                   th:text="${pageNo}"
+                   th:class="${pageNo == reviewBlock.currentPage ? 'w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold shadow-md' : 'w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors'}">1</a>
             </div>
-            <button class="flex items-center px-3 py-1 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group">
+            <a class="flex items-center px-3 py-1 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group"
+               th:classappend="${reviewBlock.currentPage >= reviewBlock.page.totalPages} ? ' pointer-events-none opacity-50'"
+               th:href="@{/my/review(pg=${reviewBlock.currentPage + 1})}">
                 <span class="font-label-md">다음</span>
                 <span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">chevron_right</span>
-            </button>
+            </a>
         </nav>
     </section>
     <!-- [메인 콘텐츠] Content Area 종료 -->
 </main>
 <!-- [푸터] Footer 시작 -->
-<div th:replace="~{my/_shared :: footer}"></div>
+<div th:replace="~{layout/site :: footer}"></div>
 <!-- [푸터] Footer 종료 -->
 <script>
     // 간단한 행 호버 효과 및 클릭 상호작용

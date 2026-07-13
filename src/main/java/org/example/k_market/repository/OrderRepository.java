@@ -19,6 +19,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query(value = "SELECT o FROM Order o LEFT JOIN FETCH o.user",
             countQuery = "SELECT count(o) FROM Order o")
     Page<Order> findAllWithJoin(Pageable pageable);
+
+    long countByMemberNo(int memberNo);
 }
 
 

@@ -125,33 +125,7 @@
 </head>
 <body class="bg-surface text-on-surface font-body-md selection:bg-primary-fixed-dim">
 <!-- TopNavBar (Shared Component) -->
-<header class="bg-surface dark:bg-surface-container-lowest shadow-sm w-full sticky top-0 z-50 transition-all duration-200 ease-in-out">
-  <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-    <div class="flex items-center gap-md">
-      <a class="font-display-lg text-headline-lg font-bold text-primary dark:text-primary-fixed" th:href="@{/}" href="/">K-market</a>
-      <div class="hidden md:flex relative group">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-        <input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full w-64 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all font-label-md" placeholder="상품을 검색해보세요" type="text">
-      </div>
-    </div>
-    <nav class="flex items-center gap-base">
-      <div class="hidden md:flex gap-md mr-base">
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/member/login}" href="/member/login">로그인</a>
-        <a class="font-label-md text-label-md text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" th:href="@{/member/join}" href="/member/join">회원가입</a>
-        <a class="hidden font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
-        <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" th:href="@{/product/cart}" href="/product/cart">장바구니</a>
-      </div>
-      <div class="flex gap-sm">
-        <button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined text-on-surface-variant">search</span></button>
-        <button class="p-2 hover:bg-surface-variant rounded-full transition-colors relative">
-          <span class="material-symbols-outlined text-on-surface-variant">shopping_cart</span>
-          <span class="absolute top-1 right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
-        </button>
-        <button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined text-on-surface-variant">person</span></button>
-      </div>
-    </nav>
-  </div>
-</header>
+<div th:replace="~{layout/site :: header}"></div>
 <main class="min-h-screen max-w-container-max mx-auto px-margin-mobile md:px-gutter py-lg">
   <!-- Progress Steps -->
   <div class="flex justify-center items-center mb-xl gap-xs md:gap-md">
@@ -245,39 +219,7 @@
   </section>
 </main>
 <!-- Footer (Shared Component) -->
-<footer class="bg-surface-container-highest dark:bg-surface-container-high w-full mt-lg px-md py-lg flex flex-col items-center gap-md transition-all duration-200">
-  <div class="w-full max-w-container-max flex flex-col md:flex-row justify-between items-start gap-lg mb-base">
-    <div class="flex flex-col gap-sm">
-      <span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">K-market</span>
-      <p class="text-on-surface-variant max-w-xs font-body-md">고객의 신뢰를 바탕으로 최상의 쇼핑 경험을 선사하는 프리미엄 커머스 플랫폼입니다.</p>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-lg">
-      <div class="flex flex-col gap-base">
-        <h4 class="font-bold text-primary">Service</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/company/main}" href="/company/main">회사소개</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/faq/list}" href="/cs/faq/list">자주묻는질문</a>
-      </div>
-      <div class="flex flex-col gap-base">
-        <h4 class="font-bold text-primary">Support</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/index}" href="/cs/index">고객센터</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/cs/qna/list}" href="/cs/qna/list">문의하기</a>
-      </div>
-      <div class="flex flex-col gap-base">
-        <h4 class="font-bold text-primary">Legal</h4>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md font-semibold" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
-      </div>
-    </div>
-  </div>
-  <div class="w-full h-px bg-outline-variant opacity-30 my-base"></div>
-  <div class="flex flex-col items-center gap-base">
-    <div class="flex gap-md mb-xs">
-      <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">language</span>
-      <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">share</span>
-    </div>
-    <p class="text-on-surface-variant font-body-md">© 2024 K-market. 모든 권리 보유.</p>
-  </div>
-</footer>
+<div th:replace="~{layout/site :: footer}"></div>
 <script>
   // Checkbox logic
   const selectAll = document.getElementById('selectAll');
