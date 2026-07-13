@@ -133,60 +133,80 @@
     <!-- 타이틀 및 서브 설명 섹션 -->
     <div class="mb-16 animate-fade-up">
         <h1 class="text-4xl font-bold text-primary tracking-tight mb-3">
-            미디어 세상 속 케이마켓을 소개합니다!
+            글로벌 미디어 속 K-market을 소개합니다!
         </h1>
         <p class="text-base text-gray-500 font-normal">
-            더 다양한 K-market 영상을 소개합니다.
+            전 세계로 뻗어나가는 K-market의 생생한 성공 신화와 글로벌 경쟁력을 영상으로 만나보세요.
         </p>
     </div>
 
     <!-- 기획서 요구사항 2: 유튜브 영상 목록 출력 및 레이아웃 구성 -->
     <div class="max-w-4xl mx-auto space-y-8 mb-24">
 
-        <!-- 영상 항목 1 -->
-        <div class="flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-200 p-6 gap-6 items-center hover:shadow-md transition-all group cursor-pointer">
-            <!-- 썸네일 플레이스홀더 영역 (기획서 내부 유튜브 플레이 버튼 형상화) -->
-            <div class="w-full sm:w-64 h-40 bg-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
-                <img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" alt="영상 1 썸네일" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80"/>
+        <!-- 영상 항목 1 (KBS LIFE 글로벌 한인기행) -->
+        <div class="flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-200 p-6 gap-6 items-center hover:shadow-md transition-all group">
+            <!-- 썸네일 → 클릭 시 레이어 안에서 즉시 재생 -->
+            <div class="w-full sm:w-64 h-40 bg-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner cursor-pointer"
+                 onclick="this.innerHTML = '&lt;iframe class=&quot;absolute inset-0 w-full h-full&quot; src=&quot;https://www.youtube.com/embed/SGzfmBk3Y6E?autoplay=1&quot; title=&quot;베트남 마켓왕이 선택한 K-상품의 경쟁력&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;'">
+                <!-- 실제 유튜브 고유 썸네일 주소 연동 -->
+                <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" alt="영상 1 썸네일" src="https://img.youtube.com/vi/SGzfmBk3Y6E/mqdefault.jpg"/>
                 <div class="w-16 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:bg-red-500 transition-colors z-10">
                     <span class="material-symbols-outlined text-white text-3xl fill-1">play_arrow</span>
                 </div>
             </div>
             <!-- 영상 텍스트 영역 -->
             <div class="flex-1 w-full">
-                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                    # 영상제목 1 : 세상에 없던 새로운 이커머스 쇼핑 플랫폼의 탄생
-                </h3>
+                <a href="https://youtu.be/SGzfmBk3Y6E?si=jeMOXeuP7Ujiu2DU" target="_blank" class="block group-hover:text-primary transition-colors">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                        베트남 마켓왕이 선택한 K-상품의 경쟁력
+                    </h3>
+                </a>
                 <p class="text-gray-500 text-sm mb-4 leading-relaxed">
-                    # 부제목 EP.201 | K-market 공식 홍보 다큐멘터리 시리즈 영상공개
+                    [추석 특집 3부작 글로벌 한인기행 김영철이 간다] 베트남 마켓 돌풍의 주역! 차별화된 콜드체인 물류 창고와 스마트한 SNS 라이브 커머스 마케팅 현장 집중 분석
                 </p>
-                <div class="flex items-center gap-3 text-xs text-gray-400">
-                    <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">유튜브 업로드</span>
-                    <span>2026년 07월 01일 방송</span>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3 text-xs text-gray-400">
+                        <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">에헤라 티비 : KBS LIFE</span>
+                        <span>2025.10.11 방송</span>
+                    </div>
+                    <!-- 바로가기 새창 링크 -->
+                    <a href="https://youtu.be/SGzfmBk3Y6E?si=jeMOXeuP7Ujiu2DU" target="_blank" class="text-xs text-primary font-semibold flex items-center gap-0.5 hover:underline">
+                        YouTube에서 보기 <span class="material-symbols-outlined text-xs">open_in_new</span>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- 영상 항목 2 -->
-        <div class="flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-200 p-6 gap-6 items-center hover:shadow-md transition-all group cursor-pointer">
-            <!-- 썸네일 플레이스홀더 영역 -->
-            <div class="w-full sm:w-64 h-40 bg-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner">
-                <img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" alt="영상 2 썸네일" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80"/>
+        <!-- 영상 항목 2 (YTN korean 청년, 한상을 두드리다) -->
+        <div class="flex flex-col sm:flex-row bg-white rounded-2xl border border-gray-200 p-6 gap-6 items-center hover:shadow-md transition-all group">
+            <!-- 썸네일 → 클릭 시 레이어 안에서 즉시 재생 -->
+            <div class="w-full sm:w-64 h-40 bg-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner cursor-pointer"
+                 onclick="this.innerHTML = '&lt;iframe class=&quot;absolute inset-0 w-full h-full&quot; src=&quot;https://www.youtube.com/embed/F2sF9X80HuI?autoplay=1&quot; title=&quot;창고 불에 타도 성공 신화는 지금부터&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;'">
+                <!-- 실제 유튜브 고유 썸네일 주소 연동 -->
+                <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" alt="영상 2 썸네일" src="https://img.youtube.com/vi/F2sF9X80HuI/mqdefault.jpg"/>
                 <div class="w-16 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:bg-red-500 transition-colors z-10">
                     <span class="material-symbols-outlined text-white text-3xl fill-1">play_arrow</span>
                 </div>
             </div>
             <!-- 영상 텍스트 영역 -->
             <div class="flex-1 w-full">
-                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                    # 영상제목 2 : 2026년도 상반기 브랜드 파트너 상생 협력 데이 현장 스케치
-                </h3>
+                <a href="https://youtu.be/F2sF9X80HuI?si=huz4wHqBlY1bhx93" target="_blank" class="block group-hover:text-primary transition-colors">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                        창고 불에 타도 “성공 신화는 지금부터”...긍정의 힘 베트남 K-마켓 대표
+                    </h3>
+                </a>
                 <p class="text-gray-500 text-sm mb-4 leading-relaxed">
-                    # 부제목 EP.104 | K-market이 파트너사들과 동반 성장하는 비결 인터뷰
+                    [청년, 한상을 두드리다] 위기를 대박 원동력으로 극복해 낸 이야기. 하노이 백화점 실패부터 대형 화재 악재를 딛고 베트남 대기업으로 성장한 감동 다큐멘터리
                 </p>
-                <div class="flex items-center gap-3 text-xs text-gray-400">
-                    <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">실시간 스트리밍</span>
-                    <span>2026년 06월 18일 방송</span>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3 text-xs text-gray-400">
+                        <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-medium">YTN korean</span>
+                        <span>2023.12.07 방송</span>
+                    </div>
+                    <!-- 바로가기 새창 링크 -->
+                    <a href="https://youtu.be/F2sF9X80HuI?si=huz4wHqBlY1bhx93" target="_blank" class="text-xs text-primary font-semibold flex items-center gap-0.5 hover:underline">
+                        YouTube에서 보기 <span class="material-symbols-outlined text-xs">open_in_new</span>
+                    </a>
                 </div>
             </div>
         </div>
