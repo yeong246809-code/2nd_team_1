@@ -24,12 +24,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @Log4j2
@@ -179,14 +183,38 @@ public class MyIndexController {
     public String claimOrder(Authentication authentication,
                              @RequestParam long orderDetailNo,
                              @RequestParam String type,
+                             @RequestParam(required = false) String reasonType,
+                             @RequestParam(required = false) String reasonDetail,
+                             @RequestParam(value = "attachedImage", required = false) MultipartFile attachedImage,
                              RedirectAttributes redirectAttributes) {
         Optional<Integer> memberNo = currentMemberNo(authentication);
         if (memberNo.isEmpty()) {
             return "redirect:/member/login";
         }
         try {
-            myPageService.claimOrder(orderDetailNo, memberNo.get(), type);
+            String attachedImagePath = saveClaimImage(attachedImage);
+            myPageService.claimOrder(orderDetailNo, memberNo.get(), type, reasonType, reasonDetail, attachedImagePath);
             redirectAttributes.addFlashAttribute("myOrderMessage", "신청이 접수되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());
+        } catch (IOException e) {
+            log.warn("Failed to save order claim image", e);
+            redirectAttributes.addFlashAttribute("myOrderError", "첨부 이미지를 저장하지 못했습니다.");
+        }
+        return "redirect:/my/order";
+    }
+
+    @PostMapping("/my/order/claim/cancel")
+    public String cancelReturnClaim(Authentication authentication,
+                                    @RequestParam long orderDetailNo,
+                                    RedirectAttributes redirectAttributes) {
+        Optional<Integer> memberNo = currentMemberNo(authentication);
+        if (memberNo.isEmpty()) {
+            return "redirect:/member/login";
+        }
+        try {
+            myPageService.cancelReturnClaim(orderDetailNo, memberNo.get());
+            redirectAttributes.addFlashAttribute("myOrderMessage", "반품 신청이 취소되었습니다.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());
         }
@@ -327,6 +355,25 @@ public class MyIndexController {
 
     private String valueOrDash(String value) {
         return value == null || value.isBlank() ? "-" : value;
+    }
+
+    private String saveClaimImage(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return "";
+        }
+
+        File uploadRoot = new File("uploads");
+        File uploadDir = new File(uploadRoot, "order-claims");
+        if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+            throw new IOException("Failed to create upload directory: " + uploadDir.getAbsolutePath());
+        }
+
+        String originalName = file.getOriginalFilename() == null
+                ? "claim-image"
+                : new File(file.getOriginalFilename()).getName();
+        String storedName = UUID.randomUUID() + "_" + originalName;
+        file.transferTo(new File(uploadDir, storedName));
+        return "order-claims/" + storedName;
     }
 
     private boolean hasProvider(List<SnsAccount> snsAccounts, String provider) {

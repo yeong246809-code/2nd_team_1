@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="header" class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
-        <div class="flex justify-between items-center gap-md">
-            <a class="flex items-center gap-2 shrink-0" th:href="@{/}" href="/">
+<header th:fragment="header" class="sticky top-0 z-50 w-full border-b border-[#d9dadb] bg-white">
+    <div class="mx-auto max-w-[1280px] px-4 py-4 md:px-6">
+        <div class="flex items-center justify-between gap-6">
+            <a class="flex shrink-0 items-center gap-2 text-[#14333b]" th:href="@{/}" href="/">
                 <img th:if="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
                      th:src="@{/uploads/{file}(file=${siteConfig.headerLogo_stored})}"
                      class="h-10 w-auto max-w-48 object-contain"
-                     alt="K-market 헤더 로고">
-                <span class="text-3xl font-extrabold text-primary">K-market</span>
+                     alt="K-market 헤더 로고"
+                     onerror="this.remove(); this.parentElement.querySelector('[data-logo-fallback]').classList.remove('hidden');">
+                <span data-logo-fallback
+                      th:classappend="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()} ? ' hidden' : ''"
+                      class="flex h-8 w-8 items-center justify-center rounded bg-[#f3f4f5] text-[#14333b]">
+                    <span class="material-symbols-outlined text-base">storefront</span>
+                </span>
+                <span class="whitespace-nowrap text-3xl font-extrabold">K-market</span>
             </a>
 
-            <form class="hidden md:flex flex-1 max-w-lg relative" th:action="@{/product/search}" action="/product/search" method="get">
-                <input class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none"
+            <form class="hidden h-10 max-w-[520px] flex-1 items-stretch overflow-hidden rounded border border-[#72787a] bg-white md:flex focus-within:border-[#14333b] focus-within:ring-1 focus-within:ring-[#14333b]" th:action="@{/product/search}" action="/product/search" method="get">
+                <input class="min-w-0 flex-1 border-0 bg-white px-4 text-sm outline-none ring-0 focus:border-0 focus:ring-0"
                        name="keyword"
                        placeholder="어떤 상품을 찾으시나요?"
                        type="text">
-                <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded" type="submit" aria-label="검색">
+                <button class="m-1 flex h-8 w-8 shrink-0 items-center justify-center rounded bg-[#14333b] text-white" type="submit" aria-label="검색">
                     <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
                 </button>
             </form>
 
-            <div class="flex items-center gap-md">
-                <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
-                    <a class="hover:underline" th:href="@{/member/login}" href="/member/login">로그인</a>
-                    <span class="text-outline-variant">/</span>
-                    <a class="hover:underline" th:href="@{/member/join}" href="/member/join">회원가입</a>
-                    <span class="hidden text-outline-variant" data-auth-required="true">/</span>
-                    <a class="hidden hover:underline" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
-                    <span class="text-outline-variant">/</span>
-                    <a th:href="@{/cs/index}" href="/cs/index" class="hover:underline flex items-center gap-1">
+            <div class="flex shrink-0 items-center gap-4">
+                <div class="hidden items-center gap-2 whitespace-nowrap text-sm font-medium text-[#41484a] lg:flex">
+                    <a class="hover:text-[#14333b] hover:underline" th:href="@{/member/login}" href="/member/login">로그인</a>
+                    <span class="text-[#c1c7ca]">/</span>
+                    <a class="hover:text-[#14333b] hover:underline" th:href="@{/member/join}" href="/member/join">회원가입</a>
+                    <span class="hidden text-[#c1c7ca]" data-auth-required="true">/</span>
+                    <a class="hidden hover:text-[#14333b] hover:underline" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
+                    <span class="text-[#c1c7ca]">/</span>
+                    <a th:href="@{/cs/index}" href="/cs/index" class="flex items-center gap-1 hover:text-[#14333b] hover:underline">
                         <span class="material-symbols-outlined text-sm">support_agent</span>
                         고객센터
                     </a>
                 </div>
-                <div class="flex items-center gap-base">
-                    <a class="p-2 border border-outline-variant rounded relative" th:href="@{/product/cart}" href="/product/cart" aria-label="장바구니">
-                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">0</span>
+                <div class="flex items-center gap-2">
+                    <a class="relative flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca]" th:href="@{/product/cart}" href="/product/cart" aria-label="장바구니">
+                        <span class="material-symbols-outlined text-[#14333b]" data-icon="shopping_cart">shopping_cart</span>
+                        <span class="absolute -right-2 -top-2 rounded-full bg-[#ba1a1a] px-1 text-[10px] font-bold text-white">0</span>
                     </a>
-                    <button class="md:hidden p-2 border border-outline-variant rounded" type="button" aria-label="메뉴 열기">
-                        <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+                    <button class="flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca] md:hidden" type="button" aria-label="메뉴 열기">
+                        <span class="material-symbols-outlined text-[#14333b]" data-icon="menu">menu</span>
                     </button>
                 </div>
             </div>
@@ -49,30 +55,32 @@
     </div>
 </header>
 
-<footer th:fragment="footer" class="bg-white border-t border-outline-variant mt-xl py-lg">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
-        <div class="flex flex-wrap gap-md text-sm font-medium text-on-surface-variant mb-8 border-b border-surface-container pb-4">
-            <a class="hover:text-primary" th:href="@{/company/main}" href="/company/main">회사소개</a>
-            <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
-            <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary font-bold text-on-surface" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
-            <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
+<footer th:fragment="footer" class="mt-20 w-full overflow-hidden border-t border-[#d9dadb] bg-white">
+    <div class="mx-auto max-w-[1280px] px-4 py-8 md:px-6">
+        <div class="mb-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-[#edeeef] pb-4 text-sm font-medium text-[#41484a]">
+            <a class="hover:text-[#14333b]" th:href="@{/company/main}" href="/company/main">회사소개</a>
+            <span class="text-[#c1c7ca]">|</span>
+            <a class="hover:text-[#14333b]" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
+            <span class="text-[#c1c7ca]">|</span>
+            <a class="font-bold text-[#191c1d] hover:text-[#14333b]" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
+            <span class="text-[#c1c7ca]">|</span>
+            <a class="hover:text-[#14333b]" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
-            <div class="flex flex-col md:flex-row gap-md items-start">
-                <div class="footer-logo w-32 h-24 flex items-center justify-center rounded shrink-0">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[1.35fr_1fr]">
+            <div class="flex flex-col items-start gap-5 sm:flex-row">
+                <div class="flex h-20 w-28 shrink-0 items-center justify-center overflow-hidden rounded bg-[#f3f4f5] text-[#14333b]">
                     <img th:if="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
                          th:src="@{/uploads/{file}(file=${siteConfig.footerLogo_stored})}"
                          alt="K-market 푸터 로고"
-                         class="w-full h-full object-contain">
-                    <span th:unless="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
-                          class="material-symbols-outlined text-4xl text-outline">storefront</span>
+                         class="h-full w-full object-contain"
+                         onerror="this.remove(); this.parentElement.querySelector('[data-footer-logo-fallback]').classList.remove('hidden');">
+                    <span data-footer-logo-fallback
+                          th:classappend="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()} ? ' hidden' : ''"
+                          class="material-symbols-outlined text-4xl">storefront</span>
                 </div>
-                <div class="text-sm text-on-surface-variant space-y-1">
-                    <h2 class="text-xl font-bold text-primary mb-2"
+                <div class="min-w-0 space-y-1 text-sm text-[#41484a]">
+                    <h2 class="mb-2 text-xl font-bold text-[#14333b]"
                         th:text="${siteConfig != null and siteConfig.companyName != null and !siteConfig.companyName.isBlank() ? siteConfig.companyName : '(주)케이마켓'}">(주)케이마켓</h2>
                     <p th:text="|${siteConfig != null and siteConfig.baseAddress != null ? siteConfig.baseAddress : ''} ${siteConfig != null and siteConfig.detailAddress != null ? siteConfig.detailAddress : ''}|">부산광역시 부산진구 중앙대로 103</p>
                     <p>대표이사 : <span th:text="${siteConfig != null and siteConfig.ceo != null and !siteConfig.ceo.isBlank() ? siteConfig.ceo : '-'}">홍길동</span></p>
@@ -80,35 +88,35 @@
                     <p th:if="${siteConfig != null and siteConfig.mailOrderNumber != null and !siteConfig.mailOrderNumber.isBlank()}">
                         통신판매업신고 : <span th:text="${siteConfig.mailOrderNumber}"></span>
                     </p>
-                    <p class="mt-4 text-[10px] text-outline">
+                    <p class="mt-4 text-[10px] text-[#72787a]">
                         Version <span th:text="${latestVersion != null and !latestVersion.isBlank() ? latestVersion : '등록된 버전 없음'}">0.0.6-SNAPSHOT</span>
                     </p>
-                    <p class="text-[10px] text-outline"
+                    <p class="text-[10px] text-[#72787a]"
                        th:if="${siteConfig != null and siteConfig.copyright != null and !siteConfig.copyright.isBlank()}"
                        th:text="${siteConfig.copyright}">Copyright K-market. All rights reserved.</p>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2">
-                <h3 class="font-bold text-lg text-primary">고객센터</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md text-sm text-on-surface-variant">
+            <div class="flex min-w-0 flex-col gap-2">
+                <h3 class="text-lg font-bold text-[#14333b]">고객센터</h3>
+                <div class="grid grid-cols-1 gap-6 text-sm text-[#41484a] sm:grid-cols-2">
                     <div>
-                        <p class="font-bold text-on-surface">Tel : <span th:text="${siteConfig != null and siteConfig.csPhone != null and !siteConfig.csPhone.isBlank() ? siteConfig.csPhone : '-'}">1234-5678</span></p>
+                        <p class="font-bold text-[#191c1d]">Tel : <span th:text="${siteConfig != null and siteConfig.csPhone != null and !siteConfig.csPhone.isBlank() ? siteConfig.csPhone : '-'}">1234-5678</span></p>
                         <p th:text="${siteConfig != null and siteConfig.csHours != null and !siteConfig.csHours.isBlank() ? siteConfig.csHours : '운영시간 정보가 등록되지 않았습니다.'}">평일 09:00 ~ 18:00</p>
                         <p th:if="${siteConfig != null and siteConfig.csEmail != null and !siteConfig.csEmail.isBlank()}">
                             Email : <a class="hover:underline" th:href="|mailto:${siteConfig.csEmail}|" th:text="${siteConfig.csEmail}"></a>
                         </p>
                     </div>
                     <div>
-                        <p class="font-bold text-on-surface">전자금융거래 분쟁 담당</p>
+                        <p class="font-bold text-[#191c1d]">전자금융거래 분쟁 담당</p>
                         <p th:text="${siteConfig != null and siteConfig.finDisputeManager != null and !siteConfig.finDisputeManager.isBlank() ? siteConfig.finDisputeManager : '담당자 정보가 등록되지 않았습니다.'}">1234-1234</p>
                     </div>
                 </div>
-                <div class="flex gap-4 mt-4">
-                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" href="#" aria-label="공유">
+                <div class="mt-4 flex gap-4">
+                    <a class="flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca] hover:bg-[#f3f4f5]" href="#" aria-label="공유">
                         <span class="material-symbols-outlined text-sm">share</span>
                     </a>
-                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" href="#" aria-label="메일">
+                    <a class="flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca] hover:bg-[#f3f4f5]" href="#" aria-label="메일">
                         <span class="material-symbols-outlined text-sm">mail</span>
                     </a>
                 </div>

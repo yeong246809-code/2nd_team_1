@@ -25,6 +25,10 @@ public class OrderClaim {
     private String status;
     private LocalDateTime createdAt;
 
+    public void cancel() {
+        this.status = "취소";
+    }
+
     public OrderClaimDTO toDTO(){
         return OrderClaimDTO.builder()
                 .id(id).orderDetailNo(orderDetailNo).memberNo(memberNo)

@@ -114,23 +114,34 @@ public class MyPageService {
     }
 
     @Transactional
-    public void claimOrder(long orderDetailNo, int memberNo, String type) {
+    public void claimOrder(long orderDetailNo, int memberNo, String type, String reasonType, String reasonDetail, String attachedImage) {
         requireOwnedOrderDetail(orderDetailNo, memberNo);
         String safeType = "exchange".equalsIgnoreCase(type) ? "교환" : "반품";
-        if (orderClaimRepository.existsByOrderDetailNoAndMemberNoAndType(orderDetailNo, memberNo, safeType)) {
+        if (orderClaimRepository.existsByOrderDetailNoAndMemberNoAndTypeAndStatus(orderDetailNo, memberNo, safeType, "접수")) {
             return;
         }
         OrderClaim claim = OrderClaim.builder()
                 .orderDetailNo(orderDetailNo)
                 .memberNo(memberNo)
                 .type(safeType)
-                .reasonType("마이페이지 신청")
-                .reasonDetail("")
+                .reasonType(valueOr(reasonType, "사유 미선택"))
+                .reasonDetail(valueOr(reasonDetail, ""))
+                .attachedImage(valueOr(attachedImage, ""))
                 .status("접수")
                 .createdAt(LocalDateTime.now())
                 .build();
         orderClaimRepository.save(claim);
         orderDetailsRepository.updateStatus(orderDetailNo, safeType + "신청");
+    }
+
+    @Transactional
+    public void cancelReturnClaim(long orderDetailNo, int memberNo) {
+        requireOwnedOrderDetail(orderDetailNo, memberNo);
+        OrderClaim claim = orderClaimRepository
+                .findFirstByOrderDetailNoAndMemberNoAndTypeAndStatusOrderByCreatedAtDesc(orderDetailNo, memberNo, "반품", "접수")
+                .orElseThrow(() -> new IllegalArgumentException("취소할 반품 신청이 없습니다."));
+        claim.cancel();
+        orderDetailsRepository.updateStatus(orderDetailNo, "구매확정");
     }
 
     @Transactional

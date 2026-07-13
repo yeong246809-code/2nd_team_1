@@ -303,16 +303,34 @@
                                     <button type="submit" class="w-full bg-primary text-on-primary font-label-md text-label-md py-2 rounded-lg hover:opacity-90 transition-opacity">구매확정</button>
                                 </form>
                                 <a th:href="@{/product/view(prodNo=${item.productNo})}" class="text-center border border-primary text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-primary-fixed transition-colors">상품평쓰기</a>
-                                <form th:action="@{/my/order/claim}" method="post">
+                                <form th:if="${item.status == '반품신청'}" th:action="@{/my/order/claim/cancel}" method="post">
                                     <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                                    <input type="hidden" name="type" value="return">
-                                    <button type="submit" class="w-full border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors">반품신청</button>
+                                    <button type="submit" class="w-full border border-error bg-error-container text-error font-label-md text-label-md py-1 rounded-lg hover:bg-error-container/80 transition-colors">반품취소</button>
                                 </form>
-                                <form th:action="@{/my/order/claim}" method="post">
-                                    <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                                    <input type="hidden" name="type" value="exchange">
-                                    <button type="submit" class="w-full border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors">교환신청</button>
-                                </form>
+                                <button th:unless="${item.status == '반품신청'}" type="button"
+                                        class="open-claim-btn w-full border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors"
+                                        data-claim-type="return"
+                                        th:data-order-detail-no="${item.orderDetailNo}"
+                                        th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
+                                        th:data-order-no="${item.orderNo}"
+                                        th:data-shop-name="${item.shopName}"
+                                        th:data-product-name="${item.productName}"
+                                        th:data-quantity="${item.quantity}"
+                                        th:data-total-price="${item.totalPrice}"
+                                        th:data-status="${item.status}"
+                                        th:data-thumb="${item.thumb}">반품신청</button>
+                                <button type="button"
+                                        class="open-claim-btn w-full border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors"
+                                        data-claim-type="exchange"
+                                        th:data-order-detail-no="${item.orderDetailNo}"
+                                        th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
+                                        th:data-order-no="${item.orderNo}"
+                                        th:data-shop-name="${item.shopName}"
+                                        th:data-product-name="${item.productName}"
+                                        th:data-quantity="${item.quantity}"
+                                        th:data-total-price="${item.totalPrice}"
+                                        th:data-status="${item.status}"
+                                        th:data-thumb="${item.thumb}">교환신청</button>
                             </div>
                         </td>
                     </tr>
@@ -433,6 +451,7 @@
 </main>
 <!-- 푸터 -->
 <div th:replace="~{layout/site :: footer}"></div>
+<div th:replace="~{my/_shared :: claimModal}"></div>
 <!-- 주문상세정보 모달 (Order Detail Popup) -->
 <div class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 custom-modal" id="order-detail-modal">
     <!-- 배경 오버레이 -->

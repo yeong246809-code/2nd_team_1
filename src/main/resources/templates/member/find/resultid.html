@@ -1,163 +1,55 @@
 <!DOCTYPE html>
-
-<html lang="ko"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>아이디 찾기 결과 - K-market</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "inverse-on-surface": "#f0f1f2",
-                        "tertiary": "#452916",
-                        "surface-container-low": "#f3f4f5",
-                        "error": "#ba1a1a",
-                        "secondary-fixed-dim": "#a5d0c0",
-                        "on-primary-container": "#99b9c2",
-                        "surface": "#f8f9fa",
-                        "on-secondary": "#ffffff",
-                        "tertiary-container": "#5e3f2a",
-                        "primary-fixed-dim": "#acccd5",
-                        "on-primary-fixed-variant": "#2d4b53",
-                        "on-primary-fixed": "#001f26",
-                        "on-secondary-fixed": "#002018",
-                        "secondary-fixed": "#c0ecdc",
-                        "on-surface": "#191c1d",
-                        "on-error": "#ffffff",
-                        "on-background": "#191c1d",
-                        "inverse-surface": "#2e3132",
-                        "surface-container-highest": "#e1e3e4",
-                        "secondary-container": "#c0ecdc",
-                        "on-surface-variant": "#41484a",
-                        "outline-variant": "#c1c7ca",
-                        "on-tertiary-container": "#d6ab90",
-                        "surface-bright": "#f8f9fa",
-                        "on-error-container": "#93000a",
-                        "secondary": "#3e6659",
-                        "primary-fixed": "#c8e8f2",
-                        "inverse-primary": "#acccd5",
-                        "surface-container-high": "#e7e8e9",
-                        "tertiary-fixed": "#ffdcc7",
-                        "tertiary-fixed-dim": "#eabda2",
-                        "error-container": "#ffdad6",
-                        "surface-container-lowest": "#ffffff",
-                        "primary-container": "#2c4a52",
-                        "outline": "#72787a",
-                        "on-tertiary": "#ffffff",
-                        "on-secondary-fixed-variant": "#264e42",
-                        "background": "#f8f9fa",
-                        "surface-container": "#edeeef",
-                        "on-tertiary-fixed": "#2d1605",
-                        "on-primary": "#ffffff",
-                        "surface-dim": "#d9dadb",
-                        "on-tertiary-fixed-variant": "#5f402b",
-                        "surface-variant": "#e1e3e4",
-                        "surface-tint": "#45636b",
-                        "on-secondary-container": "#446c5f",
-                        "primary": "#14333b"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "xs": "4px",
-                        "gutter": "24px",
-                        "margin-mobile": "16px",
-                        "md": "24px",
-                        "lg": "48px",
-                        "base": "8px",
-                        "xl": "80px",
-                        "sm": "12px",
-                        "container-max": "1280px"
-                    },
-                    "fontFamily": {
-                        "headline-md": ["Plus Jakarta Sans"],
-                        "headline-lg-mobile": ["Plus Jakarta Sans"],
-                        "display-lg": ["Plus Jakarta Sans"],
-                        "body-md": ["Be Vietnam Pro"],
-                        "label-md": ["Be Vietnam Pro"],
-                        "headline-lg": ["Plus Jakarta Sans"],
-                        "label-sm": ["Be Vietnam Pro"],
-                        "body-lg": ["Be Vietnam Pro"]
-                    },
-                    "fontSize": {
-                        "headline-md": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
-                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
-                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
-                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
-                    }
-                }
-            }
-        }
-    </script>
-<style>
-        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>아이디 찾기 결과 - K-market</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family:'Be Vietnam Pro', sans-serif; background:#f8f9fa; color:#191c1d; }
+        h1 { font-family:'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-body-md text-body-md">
-<!-- Header Section -->
+<body class="min-h-screen flex flex-col">
 <div th:replace="~{layout/site :: header}"></div>
-<!-- Main Content Section -->
-<main class="flex-grow flex items-center justify-center py-xl px-margin-mobile md:px-gutter">
-<div class="w-full max-w-[600px] bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
-<!-- Page Title -->
-<h1 class="font-headline-lg md:text-headline-lg text-headline-lg-mobile text-on-surface font-bold text-center mb-lg border-b-2 border-primary pb-sm inline-block w-full text-left">
-                아이디 찾기 결과
-            </h1>
-<!-- Result Table / Card -->
-<div class="bg-surface-container-low rounded-lg p-md mb-md border border-surface-variant">
-<div class="flex flex-col gap-sm">
-<!-- Row: Name -->
-<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
-<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">이름</div>
-<div class="flex-1 font-body-md text-body-md text-on-surface">홍길동</div>
-</div>
-<!-- Row: ID -->
-<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
-<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">아이디</div>
-<div class="flex-1 font-body-md text-body-md text-on-surface font-semibold text-primary">honggildong</div>
-</div>
-<!-- Row: Email -->
-<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
-<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">이메일</div>
-<div class="flex-1 font-body-md text-body-md text-on-surface">honggildong@gmail.com</div>
-</div>
-<!-- Row: Join Date -->
-<div class="flex border-b border-surface-variant pb-sm last:border-0 last:pb-0">
-<div class="w-32 font-label-md text-label-md text-on-surface-variant font-medium flex items-center">가입일</div>
-<div class="flex-1 font-body-md text-body-md text-on-surface text-on-surface-variant">2022-11-16 10:20:22</div>
-</div>
-</div>
-</div>
-<!-- Descriptive Text -->
-<p class="text-center font-body-md text-body-md text-on-surface-variant mb-xl">
-                고객님의 정보와 일치하는 아이디 입니다.
-            </p>
-<!-- Action Buttons -->
-<div class="flex flex-col md:flex-row gap-md justify-center">
-<a class="flex-1 bg-surface-variant text-on-surface-variant hover:bg-outline-variant hover:text-on-surface transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium" th:href="@{/member/login}" href="/member/login">
-                    로그인
-                </a>
-<a class="flex-1 bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 py-sm px-lg rounded-lg font-label-md text-label-md text-center font-medium shadow-sm" th:href="@{/member/find/password}" href="/member/find/password">
-                    비밀번호 찾기
-                </a>
-</div>
-</div>
+<main class="flex-1 flex items-center justify-center px-4 py-16">
+    <section class="w-full max-w-[600px] rounded-xl border border-[#e1e3e4] bg-white p-8 shadow-sm">
+        <h1 class="mb-6 border-b-2 border-[#14333b] pb-3 text-center text-3xl font-bold text-[#14333b]">아이디 찾기 결과</h1>
+        <div th:if="${foundAccount == null}" class="rounded-lg bg-[#ffdad6] px-4 py-3 text-sm font-medium text-[#ba1a1a]">
+            조회된 아이디가 없습니다. 아이디 찾기를 다시 진행해주세요.
+        </div>
+        <div th:if="${foundAccount != null}" class="rounded-lg border border-[#e1e3e4] bg-[#f3f4f5] p-5">
+            <dl class="space-y-3">
+                <div class="flex border-b border-[#e1e3e4] pb-3">
+                    <dt class="w-28 shrink-0 text-sm font-semibold text-[#41484a]">이름</dt>
+                    <dd class="min-w-0 flex-1" th:text="${foundAccount.name}">홍길동</dd>
+                </div>
+                <div class="flex border-b border-[#e1e3e4] pb-3">
+                    <dt class="w-28 shrink-0 text-sm font-semibold text-[#41484a]">아이디</dt>
+                    <dd class="min-w-0 flex-1 font-bold text-[#14333b]" th:text="${foundAccount.id}">honggildong</dd>
+                </div>
+                <div class="flex border-b border-[#e1e3e4] pb-3">
+                    <dt class="w-28 shrink-0 text-sm font-semibold text-[#41484a]">이메일</dt>
+                    <dd class="min-w-0 flex-1" th:text="${foundAccount.email}">user@example.com</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-28 shrink-0 text-sm font-semibold text-[#41484a]">가입일</dt>
+                    <dd class="min-w-0 flex-1 text-[#41484a]" th:text="${foundAccount.createdAt != null ? foundAccount.createdAt : '-'}">-</dd>
+                </div>
+            </dl>
+        </div>
+        <p class="my-6 text-center text-sm text-[#41484a]" th:text="${foundAccount != null ? '고객님의 정보와 일치하는 아이디입니다.' : '입력 정보를 다시 확인해주세요.'}">
+            고객님의 정보와 일치하는 아이디입니다.
+        </p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <a class="flex-1 rounded-lg border border-[#c1c7ca] px-5 py-3 text-center font-semibold text-[#41484a] hover:bg-[#e1e3e4]" th:href="@{/member/find/userid}">다시 찾기</a>
+            <a class="flex-1 rounded-lg bg-[#14333b] px-5 py-3 text-center font-semibold text-white" th:href="@{/member/login}">로그인</a>
+            <a class="flex-1 rounded-lg bg-[#3e6659] px-5 py-3 text-center font-semibold text-white" th:href="@{/member/find/password}">비밀번호 찾기</a>
+        </div>
+    </section>
 </main>
-<!-- Footer Section -->
 <div th:replace="~{layout/site :: footer}"></div>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
-</body></html>
+</body>
+</html>
