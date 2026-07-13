@@ -472,34 +472,68 @@
     </div>
 </main>
 
-<div id="deliveryPopup" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg w-[500px]">
-        <h2 class="text-xl font-bold mb-4">배송상태</h2>
-        <div id="popupContent">
+<div id="deliveryPopup" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+    <div class="bg-white w-[600px] rounded shadow-lg">
+        <div class="bg-gray-800 text-white p-4 flex justify-between">
+            <span class="font-bold">배송상세</span>
+            <span id="headerTrackingNo"></span>
+            <button onclick="closePopup()">X</button>
         </div>
-        <button onclick="closePopup()" class="mt-4 bg-gray-200 px-4 py-2 rounded">닫기</button>
+
+        <div class="p-6">
+            <h3 class="font-bold border-b-2 border-black pb-2 mb-4">상품정보</h3>
+            <table class="w-full text-center border-t border-b">
+                <tbody id="productTableBody"></tbody>
+            </table>
+
+            <h3 class="font-bold border-b-2 border-black pb-2 mt-8 mb-4">배송정보</h3>
+            <div class="bg-gray-100 p-4 text-sm grid grid-cols-[100px_1fr] gap-y-2">
+                <div class="text-gray-600 font-semibold">주문번호</div><div id="infoOrderNo"></div>
+                <div class="text-gray-600 font-semibold">수령인</div><div id="infoRecipientName"></div>
+                <div class="text-gray-600 font-semibold">연락처</div><div id="infoPhone"></div>
+                <div class="text-gray-600 font-semibold">배송지 주소</div><div id="infoAddress"></div>
+                <div class="text-gray-600 font-semibold">택배사</div><div id="infoCourier"></div>
+                <div class="text-gray-600 font-semibold">송장번호</div><div id="infoTrackingNo"></div>
+                <div class="text-gray-600 font-semibold">기타</div><div id="infoMemo"></div>
+            </div>
+            <button onclick="closePopup()" class="mt-6 w-full bg-gray-200 py-2 rounded">닫기</button>
+        </div>
     </div>
 </div>
 
+
 <script>
     function openPopup(trackingNumber) {
-        if (!trackingNumber || trackingNumber === 'null') {
-            alert("송장번호 정보가 없습니다.");
-            return;
-        }
-
-        // 이제 서버로 요청을 보냅니다.
         fetch(`/admin/order/delivery/detail/${trackingNumber}`)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                // 팝업 내용 채우기 (데이터 바인딩)
-                document.getElementById('popupContent').innerHTML = `
-                <p><strong>주문번호:</strong> ${data.orderNo}</p>
-                <p><strong>수령인:</strong> ${data.recipientName}</p>
+                // 헤더
+                document.getElementById('headerTrackingNo').innerText = data.trackingNumber;
+
+                // 상품 정보 (DTO의 필드 사용)
+                document.getElementById('productTableBody').innerHTML = `
+                <tr>
+                    <td class="py-4">${data.orderNo}</td>
+                    <td>${data.orderName}</td>
+                    <td>(주) 상호명</td>
+                    <td>${data.totalProductPrice.toLocaleString()}원</td>
+                    <td>${data.quantity}</td>
+                    <td>${data.shippingFee}원</td>
+                    <td class="font-bold">${(data.totalProductPrice + data.shippingFee).toLocaleString()}원</td>
+                </tr>
             `;
+
+                // 배송 정보 (DTO 필드와 일치하게 수정)
+                document.getElementById('infoOrderNo').innerText = data.orderNo;
+                document.getElementById('infoRecipientName').innerText = data.recipientName;
+                document.getElementById('infoPhone').innerText = data.recipientPhone || "-";
+                document.getElementById('infoAddress').innerText = (data.baseAddress + " " + (data.detailAddress || "")).trim() || "-";
+                document.getElementById('infoCourier').innerText = data.courierName;
+                document.getElementById('infoTrackingNo').innerText = data.trackingNumber;
+                document.getElementById('infoMemo').innerText = data.memo || "요청사항 없음";
+
                 document.getElementById('deliveryPopup').classList.remove('hidden');
-            })
-            .catch(err => alert("상세 정보를 불러오는 중 오류가 발생했습니다."));
+            });
     }
 
     function closePopup() {

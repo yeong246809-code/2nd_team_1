@@ -5,9 +5,11 @@ import org.example.k_market.dto.DeliveryDTO;
 import org.example.k_market.entity.Deliveries;
 import org.example.k_market.entity.Order;
 import org.example.k_market.entity.OrderDetails;
+import org.example.k_market.entity.Product;
 import org.example.k_market.repository.DeliveryRepository;
 import org.example.k_market.repository.OrderDetailsRepository;
 import org.example.k_market.repository.OrderRepository;
+import org.example.k_market.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final OrderRepository orderRepository;
     private final OrderDetailsRepository orderDetailsRepository;
+    private final ProductRepository productRepository;
 
     @Override
     @Transactional
@@ -107,6 +110,31 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public DeliveryDTO getDetailByTrackingNumber(String trackingNumber) {
-        return null;
+        Deliveries d = deliveryRepository.findByTrackingNumber(trackingNumber);
+        Order o = orderRepository.findById((int) d.getOrderNo()).orElseThrow();
+
+        // 수정: 클래스명이 아니라 주입된 인스턴스명을 사용하세요!
+        OrderDetails od = orderDetailsRepository.findByOrderNo((int) o.getOrderNo())
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("주문 상세 정보를 찾을 수 없습니다."));
+
+        Product p = productRepository.findById(od.getProductNo()).orElseThrow();
+
+        return DeliveryDTO.builder()
+                .trackingNumber(d.getTrackingNumber())
+                .orderNo(d.getOrderNo())
+                .recipientName(o.getRecipientName())
+                .recipientPhone(o.getRecipientPhone())       // 실제 DB 데이터 사용
+                .baseAddress(o.getBaseAddress())   // 실제 DB 데이터 사용
+                .memo(o.getMemo())
+                .courierName(d.getCourierName())
+                .orderName(p.getName()) // 상품명
+                .productImage(p.getThumb1())   // 상품 썸네일
+                .totalProductPrice(p.getPrice())    // 상품 가격
+                .quantity(od.getQuantity())       // 주문 수량
+                .shippingFee(o.getTotalShippingFee())
+                .totalProductPrice(o.getTotalProductPrice())
+                .build();
     }
 }
