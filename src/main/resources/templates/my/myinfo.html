@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="ko" style=""><head>
+<!DOCTYPE html><html lang="ko" style=""><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market - 나의 설정</title>
@@ -107,7 +107,7 @@
 </head>
 <body class="text-on-surface flex flex-col min-h-screen">
 <!-- TopNavBar -->
-<div th:replace="~{my/_shared :: header}"></div>
+<div th:replace="~{layout/site :: header}"></div>
 <div class="flex-grow max-w-container-max mx-auto w-full flex flex-col md:flex-row px-margin-mobile md:px-gutter gap-lg py-lg">
     <!-- SideNavBar -->
     <div th:replace="~{my/_shared :: sidebar('myinfo')}"></div>
@@ -115,11 +115,7 @@
     <main class="flex-grow max-w-3xl">
         <h1 class="font-headline-lg text-headline-lg text-on-surface mb-md">나의 설정</h1>
         <p class="mb-md text-label-md text-error" th:if="${param.withdrawError}" th:text="${param.withdrawError[0]}">탈퇴 처리 중 오류가 발생했습니다.</p>
-        <!-- Banner Placeholder -->
-        <div class="w-full h-24 mb-lg rounded-xl overflow-hidden bg-surface-variant flex items-center justify-center relative">
-            <img class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-multiply" data-alt="A wide horizontal banner ad space, styled minimally with soft lighting and subtle geometric patterns in light gray and pastel tones, indicating a placeholder for promotional content in a modern e-commerce setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtJZkE6RJooLinA5x4axH_U0cBNZg-k4SpqljjwTMzyYYJJQ1Kbs5XDoQGPV5x0E1vW9U9XNoGS2XWNyAFgQcXFYB2ZC0podP_TaEI17Om0-al8LEwpHQTv1nNwicLVC-HX8OS-C2hIJ4X8kwnk0JpXpjs_fdxAP_o-jVsGG45oio5qJfzeM3cUqFkNIdcOYJ3DktaBcqdhcBm-_fae7HwvE5zPMLk8pwMuXtC1NiZ6p0q1iWtoU9QS06iHF_A-mpUcuiu3Tca9gsJ">
-            <span class="font-headline-md text-outline relative z-10">810 x 86 배너 광고</span>
-        </div>
+        <div th:replace="~{my/_shared :: banner}"></div>
         <!-- Settings Form -->
         <div class="bg-surface rounded-xl p-lg shadow-sm border border-outline-variant">
             <p class="mb-md rounded-lg bg-secondary-container px-md py-sm text-on-secondary-container font-label-md"
@@ -308,7 +304,7 @@
     </main>
 </div>
 <!-- Footer -->
-<div th:replace="~{my/_shared :: footer}"></div>
+<div th:replace="~{layout/site :: footer}"></div>
 
 
 

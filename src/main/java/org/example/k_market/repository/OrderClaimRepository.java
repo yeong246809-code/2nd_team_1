@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderClaimRepository extends JpaRepository<OrderClaim, Long> {
+    boolean existsByOrderDetailNoAndMemberNoAndType(long orderDetailNo, int memberNo, String type);
 }

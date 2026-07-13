@@ -53,28 +53,7 @@
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
 <!-- Header -->
-<header class="bg-surface shadow-sm sticky top-0 z-50 w-full">
-    <div class="flex justify-between items-center px-md py-base w-full max-w-container-max mx-auto">
-        <a class="font-display-lg text-headline-lg font-bold text-primary flex items-center gap-2" th:href="@{/static}">K-market</a>
-        <nav class="hidden md:flex items-center gap-md font-label-md text-label-md text-on-surface-variant">
-            <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
-            <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/product/cart}">장바구니</a>
-        </nav>
-        <div class="flex items-center gap-sm text-primary">
-            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/list}">
-                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
-            </a>
-            <a class="hidden p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/my/index}" data-auth-required="true">
-                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">person</span>
-            </a>
-            <a class="p-sm hover:bg-surface-variant rounded-full transition-colors group" th:href="@{/product/cart}">
-                <span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">shopping_cart</span>
-            </a>
-        </div>
-    </div>
-</header>
+<div th:replace="~{layout/site :: header}"></div>
 <!-- Main -->
 <main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex flex-col md:flex-row gap-lg">
     <!-- Sidebar -->
@@ -175,20 +154,7 @@
     </section>
 </main>
 <!-- Footer -->
-<footer class="bg-surface-container-highest w-full mt-lg">
-    <div class="max-w-container-max mx-auto px-md py-lg text-center text-on-surface-variant">
-        <h2 class="font-headline-md text-headline-md font-bold text-primary mb-sm">K-market</h2>
-        <nav class="flex flex-wrap justify-center gap-x-md gap-y-2 font-label-md text-label-md mb-md">
-            <a class="hover:text-primary transition-colors" th:href="@{/company/main}">회사소개</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/index}">고객센터</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">개인정보처리방침</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/policy/buyer}">서비스이용약관</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/faq/list}">자주묻는질문</a>
-            <a class="hover:text-primary transition-colors" th:href="@{/cs/qna/list}">문의하기</a>
-        </nav>
-        <p class="font-label-sm text-label-sm">© 2024 K-market. 모든 권리 보유.</p>
-    </div>
-</footer>
+<div th:replace="~{layout/site :: footer}"></div>
 <script src="/k_market/js/auth-nav.js" th:src="@{/js/auth-nav.js}"></script>
 </body>
 </html>

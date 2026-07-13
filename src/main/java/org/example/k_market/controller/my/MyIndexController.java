@@ -14,13 +14,16 @@ import org.example.k_market.repository.SnsAccountRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.service.member.MemberWithdrawalService;
 import org.example.k_market.service.member.MyInfoService;
+import org.example.k_market.service.member.MyPageService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -41,40 +44,66 @@ public class MyIndexController {
     private final SnsAccountRepository snsAccountRepository;
     private final MemberWithdrawalService memberWithdrawalService;
     private final MyInfoService myInfoService;
+    private final MyPageService myPageService;
 
     @GetMapping("/my/index")
     public String index(Authentication authentication, HttpSession session, Model model) {
         addLoginModel(authentication, session, model);
+        currentMemberNo(authentication).ifPresent(memberNo ->
+                model.addAttribute("dashboard", myPageService.dashboard(memberNo)));
         return "my/index";
     }
 
     @GetMapping("/my/order")
-    public String order(Authentication authentication, HttpSession session, Model model) {
+    public String order(Authentication authentication, HttpSession session, Model model,
+                        @RequestParam(defaultValue = "1") int pg,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         addLoginModel(authentication, session, model);
+        currentMemberNo(authentication).ifPresent(memberNo ->
+                model.addAttribute("orderBlock", myPageService.orders(memberNo, pg, startDate, endDate)));
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         return "my/order";
     }
 
     @GetMapping("/my/point")
-    public String point(Authentication authentication, HttpSession session, Model model) {
+    public String point(Authentication authentication, HttpSession session, Model model,
+                        @RequestParam(defaultValue = "1") int pg,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         addLoginModel(authentication, session, model);
+        currentMemberNo(authentication).ifPresent(memberNo ->
+                model.addAttribute("pointBlock", myPageService.points(memberNo, pg, startDate, endDate)));
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         return "my/point";
     }
 
     @GetMapping("/my/coupon")
-    public String coupon(Authentication authentication, HttpSession session, Model model) {
+    public String coupon(Authentication authentication, HttpSession session, Model model,
+                         @RequestParam(defaultValue = "1") int pg) {
         addLoginModel(authentication, session, model);
+        currentMemberNo(authentication).ifPresent(memberNo ->
+                model.addAttribute("couponBlock", myPageService.coupons(memberNo, pg)));
         return "my/coupon";
     }
 
     @GetMapping("/my/review")
-    public String review(Authentication authentication, HttpSession session, Model model) {
+    public String review(Authentication authentication, HttpSession session, Model model,
+                         @RequestParam(defaultValue = "1") int pg) {
         addLoginModel(authentication, session, model);
+        currentMemberNo(authentication).ifPresent(memberNo ->
+                model.addAttribute("reviewBlock", myPageService.reviews(memberNo, pg)));
         return "my/review";
     }
 
     @GetMapping("/my/myqna")
-    public String myqna(Authentication authentication, HttpSession session, Model model) {
+    public String myqna(Authentication authentication, HttpSession session, Model model,
+                        @RequestParam(defaultValue = "1") int pg) {
         addLoginModel(authentication, session, model);
+        currentMemberNo(authentication).ifPresent(memberNo ->
+                model.addAttribute("qnaBlock", myPageService.qnas(memberNo, pg)));
         return "my/myqna";
     }
 
@@ -127,6 +156,54 @@ public class MyIndexController {
             redirectAttributes.addAttribute("withdrawError", e.getMessage());
             return "redirect:/my/myinfo";
         }
+    }
+
+    @PostMapping("/my/order/confirm")
+    public String confirmOrder(Authentication authentication,
+                               @RequestParam long orderDetailNo,
+                               RedirectAttributes redirectAttributes) {
+        Optional<Integer> memberNo = currentMemberNo(authentication);
+        if (memberNo.isEmpty()) {
+            return "redirect:/member/login";
+        }
+        try {
+            myPageService.confirmOrder(orderDetailNo, memberNo.get());
+            redirectAttributes.addFlashAttribute("myOrderMessage", "구매확정 처리되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());
+        }
+        return "redirect:/my/order";
+    }
+
+    @PostMapping("/my/order/claim")
+    public String claimOrder(Authentication authentication,
+                             @RequestParam long orderDetailNo,
+                             @RequestParam String type,
+                             RedirectAttributes redirectAttributes) {
+        Optional<Integer> memberNo = currentMemberNo(authentication);
+        if (memberNo.isEmpty()) {
+            return "redirect:/member/login";
+        }
+        try {
+            myPageService.claimOrder(orderDetailNo, memberNo.get(), type);
+            redirectAttributes.addFlashAttribute("myOrderMessage", "신청이 접수되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());
+        }
+        return "redirect:/my/order";
+    }
+
+    @PostMapping("/my/review/delete")
+    public String deleteReview(Authentication authentication,
+                               @RequestParam long reviewNo,
+                               RedirectAttributes redirectAttributes) {
+        Optional<Integer> memberNo = currentMemberNo(authentication);
+        if (memberNo.isEmpty()) {
+            return "redirect:/member/login";
+        }
+        myPageService.deleteReview(reviewNo, memberNo.get());
+        redirectAttributes.addFlashAttribute("myReviewMessage", "리뷰가 삭제되었습니다.");
+        return "redirect:/my/review";
     }
 
     private void addLoginModel(Authentication authentication, HttpSession session, Model model) {
@@ -203,6 +280,10 @@ public class MyIndexController {
             return Optional.empty();
         }
         return usersRepository.findById(authentication.getName());
+    }
+
+    private Optional<Integer> currentMemberNo(Authentication authentication) {
+        return currentUser(authentication).map(Users::getMemberNo);
     }
 
     private boolean isAuthenticated(Authentication authentication) {

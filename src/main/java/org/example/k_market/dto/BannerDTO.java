@@ -26,6 +26,7 @@ public class BannerDTO {
     private String fileUrl;
     private String status;
     private String fileUrl_stored;
+    private String aspectRatio;
 
     public Banner toEntity(){
         return Banner.builder()

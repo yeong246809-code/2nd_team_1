@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title th:text="${statusCode != null ? 'K-market - 오류 ' + statusCode : 'K-market - 오류'}">K-market - 오류</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#14333b",
+                        "primary-container": "#2c4a52",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#99b9c2",
+                        secondary: "#3e6659",
+                        "secondary-container": "#c0ecdc",
+                        error: "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        background: "#f8f9fa",
+                        surface: "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#41484a",
+                        outline: "#72787a",
+                        "outline-variant": "#c1c7ca"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        xs: "4px",
+                        base: "8px",
+                        sm: "12px",
+                        md: "24px",
+                        lg: "48px",
+                        xl: "80px",
+                        gutter: "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", {lineHeight: "1.3", fontWeight: "700"}],
+                        "headline-md": ["20px", {lineHeight: "1.4", fontWeight: "700"}],
+                        "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}],
+                        "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}],
+                        "label-md": ["14px", {lineHeight: "1.4", fontWeight: "600"}],
+                        "label-sm": ["12px", {lineHeight: "1.2", fontWeight: "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md">
+<div th:replace="~{layout/site :: header}"></div>
+
+<main class="flex-1 max-w-container-max mx-auto w-full px-margin-mobile md:px-gutter py-xl flex items-center justify-center">
+    <section class="w-full max-w-3xl bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm px-md py-lg md:p-xl text-center">
+        <div class="mx-auto w-20 h-20 rounded-full bg-error-container text-error flex items-center justify-center mb-md">
+            <span class="material-symbols-outlined text-[42px]" style="font-variation-settings: 'FILL' 1;">error</span>
+        </div>
+
+        <p class="font-label-md text-label-md text-error mb-xs" th:text="${statusCode != null ? '오류 ' + statusCode : '오류'}">오류 500</p>
+        <h1 class="font-headline-lg text-headline-lg text-primary mb-sm"
+            th:text="${errorTitle != null ? errorTitle : '죄송합니다. 오류가 발생했습니다.'}">
+            죄송합니다. 오류가 발생했습니다.
+        </h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-lg"
+           th:text="${errorMessage != null ? errorMessage : '서비스 이용에 불편을 드려 죄송합니다. 잠시 후 다시 시도해주세요.'}">
+            서비스 이용에 불편을 드려 죄송합니다. 잠시 후 다시 시도해주세요.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-sm mb-lg">
+            <a th:href="@{/}"
+               class="inline-flex h-11 min-w-[150px] items-center justify-center rounded-lg bg-primary text-on-primary px-md font-label-md hover:bg-primary-container transition-colors">
+                메인으로 이동
+            </a>
+            <button type="button"
+                    id="error-back-button"
+                    class="inline-flex h-11 min-w-[150px] items-center justify-center rounded-lg border border-outline-variant bg-white text-on-surface px-md font-label-md hover:bg-surface-container-low transition-colors">
+                이전 페이지
+            </button>
+        </div>
+
+        <div class="text-left border border-outline-variant rounded-lg overflow-hidden bg-surface-container-low">
+            <button type="button"
+                    id="error-detail-toggle"
+                    class="w-full px-md py-sm flex items-center justify-between gap-sm text-primary font-label-md hover:bg-surface-container transition-colors"
+                    aria-expanded="false"
+                    aria-controls="error-detail-panel">
+                <span class="inline-flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[18px]">terminal</span>
+                    상세정보
+                </span>
+                <span id="error-detail-icon" class="material-symbols-outlined text-[20px]">expand_more</span>
+            </button>
+            <div id="error-detail-panel" class="hidden border-t border-outline-variant bg-surface-container-lowest">
+                <dl class="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-px bg-outline-variant text-sm">
+                    <dt class="bg-surface-container-low px-md py-sm font-bold text-on-surface-variant">시간</dt>
+                    <dd class="bg-white px-md py-sm break-all" th:text="${errorTimestamp != null ? errorTimestamp : '-'}">-</dd>
+                    <dt class="bg-surface-container-low px-md py-sm font-bold text-on-surface-variant">경로</dt>
+                    <dd class="bg-white px-md py-sm break-all" th:text="${errorPath != null ? errorPath : '-'}">-</dd>
+                </dl>
+                <pre class="m-0 max-h-80 overflow-auto whitespace-pre-wrap break-words p-md text-left text-xs leading-relaxed text-on-surface bg-white"
+                     th:text="${errorLog != null ? errorLog : '표시할 상세정보가 없습니다.'}">표시할 상세정보가 없습니다.</pre>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{layout/site :: footer}"></div>
+
+<script>
+    const backButton = document.getElementById('error-back-button');
+    const detailToggle = document.getElementById('error-detail-toggle');
+    const detailPanel = document.getElementById('error-detail-panel');
+    const detailIcon = document.getElementById('error-detail-icon');
+
+    backButton?.addEventListener('click', () => {
+        if (window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+        const homeLink = document.querySelector('header a[href]');
+        window.location.href = homeLink ? homeLink.getAttribute('href') : '/';
+    });
+
+    detailToggle?.addEventListener('click', () => {
+        const isOpen = !detailPanel.classList.contains('hidden');
+        detailPanel.classList.toggle('hidden', isOpen);
+        detailToggle.setAttribute('aria-expanded', String(!isOpen));
+        detailIcon.textContent = isOpen ? 'expand_more' : 'expand_less';
+    });
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="ko" style=""><head>
+<!DOCTYPE html><html lang="ko" style=""><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market - 마이페이지 쿠폰내역</title>
@@ -127,19 +127,13 @@
 </head>
 <body class="font-body-md text-on-surface">
 <!-- TopNavBar -->
-<div th:replace="~{my/_shared :: header}"></div>
+<div th:replace="~{layout/site :: header}"></div>
 <main class="max-w-container-max mx-auto px-gutter py-lg flex flex-col md:flex-row gap-md">
     <!-- SideNavBar -->
     <div th:replace="~{my/_shared :: sidebar('coupon')}"></div>
     <!-- Content Area -->
     <section class="flex-1 space-y-md w-full">
-        <!-- Promotional Banner Area -->
-        <div class="relative w-full h-[86px] rounded-xl overflow-hidden bg-surface-container-high border border-outline-variant flex items-center justify-center">
-            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary to-transparent"></div>
-            <span class="relative font-headline-md text-headline-md text-on-surface-variant opacity-60">Full Width 배너 광고</span>
-            <!-- Background Image Placeholder for Banner -->
-            <div class="absolute inset-0 -z-10 bg-cover bg-center" data-alt="An elegant, wide minimalist banner background with soft teal and navy abstract waves. The lighting is bright and ethereal, perfectly matching a professional corporate light-mode commerce website theme. High-end visual aesthetic for a modern online marketplace." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBBnbKU1lu7Gn3LTYZWrNEPTggySPT-hpj-VQ2nAI5EJYgRkCF5vOCsdgGSqmXGz6x30i8TLXsGlvQTvgw1qAwxISeDitg7QkmQTNAcJ0sbFMGSytt5kEIongXv0bmcEBzpHXYQQUGzvS6xdNZLTl32R31vXWL_jy8jvdu6Nbu4v2ebXd-YO8LgA9-AErdFB5d-1WVf_WoE0JaSEvEToiOhUJyHnWakoWCf5vOM3OvES8Sa-lo0ipXhejjt1OYQW6GFtlzyoeULQKrs')"></div>
-        </div>
+        <div th:replace="~{my/_shared :: banner}"></div>
         <!-- Page Title -->
         <div class="pt-md pb-sm border-b border-outline-variant">
             <h1 class="font-headline-lg text-headline-lg text-primary">쿠폰내역</h1>
@@ -158,44 +152,43 @@
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant">
-                    <!-- Coupon Row 1 -->
-                    <tr class="hover:bg-surface-container-lowest transition-colors">
+                    <tr th:if="${couponBlock == null or couponBlock.page.empty}">
+                        <td colspan="5" class="px-md py-lg text-center text-on-surface-variant">보유 쿠폰이 없습니다.</td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-lowest transition-colors" th:each="coupon : ${couponBlock.page.content}">
                         <td class="px-md py-base">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center">
                                     <span class="material-symbols-outlined text-on-secondary-container">confirmation_number</span>
                                 </div>
-                                <span class="font-body-md text-body-md font-semibold text-on-surface">1만원 할인 중복 쿠폰</span>
+                                <span class="font-body-md text-body-md font-semibold text-on-surface" th:text="${coupon.couponName}">1만원 할인 중복 쿠폰</span>
                             </div>
                         </td>
-                        <td class="px-md py-base font-headline-md text-headline-md text-primary">10,000원</td>
-                        <td class="px-md py-base font-body-md text-body-md text-on-surface-variant">100,000원 이상 구매시</td>
+                        <td class="px-md py-base font-headline-md text-headline-md text-primary" th:text="${coupon.benefitLabel}">10,000원</td>
+                        <td class="px-md py-base font-body-md text-body-md text-on-surface-variant" th:text="${coupon.conditionLabel}">100,000원 이상 구매시</td>
                         <td class="px-md py-base text-center">
-                            <span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-secondary text-label-sm font-label-sm">사용가능</span>
+                            <span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-secondary text-label-sm font-label-sm" th:text="${coupon.statusLabel}">사용가능</span>
                         </td>
-                        <td class="px-md py-base text-right font-body-md text-body-md text-outline">~ 12/31</td>
-                    </tr>
-                    <!-- Coupon Row 2 -->
-                    <tr class="hover:bg-surface-container-lowest transition-colors">
-                        <td class="px-md py-base">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-on-secondary-container">loyalty</span>
-                                </div>
-                                <span class="font-body-md text-body-md font-semibold text-on-surface">회원가입 축하 5천원 할인쿠폰</span>
-                            </div>
-                        </td>
-                        <td class="px-md py-base font-headline-md text-headline-md text-primary">5,000원</td>
-                        <td class="px-md py-base font-body-md text-body-md text-on-surface-variant">5,000원 이상 구매시</td>
-                        <td class="px-md py-base text-center">
-                            <span class="inline-flex px-3 py-1 rounded-full bg-secondary-container text-secondary text-label-sm font-label-sm">사용가능</span>
-                        </td>
-                        <td class="px-md py-base text-right font-body-md text-body-md text-outline">~ 12/31</td>
+                        <td class="px-md py-base text-right font-body-md text-body-md text-outline" th:text="${coupon.endDate != null ? '~ ' + #temporals.format(coupon.endDate, 'MM/dd') : '-'}">~ 12/31</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <nav class="mt-lg flex justify-center items-center space-x-base" th:if="${couponBlock != null}">
+            <a class="flex items-center px-3 py-1 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group"
+               th:classappend="${couponBlock.currentPage <= 1} ? ' pointer-events-none opacity-50'"
+               th:href="@{/my/coupon(pg=${couponBlock.currentPage - 1})}">이전</a>
+            <div class="flex items-center space-x-1">
+                <a th:each="pageNo : ${#numbers.sequence(couponBlock.startPage, couponBlock.endPage)}"
+                   th:href="@{/my/coupon(pg=${pageNo})}"
+                   th:text="${pageNo}"
+                   th:class="${pageNo == couponBlock.currentPage ? 'w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold shadow-md' : 'w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors'}">1</a>
+            </div>
+            <a class="flex items-center px-3 py-1 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group"
+               th:classappend="${couponBlock.currentPage >= couponBlock.page.totalPages} ? ' pointer-events-none opacity-50'"
+               th:href="@{/my/coupon(pg=${couponBlock.currentPage + 1})}">다음</a>
+        </nav>
         <!-- Usage Notes Section -->
         <div class="p-lg bg-surface-container-low rounded-xl border border-outline-variant mt-lg">
             <div class="flex items-center gap-2 mb-md text-primary">
@@ -228,7 +221,7 @@
     </section>
 </main>
 <!-- Footer -->
-<div th:replace="~{my/_shared :: footer}"></div>
+<div th:replace="~{layout/site :: footer}"></div>
 <!-- BottomNavBar (Mobile Only Responsive Pivot) -->
 <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest shadow-[0_-2px_10px_rgba(0,0,0,0.05)] px-gutter py-sm flex justify-around items-center z-50">
     <a class="flex flex-col items-center gap-xs text-on-surface-variant" th:href="@{/}" href="/">

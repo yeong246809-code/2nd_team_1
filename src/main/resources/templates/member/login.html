@@ -123,49 +123,7 @@
 </head>
 <body class="bg-surface font-body-md text-on-surface">
 <!-- Header (상단 헤더) -->
-<header class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
-        <div class="flex justify-between items-center gap-md">
-            <div class="flex items-center gap-2">
-                <div class="logo-area w-8 h-8 placeholder-image rounded">
-                    <span class="material-symbols-outlined text-sm">storefront</span>
-                </div>
-                <a class="text-3xl font-extrabold text-primary shrink-0" th:href="@{/}" href="/">K-market</a>
-            </div>
-
-            <form class="hidden md:flex flex-1 max-w-lg relative" th:action="@{/product/search}" action="/product/search" method="GET">
-                <input class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" name="keyword" placeholder="어떤 상품을 찾으시나요?" type="text"/>
-                <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded" type="submit" aria-label="검색">
-                    <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
-                </button>
-            </form>
-
-            <div class="flex items-center gap-md">
-                <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
-                    <a class="hover:underline" th:href="@{/member/login}" href="/member/login">로그인</a>
-                    <span class="text-outline-variant">/</span>
-                    <a class="hover:underline" th:href="@{/member/join}" href="/member/join">회원가입</a>
-                    <span class="hidden text-outline-variant" data-auth-required="true">/</span>
-                    <a class="hidden hover:underline" th:href="@{/my/index}" href="/my/index" data-auth-required="true">마이페이지</a>
-                    <span class="text-outline-variant">/</span>
-                    <a class="hover:underline flex items-center gap-1" th:href="@{/cs/index}" href="/cs/index">
-                        <span class="material-symbols-outlined text-sm">support_agent</span>
-                        고객센터
-                    </a>
-                </div>
-                <div class="flex items-center gap-base">
-                    <a class="p-2 border border-outline-variant rounded relative" th:href="@{/product/cart}" href="/product/cart" aria-label="장바구니">
-                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">0</span>
-                    </a>
-                    <button class="md:hidden p-2 border border-outline-variant rounded" type="button" aria-label="메뉴">
-                        <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<div th:replace="~{layout/site :: header}"></div>
 <main class="min-h-[calc(100vh-280px)] flex flex-col items-center justify-center py-xl px-margin-mobile md:px-0">
     <div class="max-w-container-max w-full flex flex-col md:flex-row gap-lg items-stretch justify-center">
             <!-- Login Form (로그인 폼) -->
@@ -281,55 +239,7 @@
     </div>
 </main>
 <!-- Detailed Footer (상세 푸터) -->
-<footer class="bg-white border-t border-outline-variant mt-xl py-lg">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
-        <div class="flex flex-wrap gap-md text-sm font-medium text-on-surface-variant mb-8 border-b border-surface-container pb-4">
-            <a class="hover:text-primary" th:href="@{/company/main}" href="/company/main">회사소개</a>
-            <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">서비스이용약관</a>
-            <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary font-bold text-on-surface" th:href="@{/policy/buyer}" href="/policy/buyer">개인정보처리방침</a>
-            <span class="text-outline-variant">|</span>
-            <a class="hover:text-primary" th:href="@{/policy/buyer}" href="/policy/buyer">전자금융거래약관</a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
-            <div class="flex flex-col md:flex-row gap-md items-start">
-                <div class="footer-logo w-24 h-24 placeholder-image flex items-center justify-center rounded shrink-0">
-                    <span class="material-symbols-outlined text-4xl">storefront</span>
-                </div>
-                <div class="text-sm text-on-surface-variant space-y-1">
-                    <h2 class="text-xl font-bold text-primary mb-2">(주)케이마켓</h2>
-                    <p>부산광역시 부산진구 중앙대로 103 그린타워 13층</p>
-                    <p>대표이사 : 홍길동</p>
-                    <p>사업자등록번호 : 123-45-12345</p>
-                    <p class="mt-4 text-[10px] text-outline">0.0.5 SNAPSHOT</p>
-                </div>
-            </div>
-            <div class="flex flex-col gap-2">
-                <h3 class="font-bold text-lg text-primary">고객센터</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md text-sm text-on-surface-variant">
-                    <div>
-                        <p class="font-bold text-on-surface">Tel : 1234-5678</p>
-                        <p>평일 09:00 ~ 18:00</p>
-                        <p>점심 12:00 ~ 13:00</p>
-                    </div>
-                    <div>
-                        <p class="font-bold text-on-surface">전자금융거래 분쟁 담당</p>
-                        <p>1234-1234 (365일 09:00 ~ 18:00)</p>
-                    </div>
-                </div>
-                <div class="flex gap-4 mt-4">
-                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" th:href="@{/cs/qna/list}" href="/cs/qna/list" aria-label="문의하기">
-                        <span class="material-symbols-outlined text-sm">mail</span>
-                    </a>
-                    <a class="p-2 border border-outline-variant rounded hover:bg-surface-container" th:href="@{/cs/index}" href="/cs/index" aria-label="고객센터">
-                        <span class="material-symbols-outlined text-sm">support_agent</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
+<div th:replace="~{layout/site :: footer}"></div>
 <script>
     // Micro-interactions for input fields
     const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="ko" style=""><head>
+<!DOCTYPE html><html lang="ko" style=""><head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market | 포인트내역</title>
@@ -118,19 +118,13 @@
 </head>
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
 <!-- TopNavBar -->
-<div th:replace="~{my/_shared :: header}"></div>
+<div th:replace="~{layout/site :: header}"></div>
 <div class="flex-grow max-w-container-max mx-auto w-full px-base md:px-gutter py-lg flex gap-md">
     <!-- SideNavBar -->
     <div th:replace="~{my/_shared :: sidebar('point')}"></div>
     <!-- Main Content Canvas -->
     <main class="flex-grow space-y-md">
-        <!-- Banner Ad Section -->
-        <section class="w-full h-24 rounded-xl overflow-hidden shadow-sm relative group">
-            <img class="w-full h-full object-cover" data-alt="A horizontal clean minimalist advertisement banner for a lifestyle brand, featuring soft textures and a serene palette of navy teal and light grey. High-end editorial style with plenty of white space and subtle lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByBz7xtIHqJKhT7OlBGhH21ONagkfAKh0O3SDD-GOchZXJIL61NcabZeDR1atEhMf5brYYC3tctkGjfmlqcNqx0K899npWOqFXaMYlN4BsLI0_elymk0-c_2s9t1l-LOl585y4jLXN08y_C1h-jBbKKFwvOsGHjxpI-PPYqD3SmOBCjfDXdYqPdqyXaB8MVrgDPHpc68Q_YrsslTw8TIjuTziBcWCzNW3BXx92bFavSIAvSVV1dOHH6Yj9QSnVJKCMQoGUWZ_Iyazs">
-            <div class="absolute inset-0 bg-black/5 flex items-center justify-center">
-                <span class="text-surface-container-lowest font-headline-md opacity-70">810 × 86 배너 광고</span>
-            </div>
-        </section>
+        <div th:replace="~{my/_shared :: banner}"></div>
         <!-- Page Title -->
         <div class="border-b border-outline-variant pb-base">
             <h1 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2">
@@ -139,23 +133,36 @@
             </h1>
         </div>
         <!-- Date Filter Section -->
-        <section class="bg-surface-container-lowest p-md rounded-xl shadow-sm border border-outline-variant/30">
-            <div class="flex flex-wrap items-center gap-md">
-                <span class="font-label-md text-label-md text-on-surface-variant min-w-[60px]">기간별조회</span>
-                <div class="flex items-center gap-base">
-                    <button class="px-4 py-1.5 border border-primary text-primary text-label-md font-label-md rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">1주일</button>
-                    <button class="px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary transition-colors">15일</button>
-                    <button class="px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary transition-colors">1개월</button>
-                    <button class="px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary transition-colors">기타</button>
+        <form id="point-period-form" th:action="@{/my/point}" method="get" class="bg-surface-container-lowest p-md rounded-xl shadow-sm border border-outline-variant/30">
+            <input type="hidden" name="pg" value="1">
+            <div class="flex flex-wrap xl:flex-nowrap items-center gap-sm xl:gap-md">
+                <span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">기간별조회</span>
+                <div class="flex flex-wrap items-center gap-2 shrink-0">
+                    <button type="button" data-days="7" class="period-quick-btn px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary hover:bg-primary/5 transition-colors whitespace-nowrap">1주일</button>
+                    <button type="button" data-days="15" class="period-quick-btn px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary hover:bg-primary/5 transition-colors whitespace-nowrap">15일</button>
+                    <button type="button" data-months="1" class="period-quick-btn px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary hover:bg-primary/5 transition-colors whitespace-nowrap">1개월</button>
+                    <button type="button" data-years="1" class="period-quick-btn px-4 py-1.5 border border-outline-variant text-on-surface-variant text-label-md font-label-md rounded-lg hover:border-primary hover:bg-primary/5 transition-colors whitespace-nowrap">1년</button>
                 </div>
-                <div class="flex items-center gap-2 ml-auto">
-                    <input class="bg-background border border-outline-variant rounded-lg px-3 py-1.5 font-body-md focus:ring-primary focus:border-primary" type="date">
+                <div class="hidden lg:block h-8 w-px bg-outline-variant mx-sm"></div>
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 min-w-0 xl:ml-auto">
+                    <label class="sr-only" for="point-start-date">시작일</label>
+                    <input id="point-start-date"
+                           name="startDate"
+                           class="h-9 w-[150px] min-w-0 bg-background border border-outline-variant rounded-lg px-3 py-1.5 font-body-md focus:ring-primary focus:border-primary"
+                           type="date"
+                           th:value="${startDate != null ? #temporals.format(startDate, 'yyyy-MM-dd') : ''}">
                     <span class="text-outline">~</span>
-                    <input class="bg-background border border-outline-variant rounded-lg px-3 py-1.5 font-body-md focus:ring-primary focus:border-primary" type="date">
-                    <button class="ml-2 bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 active:scale-95 transition-all">조회</button>
+                    <label class="sr-only" for="point-end-date">종료일</label>
+                    <input id="point-end-date"
+                           name="endDate"
+                           class="h-9 w-[150px] min-w-0 bg-background border border-outline-variant rounded-lg px-3 py-1.5 font-body-md focus:ring-primary focus:border-primary"
+                           type="date"
+                           th:value="${endDate != null ? #temporals.format(endDate, 'yyyy-MM-dd') : ''}">
+                    <button type="submit" class="h-9 bg-primary text-on-primary px-6 rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 active:scale-95 transition-all whitespace-nowrap">조회</button>
+                    <a th:href="@{/my/point}" class="h-9 px-4 rounded-lg border border-outline-variant inline-flex items-center justify-center text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant transition-colors whitespace-nowrap">초기화</a>
                 </div>
             </div>
-        </section>
+        </form>
         <!-- Data Table Section -->
         <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
@@ -171,73 +178,47 @@
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant/40">
-                    <!-- Row 1 -->
-                    <tr class="hover:bg-surface-container-low transition-colors group">
-                        <td class="px-md py-4 text-body-md">2024-03-15</td>
-                        <td class="px-md py-4 text-body-md"><span class="bg-secondary-container/30 text-secondary px-2 py-0.5 rounded-full text-label-sm">적립</span></td>
-                        <td class="px-md py-4 text-body-md font-medium text-primary">20240315001</td>
-                        <td class="px-md py-4 text-body-md font-bold text-secondary">+ 340</td>
-                        <td class="px-md py-4 text-body-md">상품 구매확정</td>
-                        <td class="px-md py-4 text-body-md text-outline">2026-03-15</td>
+                    <tr th:if="${pointBlock == null or pointBlock.page.empty}">
+                        <td colspan="6" class="px-md py-lg text-center text-on-surface-variant">포인트 내역이 없습니다.</td>
                     </tr>
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-surface-container-low transition-colors">
-                        <td class="px-md py-4 text-body-md">2024-03-10</td>
-                        <td class="px-md py-4 text-body-md"><span class="bg-secondary-container/30 text-secondary px-2 py-0.5 rounded-full text-label-sm">적립</span></td>
-                        <td class="px-md py-4 text-body-md font-medium text-primary">20240310214</td>
-                        <td class="px-md py-4 text-body-md font-bold text-secondary">+ 120</td>
-                        <td class="px-md py-4 text-body-md">상품 구매확정</td>
-                        <td class="px-md py-4 text-body-md text-outline">2026-03-10</td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-surface-container-low transition-colors">
-                        <td class="px-md py-4 text-body-md">2024-03-05</td>
-                        <td class="px-md py-4 text-body-md"><span class="bg-secondary-container/30 text-secondary px-2 py-0.5 rounded-full text-label-sm">적립</span></td>
-                        <td class="px-md py-4 text-body-md font-medium text-primary">-</td>
-                        <td class="px-md py-4 text-body-md font-bold text-secondary">+ 1,000</td>
-                        <td class="px-md py-4 text-body-md">이벤트 참여 (봄맞이 출석체크)</td>
-                        <td class="px-md py-4 text-body-md text-outline">2024-06-05</td>
-                    </tr>
-                    <!-- Row 4 -->
-                    <tr class="hover:bg-surface-container-low transition-colors">
-                        <td class="px-md py-4 text-body-md">2024-02-28</td>
-                        <td class="px-md py-4 text-body-md"><span class="bg-error-container/30 text-error px-2 py-0.5 rounded-full text-label-sm">사용</span></td>
-                        <td class="px-md py-4 text-body-md font-medium text-primary">20240228088</td>
-                        <td class="px-md py-4 text-body-md font-bold text-error">- 500</td>
-                        <td class="px-md py-4 text-body-md">상품 구매 사용</td>
-                        <td class="px-md py-4 text-body-md text-outline">-</td>
-                    </tr>
-                    <!-- Row 5 -->
-                    <tr class="hover:bg-surface-container-low transition-colors">
-                        <td class="px-md py-4 text-body-md">2024-02-20</td>
-                        <td class="px-md py-4 text-body-md"><span class="bg-secondary-container/30 text-secondary px-2 py-0.5 rounded-full text-label-sm">적립</span></td>
-                        <td class="px-md py-4 text-body-md font-medium text-primary">20240220301</td>
-                        <td class="px-md py-4 text-body-md font-bold text-secondary">+ 450</td>
-                        <td class="px-md py-4 text-body-md">상품 구매확정</td>
-                        <td class="px-md py-4 text-body-md text-outline">2026-02-20</td>
+                    <tr class="hover:bg-surface-container-low transition-colors group" th:each="point : ${pointBlock.page.content}">
+                        <td class="px-md py-4 text-body-md" th:text="${point.createdAt != null ? #temporals.format(point.createdAt, 'yyyy-MM-dd') : '-'}">2024-03-15</td>
+                        <td class="px-md py-4 text-body-md">
+                            <span th:class="${point.amount < 0 ? 'bg-error-container/30 text-error px-2 py-0.5 rounded-full text-label-sm' : 'bg-secondary-container/30 text-secondary px-2 py-0.5 rounded-full text-label-sm'}"
+                                  th:text="${point.type}">적립</span>
+                        </td>
+                        <td class="px-md py-4 text-body-md font-medium text-primary" th:text="${point.pointNo}">20240315001</td>
+                        <td class="px-md py-4 text-body-md font-bold"
+                            th:classappend="${point.amount < 0} ? ' text-error' : ' text-secondary'"
+                            th:text="${point.amount > 0 ? '+ ' + #numbers.formatInteger(point.amount, 0, 'COMMA') : #numbers.formatInteger(point.amount, 0, 'COMMA')}">+ 340</td>
+                        <td class="px-md py-4 text-body-md" th:text="${point.description}">상품 구매확정</td>
+                        <td class="px-md py-4 text-body-md text-outline" th:text="${point.expiredAt != null ? #temporals.format(point.expiredAt, 'yyyy-MM-dd') : '-'}">2026-03-15</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <!-- Pagination -->
-            <div class="py-md border-t border-outline-variant flex justify-center items-center gap-base">
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-outline">
+            <div class="py-md border-t border-outline-variant flex justify-center items-center gap-base" th:if="${pointBlock != null}">
+                <a class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-outline"
+                   th:classappend="${pointBlock.currentPage <= 1} ? ' pointer-events-none opacity-50'"
+                   th:href="@{/my/point(pg=${pointBlock.currentPage - 1}, startDate=${startDate}, endDate=${endDate})}">
                     <span class="material-symbols-outlined">chevron_left</span>
-                </button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold shadow-md">1</button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-medium">2</button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-medium">3</button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-medium">4</button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-medium">5</button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-outline">
+                </a>
+                <a th:each="pageNo : ${#numbers.sequence(pointBlock.startPage, pointBlock.endPage)}"
+                   th:href="@{/my/point(pg=${pageNo}, startDate=${startDate}, endDate=${endDate})}"
+                   th:text="${pageNo}"
+                   th:class="${pageNo == pointBlock.currentPage ? 'w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold shadow-md' : 'w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-medium'}">1</a>
+                <a class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors text-outline"
+                   th:classappend="${pointBlock.currentPage >= pointBlock.page.totalPages} ? ' pointer-events-none opacity-50'"
+                   th:href="@{/my/point(pg=${pointBlock.currentPage + 1}, startDate=${startDate}, endDate=${endDate})}">
                     <span class="material-symbols-outlined">chevron_right</span>
-                </button>
+                </a>
             </div>
         </section>
     </main>
 </div>
 <!-- Footer -->
-<div th:replace="~{my/_shared :: footer}"></div>
+<div th:replace="~{layout/site :: footer}"></div>
 <!-- Mobile Navigation (Floating) -->
 <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-outline-variant px-md py-sm flex justify-around items-center z-50">
     <button class="flex flex-col items-center gap-1 text-on-surface-variant">
@@ -258,6 +239,42 @@
     </button>
 </nav>
 <script>
+    document.addEventListener('click', (e) => {
+        const periodBtn = e.target.closest('.period-quick-btn');
+        if (!periodBtn) return;
+
+        e.preventDefault();
+        const form = document.getElementById('point-period-form');
+        const startInput = document.getElementById('point-start-date');
+        const endInput = document.getElementById('point-end-date');
+        if (!form || !startInput || !endInput) return;
+
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        if (periodBtn.dataset.days) {
+            startDate.setDate(startDate.getDate() - Number(periodBtn.dataset.days) + 1);
+        }
+        if (periodBtn.dataset.months) {
+            startDate.setMonth(startDate.getMonth() - Number(periodBtn.dataset.months));
+            startDate.setDate(startDate.getDate() + 1);
+        }
+        if (periodBtn.dataset.years) {
+            startDate.setFullYear(startDate.getFullYear() - Number(periodBtn.dataset.years));
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        startInput.value = formatDate(startDate);
+        endInput.value = formatDate(endDate);
+        form.submit();
+    });
+
     // Micro-interactions
     document.querySelectorAll('button, a').forEach(el => {
         el.addEventListener('mousedown', () => {
