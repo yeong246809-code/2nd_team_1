@@ -3,16 +3,13 @@ package org.example.k_market.service.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.k_market.dto.MemberDTO;
-import org.example.k_market.entity.Grade;
+import org.example.k_market.dto.PageResponseDTO;
 import org.example.k_market.entity.Member;
 import org.example.k_market.entity.Users;
-import org.example.k_market.repository.GradeRepository;
 import org.example.k_market.repository.MemberRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.service.member.MemberAccountStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,44 +27,57 @@ public class AdminMemberService {
     private final MemberRepository memberRepository;
     private final UsersRepository usersRepository;
 
-    // 1. 회원 목록 조회 및 검색
+    // 1. 회원 목록 조회 (페이징 + 정렬 + 상태 필터 + 검색)
     @Transactional(readOnly = true)
-    public Page<MemberDTO> getMembers(String searchType, String keyword, Pageable pageable) {
-        Page<Member> memberPage;
+    public PageResponseDTO<MemberDTO> getMembers(String searchType, String keyword, String statusFilter, String sort, int pg) {
+        // 1) 정렬 조건 설정 (기본값: 번호 내림차순, 페이지당 10개)
+        Sort.Direction direction = "idAsc".equals(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pg - 1, 5, Sort.by(direction, "memberNo"));
 
-        if (keyword == null || keyword.trim().isEmpty()) {
-            memberPage = memberRepository.findAll(pageable);
-        } else {
-            switch (searchType) {
-                case "name":
-                    memberPage = memberRepository.findByNameContaining(keyword, pageable);
-                    break;
-                case "email":
-                    memberPage = memberRepository.findByEmailContaining(keyword, pageable);
-                    break;
-                case "phone":
-                    memberPage = memberRepository.findByPhoneContaining(keyword, pageable);
-                    break;
-                case "id":
-                    Page<Users> usersPage = usersRepository.findByIdContaining(keyword, pageable);
-                    List<Integer> memberNos = usersPage.getContent().stream()
-                            .map(Users::getMemberNo)
-                            .collect(Collectors.toList());
-                    List<Member> matchedMembers = memberRepository.findAllById(memberNos);
-                    memberPage = new PageImpl<>(matchedMembers, pageable, usersPage.getTotalElements());
-                    break;
-                default:
-                    memberPage = memberRepository.findAll(pageable);
+        // 2) 상태 필터 변환
+        MemberAccountStatus statusObj = null;
+        if (statusFilter != null && !statusFilter.trim().isEmpty()) {
+            try {
+                statusObj = MemberAccountStatus.valueOf(statusFilter);
+            } catch (Exception e) {
+                log.warn("Invalid status filter: {}", statusFilter);
             }
         }
 
+        // 3) 검색어 및 검색조건에 따른 쿼리 분기
+        Page<Member> memberPage;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            memberPage = memberRepository.findAllByStatus(statusObj, pageable);
+        } else {
+            switch (searchType) {
+                case "name":
+                    memberPage = memberRepository.findByNameAndStatus(keyword, statusObj, pageable);
+                    break;
+                case "email":
+                    memberPage = memberRepository.findByEmailAndStatus(keyword, statusObj, pageable);
+                    break;
+                case "phone":
+                    memberPage = memberRepository.findByPhoneAndStatus(keyword, statusObj, pageable);
+                    break;
+                case "id":
+                    Page<Users> usersPage = usersRepository.findByIdContaining(keyword, Pageable.unpaged());
+                    List<Integer> memberNos = usersPage.getContent().stream()
+                            .map(Users::getMemberNo)
+                            .collect(Collectors.toList());
+                    memberPage = memberNos.isEmpty() ? new PageImpl<>(new ArrayList<>(), pageable, 0)
+                            : memberRepository.findByMemberNosAndStatus(memberNos, statusObj, pageable);
+                    break;
+                default:
+                    memberPage = memberRepository.findAllByStatus(statusObj, pageable);
+            }
+        }
+
+        // 4) Member -> MemberDTO 변환
         List<MemberDTO> dtoList = new ArrayList<>();
         if (memberPage != null && memberPage.hasContent()) {
-            List<Integer> ids = memberPage.getContent().stream()
-                    .map(Member::getMemberNo).collect(Collectors.toList());
-
+            List<Integer> ids = memberPage.getContent().stream().map(Member::getMemberNo).collect(Collectors.toList());
             Map<Integer, String> userIdMap = usersRepository.findAllByMemberNoIn(ids).stream()
-                    .collect(Collectors.toMap(Users::getMemberNo, Users::getId));
+                    .collect(Collectors.toMap(Users::getMemberNo, Users::getId, (oldVal, newVal) -> oldVal));
 
             dtoList = memberPage.getContent().stream().map(member -> {
                 MemberDTO dto = member.toDTO();
@@ -76,15 +86,15 @@ public class AdminMemberService {
             }).collect(Collectors.toList());
         }
 
-        return new PageImpl<>(dtoList, pageable, memberPage != null ? memberPage.getTotalElements() : 0);
+        // 5) PageResponseDTO 반환
+        Page<MemberDTO> dtoPage = new PageImpl<>(dtoList, pageable, memberPage != null ? memberPage.getTotalElements() : 0);
+        return new PageResponseDTO<>(dtoPage, 5);
     }
 
-    // 2. 회원 정보 수정 (모달창 데이터) - toBuilder 활용
+    // 2. 회원 정보 수정
     public void updateMember(MemberDTO dto) {
         Member member = memberRepository.findById(dto.getMemberNo())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-
-        // toBuilder()를 사용하여 기존 데이터 유지, 입력받은 값만 변경
         Member updatedMember = member.toBuilder()
                 .name(dto.getName())
                 .gender(dto.getGender())
@@ -95,66 +105,41 @@ public class AdminMemberService {
                 .detailAddress(dto.getDetailAddress())
                 .memo(dto.getMemo())
                 .build();
-
         memberRepository.save(updatedMember);
     }
 
-    // 3. 상태 변경 (정상 <-> 중지/휴면) - toBuilder 활용
+    // 3. 상태 변경
     public void changeStatus(int memberNo, String status) {
-        MemberAccountStatus accountStatus = MemberAccountStatus.from(status);
-
+        MemberAccountStatus accountStatus = MemberAccountStatus.valueOf(status);
         Member member = memberRepository.findById(memberNo)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        Member updatedMember = member.toBuilder()
-                .status(accountStatus) // 상태만 덮어쓰기
-                .build();
-
+        Member updatedMember = member.toBuilder().status(accountStatus).build();
         Users user = usersRepository.findByMemberNo(memberNo)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 계정입니다."));
-        Users updatedUser = user.toBuilder()
-                .status(accountStatus)
-                .build();
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 계정입니다."));
+        Users updatedUser = user.toBuilder().status(accountStatus).build();
 
         memberRepository.save(updatedMember);
         usersRepository.save(updatedUser);
     }
 
-    // 4. 회원 탈퇴 (비활성)
+    // 4. 회원 탈퇴
     @Transactional
     public void deactivateMember(int memberNo) {
-        // 1) Users 테이블 상태를 'WITHDRAWN'으로 확실히 처리 (이미 탈퇴 상태라도 덮어쓰기)
         Users user = usersRepository.findById(memberNo)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 계정입니다."));
-
-        Users updatedUser = user.toBuilder()
-                .status(MemberAccountStatus.WITHDRAWN)
-                .build();
-
-        usersRepository.save(updatedUser);
-
-        // 2) Member 테이블에서 레코드 완전 삭제 (물리적 삭제)
+        usersRepository.save(user.toBuilder().status(MemberAccountStatus.WITHDRAWN).build());
         memberRepository.deleteById(memberNo);
     }
 
-    // 5. 선택 수정 (등급 일괄 변경) - toBuilder 활용
+    // 5. 선택 수정 (등급 일괄 변경)
     public void bulkUpdateGrade(List<Integer> memberNos, Map<Integer, Integer> gradeMap) {
         if (memberNos == null || memberNos.isEmpty()) return;
-
         List<Member> members = memberRepository.findAllById(memberNos);
-        List<Member> updatedMembers = new ArrayList<>();
-
-        for (Member member : members) {
-            Integer newGrade = gradeMap.get(member.getMemberNo());
-            // 등급에 변화가 있는 경우에만 업데이트
-            if (newGrade != null && member.getGradeNo() != newGrade) {
-                updatedMembers.add(
-                        member.toBuilder()
-                                .gradeNo(newGrade) // 등급만 덮어쓰기
-                                .build()
-                );
-            }
-        }
+        List<Member> updatedMembers = members.stream().map(m -> {
+            Integer newGrade = gradeMap.get(m.getMemberNo());
+            return (newGrade != null && !newGrade.equals(m.getGradeNo())) ? m.toBuilder().gradeNo(newGrade).build() : m;
+        }).collect(Collectors.toList());
         memberRepository.saveAll(updatedMembers);
     }
 }

@@ -278,35 +278,63 @@
         <div class="text-sm text-gray-500 font-medium">HOME > 상점관리 > <strong class="text-black">상점목록</strong></div>
     </div>
 
-    <div class="max-w-[1200px]">
-        <div class="flex justify-between items-end mb-4">
-            <form th:action="@{/admin/shop/list}" method="get" class="flex items-center">
-                <select name="searchType" class="border border-gray-300 p-2 h-10 text-sm outline-none text-gray-600 focus:border-primary focus:ring-primary">
-                    <option value="name" th:selected="${searchType == 'name'}">상호명</option>
-                    <option value="ceo" th:selected="${searchType == 'ceo'}">대표자</option>
-                    <option value="bizNumber" th:selected="${searchType == 'bizNumber'}">사업자등록번호</option>
-                    <option value="phone" th:selected="${searchType == 'phone'}">연락처</option>
-                </select>
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어입력" class="border border-l-0 border-gray-300 p-2 h-10 text-sm outline-none w-56 focus:border-primary focus:ring-primary">
-                <button type="submit" class="bg-gray-300 text-gray-700 px-6 h-10 text-sm font-bold hover:bg-gray-400 transition-colors">검색</button>
-            </form>
+    <div class="flex justify-between items-center mb-4 flex-wrap gap-4">
 
-            <div class="flex gap-4 text-sm font-bold">
-                <span class="flex items-center gap-1.5 text-green-500">
-                    <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>운영 중
-                </span>
-                <span class="flex items-center gap-1.5 text-red-500">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>운영 중지
-                </span>
-                <span class="flex items-center gap-1.5 text-blue-500">
-                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>운영 준비
-                </span>
+        <form th:action="@{/admin/shop/list}" method="get" class="flex items-center">
+            <input type="hidden" name="statusFilter" th:value="${statusFilter}">
+            <input type="hidden" name="sort" th:value="${sort}">
+            <select name="searchType" class="border border-gray-300 p-2 h-10 text-sm outline-none text-gray-600 focus:border-primary focus:ring-primary rounded-l-sm">
+                <option value="name" th:selected="${searchType == 'name'}">상호명</option>
+                <option value="ceo" th:selected="${searchType == 'ceo'}">대표자</option>
+                <option value="bizNumber" th:selected="${searchType == 'bizNumber'}">사업자등록번호</option>
+                <option value="phone" th:selected="${searchType == 'phone'}">연락처</option>
+            </select>
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어입력" class="border border-l-0 border-gray-300 p-2 h-10 text-sm outline-none w-56 focus:border-primary focus:ring-primary">
+            <button type="submit" class="bg-gray-700 text-white px-6 h-10 text-sm font-bold hover:bg-gray-800 transition-colors rounded-r-sm">검색</button>
+        </form>
+
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-3 text-sm font-bold bg-gray-100 p-1 rounded-md border border-gray-200">
+                <a th:href="@{/admin/shop/list(searchType=${searchType}, keyword=${keyword}, statusFilter='', sort=${sort})}"
+                   th:classappend="${statusFilter == null or statusFilter == ''} ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-black'"
+                   class="px-3 py-1 rounded transition-all">전체보기</a>
+
+                <a th:href="@{/admin/shop/list(searchType=${searchType}, keyword=${keyword}, statusFilter='PENDING', sort=${sort})}"
+                   th:classappend="${statusFilter == 'PENDING'} ? 'bg-white text-blue-600 shadow-sm font-extrabold' : 'text-gray-500 hover:text-blue-600'"
+                   class="px-3 py-1 rounded transition-all flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>운영준비
+                </a>
+
+                <a th:href="@{/admin/shop/list(searchType=${searchType}, keyword=${keyword}, statusFilter='ACTIVE', sort=${sort})}"
+                   th:classappend="${statusFilter == 'ACTIVE'} ? 'bg-white text-green-600 shadow-sm font-extrabold' : 'text-gray-500 hover:text-green-600'"
+                   class="px-3 py-1 rounded transition-all flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>운영중
+                </a>
+
+                <a th:href="@{/admin/shop/list(searchType=${searchType}, keyword=${keyword}, statusFilter='STOPPED', sort=${sort})}"
+                   th:classappend="${statusFilter == 'STOPPED'} ? 'bg-white text-red-600 shadow-sm font-extrabold' : 'text-gray-500 hover:text-red-600'"
+                   class="px-3 py-1 rounded transition-all flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-red-500"></span>운영중지
+                </a>
             </div>
+
+            <select th:onchange="|location.href='@{/admin/shop/list(searchType=${searchType}, keyword=${keyword}, statusFilter=${statusFilter})}&sort=' + this.value|"
+                    class="border-gray-300 rounded-sm text-sm font-medium focus:ring-primary focus:border-primary py-2 px-3 bg-white">
+                <option value="default" th:selected="${sort == 'default' or sort == null}">기본정렬</option>
+                <option value="idDesc" th:selected="${sort == 'idDesc'}">번호내림차순</option>
+                <option value="idAsc" th:selected="${sort == 'idAsc'}">번호오름차순 </option>
+            </select>
         </div>
+    </div>
 
         <form id="storeDeleteForm" th:action="@{/admin/shop/delete}" method="post">
+            <input type="hidden" name="searchType" th:value="${searchType}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="statusFilter" th:value="${statusFilter}">
+            <input type="hidden" name="sort" th:value="${sort}">
+
             <table class="w-full border-t border-b border-gray-300 text-center text-sm">
-                <thead class="bg-gray-50 border-b border-gray-300">
+                <thead class="bg-gray-50 border-b border-gray-300 font-label-md">
                 <tr>
                     <th class="py-3 px-2 w-12"><input type="checkbox" id="selectAll" onclick="toggleAll(this)" class="rounded border-gray-300 text-primary focus:ring-primary"></th>
                     <th class="py-3 px-2 w-16 text-gray-700 font-bold">번호</th>
@@ -315,54 +343,66 @@
                     <th class="py-3 px-4 text-gray-700 font-bold">사업자등록번호</th>
                     <th class="py-3 px-4 text-gray-700 font-bold">통신판매업번호</th>
                     <th class="py-3 px-4 text-gray-700 font-bold">연락처</th>
-                    <th class="py-3 px-4 text-gray-700 font-bold w-16">운영</th>
+                    <th class="py-3 px-4 text-gray-700 font-bold w-24">운영상태</th>
                     <th class="py-3 px-4 text-gray-700 font-bold w-20">관리</th>
                 </tr>
                 </thead>
                 <tbody id="storeTableBody">
                 <tr th:each="shop : ${shopList}" class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                     <td class="py-3 px-2"><input type="checkbox" name="memberNos" th:value="${shop.memberNo}" class="rounded border-gray-300 text-primary focus:ring-primary"></td>
+
                     <td class="py-3 px-2 text-black font-bold" th:text="${shop.shopNo != null ? shop.shopNo : shop.memberNo}">1</td>
-                    <td class="py-3 px-4 text-gray-700 text-left pl-8" th:text="${shop.name}">상호명</td>
+
+                    <td class="py-3 px-4 text-gray-700 text-left font-medium pl-6" th:text="${shop.name}">상호명</td>
                     <td class="py-3 px-4 text-gray-700" th:text="${shop.ceo}">대표자</td>
                     <td class="py-3 px-4 text-gray-700" th:text="${shop.bizNumber}">112-12-12345</td>
                     <td class="py-3 px-4 text-gray-700" th:text="${shop.mailOrderNumber}">통신판매업번호</td>
                     <td class="py-3 px-4 text-gray-700" th:text="${shop.phone}">010-1234-1234</td>
 
                     <td class="py-3 px-4">
-                        <span th:if="${shop.status == '운영중' or shop.status == 'ACTIVE'}" class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
-                        <span th:if="${shop.status == '운영중지' or shop.status == 'STOPPED'}" class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>
-                        <span th:if="${shop.status == '운영준비' or shop.status == 'PENDING'}" class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span>
+                        <span th:if="${shop.status == '운영중' or shop.status == 'ACTIVE'}"
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-full">
+                            <span class="w-2.5 h-2.5 rounded-full bg-green-600"></span>
+                        </span>
+
+                         <span th:if="${shop.status == '운영중지' or shop.status == 'STOPPED'}"
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-full">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                        </span>
+
+                        <span th:if="${shop.status == '운영준비' or shop.status == 'PENDING'}"
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-full">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                        </span>
                     </td>
 
                     <td class="py-3 px-4 text-gray-500 font-bold hover:text-black cursor-pointer">
                         <button th:if="${shop.status == '운영중' or shop.status == 'ACTIVE'}"
-                                th:onclick="|updateShopStatus(${shop.memberNo}, 'STOPPED')|" type="button">[ 중단 ]</button>
+                                th:onclick="|updateShopStatus(${shop.memberNo}, 'STOPPED')|" type="button" class="text-red-600 hover:underline">[ 중단 ]</button>
 
                         <button th:if="${shop.status == '운영중지' or shop.status == 'STOPPED'}"
-                                th:onclick="|updateShopStatus(${shop.memberNo}, 'ACTIVE')|" type="button">[ 재개 ]</button>
+                                th:onclick="|updateShopStatus(${shop.memberNo}, 'ACTIVE')|" type="button" class="text-green-600 hover:underline">[ 재개 ]</button>
 
                         <button th:if="${shop.status == '운영준비' or shop.status == 'PENDING'}"
-                                th:onclick="|updateShopStatus(${shop.memberNo}, 'ACTIVE')|" type="button">[ 승인 ]</button>
+                                th:onclick="|updateShopStatus(${shop.memberNo}, 'ACTIVE')|" type="button" class="text-blue-600 hover:underline font-extrabold">[ 승인 ]</button>
                     </td>
+                </tr>
+
+                <tr th:if="${shopList == null or shopList.isEmpty()}">
+                    <td colspan="9" class="py-12 text-center text-gray-400">조회된 상점 내역이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
 
             <div class="flex justify-between items-center mt-6">
-                <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 text-sm font-bold transition-colors shadow-sm">
+                <button type="submit" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 text-sm font-bold transition-colors rounded-sm shadow-sm">
                     선택삭제
                 </button>
 
-                <div class="flex items-center gap-3 text-sm">
-                    <a href="#" class="text-gray-500 hover:text-black font-medium">이전</a>
-                    <a href="#" class="text-black font-bold underline px-1">1</a>
-                    <a href="#" class="text-gray-500 hover:text-black font-medium px-1">2</a>
-                    <a href="#" class="text-gray-500 hover:text-black font-medium">다음</a>
-                </div>
+                <div th:replace="~{fragments/_pagination :: pagination(${pageData}, '/admin/shop/list?searchType=' + ${searchType} + '&keyword=' + ${keyword} + '&statusFilter=' + ${statusFilter} + '&sort=' + ${sort})}"></div>
 
-                <button type="button" onclick="openRegisterModal()" class="bg-blue-400 hover:bg-blue-500 text-white px-6 py-2 text-sm font-bold transition-colors shadow-sm">
-                    상점등록
+                <button type="button" onclick="openRegisterModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-sm font-bold transition-colors rounded-sm shadow-sm">
+                    + 상점등록
                 </button>
             </div>
         </form>
@@ -449,19 +489,25 @@
         if(confirm(`해당 상점의 상태를 '${newStatus}'(으)로 변경하시겠습니까?`)) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = /*[[@{/admin/shop/status}]]*/ '/admin/shop/status'; // 컨트롤러에서 받을 경로
+            form.action = /*[[@{/admin/shop/status}]]*/ '/admin/shop/status';
 
-            const inputNo = document.createElement('input');
-            inputNo.type = 'hidden';
-            inputNo.name = 'memberNo';
-            inputNo.value = memberNo;
-            form.appendChild(inputNo);
+            const addInput = (name, value) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value || '';
+                form.appendChild(input);
+            };
 
-            const inputStatus = document.createElement('input');
-            inputStatus.type = 'hidden';
-            inputStatus.name = 'status';
-            inputStatus.value = newStatus;
-            form.appendChild(inputStatus);
+            addInput('memberNo', memberNo);
+            addInput('status', newStatus);
+
+            // 타임리프 변수로 현재 필터 조건들 주입
+            addInput('searchType', /*[[${searchType}]]*/ 'name');
+            addInput('keyword', /*[[${keyword}]]*/ '');
+            addInput('statusFilter', /*[[${statusFilter}]]*/ '');
+            addInput('sort', /*[[${sort}]]*/ 'default');
+            addInput('page', /*[[${pageData != null ? pageData.pg : 1}]]*/ 1);
 
             document.body.appendChild(form);
             form.submit();

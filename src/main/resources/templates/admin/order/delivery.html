@@ -252,9 +252,9 @@
 
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
 
-                <a class="py-2 text-primary font-bold font-label-md transition-colors" th:href="@{/admin/order/list}">주문현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/order/list}">주문현황</a>
 
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/order/delivery}">배송현황</a>
+                <a class="py-2 text-primary font-bold font-label-md transition-colors" th:href="@{/admin/order/delivery}">배송현황</a>
 
             </div>
 
@@ -395,331 +395,117 @@
 
 
 <main class="ml-64 mt-16 p-lg flex-1">
-
-    <div class="mb-lg border-b pb-sm">
-
+    <div class="mb-lg border-b pb-sm flex justify-between items-end">
         <h1 class="font-headline-lg text-headline-lg text-on-background">배송현황</h1>
-
+        <p class="text-label-md text-on-surface-variant">HOME > 주문관리 > 배송현황</p>
     </div>
-
-
 
     <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md shadow-sm">
-
+        <!-- 1번 영역: 검색창 -->
         <div class="mb-md flex gap-sm pb-md border-b">
-
-            <input type="text" placeholder="송장번호 입력" class="border-outline-variant rounded-lg w-64"/>
+            <select class="border-outline-variant rounded-lg">
+                <option>송장번호</option>
+                <option>주문번호</option>
+                <option>수령인</option>
+            </select>
+            <input type="text" placeholder="검색어입력" class="border-outline-variant rounded-lg w-64"/>
 
             <button class="bg-primary text-white px-6 py-2 rounded-lg">검색</button>
-
         </div>
 
-
-
+        <!-- 2번 영역: 테이블 -->
         <table class="w-full border-collapse text-center">
-
-            <thead class="bg-surface-container">
-
+            <thead class="bg-surface-container border-y border-outline-variant">
             <tr class="text-label-md">
-
-                <th class="py-4">송장번호</th>
-
-                <th class="py-4">택배사</th>
-
-                <th class="py-4">주문번호</th>
-
-                <th class="py-4">수령인</th>
-
-                <th class="py-4">상품명</th>
-
-                <th class="py-4">건수</th>
-
-                <th class="py-4">물품합계</th>
-
-                <th class="py-4">배송비</th>
-
-                <th class="py-4">배송상태</th>
-
-                <th class="py-4">접수일</th>
-
+                <th class="py-4 px-2">송장번호</th>
+                <th class="py-4 px-2">택배사</th>
+                <th class="py-4 px-2">주문번호</th>
+                <th class="py-4 px-2">수령인</th>
+                <th class="py-4 px-2">상품명</th>
+                <th class="py-4 px-2">건수</th>
+                <th class="py-4 px-2">물품합계</th>
+                <th class="py-4 px-2">배송비</th>
+                <th class="py-4 px-2">배송상태</th>
+                <th class="py-4 px-2">접수일</th>
             </tr>
-
             </thead>
-
             <tbody class="divide-y divide-surface-variant">
-
-            <tr th:if="${orderPage.content.isEmpty()}">
-
-                <td colspan="7" class="py-10 text-center text-on-surface-variant">조회된 주문 내역이 없습니다.</td>
-
-            </tr>
-
-            <tr th:each="order : ${orderPage.content}">
-                <td class="py-4 text-primary font-bold cursor-pointer hover:underline"
-                    th:text="${order.orderNo}"
-                    th:onclick="|openPopup(${order.orderNo})|"></td>
-
-                <td class="py-4" th:text="${order.id != null ? order.id : '비회원'}"></td>
-
-                <td class="py-4" th:text="${order.orderName}"></td>
-
-                <td class="py-4">1</td>
-
-                <td class="py-4 font-semibold"
-                    th:text="${order.totalPaymentPrice != null ? #numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원' : '0원'}"></td>
-
-                <td class="py-4" th:text="${order.paymentMethod}"></td>
-
-                <td class="py-4">
-        <span th:text="${order.status}"
-              th:classappend="${order.status == '결제완료' ? 'text-green-600' : (order.status == '결제대기' ? 'text-amber-600' : 'text-red-600')}"
-              class="font-bold px-2 py-1 rounded border">
-        </span>
+            <tr th:if="${deliveryPage != null}" th:each="delivery : ${deliveryPage.content}">
+                <td class="py-4 px-2">
+                    <button type="button"
+                            class="text-blue-600 underline font-medium hover:text-blue-800"
+                            th:text="${delivery?.trackingNumber}"
+                            th:data-tracking="${delivery?.trackingNumber}"
+                            onclick="openPopup(this.getAttribute('data-tracking'))">
+                    </button>
                 </td>
-
-                <td class="py-4" th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'yyyy-MM-dd') : '-'}"></td>
-
-                <td class="py-4">
-                    <button class="border border-primary text-primary px-3 py-1 rounded text-xs hover:bg-primary hover:text-white"
-                            th:onclick="|openDeliveryPopup('${order.orderNo}')|">배송하기</button>
-                </td>
+                <td class="py-4 px-2" th:text="${delivery.courierName}"></td>
+                <td class="py-4 px-2" th:text="${delivery.orderNo}"></td>
+                <td class="py-4 px-2" th:text="${delivery.recipientName}"></td>
+                <td class="py-4 px-2" th:text="${delivery.orderName}"></td>
+                <td class="py-4 px-2" th:text="${delivery.quantity}"></td>
+                <td class="py-4 px-2" th:text="${delivery.totalProductPrice}"></td>
+                <td class="py-4 px-2" th:text="${delivery.shippingFee}"></td>
+                <td class="py-4 px-2" th:text="${delivery.deliveryStatus}"></td>
+                <td class="py-4 px-2" th:text="${delivery.shippedAt}"></td>
             </tr>
-
             </tbody>
-
         </table>
-
     </div>
 
-    <div class="mt-8 flex justify-center gap-2">
+    <!-- 페이지네이션 -->
+    <div class="mt-8 flex justify-center gap-4 text-on-surface-variant"
+         th:if="${!deliveryPage.isEmpty()}">
 
-        <a th:if="${orderPage.hasPrevious()}"
+        <a th:href="@{/admin/order/delivery(page=${deliveryPage.number - 1})}"
+           th:classappend="${deliveryPage.first} ? 'pointer-events-none text-gray-400'">이전</a>
 
-           th:href="@{/admin/order/list(page=${orderPage.number - 1}, searchType=${searchType}, keyword=${keyword})}"
+        <div class="flex gap-2">
+            <a th:each="i : ${#numbers.sequence(0, deliveryPage.totalPages - 1)}"
+               th:href="@{/admin/order/delivery(page=${i})}"
+               th:text="${i + 1}"
+               th:classappend="${i == deliveryPage.number} ? 'font-bold underline' : ''"></a>
+        </div>
 
-           class="px-3 py-1 border rounded">이전</a>
-
-
-
-        <span th:each="i : ${#numbers.sequence(0, orderPage.totalPages - 1)}">
-
-<a th:href="@{/admin/order/list(page=${i}, searchType=${searchType}, keyword=${keyword})}"
-
-   th:text="${i + 1}"
-
-   th:classappend="${i == orderPage.number} ? 'bg-primary text-white' : 'bg-white'"
-
-   class="px-3 py-1 border rounded">1</a>
-
-</span>
-
-        <a th:if="${orderPage.hasNext()}"
-           th:href="@{/admin/order/list(page=${orderPage.number + 1}, searchType=${searchType}, keyword=${keyword})}"
-           class="px-3 py-1 border rounded">다음</a>
+        <a th:href="@{/admin/order/delivery(page=${deliveryPage.number + 1})}"
+           th:classappend="${deliveryPage.last} ? 'pointer-events-none text-gray-400'">다음</a>
     </div>
 </main>
-<div id="orderDetailPopup" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-[800px] shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
 
-        <div class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
-            <h2 class="text-lg font-bold">주문상세 <span id="popupOrderNo" class="ml-2 font-normal"></span></h2>
-            <button onclick="closePopup()" class="text-white text-xl">&times;</button>
+<div id="deliveryPopup" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg w-[500px]">
+        <h2 class="text-xl font-bold mb-4">배송상태</h2>
+        <div id="popupContent">
         </div>
-
-        <div class="p-6 overflow-y-auto space-y-8">
-            <div>
-                <h3 class="font-bold border-b-2 border-black pb-2 mb-3">상품정보</h3>
-                <table class="w-full text-sm border-t border-gray-300">
-                    <thead class="bg-gray-50">
-                    <tr>
-                        <th class="py-2 border-b">상품번호</th>
-                        <th class="py-2 border-b">상품명</th>
-                        <th class="py-2 border-b">가격</th>
-                        <th class="py-2 border-b">할인</th>
-                        <th class="py-2 border-b">수량</th>
-                        <th class="py-2 border-b">결제금액</th>
-                    </tr>
-                    </thead>
-                    <tbody id="popupProductList">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="grid grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-bold border-b-2 border-black pb-2 mb-3">결제정보</h3>
-                    <div class="text-sm space-y-1">
-                        <p><strong>주문번호:</strong> <span id="p-orderNo"></span></p>
-                        <p><strong>결제방법:</strong> <span id="p-payment"></span></p>
-                        <p><strong>주문자:</strong> <span id="p-member"></span></p>
-                        <p class="text-blue-600 font-bold" id="p-status"></p>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold border-b-2 border-black pb-2 mb-3">배송정보</h3>
-                    <div class="text-sm space-y-1">
-                        <p><strong>수취인:</strong> <span id="p-receiver"></span></p>
-                        <p><strong>연락처:</strong> <span id="p-phone"></span></p>
-                        <p><strong>배송지 주소:</strong> <span id="p-baseAddress"></span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button onclick="closePopup()" class="mt-4 bg-gray-200 px-4 py-2 rounded">닫기</button>
     </div>
 </div>
 
-<div id="deliveryPopup" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-[600px] p-8 shadow-xl">
-        <h2 class="text-xl font-bold mb-6">배송입력</h2>
-        <table class="w-full text-sm">
-            <tr><th class="py-2 text-left">주문번호</th><td class="py-2"><input type="text" id="d-orderNo" readonly class="border w-full"></td></tr>
-            <tr><th class="py-2 text-left">수령인</th><td class="py-2"><input type="text" id="d-receiver" class="border w-full"></td></tr>
-            <tr><th class="py-2 text-left">우편번호</th><td class="py-2"><input type="text" id="d-zip" class="border w-full"></td></tr>
-            <tr><th class="py-2 text-left">기본주소</th><td class="py-2"><input type="text" id="d-baseAddress" class="border w-full"></td></tr>
-            <tr><th class="py-2 text-left">상세주소</th><td class="py-2"><input type="text" id="d-detailAddress" class="border w-full"></td></tr>
-            <tr>
-                <th class="py-2 text-left">택배사</th>
-                <td class="py-2">
-                    <select id="d-courier" class="border w-full p-2">
-                        <option value="">택배사 선택</option>
-                        <option th:each="courier : ${courierList}"
-                                th:value="${courier}"
-                                th:text="${courier}"></option>
-                    </select>
-                </td>
-            </tr>
-            <tr><th class="py-2 text-left">운송장번호</th><td class="py-2"><input type="text" id="d-trackingNo" class="border w-full"></td></tr>
-            <tr><th class="py-2 text-left">기타</th><td class="py-2"><textarea id="d-memo" class="border w-full"></textarea></td></tr>
-        </table>
-        <div class="mt-6 flex justify-center">
-            <button onclick="closeDeliveryPopup()" class="bg-gray-500 text-white px-6 py-2 rounded mr-2">닫기</button>
-            <button onclick="submitDelivery()" class="bg-green-600 text-white px-6 py-2 rounded">등록하기</button>
-        </div>
-    </div>
-</div>
-
-
-<script th:inline="javascript">
-    const contextPath = /*[[@{/}]]*/ '/';
-
-    function updateStatus(orderNo, newStatus) {
-        if(confirm(orderNo + "번 주문 상태를 " + newStatus + "(으)로 변경하시겠습니까?")) {
-            // 경로를 타임리프 문법으로 정확히 지정
-            const url = /*[[@{/admin/order/status}]]*/ '';
-
-            fetch(`${url}?orderNo=${orderNo}&status=${newStatus}`, {
-                method: 'POST'
-            })
-                .then(response => response.json()) // JSON으로 변환
-                .then(data => {
-                    if(data.success) {
-                        alert("변경되었습니다.");
-                        location.reload();
-                    } else {
-                        alert("상태 변경에 실패했습니다.");
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("서버 통신 중 오류가 발생했습니다.");
-                });
+<script>
+    function openPopup(trackingNumber) {
+        if (!trackingNumber || trackingNumber === 'null') {
+            alert("송장번호 정보가 없습니다.");
+            return;
         }
-    }
 
-    function openPopup(orderNo) {
-        if (!orderNo) return;
-
-        fetch(`${contextPath}admin/order/detail/${orderNo}`)
-            .then(res => res.json())
+        // 이제 서버로 요청을 보냅니다.
+        fetch(`/admin/order/delivery/detail/${trackingNumber}`)
+            .then(response => response.json())
             .then(data => {
-                // ERD 기준 필드명 적용
-                document.getElementById('popupOrderNo').innerText = data.orderNo;
-                document.getElementById('p-orderNo').innerText = data.orderNo;
-                document.getElementById('p-payment').innerText = data.paymentMethod;
-                document.getElementById('p-member').innerText = data.orderName || '비회원';
-                document.getElementById('p-status').innerText = data.status;
-
-                document.getElementById('p-receiver').innerText = data.recipientName || '정보없음';
-                document.getElementById('p-phone').innerText = data.recipientPhone || '정보없음';
-                document.getElementById('p-baseAddress').innerText = data.baseAddress || '정보없음';
-
-                const productList = document.getElementById('popupProductList');
-                if (data.orderItems && Array.isArray(data.orderItems)) {
-                    productList.innerHTML = data.orderItems.map(item => `
-                    <tr class="text-center">
-                        <td class="py-2">${item.productNo}</td>
-                        <td class="py-2">${item.prodName || '상품명 없음'}</td>
-                        <td class="py-2">${(item.price || 0).toLocaleString()}원</td>
-                        <td class="py-2">${(item.discountPrice || 0).toLocaleString()}원</td>
-                        <td class="py-2">${item.quantity}</td>
-                        <td class="py-2 font-bold">${(item.totalPaymentPrice || 0).toLocaleString()}원</td>
-                    </tr>
-                `).join('');
-                }
-                document.getElementById('orderDetailPopup').classList.remove('hidden');
+                // 팝업 내용 채우기 (데이터 바인딩)
+                document.getElementById('popupContent').innerHTML = `
+                <p><strong>주문번호:</strong> ${data.orderNo}</p>
+                <p><strong>수령인:</strong> ${data.recipientName}</p>
+            `;
+                document.getElementById('deliveryPopup').classList.remove('hidden');
             })
-            .catch(err => {
-                console.error(err);
-                alert("상세 정보를 불러오는 데 실패했습니다.");
-            });
+            .catch(err => alert("상세 정보를 불러오는 중 오류가 발생했습니다."));
     }
 
     function closePopup() {
-        document.getElementById('orderDetailPopup').classList.add('hidden');
-    }
-
-    function openDeliveryPopup(orderNo) {
-        // 1. 주문 상세 정보 API 호출 (이미 만들어둔 컨트롤러 활용)
-        fetch(`${contextPath}admin/order/detail/${orderNo}`)
-            .then(res => res.json())
-            .then(data => {
-                // 2. 받아온 데이터를 팝업 입력창(input)에 자동으로 채우기
-                document.getElementById('d-orderNo').value = data.orderNo;
-                document.getElementById('d-receiver').value = data.recipientName || '';
-                document.getElementById('d-zip').value = data.zipCode || '';
-                document.getElementById('d-baseAddress').value = data.baseAddress || '';
-                document.getElementById('d-detailAddress').value = data.detailAddress || '';
-
-                // 3. 팝업창 표시
-                document.getElementById('deliveryPopup').classList.remove('hidden');
-            })
-            .catch(err => {
-                console.error("배송 정보 로드 실패:", err);
-                alert("주문 정보를 불러올 수 없습니다.");
-            });
-    }
-
-    // 팝업 닫기
-    function closeDeliveryPopup() {
         document.getElementById('deliveryPopup').classList.add('hidden');
     }
+</script>
 
-    // 등록하기: 서버로 데이터 전송
-    function submitDelivery() {
-        const data = {
-            orderNo: document.getElementById('d-orderNo').value,
-            recipientName: document.getElementById('d-receiver').value,
-            zipCode: document.getElementById('d-zip').value,
-            baseAddress: document.getElementById('d-baseAddress').value,
-            detailAddress: document.getElementById('d-detailAddress').value,
-            courierName: document.getElementById('d-courier').value, // 택배사
-            trackingNumber: document.getElementById('d-trackingNo').value, // 운송장
-            memo: document.getElementById('d-memo').value
-        };
-
-        fetch(`${contextPath}admin/order/delivery/register`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        }).then(res => {
-            if(res.ok) {
-                alert("배송 등록이 완료되었습니다.");
-                location.reload();
-            }
-        });
-    }
-
-    </script>
-    <script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
     </body>
 </html>

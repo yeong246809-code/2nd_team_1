@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="pagination(pageData, linkUrl)"
+     class="flex items-center gap-2 font-body-md text-body-md text-on-surface-variant select-none"
+     th:if="${pageData != null and pageData.total > 0}">
+
+    <a th:if="${pageData.prev}"
+       th:href="@{${linkUrl}(page=${pageData.prevPage})}"
+       class="px-3 py-1 rounded hover:bg-surface-container-high hover:text-primary transition-colors cursor-pointer">
+        이전
+    </a>
+    <span th:unless="${pageData.prev}" class="px-3 py-1 text-outline-variant cursor-not-allowed">
+        이전
+    </span>
+
+    <div class="flex items-center gap-1">
+        <th:block th:each="num : ${#numbers.sequence(pageData.startPage, pageData.endPage)}">
+            <span th:if="${num == pageData.pg}"
+                  th:text="${num}"
+                  class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-bold shadow-sm">
+                1
+            </span>
+            <a th:unless="${num == pageData.pg}"
+               th:href="@{${linkUrl}(page=${num})}"
+               th:text="${num}"
+               class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container-high hover:text-primary transition-colors">
+                2
+            </a>
+        </th:block>
+    </div>
+
+    <a th:if="${pageData.next}"
+       th:href="@{${linkUrl}(page=${pageData.nextPage})}"
+       class="px-3 py-1 rounded hover:bg-surface-container-high hover:text-primary transition-colors cursor-pointer">
+        다음
+    </a>
+    <span th:unless="${pageData.next}" class="px-3 py-1 text-outline-variant cursor-not-allowed">
+        다음
+    </span>
+</div>
+</html>

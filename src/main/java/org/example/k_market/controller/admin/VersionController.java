@@ -2,6 +2,7 @@ package org.example.k_market.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.dto.PageResponseDTO;
 import org.example.k_market.dto.VersionDTO;
 import org.example.k_market.service.admin.VersionService;
 import org.springframework.stereotype.Controller;
@@ -24,12 +25,14 @@ public class VersionController {
 
     // 1. 목록 화면 출력
     @GetMapping("/version")
-    public String versionList(Model model) {
-        // "versions"라는 이름으로 HTML에 데이터 전달 (th:each="ver : ${versions}" 와 매핑)
-        List<VersionDTO> versions = versionService.getVersionList();
-        model.addAttribute("versions", versions);
+    public String versionList(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        // PageResponseDTO 객체를 조회
+        PageResponseDTO<VersionDTO> pageResponseDTO = versionService.getVersionList(page);
 
-        // 실제 HTML 파일이 위치한 경로로 리턴 (templates/admin/config/version.html 기준)
+        // HTML에서는 dtoList를 기존 versions처럼 사용하고, 페이지 정보는 pageData로 전달
+        model.addAttribute("versions", pageResponseDTO.getDtoList());
+        model.addAttribute("pageData", pageResponseDTO);
+
         return "admin/config/version";
     }
 
