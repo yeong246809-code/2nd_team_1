@@ -83,5 +83,25 @@ public class AdminOrderController {
         }
     }
 
+    @GetMapping("/delivery")
+    public String deliveryList(@PageableDefault(size = 10) Pageable pageable, Model model) {
+        Page<DeliveryDTO> page = deliveryService.getDeliveryList(pageable);
+
+        // 만약 서비스에서 null을 반환한다면 빈 페이지 객체를 넘겨줍니다.
+        if (page == null) {
+            page = Page.empty();
+        }
+
+        model.addAttribute("deliveryPage", page != null ? page : Page.empty());
+        return "admin/order/delivery";
+    }
+
+    @GetMapping("/admin/order/delivery/detail/{trackingNumber}")
+    @ResponseBody // JSON 반환
+    public ResponseEntity<DeliveryDTO> getDeliveryDetail(@PathVariable String trackingNumber) {
+        // 1. 송장번호로 배송 정보 조회
+        DeliveryDTO detail = deliveryService.getDetailByTrackingNumber(trackingNumber);
+        return ResponseEntity.ok(detail);
+    }
 
 }
