@@ -283,6 +283,10 @@
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
         <form id="deleteForm" th:action="@{/admin/member/point/delete}" method="post">
+            <input type="hidden" name="searchType" th:value="${searchType}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="page" th:value="${pageData != null ? pageData.pg : 1}">
+
             <table class="w-full text-center border-collapse">
                 <thead class="bg-surface border-b border-t border-outline-variant font-label-md text-on-surface-variant">
                 <tr>
@@ -319,20 +323,14 @@
             <div class="flex justify-between items-center mt-4">
                 <button type="button" onclick="submitDeleteForm()" class="bg-[#b5b5b5] hover:bg-gray-500 text-white font-label-md px-6 py-2 rounded transition-colors shadow-sm">선택삭제</button>
 
-                <div class="flex items-center gap-2 text-sm font-label-md">
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">이전</a>
-                    <a href="#" class="px-2 py-1 font-bold underline text-primary">1</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">2</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">3</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">4</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">5</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">다음</a>
-                </div>
+                <div th:replace="~{fragments/_pagination :: pagination(${pageData}, '/admin/member/point?searchType=' + ${searchType} + '&keyword=' + ${keyword})}"></div>
 
-                <div class="w-[88px]"></div> </div>
+                <div class="w-[88px]"></div>
+            </div>
         </form>
     </section>
-</main><script th:inline="javascript">
+</main>
+<script th:inline="javascript">
     // 전체 선택 체크박스 동작
     document.getElementById('selectAll').addEventListener('change', function() {
         const checkboxes = document.querySelectorAll('.pointCheckbox');

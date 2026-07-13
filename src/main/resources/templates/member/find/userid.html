@@ -1,257 +1,114 @@
 <!DOCTYPE html>
-
-<html lang="ko"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>아이디 찾기 - K-market</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary-fixed": "#c8e8f2",
-                        "on-error-container": "#93000a",
-                        "on-tertiary-fixed-variant": "#5f402b",
-                        "on-primary-container": "#99b9c2",
-                        "surface-variant": "#e1e3e4",
-                        "on-error": "#ffffff",
-                        "inverse-primary": "#acccd5",
-                        "surface": "#f8f9fa",
-                        "background": "#f8f9fa",
-                        "error": "#ba1a1a",
-                        "on-primary": "#ffffff",
-                        "tertiary-container": "#5e3f2a",
-                        "surface-bright": "#f8f9fa",
-                        "on-primary-fixed": "#001f26",
-                        "primary": "#14333b",
-                        "inverse-on-surface": "#f0f1f2",
-                        "secondary": "#3e6659",
-                        "secondary-fixed-dim": "#a5d0c0",
-                        "on-secondary-fixed": "#002018",
-                        "tertiary": "#452916",
-                        "primary-fixed-dim": "#acccd5",
-                        "outline-variant": "#c1c7ca",
-                        "tertiary-fixed-dim": "#eabda2",
-                        "on-secondary-fixed-variant": "#264e42",
-                        "on-secondary": "#ffffff",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-tint": "#45636b",
-                        "inverse-surface": "#2e3132",
-                        "surface-container": "#edeeef",
-                        "secondary-fixed": "#c0ecdc",
-                        "tertiary-fixed": "#ffdcc7",
-                        "surface-container-high": "#e7e8e9",
-                        "outline": "#72787a",
-                        "on-secondary-container": "#446c5f",
-                        "on-primary-fixed-variant": "#2d4b53",
-                        "on-tertiary-fixed": "#2d1605",
-                        "primary-container": "#2c4a52",
-                        "on-tertiary-container": "#d6ab90",
-                        "on-tertiary": "#ffffff",
-                        "on-surface": "#191c1d",
-                        "surface-dim": "#d9dadb",
-                        "error-container": "#ffdad6",
-                        "on-surface-variant": "#41484a",
-                        "on-background": "#191c1d",
-                        "surface-container-low": "#f3f4f5",
-                        "surface-container-highest": "#e1e3e4",
-                        "secondary-container": "#c0ecdc"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "md": "24px",
-                        "container-max": "1280px",
-                        "lg": "48px",
-                        "sm": "12px",
-                        "gutter": "24px",
-                        "xs": "4px",
-                        "margin-mobile": "16px",
-                        "base": "8px",
-                        "xl": "80px"
-                    },
-                    "fontFamily": {
-                        "headline-lg-mobile": ["Plus Jakarta Sans"],
-                        "body-md": ["Be Vietnam Pro"],
-                        "headline-lg": ["Plus Jakarta Sans"],
-                        "label-sm": ["Be Vietnam Pro"],
-                        "headline-md": ["Plus Jakarta Sans"],
-                        "body-lg": ["Be Vietnam Pro"],
-                        "label-md": ["Be Vietnam Pro"],
-                        "display-lg": ["Plus Jakarta Sans"]
-                    },
-                    "fontSize": {
-                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
-                        "headline-md": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
-                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500" }],
-                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
-                    }
-                }
-            }
-        }
-    </script>
-<style>
-        body { font-family: 'Be Vietnam Pro', sans-serif; }
-        h1, h2, h3, h4, h5, h6, .font-display-lg { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .tab-transition { transition: all 0.3s ease-in-out; }
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>아이디 찾기 - K-market</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background:#f8f9fa; color:#191c1d; }
+        h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen flex flex-col">
-<!-- Header Section -->
+<body class="min-h-screen flex flex-col">
 <div th:replace="~{layout/site :: header}"></div>
-<div class="flex flex-1 max-w-container-max mx-auto w-full">
-<!-- Main Content Section -->
-<main class="flex-1 p-md md:p-lg flex flex-col items-center justify-center w-full">
-<div class="w-full max-w-[600px] bg-on-primary rounded-xl shadow-[0_4px_24px_rgba(44,74,82,0.04)] p-lg border border-surface-variant">
-<!-- Title -->
-<h1 class="font-headline-lg text-headline-lg text-primary border-b-2 border-primary pb-sm mb-lg text-center">아이디 찾기</h1>
-<!-- Tabs -->
-<div class="flex border-b border-surface-variant mb-lg">
-<button class="flex-1 py-sm font-label-md text-label-md font-bold text-primary border-b-2 border-primary text-center transition-colors" id="tab-email">이메일 인증</button>
-<button class="flex-1 py-sm font-label-md text-label-md text-on-surface-variant border-b-2 border-transparent hover:text-primary transition-colors text-center" id="tab-mobile">휴대폰 인증</button>
-</div>
-<!-- Forms Container -->
-<div class="relative min-h-[350px]">
-<!-- Email Form Content -->
-<div class="absolute w-full tab-transition opacity-100 translate-x-0" id="form-email">
-<div class="space-y-md">
-<!-- Name -->
-<div class="flex flex-col gap-xs">
-<label class="font-label-md text-label-md text-on-surface">이름</label>
-<input class="w-full bg-background border border-surface-variant rounded-lg p-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="이름을 입력하세요" type="text"/>
-</div>
-<!-- Email -->
-<div class="flex flex-col gap-xs">
-<label class="font-label-md text-label-md text-on-surface">이메일</label>
-<div class="flex gap-sm">
-<input class="flex-1 bg-background border border-surface-variant rounded-lg p-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="이메일 주소" type="email"/>
-<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-tint hover:text-on-primary transition-colors whitespace-nowrap">인증번호 받기</button>
-</div>
-</div>
-<!-- Verification Code -->
-<div class="flex flex-col gap-xs">
-<label class="font-label-md text-label-md text-on-surface">인증번호</label>
-<div class="flex gap-sm">
-<input class="flex-1 bg-background border border-surface-variant rounded-lg p-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="인증번호 6자리" type="text"/>
-<button class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-md py-sm rounded-lg hover:bg-secondary hover:text-on-secondary transition-colors whitespace-nowrap">확인</button>
-</div>
-</div>
-</div>
-<!-- Notice -->
-<div class="mt-lg bg-surface-container-low p-sm rounded-lg">
-<p class="font-label-sm text-label-sm text-on-surface-variant">
-                                회원가입시 이메일 주소와 입력한 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.<br/>
-                                인증번호를 입력 후 확인 버튼을 누르세요.
-                            </p>
-</div>
-</div>
-<!-- Mobile Form Content -->
-<div class="absolute w-full tab-transition opacity-0 pointer-events-none translate-x-4" id="form-mobile">
-<div class="space-y-md">
-<!-- Name -->
-<div class="flex flex-col gap-xs">
-<label class="font-label-md text-label-md text-on-surface">이름</label>
-<input class="w-full bg-background border border-surface-variant rounded-lg p-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="이름을 입력하세요" type="text"/>
-</div>
-<!-- Mobile Number -->
-<div class="flex flex-col gap-xs">
-<label class="font-label-md text-label-md text-on-surface">휴대폰 번호</label>
-<div class="flex gap-sm">
-<input class="flex-1 bg-background border border-surface-variant rounded-lg p-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="휴대폰 번호 입력 (- 제외)" type="tel"/>
-<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-tint hover:text-on-primary transition-colors whitespace-nowrap">인증번호 받기</button>
-</div>
-</div>
-<!-- Verification Code -->
-<div class="flex flex-col gap-xs">
-<label class="font-label-md text-label-md text-on-surface">인증번호</label>
-<div class="flex gap-sm">
-<input class="flex-1 bg-background border border-surface-variant rounded-lg p-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" placeholder="인증번호 6자리" type="text"/>
-<button class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-md py-sm rounded-lg hover:bg-secondary hover:text-on-secondary transition-colors whitespace-nowrap">확인</button>
-</div>
-</div>
-</div>
-<!-- Notice -->
-<div class="mt-lg bg-surface-container-low p-sm rounded-lg">
-<p class="font-label-sm text-label-sm text-on-surface-variant">
-                                회원가입시 등록한 휴대폰 번호와 같아야, 인증번호를 받을 수 있습니다.<br/>
-                                인증번호를 입력 후 확인 버튼을 누르세요.
-                            </p>
-</div>
-</div>
-</div>
-<!-- Action Buttons -->
-<div class="mt-xl flex justify-end gap-sm pt-md">
-<button class="px-lg py-sm rounded-lg border border-primary text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors">취소</button>
-<button class="px-lg py-sm rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-surface-tint transition-colors">다음</button>
-</div>
-</div>
+<main class="flex-1 flex items-center justify-center px-4 py-16">
+    <section class="w-full max-w-[600px] rounded-xl border border-[#e1e3e4] bg-white p-8 shadow-sm">
+        <h1 class="mb-6 border-b-2 border-[#14333b] pb-3 text-center text-3xl font-bold text-[#14333b]">아이디 찾기</h1>
+
+        <div th:if="${findError}" class="mb-4 rounded-lg bg-[#ffdad6] px-4 py-3 text-sm font-medium text-[#ba1a1a]" th:text="${findError}"></div>
+
+        <div class="mb-6 flex border-b border-[#e1e3e4]">
+            <button type="button" class="find-tab flex-1 border-b-2 py-3 text-sm font-semibold" data-tab="email">이메일 인증</button>
+            <button type="button" class="find-tab flex-1 border-b-2 py-3 text-sm font-semibold" data-tab="phone">휴대폰 확인</button>
+        </div>
+
+        <form id="email-form" class="find-panel space-y-5" th:action="@{/member/find/userid}" method="post">
+            <input type="hidden" name="mode" value="email">
+            <label class="block">
+                <span class="mb-2 block text-sm font-semibold">이름</span>
+                <input class="w-full rounded-lg border border-[#c1c7ca] bg-[#f8f9fa] px-4 py-3 outline-none focus:border-[#14333b]" name="name" th:value="${name}" placeholder="이름을 입력하세요" required>
+            </label>
+            <label class="block">
+                <span class="mb-2 block text-sm font-semibold">이메일</span>
+                <div class="flex gap-2">
+                    <input id="find-id-email" class="min-w-0 flex-1 rounded-lg border border-[#c1c7ca] bg-[#f8f9fa] px-4 py-3 outline-none focus:border-[#14333b]" name="email" th:value="${email}" type="email" placeholder="이메일 주소" required>
+                    <button class="email-send h-12 shrink-0 rounded-lg border border-[#14333b] px-4 text-sm font-semibold text-[#14333b]" data-email-input="find-id-email" type="button">인증번호 받기</button>
+                </div>
+            </label>
+            <label class="block">
+                <span class="mb-2 block text-sm font-semibold">인증번호</span>
+                <div class="flex gap-2">
+                    <input id="find-id-email-code" class="min-w-0 flex-1 rounded-lg border border-[#c1c7ca] bg-[#f8f9fa] px-4 py-3 outline-none focus:border-[#14333b]" placeholder="인증번호 6자리">
+                    <button class="email-verify h-12 shrink-0 rounded-lg bg-[#3e6659] px-5 text-sm font-semibold text-white" data-email-input="find-id-email" data-code-input="find-id-email-code" type="button">확인</button>
+                </div>
+            </label>
+            <p class="email-message rounded-lg bg-[#f3f4f5] px-4 py-3 text-sm text-[#41484a]">회원가입 시 등록한 이메일 인증 후 아이디를 찾을 수 있습니다.</p>
+            <button class="h-12 w-full rounded-lg bg-[#14333b] text-base font-bold text-white" type="submit">확인하기</button>
+        </form>
+
+        <form id="phone-form" class="find-panel hidden space-y-5" th:action="@{/member/find/userid}" method="post">
+            <input type="hidden" name="mode" value="phone">
+            <label class="block">
+                <span class="mb-2 block text-sm font-semibold">이름</span>
+                <input class="w-full rounded-lg border border-[#c1c7ca] bg-[#f8f9fa] px-4 py-3 outline-none focus:border-[#14333b]" name="name" th:value="${name}" placeholder="이름을 입력하세요" required>
+            </label>
+            <label class="block">
+                <span class="mb-2 block text-sm font-semibold">가입된 전화번호</span>
+                <input class="w-full rounded-lg border border-[#c1c7ca] bg-[#f8f9fa] px-4 py-3 outline-none focus:border-[#14333b]" name="phone" th:value="${phone}" placeholder="'-' 없이 입력해도 됩니다" required>
+            </label>
+            <p class="rounded-lg bg-[#f3f4f5] px-4 py-3 text-sm text-[#41484a]">전화번호는 별도 인증 없이 가입 정보에 등록된 번호와 일치하는지만 확인합니다.</p>
+            <button class="h-12 w-full rounded-lg bg-[#14333b] text-base font-bold text-white" type="submit">확인하기</button>
+        </form>
+
+        <div class="mt-6 flex justify-between text-sm">
+            <a class="text-[#41484a] hover:text-[#14333b]" th:href="@{/member/login}">로그인</a>
+            <a class="font-semibold text-[#14333b]" th:href="@{/member/find/password}">비밀번호 찾기</a>
+        </div>
+    </section>
 </main>
-</div>
-<!-- Footer Section -->
 <div th:replace="~{layout/site :: footer}"></div>
-<!-- Scripts Section -->
+<script th:inline="javascript">
+    const selectedMode = /*[[${selectedMode}]]*/ 'email';
+</script>
 <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabEmail = document.getElementById('tab-email');
-            const tabMobile = document.getElementById('tab-mobile');
-            const formEmail = document.getElementById('form-email');
-            const formMobile = document.getElementById('form-mobile');
-
-            // Active Tab Classes
-            const activeTabClasses = ['font-bold', 'text-primary', 'border-primary'];
-            const inactiveTabClasses = ['text-on-surface-variant', 'border-transparent'];
-
-            function switchTab(clickedTab) {
-                if (clickedTab === 'email') {
-                    // Update Tab Styles
-                    tabMobile.classList.remove(...activeTabClasses);
-                    tabMobile.classList.add(...inactiveTabClasses);
-                    tabEmail.classList.remove(...inactiveTabClasses);
-                    tabEmail.classList.add(...activeTabClasses);
-
-                    // Update Form Visibility with Transitions
-                    formMobile.classList.remove('opacity-100', 'translate-x-0');
-                    formMobile.classList.add('opacity-0', 'pointer-events-none', '-translate-x-4');
-                    
-                    setTimeout(() => {
-                        formEmail.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-4', '-translate-x-4');
-                        formEmail.classList.add('opacity-100', 'translate-x-0');
-                    }, 150);
-
-                } else if (clickedTab === 'mobile') {
-                    // Update Tab Styles
-                    tabEmail.classList.remove(...activeTabClasses);
-                    tabEmail.classList.add(...inactiveTabClasses);
-                    tabMobile.classList.remove(...inactiveTabClasses);
-                    tabMobile.classList.add(...activeTabClasses);
-
-                    // Update Form Visibility with Transitions
-                    formEmail.classList.remove('opacity-100', 'translate-x-0');
-                    formEmail.classList.add('opacity-0', 'pointer-events-none', '-translate-x-4');
-
-                    setTimeout(() => {
-                        formMobile.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-4', '-translate-x-4');
-                        formMobile.classList.add('opacity-100', 'translate-x-0');
-                    }, 150);
-                }
-            }
-
-            // Event Listeners
-            tabEmail.addEventListener('click', () => switchTab('email'));
-            tabMobile.addEventListener('click', () => switchTab('mobile'));
+    const tabs = document.querySelectorAll('.find-tab');
+    const panels = { email: document.getElementById('email-form'), phone: document.getElementById('phone-form') };
+    function activate(tab) {
+        tabs.forEach((button) => {
+            const active = button.dataset.tab === tab;
+            button.classList.toggle('border-[#14333b]', active);
+            button.classList.toggle('text-[#14333b]', active);
+            button.classList.toggle('border-transparent', !active);
+            button.classList.toggle('text-[#41484a]', !active);
         });
-    </script>
+        Object.entries(panels).forEach(([key, panel]) => panel.classList.toggle('hidden', key !== tab));
+    }
+    tabs.forEach((button) => button.addEventListener('click', () => activate(button.dataset.tab)));
+    activate(selectedMode || 'email');
+
+    async function postForm(url, data) {
+        const response = await fetch(url, { method: 'POST', body: data });
+        return response.json();
+    }
+    document.querySelectorAll('.email-send').forEach((button) => button.addEventListener('click', async () => {
+        const email = document.getElementById(button.dataset.emailInput).value;
+        const message = button.closest('form').querySelector('.email-message');
+        const result = await postForm('/member/email/send', new URLSearchParams({ email }));
+        message.textContent = result.message;
+        message.className = `email-message rounded-lg px-4 py-3 text-sm ${result.success ? 'bg-[#c0ecdc] text-[#264e42]' : 'bg-[#ffdad6] text-[#ba1a1a]'}`;
+    }));
+    document.querySelectorAll('.email-verify').forEach((button) => button.addEventListener('click', async () => {
+        const email = document.getElementById(button.dataset.emailInput).value;
+        const code = document.getElementById(button.dataset.codeInput).value;
+        const message = button.closest('form').querySelector('.email-message');
+        const result = await postForm('/member/email/verify', new URLSearchParams({ email, code }));
+        message.textContent = result.message;
+        message.className = `email-message rounded-lg px-4 py-3 text-sm ${result.success ? 'bg-[#c0ecdc] text-[#264e42]' : 'bg-[#ffdad6] text-[#ba1a1a]'}`;
+    }));
+</script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
-</body></html>
+</body>
+</html>

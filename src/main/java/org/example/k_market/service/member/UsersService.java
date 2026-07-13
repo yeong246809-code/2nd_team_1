@@ -35,8 +35,79 @@ public class UsersService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final DefaultMemberGradeService defaultMemberGradeService;
 
+    public record FoundAccount(String id, String name, String email, String createdAt) {
+    }
+
     public boolean isIdAvailable(String id) {
         return id != null && !id.isBlank() && userRepository.findById(id.trim()).isEmpty();
+    }
+
+    public Optional<FoundAccount> findUserIdByEmail(String name, String email) {
+        String safeName = trimToNull(name);
+        String safeEmail = trimToNull(email);
+        if (safeName == null || safeEmail == null) {
+            return Optional.empty();
+        }
+        return memberRepository.findFirstByNameAndEmailIgnoreCase(safeName, safeEmail)
+                .flatMap(this::toFoundAccount);
+    }
+
+    public Optional<FoundAccount> findUserIdByPhone(String name, String phone) {
+        String safeName = trimToNull(name);
+        String safePhone = normalizePhone(phone);
+        if (safeName == null || safePhone == null) {
+            return Optional.empty();
+        }
+        return memberRepository.findFirstByNameAndNormalizedPhone(safeName, safePhone)
+                .flatMap(this::toFoundAccount);
+    }
+
+    public Optional<Users> findPasswordResetTargetByEmail(String id, String email) {
+        String safeId = trimToNull(id);
+        String safeEmail = trimToNull(email);
+        if (safeId == null || safeEmail == null) {
+            return Optional.empty();
+        }
+        return userRepository.findById(safeId)
+                .filter(user -> memberRepository.findById(user.getMemberNo())
+                        .map(Member::getEmail)
+                        .map(memberEmail -> memberEmail.equalsIgnoreCase(safeEmail))
+                        .orElse(false));
+    }
+
+    public Optional<Users> findPasswordResetTargetByPhone(String id, String phone) {
+        String safeId = trimToNull(id);
+        String safePhone = normalizePhone(phone);
+        if (safeId == null || safePhone == null) {
+            return Optional.empty();
+        }
+        return userRepository.findById(safeId)
+                .filter(user -> memberRepository.findById(user.getMemberNo())
+                        .map(Member::getPhone)
+                        .map(this::normalizePhone)
+                        .map(safePhone::equals)
+                        .orElse(false));
+    }
+
+    @Transactional
+    public void resetPassword(String id, String password, String passwordConfirm) {
+        String safeId = trimToNull(id);
+        if (safeId == null) {
+            throw new IllegalArgumentException("아이디를 확인해주세요.");
+        }
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("새 비밀번호를 입력해주세요.");
+        }
+        if (!password.equals(passwordConfirm)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        if (password.length() < 4) {
+            throw new IllegalArgumentException("비밀번호는 4자 이상 입력해주세요.");
+        }
+        if (userRepository.findById(safeId).isEmpty()) {
+            throw new IllegalArgumentException("아이디를 찾을 수 없습니다.");
+        }
+        userRepository.updatePasswordByLoginId(safeId, passwordEncoder.encode(password));
     }
 
     @Transactional
@@ -178,6 +249,25 @@ public class UsersService implements UserDetailsService {
             return null;
         }
         return value.trim();
+    }
+
+    private Optional<FoundAccount> toFoundAccount(Member member) {
+        return userRepository.findByMemberNo(member.getMemberNo())
+                .map(user -> new FoundAccount(
+                        user.getId(),
+                        valueOrEmpty(member.getName()),
+                        valueOrEmpty(member.getEmail()),
+                        user.getCreatedAt()
+                ));
+    }
+
+    private String normalizePhone(String value) {
+        String trimmed = trimToNull(value);
+        if (trimmed == null) {
+            return null;
+        }
+        String normalized = trimmed.replaceAll("[^0-9]", "");
+        return normalized.isBlank() ? null : normalized;
     }
 
     private String valueOrEmpty(String value) {

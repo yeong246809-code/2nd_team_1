@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer> {
@@ -50,9 +51,20 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     Page<Member> findByNameContaining(String name, Pageable pageable);
     Page<Member> findByEmailContaining(String email, Pageable pageable);
     Page<Member> findByPhoneContaining(String phone, Pageable pageable);
+    Optional<Member> findFirstByNameAndEmailIgnoreCase(String name, String email);
     List<Member> findByLastLoginAtBeforeAndStatus(
             LocalDateTime date,
             MemberAccountStatus status);
+
+    @Query("""
+            SELECT m
+            FROM Member m
+            WHERE m.name = :name
+              AND REPLACE(COALESCE(m.phone, ''), '-', '') = :phone
+            """)
+    Optional<Member> findFirstByNameAndNormalizedPhone(
+            @Param("name") String name,
+            @Param("phone") String phone);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Member m SET m.lastLoginAt = :lastLoginAt WHERE m.memberNo = :memberNo")

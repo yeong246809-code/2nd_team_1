@@ -2,13 +2,16 @@ package org.example.k_market.controller.company;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.example.k_market.dao.CmMediaDAO;   // 본인 패키지 경로에 맞게 매칭
-import org.example.k_market.dao.CmRecruitDAO; // 본인 패키지 경로에 맞게 매칭
-import org.example.k_market.dao.CmStoryDAO;   // 본인 패키지 경로에 맞게 매칭
+import org.example.k_market.dao.CmMediaDAO;
+import org.example.k_market.dao.CmStoryDAO;
+import org.example.k_market.dto.CmRecruitDTO;
+import org.example.k_market.entity.CmRecruit;
+import org.example.k_market.repository.CmRecruitRepository;
+import org.example.k_market.security.MyUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -16,56 +19,97 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/company")
 public class CompanyController {
 
-    // 💡 중간 서비스 없이 창고지기(DAO)들을 직접 호출하도록 주입!
     private final CmStoryDAO cmStoryDAO;
-    private final CmRecruitDAO cmRecruitDAO;
     private final CmMediaDAO cmMediaDAO;
+    private final CmRecruitRepository cmRecruitRepository;
 
-    // 1. HOME (회사소개 메인) - 정적 페이지인 경우 그대로 유지
     @GetMapping({"/index", "/main"})
     public String main() {
-        log.info("CompanyController - 메인 화면 이동");
         return "company/main";
     }
 
-    // 2. 기업문화 - 정적 페이지인 경우 그대로 유지
     @GetMapping("/culture")
     public String culture() {
-        log.info("CompanyController - 기업문화 이동");
         return "company/culture";
     }
 
-    // 3. 소식과 이야기
     @GetMapping("/story")
     public String story(Model model) {
-        log.info("CompanyController - 소식과 이야기 데이터 조회");
-
-        // DAO에 작성해두신 전체 조회 메서드명으로 호출하세요 (예: selectCmStories, selectAll 등)
-        // 여기서는 예시로 selectCmStories()를 호출했습니다.
         model.addAttribute("stories", cmStoryDAO.findAll());
-
         return "company/story";
     }
 
-    // 4. 채용
+    // ===== 채용 목록 =====
     @GetMapping("/recruit")
-    public String recruit(Model model) {
-        log.info("CompanyController - 채용 공고 데이터 조회");
-
-        // DAO에 정의된 채용 목록 조회 메서드 호출 (예: selectCmRecruits)
-        model.addAttribute("recruits", cmRecruitDAO.findAll());
-
+    public String recruit(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        model.addAttribute("recruits", cmRecruitRepository.findAllByOrderByIdDesc()); // 최신글이 위로
+        model.addAttribute("isAdmin", isAdmin(userDetails));
         return "company/recruit";
     }
 
-    // 5. 미디어
+    // ===== 글쓰기 폼 =====
+    @GetMapping("/recruit/write")
+    public String recruitWriteForm(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        if (!isAdmin(userDetails)) {
+            return "redirect:/company/recruit";
+        }
+        model.addAttribute("recruit", new CmRecruitDTO());
+        return "company/recruit-form";
+    }
+
+    // ===== 등록 처리 =====
+    @PostMapping("/recruit/write")
+    public String recruitWrite(@ModelAttribute CmRecruitDTO recruitDTO,
+                               @AuthenticationPrincipal MyUserDetails userDetails) {
+        if (!isAdmin(userDetails)) {
+            return "redirect:/company/recruit";
+        }
+        cmRecruitRepository.save(recruitDTO.toEntity());
+        return "redirect:/company/recruit";
+    }
+
+    // ===== 수정 폼 (같은 recruit-form.html 재사용) =====
+    @GetMapping("/recruit/edit")
+    public String recruitEditForm(@RequestParam int id,
+                                  @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        if (!isAdmin(userDetails)) {
+            return "redirect:/company/recruit";
+        }
+        CmRecruit recruit = cmRecruitRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("공고가 존재하지 않습니다: " + id));
+        model.addAttribute("recruit", recruit.toDTO());
+        return "company/recruit-form";
+    }
+
+    // ===== 수정 처리 =====
+    @PostMapping("/recruit/edit")
+    public String recruitEdit(@ModelAttribute CmRecruitDTO recruitDTO,
+                              @AuthenticationPrincipal MyUserDetails userDetails) {
+        if (!isAdmin(userDetails)) {
+            return "redirect:/company/recruit";
+        }
+        cmRecruitRepository.save(recruitDTO.toEntity());
+        return "redirect:/company/recruit";
+    }
+
+    // ===== 삭제 =====
+    @PostMapping("/recruit/delete")
+    public String recruitDelete(@RequestParam int id,
+                                @AuthenticationPrincipal MyUserDetails userDetails) {
+        if (!isAdmin(userDetails)) {
+            return "redirect:/company/recruit";
+        }
+        cmRecruitRepository.deleteById(id);
+        return "redirect:/company/recruit";
+    }
+
     @GetMapping("/media")
     public String media(Model model) {
-        log.info("CompanyController - 미디어 데이터 조회");
-
-        // DAO에 정의된 미디어 목록 조회 메서드 호출 (예: selectCmMedias)
         model.addAttribute("medias", cmMediaDAO.findAll());
-
         return "company/media";
+    }
+
+    private boolean isAdmin(MyUserDetails userDetails) {
+        return userDetails != null && "ADMIN".equals(userDetails.getUser().getRole());
     }
 }

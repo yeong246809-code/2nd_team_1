@@ -96,7 +96,7 @@ public class AdminOrderController {
         return "admin/order/delivery";
     }
 
-    @GetMapping("/admin/order/delivery/detail/{trackingNumber}")
+    @GetMapping("/delivery/detail/{trackingNumber}")
     @ResponseBody // JSON 반환
     public ResponseEntity<DeliveryDTO> getDeliveryDetail(@PathVariable String trackingNumber) {
         // 1. 송장번호로 배송 정보 조회

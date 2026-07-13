@@ -31,6 +31,7 @@ public class UsersController {
     private static final String EMAIL_EXPIRES_SESSION_KEY = "emailVerification.expiresAt";
     private static final String EMAIL_VERIFIED_SESSION_KEY = "emailVerification.verified";
     private static final String EMAIL_VERIFIED_ADDRESS_SESSION_KEY = "emailVerification.verifiedAddress";
+    private static final String PASSWORD_RESET_ID_SESSION_KEY = "passwordReset.id";
 
     private final UsersService usersService;
     private final EmailVerificationService emailVerificationService;
@@ -222,6 +223,101 @@ public class UsersController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addAttribute("joinError", e.getMessage());
             return "redirect:/member/registerseller";
+        }
+    }
+
+    @PostMapping("/member/find/userid")
+    public String findUserId(
+            @RequestParam String mode,
+            @RequestParam String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            HttpSession session,
+            Model model) {
+        try {
+            UsersService.FoundAccount account;
+            if ("phone".equalsIgnoreCase(mode)) {
+                account = usersService.findUserIdByPhone(name, phone)
+                        .orElseThrow(() -> new IllegalArgumentException("입력한 정보와 일치하는 아이디가 없습니다."));
+            } else {
+                if (!isEmailVerified(email, session)) {
+                    throw new IllegalArgumentException("이메일 인증을 완료해주세요.");
+                }
+                account = usersService.findUserIdByEmail(name, email)
+                        .orElseThrow(() -> new IllegalArgumentException("입력한 정보와 일치하는 아이디가 없습니다."));
+            }
+            model.addAttribute("foundAccount", account);
+            clearEmailVerification(session);
+            return "member/find/resultid";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("findError", e.getMessage());
+            model.addAttribute("selectedMode", "phone".equalsIgnoreCase(mode) ? "phone" : "email");
+            model.addAttribute("name", name);
+            model.addAttribute("email", email);
+            model.addAttribute("phone", phone);
+            return "member/find/userid";
+        }
+    }
+
+    @PostMapping("/member/find/password")
+    public String findPassword(
+            @RequestParam String mode,
+            @RequestParam String id,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            HttpSession session,
+            Model model) {
+        try {
+            if ("phone".equalsIgnoreCase(mode)) {
+                usersService.findPasswordResetTargetByPhone(id, phone)
+                        .orElseThrow(() -> new IllegalArgumentException("입력한 정보와 일치하는 계정이 없습니다."));
+            } else {
+                if (!isEmailVerified(email, session)) {
+                    throw new IllegalArgumentException("이메일 인증을 완료해주세요.");
+                }
+                usersService.findPasswordResetTargetByEmail(id, email)
+                        .orElseThrow(() -> new IllegalArgumentException("입력한 정보와 일치하는 계정이 없습니다."));
+            }
+            session.setAttribute(PASSWORD_RESET_ID_SESSION_KEY, id.trim());
+            clearEmailVerification(session);
+            model.addAttribute("resetReady", true);
+            model.addAttribute("resetTargetId", id.trim());
+            model.addAttribute("selectedMode", "phone".equalsIgnoreCase(mode) ? "phone" : "email");
+            model.addAttribute("findMessage", "계정이 확인되었습니다. 새 비밀번호를 입력해주세요.");
+            return "member/find/password";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("findError", e.getMessage());
+            model.addAttribute("selectedMode", "phone".equalsIgnoreCase(mode) ? "phone" : "email");
+            model.addAttribute("id", id);
+            model.addAttribute("email", email);
+            model.addAttribute("phone", phone);
+            return "member/find/password";
+        }
+    }
+
+    @PostMapping("/member/find/password/reset")
+    public String resetPassword(
+            @RequestParam String id,
+            @RequestParam String password,
+            @RequestParam String passwordConfirm,
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        String resetId = (String) session.getAttribute(PASSWORD_RESET_ID_SESSION_KEY);
+        if (resetId == null || !resetId.equals(id == null ? "" : id.trim())) {
+            model.addAttribute("findError", "비밀번호를 변경할 아이디를 먼저 확인해주세요.");
+            return "member/find/password";
+        }
+        try {
+            usersService.resetPassword(resetId, password, passwordConfirm);
+            session.removeAttribute(PASSWORD_RESET_ID_SESSION_KEY);
+            redirectAttributes.addAttribute("loginMessage", "비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요.");
+            return "redirect:/member/login";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("findError", e.getMessage());
+            model.addAttribute("resetReady", true);
+            model.addAttribute("resetTargetId", resetId);
+            return "member/find/password";
         }
     }
 

@@ -126,34 +126,33 @@
             <h1 class="font-headline-lg text-headline-lg text-primary">나의리뷰</h1>
         </div>
         <!-- 리뷰 리스트 테이블 -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+        <div class="flex items-start gap-sm">
+        <div class="flex-1 min-w-0 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
             <table class="w-full table-fixed text-left border-collapse">
                 <colgroup>
                     <col class="w-[9%]">
                     <col class="w-[26%]">
                     <col class="w-[31%]">
                     <col class="w-[14%]">
-                    <col class="w-[13%]">
-                    <col class="w-[7%]">
+                    <col class="w-[20%]">
                 </colgroup>
                 <thead class="bg-surface-container text-on-surface-variant">
-                <tr>
+                <tr class="h-[66px]">
                     <th class="py-md px-md font-label-md text-center whitespace-nowrap">번호</th>
                     <th class="py-md px-md font-label-md whitespace-nowrap">상품명</th>
                     <th class="py-md px-md font-label-md whitespace-nowrap">내용</th>
                     <th class="py-md px-md font-label-md text-center whitespace-nowrap">평점</th>
                     <th class="py-md px-md font-label-md text-center whitespace-nowrap">작성일</th>
-                    <th class="py-md px-sm font-label-md text-center whitespace-nowrap">관리</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant">
                 <tr th:if="${myReviewMessage}">
-                    <td colspan="6" class="py-sm px-md text-center text-secondary" th:text="${myReviewMessage}"></td>
+                    <td colspan="5" class="py-sm px-md text-center text-secondary" th:text="${myReviewMessage}"></td>
                 </tr>
                 <tr th:if="${reviewBlock == null or reviewBlock.page.empty}">
-                    <td colspan="6" class="py-lg px-md text-center text-on-surface-variant">작성한 리뷰가 없습니다.</td>
+                    <td colspan="5" class="py-lg px-md text-center text-on-surface-variant">작성한 리뷰가 없습니다.</td>
                 </tr>
-                <tr class="hover:bg-surface-bright transition-colors" th:each="review, stat : ${reviewBlock.page.content}">
+                <tr class="h-[74px] hover:bg-surface-bright transition-colors" th:each="review, stat : ${reviewBlock.page.content}">
                     <td class="py-md px-md text-center text-on-surface-variant font-label-sm" th:text="${(reviewBlock.currentPage - 1) * reviewBlock.page.size + stat.count}">1</td>
                     <td class="py-md px-md min-w-0">
                         <a class="block truncate text-primary hover:underline font-medium whitespace-nowrap"
@@ -173,15 +172,20 @@
                         </div>
                     </td>
                     <td class="py-md px-md text-center text-on-surface-variant font-label-sm whitespace-nowrap" th:text="${review.createdAt != null ? #temporals.format(review.createdAt, 'yyyy-MM-dd') : '-'}">2022-12-10</td>
-                    <td class="py-md px-sm text-center">
-                        <form th:action="@{/my/review/delete}" method="post">
-                            <input type="hidden" name="reviewNo" th:value="${review.reviewNo}">
-                            <button type="submit" class="h-9 px-3 rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container whitespace-nowrap">삭제</button>
-                        </form>
-                    </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="w-16 shrink-0" th:if="${reviewBlock != null and !reviewBlock.page.empty}">
+            <div class="h-[66px]"></div>
+            <div class="h-[74px] flex items-center justify-center"
+                 th:each="review : ${reviewBlock.page.content}">
+                <form th:action="@{/my/review/delete}" method="post">
+                    <input type="hidden" name="reviewNo" th:value="${review.reviewNo}">
+                    <button type="submit" class="h-9 w-16 rounded-lg bg-error text-on-error font-label-md text-label-md hover:bg-on-error-container active:scale-95 transition-all shadow-sm whitespace-nowrap">삭제</button>
+                </form>
+            </div>
+        </div>
         </div>
         <!-- 하단 페이지네이션 -->
         <nav class="mt-lg flex justify-center items-center space-x-base" th:if="${reviewBlock != null}">

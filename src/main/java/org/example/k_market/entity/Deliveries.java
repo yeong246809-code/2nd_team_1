@@ -44,6 +44,8 @@ public class Deliveries {
 
     private LocalDateTime shippedAt;
 
+    
+
 
     public DeliveryDTO toDTO(){
         return DeliveryDTO.builder()
@@ -53,5 +55,7 @@ public class Deliveries {
                 .zipCode(zipCode).baseAddress(baseAddress).detailAddress(detailAddress)
                 .deliveryStatus(deliveryStatus).memo(memo).shippedAt(shippedAt)
                 .build();
+
+
     }
 }

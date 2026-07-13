@@ -127,7 +127,7 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/member/login", "/member/join", "/member/signup", "/member/welcome",
                         "/member/session", "/member/check-id", "/member/email/send", "/member/email/verify",
-                        "/member/register", "/member/registerseller",
+                        "/member/register", "/member/registerseller", "/member/find/**",
                         "/oauth2/**", "/login/oauth2/**",
                         "/resources/**", "/css/**", "/js/**", "/images/**", "/uploads/**"
                 ).permitAll()

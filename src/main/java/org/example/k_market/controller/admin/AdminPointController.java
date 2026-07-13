@@ -3,16 +3,15 @@ package org.example.k_market.controller.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.k_market.dto.AdminPointListDTO;
+import org.example.k_market.dto.PageResponseDTO;
 import org.example.k_market.service.admin.AdminPointService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
@@ -23,35 +22,35 @@ public class AdminPointController {
 
     private final AdminPointService adminPointService;
 
-    // 1. 포인트 목록 조회 (GET 처리)
     @GetMapping
     public String pointList(
             @RequestParam(required = false, defaultValue = "id") String searchType,
-            @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 10, sort = "pointNo", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(required = false, defaultValue = "") String keyword,
+            @RequestParam(required = false, defaultValue = "1") int page,
             Model model) {
 
-        // 서비스에서 리스트 가져오기
-        Page<AdminPointListDTO> pointPage = adminPointService.getPoints(searchType, keyword, pageable);
+        PageResponseDTO<AdminPointListDTO> pageData = adminPointService.getPoints(searchType, keyword, page);
 
-        // html에서 반복문 돌릴 때 사용할 이름(pointList)에 데이터 담기
-        model.addAttribute("pointList", pointPage.getContent());
-        model.addAttribute("page", pointPage);
+        model.addAttribute("pointList", pageData.getDtoList());
+        model.addAttribute("pageData", pageData);
         model.addAttribute("searchType", searchType);
         model.addAttribute("keyword", keyword);
 
         return "admin/member/point";
     }
 
-    // 2. 선택 삭제 및 포인트 회수 처리
     @PostMapping("/delete")
     public String deletePoints(
             @RequestParam(value = "selectedPointNos", required = false) List<Long> selectedPointNos,
+            @RequestParam(required = false, defaultValue = "id") String searchType,
+            @RequestParam(required = false, defaultValue = "") String keyword,
+            @RequestParam(required = false, defaultValue = "1") int page,
             RedirectAttributes redirectAttributes) {
 
         if (selectedPointNos == null || selectedPointNos.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "선택된 포인트 내역이 없습니다.");
-            return "redirect:/admin/member/point";
+            String encodedKeyword = URLEncoder.encode(keyword != null ? keyword : "", StandardCharsets.UTF_8);
+            return String.format("redirect:/admin/member/point?searchType=%s&keyword=%s&page=%d", searchType, encodedKeyword, page);
         }
 
         try {
@@ -62,6 +61,7 @@ public class AdminPointController {
             redirectAttributes.addFlashAttribute("error", "처리 중 오류가 발생했습니다.");
         }
 
-        return "redirect:/admin/member/point";
+        String encodedKeyword = URLEncoder.encode(keyword != null ? keyword : "", StandardCharsets.UTF_8);
+        return String.format("redirect:/admin/member/point?searchType=%s&keyword=%s&page=%d", searchType, encodedKeyword, page);
     }
 }

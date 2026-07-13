@@ -92,6 +92,6 @@ public class OrderServiceImpl implements OrderService {
 
         // 3. 주문 상태도 '배송중'으로 변경
         Order order = orderRepository.findById((int)dto.getOrderNo()).orElseThrow();
-        order.setStatus("배송중");
+        order.setStatus("결제완료(배송중)");
     }
 }
