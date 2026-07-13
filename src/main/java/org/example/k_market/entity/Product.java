@@ -19,7 +19,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long prodNo;             // DAO 규격에 맞춰 Long으로 설정 (int(11) 수용 가능)
+    private Long prodNo;
 
     private Integer cateNo;
     private Integer shopNo;
@@ -31,8 +31,14 @@ public class Product {
     private Integer rewardPoints;
     private Integer stockQuantity;
     private Integer shippingFee;
+
+    @Column(columnDefinition = "TEXT")
     private String thumb1;
+
+    @Column(columnDefinition = "TEXT")
     private String thumb2;
+
+    @Column(columnDefinition = "TEXT")
     private String thumb3;
 
     @Column(columnDefinition = "TEXT")
@@ -51,9 +57,7 @@ public class Product {
 
     private LocalDateTime createdAt;
 
-    /**
-     * ProductDAO에서 사용하는 Entity -> DTO 변환 메서드
-     */
+
     public ProductDTO toDTO() {
         return ProductDTO.builder()
                 .prodNo(this.prodNo)
