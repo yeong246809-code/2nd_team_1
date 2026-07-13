@@ -126,26 +126,28 @@
 
 <header class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
-        <div class="flex justify-between items-center gap-md">
-            <a class="flex items-center gap-2 shrink-0" th:href="@{/}" href="/">
+        <div class="flex items-center justify-between gap-6">
+            <a class="flex shrink-0 items-center gap-2 text-primary" th:href="@{/}" href="/">
                 <img th:if="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
                      th:src="@{/uploads/{file}(file=${siteConfig.headerLogo_stored})}"
                      class="h-10 w-auto max-w-48 object-contain"
-                     alt="K-market">
-                <span th:unless="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
-                      class="logo-area w-8 h-8 placeholder-image rounded">
+                     alt="K-market"
+                     onerror="this.remove(); this.parentElement.querySelector('[data-logo-fallback]').classList.remove('hidden');">
+                <span data-logo-fallback
+                      th:classappend="${siteConfig != null and siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()} ? ' hidden' : ''"
+                      class="logo-area flex h-8 w-8 items-center justify-center rounded bg-surface-container-low">
                     <span class="material-symbols-outlined text-sm">storefront</span>
                 </span>
                 <span class="text-3xl font-extrabold text-primary shrink-0">K-market</span>
             </a>
-            <form class="hidden md:flex flex-1 max-w-lg relative" th:action="@{/product/search}" action="/product/search" method="get">
-                <input name="keyword" class="w-full bg-white border border-outline rounded py-2 px-4 focus:ring-1 focus:ring-primary focus:outline-none" placeholder="어떤 상품을 찾으시나요?" type="text"/>
-                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1 rounded">
+            <form class="hidden h-10 max-w-[520px] flex-1 items-stretch overflow-hidden rounded border border-outline bg-white md:flex focus-within:ring-1 focus-within:ring-primary" th:action="@{/product/search}" action="/product/search" method="get">
+                <input name="keyword" class="min-w-0 flex-1 border-0 bg-white px-4 text-sm focus:border-0 focus:ring-0 focus:outline-none" placeholder="어떤 상품을 찾으시나요?" type="text"/>
+                <button type="submit" class="m-1 flex h-8 w-8 shrink-0 items-center justify-center rounded bg-primary text-white" aria-label="검색">
                     <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
                 </button>
             </form>
-            <div class="flex items-center gap-md">
-                <div class="hidden lg:flex items-center gap-base font-label-md text-on-surface-variant">
+            <div class="flex shrink-0 items-center gap-4">
+                <div class="hidden lg:flex items-center gap-base whitespace-nowrap font-label-md text-on-surface-variant">
                     <a class="hover:text-primary transition-colors" th:href="@{/member/login}">로그인</a>
                     <a class="hover:text-primary transition-colors" th:href="@{/member/join}">회원가입</a>
                     <a class="hidden hover:text-primary transition-colors" th:href="@{/my/index}" data-auth-required="true">마이페이지</a>
@@ -155,24 +157,16 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <button class="p-2 border border-outline-variant rounded relative">
+                    <button class="relative flex h-10 w-10 items-center justify-center rounded border border-outline-variant">
                         <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
                         <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
                     </button>
-                    <button class="md:hidden p-2 border border-outline-variant rounded">
+                    <button class="flex h-10 w-10 items-center justify-center rounded border border-outline-variant md:hidden">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
                 </div>
             </div>
         </div>
-        <!-- Global Navigation -->
-        <nav class="flex items-center gap-lg py-xs">
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">인기 상품</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">추천 상품</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">신상품</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">베스트</a>
-            <a class="text-primary font-bold border-b-2 border-primary font-label-md text-label-md" th:href="@{/product/list}" href="/product/list">세일</a>
-        </nav>
     </div>
 </header>
 
@@ -388,8 +382,10 @@
                     <img th:if="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
                          th:src="@{/uploads/{file}(file=${siteConfig.footerLogo_stored})}"
                          class="w-full h-full object-contain"
-                         alt="K-market">
-                    <span th:unless="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()}"
+                         alt="K-market"
+                         onerror="this.remove(); this.parentElement.querySelector('[data-footer-logo-fallback]').classList.remove('hidden');">
+                    <span data-footer-logo-fallback
+                          th:classappend="${siteConfig != null and siteConfig.footerLogo_stored != null and !siteConfig.footerLogo_stored.isBlank()} ? ' hidden' : ''"
                           class="material-symbols-outlined text-4xl">storefront</span>
                 </div>
                 <div class="text-sm text-on-surface-variant space-y-1">
@@ -454,17 +450,6 @@
     if(selectAll) {
         selectAll.addEventListener('change', (e) => {
             itemCheckboxes.forEach(cb => cb.checked = e.target.checked);
-        });
-    }
-
-    // Focus search interaction (From list.html)
-    const searchInput = document.querySelector('input[type="text"]');
-    if(searchInput) {
-        searchInput.addEventListener('focus', () => {
-            searchInput.classList.add('ring-2', 'ring-primary/20');
-        });
-        searchInput.addEventListener('blur', () => {
-            searchInput.classList.remove('ring-2', 'ring-primary/20');
         });
     }
 </script>

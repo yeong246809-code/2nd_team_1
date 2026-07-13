@@ -27,6 +27,10 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     void updateStatus(@Param("memberNo") int memberNo, @Param("status") MemberAccountStatus status);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Users u SET u.pass = :pass WHERE u.id = :id")
+    void updatePasswordByLoginId(@Param("id") String id, @Param("pass") String pass);
+
     Page<Users> findByIdContaining(String id, Pageable pageable);
     List<Users> findAllByMemberNoIn(List<Integer> memberNos);
 

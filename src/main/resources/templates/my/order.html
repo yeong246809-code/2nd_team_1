@@ -200,16 +200,34 @@
                         </form>
                         <a class="w-full text-center py-1.5 px-3 bg-secondary text-on-secondary rounded text-label-sm font-label-sm hover:bg-secondary-fixed transition-colors"
                            th:href="@{/product/view(prodNo=${item.productNo})}">상품평쓰기</a>
-                        <form th:action="@{/my/order/claim}" method="post">
+                        <form th:if="${item.status == '반품신청'}" th:action="@{/my/order/claim/cancel}" method="post">
                             <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                            <input type="hidden" name="type" value="return">
-                            <button type="submit" class="w-full py-1.5 px-3 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded text-label-sm font-label-sm hover:bg-surface-variant transition-colors">반품신청</button>
+                            <button type="submit" class="w-full py-1.5 px-3 bg-error-container border border-error text-error rounded text-label-sm font-label-sm hover:bg-error-container/80 transition-colors">반품취소</button>
                         </form>
-                        <form th:action="@{/my/order/claim}" method="post">
-                            <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                            <input type="hidden" name="type" value="exchange">
-                            <button type="submit" class="w-full py-1.5 px-3 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded text-label-sm font-label-sm hover:bg-surface-variant transition-colors">교환신청</button>
-                        </form>
+                        <button th:unless="${item.status == '반품신청'}" type="button"
+                                class="open-claim-btn w-full py-1.5 px-3 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded text-label-sm font-label-sm hover:bg-surface-variant transition-colors"
+                                data-claim-type="return"
+                                th:data-order-detail-no="${item.orderDetailNo}"
+                                th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
+                                th:data-order-no="${item.orderNo}"
+                                th:data-shop-name="${item.shopName}"
+                                th:data-product-name="${item.productName}"
+                                th:data-quantity="${item.quantity}"
+                                th:data-total-price="${item.totalPrice}"
+                                th:data-status="${item.status}"
+                                th:data-thumb="${item.thumb}">반품신청</button>
+                        <button type="button"
+                                class="open-claim-btn w-full py-1.5 px-3 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded text-label-sm font-label-sm hover:bg-surface-variant transition-colors"
+                                data-claim-type="exchange"
+                                th:data-order-detail-no="${item.orderDetailNo}"
+                                th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
+                                th:data-order-no="${item.orderNo}"
+                                th:data-shop-name="${item.shopName}"
+                                th:data-product-name="${item.productName}"
+                                th:data-quantity="${item.quantity}"
+                                th:data-total-price="${item.totalPrice}"
+                                th:data-status="${item.status}"
+                                th:data-thumb="${item.thumb}">교환신청</button>
                     </div>
                 </div>
             </div>
@@ -235,6 +253,7 @@
 </main>
 <!-- Footer -->
 <div th:replace="~{layout/site :: footer}"></div>
+<div th:replace="~{my/_shared :: claimModal}"></div>
 <div class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4 custom-modal" id="seller-info-modal">
     <div class="absolute inset-0 bg-on-surface/50 modal-overlay cursor-pointer close-modal-trigger"></div>
     <div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-95 opacity-0 transition-all duration-300">
