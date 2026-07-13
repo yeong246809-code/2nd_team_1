@@ -40,6 +40,14 @@ public class DeliveryDTO {
     @Transient
     private String memo;
 
+    private String orderName;
+
+    private int totalProductPrice;
+
+    private int shippingFee;
+
+    private int quantity;
+
 
     // 엔티티 변환 메서드 (빌더 사용)
     public Deliveries toEntity() {

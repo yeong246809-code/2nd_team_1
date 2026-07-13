@@ -259,11 +259,15 @@
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <input type="text" th:field="*{name}" placeholder="상품명" class="border-outline-variant rounded-lg" required>
-                    <input type="number" th:field="*{price}" placeholder="판매가격" class="border-outline-variant rounded-lg" required min="0">
+                    <input type="number" th:field="*{price}" placeholder="판매가격(원)" class="border-outline-variant rounded-lg" required min="0">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <input type="number" th:field="*{discountRate}" placeholder="할인율(%)" class="border-outline-variant rounded-lg" min="0">
-                    <input type="number" th:field="*{stockQuantity}" placeholder="재고수량" class="border-outline-variant rounded-lg" min="0">
+                    <input type="number" th:field="*{rewardPoints}" placeholder="포인트(원)" class="border-outline-variant rounded-lg" min="0">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" th:field="*{stockQuantity}" placeholder="재고수량(개)" class="border-outline-variant rounded-lg" min="0">
+                    <input type="number" th:field="*{shippingFee}" placeholder="배송비(원)" class="border-outline-variant rounded-lg" min="0">
                 </div>
                 <textarea th:field="*{description}" placeholder="상품 상세 설명" class="w-full border-outline-variant rounded-lg h-32"></textarea>
             </div>
