@@ -1,9 +1,13 @@
 package org.example.k_market.service.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.example.k_market.dto.PageResponseDTO;
 import org.example.k_market.dto.ShopDTO;
 import org.example.k_market.entity.Shop;
 import org.example.k_market.repository.ShopRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,33 +21,14 @@ public class ShopService {
     private final ShopRepository shopRepository;
 
     // 상점 목록 조회 및 검색 필터링
-    public List<ShopDTO> getShopList(String searchType, String keyword) {
-        List<Shop> shops;
+    public PageResponseDTO<ShopDTO> getShopList(String searchType, String keyword, String statusFilter, String sort, int pg) {
+        Pageable pageable = PageRequest.of(pg - 1, 5);
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            switch (searchType) {
-                case "name":
-                    shops = shopRepository.findActiveByName(keyword);
-                    break;
-                case "ceo":
-                    shops = shopRepository.findActiveByCeo(keyword);
-                    break;
-                case "bizNumber":
-                    shops = shopRepository.findActiveByBizNumber(keyword);
-                    break;
-                case "phone":
-                    shops = shopRepository.findActiveByPhone(keyword);
-                    break;
-                default:
-                    shops = shopRepository.findAllActiveShops();
-            }
-        } else {
-            // 검색어가 없으면 전체 활성 상점 조회
-            shops = shopRepository.findAllActiveShops();
-        }
+        // ★ 방금 우리가 만든 Querydsl 메서드 단 1개만 호출하면 모든 조건과 정렬이 알아서 해결됨!
+        Page<Shop> pageResult = shopRepository.searchShops(searchType, keyword, statusFilter, sort, pageable);
 
-        // Entity 리스트를 DTO 리스트로 변환하여 반환
-        return shops.stream().map(Shop::toDTO).collect(Collectors.toList());
+        Page<ShopDTO> dtoPage = pageResult.map(Shop::toDTO);
+        return new PageResponseDTO<>(dtoPage, 5);
     }
 
     // 상점 상태 변경 (운영중, 운영중지, 운영준비 등)
