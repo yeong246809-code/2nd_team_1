@@ -32,7 +32,6 @@ public interface BannerRepository extends JpaRepository<Banner, Long> {
             @Param("today") LocalDate today,
             @Param("nowTime") LocalTime nowTime,
             Pageable pageable);
-}
 
     // 1. ID 내림차순 (기본값) : 활성 우선 -> ID 내림차순
     @Query("SELECT b FROM Banner b WHERE (:position IS NULL OR :position = '' OR b.position = :position) " +
