@@ -271,7 +271,9 @@
     </div>
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md mb-md">
-        <form th:action="@{/admin/member/list}" method="get" class="flex gap-2 items-center">
+        <form th:action="@{/admin/member/list}" method="get" class="flex gap-4 items-center">
+            <input type="hidden" name="statusFilter" th:value="${statusFilter}">
+            <input type="hidden" name="sort" th:value="${sort}">
             <select name="searchType" class="border border-outline-variant rounded p-2 text-sm focus:ring-primary focus:border-primary">
                 <option value="id" th:selected="${searchType == 'id'}">아이디</option>
                 <option value="name" th:selected="${searchType == 'name'}">이름</option>
@@ -280,11 +282,35 @@
             </select>
             <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어 입력" class="border border-outline-variant rounded p-2 text-sm w-64 focus:ring-primary focus:border-primary">
             <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white font-label-md px-4 py-2 rounded transition-colors">검색</button>
+
+            <div class="flex items-center gap-2 ml-auto">
+                <a th:href="@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter='', sort=${sort})}"
+                   class="px-3 py-1 text-sm border rounded" th:classappend="${statusFilter == '' or statusFilter == null} ? 'bg-gray-200' : ''">전체</a>
+                <a th:href="@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter='ACTIVE', sort=${sort})}"
+                   class="px-3 py-1 text-sm border rounded" th:classappend="${statusFilter == 'ACTIVE'} ? 'bg-gray-200' : ''">정상</a>
+                <a th:href="@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter='STOPPED', sort=${sort})}"
+                   class="px-3 py-1 text-sm border rounded" th:classappend="${statusFilter == 'STOPPED'} ? 'bg-gray-200' : ''">중지</a>
+                <a th:href="@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter='INACTIVE', sort=${sort})}"
+                   class="px-3 py-1 text-sm border rounded" th:classappend="${statusFilter == 'INACTIVE'} ? 'bg-gray-200' : ''">휴면</a>
+                <a th:href="@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter='WITHDRAWN', sort=${sort})}"
+                   class="px-3 py-1 text-sm border rounded" th:classappend="${statusFilter == 'WITHDRAWN'} ? 'bg-gray-200' : ''">탈퇴</a>
+
+                <select th:onchange="|location.href='@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter=${statusFilter})}&sort=' + this.value|"
+                        class="border border-outline-variant rounded p-2 text-sm bg-white">
+                    <option value="idDesc" th:selected="${sort == 'idDesc'}">번호내림차순</option>
+                    <option value="idAsc" th:selected="${sort == 'idAsc'}">번호오름차순</option>
+                </select>
+            </div>
         </form>
     </section>
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
         <form id="bulkForm" th:action="@{/admin/member/bulkUpdateGrade}" method="post">
+            <input type="hidden" name="searchType" th:value="${searchType}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="statusFilter" th:value="${statusFilter}">
+            <input type="hidden" name="sort" th:value="${sort}">
+
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface border-b border-outline-variant font-label-md text-on-surface-variant">
                 <tr>
@@ -335,22 +361,22 @@
                     <td class="p-3 text-center text-sm">
                         <div class="flex flex-col gap-1 items-center justify-center">
                             <button th:if="${member.status != 'WITHDRAWN'}"
-                                     type="button" class="hover:text-primary hover:underline font-medium"
-                                     th:data-no="${member.memberNo}"
-                                     th:data-id="${member.id}"
-                                     th:data-name="${member.name}"
-                                     th:data-gender="${member.gender}"
-                                     th:data-grade="${member.gradeNo}"
-                                     th:data-status="${member.status}"
-                                     th:data-email="${member.email}"
-                                     th:data-phone="${member.phone}"
-                                     th:data-zip="${member.zipCode}"
-                                     th:data-addr1="${member.baseAddress}"
-                                     th:data-addr2="${member.detailAddress}"
-                                     th:data-created="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
-                                     th:data-login="${#temporals.format(member.lastLoginAt, 'yyyy-MM-dd HH:mm:ss')}"
-                                     th:data-memo="${member.memo}"
-                                     onclick="openModal(this)">[ 수정 ]</button>
+                                    type="button" class="hover:text-primary hover:underline font-medium"
+                                    th:data-no="${member.memberNo}"
+                                    th:data-id="${member.id}"
+                                    th:data-name="${member.name}"
+                                    th:data-gender="${member.gender}"
+                                    th:data-grade="${member.gradeNo}"
+                                    th:data-status="${member.status}"
+                                    th:data-email="${member.email}"
+                                    th:data-phone="${member.phone}"
+                                    th:data-zip="${member.zipCode}"
+                                    th:data-addr1="${member.baseAddress}"
+                                    th:data-addr2="${member.detailAddress}"
+                                    th:data-created="${#temporals.format(member.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                    th:data-login="${#temporals.format(member.lastLoginAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                    th:data-memo="${member.memo}"
+                                    onclick="openModal(this)">[ 수정 ]</button>
 
                             <a th:if="${member.status == 'ACTIVE'}" th:href="@{/admin/member/changeStatus(memberNo=${member.memberNo}, status='STOPPED')}" class="hover:text-red-600 hover:underline text-gray-500">[ 중지 ]</a>
 
@@ -366,18 +392,13 @@
                 </tbody>
             </table>
 
-            <div class="flex justify-between items-center mt-4">
-                <button type="button" onclick="submitBulkForm()" class="bg-gray-400 hover:bg-gray-500 text-white font-label-md px-4 py-2 rounded transition-colors">선택수정</button>
+            <div class="flex justify-between items-center mt-6">
+                <button type="button" onclick="submitBulkForm()" class="bg-gray-500 text-white px-6 py-2 text-sm font-bold">선택수정</button>
 
-                <div class="flex items-center gap-2 text-sm">
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">이전</a>
-                    <a href="#" class="px-2 py-1 font-bold underline text-primary">1</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">2</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">3</a>
-                    <a href="#" class="px-2 py-1 text-on-surface-variant hover:text-primary">다음</a>
-                </div>
+                <div th:replace="~{fragments/_pagination :: pagination(${pageData}, '/admin/member/list?searchType=' + ${searchType} + '&keyword=' + ${keyword} + '&statusFilter=' + ${statusFilter} + '&sort=' + ${sort})}"></div>
 
-                <div class="w-[88px]"></div> </div>
+                <div class="w-[88px]"></div>
+            </div>
         </form>
     </section>
     <div id="editModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">

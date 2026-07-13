@@ -16,6 +16,30 @@ import java.util.List;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 
+    // ================= [회원 관리 목록 필터 및 검색 페이징 쿼리] ================= //
+
+    // 1. 전체 조회 + 상태 필터
+    @Query("SELECT m FROM Member m WHERE (:status IS NULL OR m.status = :status)")
+    Page<Member> findAllByStatus(@Param("status") MemberAccountStatus status, Pageable pageable);
+
+    // 2. 이름 검색 + 상태 필터
+    @Query("SELECT m FROM Member m WHERE (:status IS NULL OR m.status = :status) AND m.name LIKE %:keyword%")
+    Page<Member> findByNameAndStatus(@Param("keyword") String keyword, @Param("status") MemberAccountStatus status, Pageable pageable);
+
+    // 3. 이메일 검색 + 상태 필터
+    @Query("SELECT m FROM Member m WHERE (:status IS NULL OR m.status = :status) AND m.email LIKE %:keyword%")
+    Page<Member> findByEmailAndStatus(@Param("keyword") String keyword, @Param("status") MemberAccountStatus status, Pageable pageable);
+
+    // 4. 휴대폰 검색 + 상태 필터
+    @Query("SELECT m FROM Member m WHERE (:status IS NULL OR m.status = :status) AND m.phone LIKE %:keyword%")
+    Page<Member> findByPhoneAndStatus(@Param("keyword") String keyword, @Param("status") MemberAccountStatus status, Pageable pageable);
+
+    // 5. 아이디 검색 (Users 테이블에서 찾은 memberNo 리스트로 조회) + 상태 필터
+    @Query("SELECT m FROM Member m WHERE (:status IS NULL OR m.status = :status) AND m.memberNo IN :memberNos")
+    Page<Member> findByMemberNosAndStatus(@Param("memberNos") List<Integer> memberNos, @Param("status") MemberAccountStatus status, Pageable pageable);
+
+    // ================= [기존 메소드 유지] ================= //
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Member m SET m.status = :status, m.memo = :memo WHERE m.memberNo = :memberNo")
     void updateWithdrawalStatus(

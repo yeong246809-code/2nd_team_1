@@ -384,16 +384,25 @@
     function initSortable() {
         const lists = document.querySelectorAll('.sortable-list');
         lists.forEach(list => {
+            // 이미 초기화된 엘리먼트 중복 초기화 방지
+            if (list.classList.contains('sortable-initialized')) return;
+            list.classList.add('sortable-initialized');
+
             new Sortable(list, {
                 group: 'categories', // 1차, 2차 상관없이 이동 가능
                 handle: '.drag-handle', // 점자 아이콘을 잡고 드래그
                 animation: 150,
                 fallbackOnBody: true,
                 swapThreshold: 0.65,
+                // ★ 핵심 추가 옵션: 빈 리스트(2차 카테고리가 없는 곳)에 드롭할 수 있는 감지 영역을 50px로 확대
+                emptyInsertThreshold: 50,
                 onMove: function(evt) {
                     // 3차 깊이(Depth)로 들어가는 것을 방지
                     const isTargetChildList = evt.to.classList.contains('child-list');
                     const draggedHasChildren = evt.dragged.querySelector('.child-list > .category-item') !== null;
+
+                    // ★ 주의: 이미 하위(2차) 카테고리를 가지고 있는 1차 카테고리는
+                    // 다른 1차 카테고리 안으로 넣을 수 없습니다. (3차 카테고리 생성 방지 로직)
                     if (isTargetChildList && draggedHasChildren) {
                         return false;
                     }

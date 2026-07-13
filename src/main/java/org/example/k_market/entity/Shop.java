@@ -68,7 +68,7 @@ public class Shop {
     }
 
     public void delete() {
-        this.status = "DELETE";
+        this.status = "DELETED";
     }
 
 }

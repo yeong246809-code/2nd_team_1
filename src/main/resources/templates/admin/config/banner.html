@@ -301,22 +301,45 @@
     </div>
 
     <div class="max-w-[1200px] flex flex-col gap-6">
-        <div class="flex justify-between items-center">
-            <div class="flex font-bold text-sm" id="bannerTabs">
-                <button onclick="filterBanner('MAIN1', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-white text-black">메인상단배너</button>
-                <button onclick="filterBanner('MAIN2', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-gray-200 text-gray-600">메인슬라이더배너</button>
-                <button onclick="filterBanner('PRODUCT1', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-gray-200 text-gray-600">상품 상세보기 배너</button>
-                <button onclick="filterBanner('MEMBER1', this)" class="px-6 py-3 border border-r-0 border-gray-300 bg-gray-200 text-gray-600">회원로그인 배너</button>
-                <button onclick="filterBanner('MY1', this)" class="px-6 py-3 border border-gray-300 bg-gray-200 text-gray-600">마이페이지 배너</button>
+        <div class="flex justify-between items-center flex-wrap gap-4">
+            <div class="flex font-bold text-sm">
+                <a th:href="@{/admin/config/banner(position='MAIN1', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'MAIN1'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">메인상단배너</a>
+                <a th:href="@{/admin/config/banner(position='MAIN2', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'MAIN2'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">메인슬라이더배너</a>
+                <a th:href="@{/admin/config/banner(position='PRODUCT1', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'PRODUCT1'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">상품 상세보기 배너</a>
+                <a th:href="@{/admin/config/banner(position='MEMBER1', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'MEMBER1'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">회원로그인 배너</a>
+                <a th:href="@{/admin/config/banner(position='MY1', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'MY1'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-gray-300 transition-colors">마이페이지 배너</a>
             </div>
-            <button type="button" onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-bold text-sm shadow-md transition-all">
-                + 배너등록
-            </button>
+
+            <div class="flex items-center gap-3">
+                <select th:onchange="|location.href='@{/admin/config/banner(position=${currentPosition})}&sort=' + this.value|"
+                        class="border-gray-300 rounded-sm text-sm font-medium focus:ring-primary focus:border-primary py-2 px-3">
+                    <option value="idDesc" th:selected="${currentSort == 'idDesc'}">최신등록순</option>
+                    <option value="idAsc" th:selected="${currentSort == 'idAsc'}">오래된순</option>
+                    <option value="dateDesc" th:selected="${currentSort == 'dateDesc'}">배너노출일순</option>
+                </select>
+
+                <button type="button" onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-bold text-sm shadow-md transition-all">
+                    + 배너등록
+                </button>
+            </div>
         </div>
 
         <form id="bannerForm" th:action="@{/admin/config/banner/delete}" method="post">
+            <input type="hidden" name="position" th:value="${currentPosition}">
+            <input type="hidden" name="sort" th:value="${currentSort}">
+
             <table class="w-full border-t border-b border-gray-300 text-center text-sm">
-                <thead class="bg-gray-50 border-b border-gray-300">
+                <thead class="bg-gray-50 border-b border-gray-300 font-label-md">
                 <tr>
                     <th class="py-3 px-2 w-12"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
                     <th class="py-3 px-2 w-16">번호</th>
@@ -328,36 +351,47 @@
                 </tr>
                 </thead>
                 <tbody id="bannerTableBody">
-                <tr th:each="b : ${bannerList}" th:data-position="${b.position}" class="banner-row border-b">
+                <tr th:each="b, stat : ${bannerList}" class="banner-row border-b hover:bg-gray-50 transition-colors">
                     <td class="py-3 px-2"><input type="checkbox" name="bannerIds" th:value="${b.id}"></td>
-                    <td class="py-3 px-2" th:text="${b.id}">1</td>
+
+                    <td class="py-3 px-2 font-medium" th:text="${(pageData.pg - 1) * pageData.size + stat.count}">1</td>
+
                     <td class="py-2 flex justify-center">
                         <div class="w-16 h-16 border flex items-center justify-center overflow-hidden bg-gray-50">
                             <img th:if="${b.fileUrl_stored != null}" th:src="${b.fileUrl_stored}" class="square-img object-cover w-full h-full opacity-0 transition-opacity duration-300" alt="배너 이미지">
                         </div>
                     </td>
                     <td class="text-left py-3 px-4">
-                        <div class="font-bold" th:text="${b.name}">배너명</div>
+                        <div class="font-bold text-black" th:text="${b.name}">배너명</div>
                         <div class="text-xs text-gray-500" th:text="|배너사이즈 : ${b.sizeType}|"></div>
                         <div class="text-xs text-gray-500" th:text="|배경색 : ${b.backgroundColor}|"></div>
                     </td>
-                    <td class="py-3 px-4" th:text="${b.position}"></td>
-                    <td class="py-3 px-4 text-xs">
+                    <td class="py-3 px-4 font-medium" th:text="${b.position}"></td>
+                    <td class="py-3 px-4 text-xs text-gray-600">
                         <div th:text="|${b.startDate} ~ ${b.endDate}|"></div>
                         <div th:text="|${b.startTime} ~ ${b.endTime}|"></div>
                     </td>
                     <td class="py-3 px-4">
-                        <button type="button" th:onclick="|location.href='@{/admin/config/banner/status(id=${b.id})}'|"
-                                th:text="${b.status}"
-                                th:classappend="${b.status == '활성'} ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-gray-400'"
-                                class="px-3 py-1 border rounded text-xs font-bold">
-                        </button>
+                        <a th:href="@{/admin/config/banner/status(id=${b.id}, position=${currentPosition}, sort=${currentSort}, page=${pageData.pg})}"
+                           th:text="${b.status}"
+                           th:classappend="${b.status == '활성'} ? 'text-blue-600 border-blue-600 bg-blue-50/50' : 'text-gray-400 border-gray-400 bg-gray-50'"
+                           class="inline-block px-3 py-1 border rounded text-xs font-bold transition-colors hover:opacity-80">
+                        </a>
                     </td>
+                </tr>
+
+                <tr th:if="${bannerList == null or bannerList.isEmpty()}">
+                    <td colspan="7" class="py-12 text-center text-gray-400">등록된 배너가 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
-            <div class="mt-4">
-                <button type="submit" class="bg-gray-500 text-white px-6 py-2 font-bold text-sm hover:bg-gray-600">선택삭제</button>
+
+            <div class="flex justify-between items-center mt-6">
+                <button type="submit" class="bg-gray-500 text-white px-6 py-2 font-bold text-sm rounded-sm hover:bg-gray-600 transition-colors">선택삭제</button>
+
+                <div th:replace="~{fragments/_pagination :: pagination(${pageData}, '/admin/config/banner?position=' + ${currentPosition} + '&sort=' + ${currentSort})}"></div>
+
+                <div class="w-[88px]"></div>
             </div>
         </form>
     </div>
