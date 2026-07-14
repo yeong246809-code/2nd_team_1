@@ -48,6 +48,15 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     long countByMemberNo(int memberNo);
 
+    Page<Order> findByMemberNoOrderByCreatedAtDesc(int memberNo, Pageable pageable);
+
+    Page<Order> findByMemberNoAndCreatedAtBetweenOrderByCreatedAtDesc(
+            int memberNo,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime,
+            Pageable pageable
+    );
+
     // [운영현황] 상태별 주문 건수 조회
     @Query("SELECT COUNT(o) FROM Order o WHERE o.status LIKE %:status%")
     long countByStatusLike(@Param("status") String status);

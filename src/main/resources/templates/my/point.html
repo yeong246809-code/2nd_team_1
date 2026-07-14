@@ -114,6 +114,16 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #c1c7ca; border-radius: 10px; }
+        .mypage-point-table { table-layout: fixed; min-width: 820px; }
+        .mypage-point-table th,
+        .mypage-point-table td { font-size: 14px; }
+        .mypage-point-table th:nth-child(1), .mypage-point-table td:nth-child(1) { width: 14%; white-space: nowrap; }
+        .mypage-point-table th:nth-child(2), .mypage-point-table td:nth-child(2) { width: 10%; white-space: nowrap; }
+        .mypage-point-table th:nth-child(3), .mypage-point-table td:nth-child(3) { width: 14%; white-space: nowrap; }
+        .mypage-point-table th:nth-child(4), .mypage-point-table td:nth-child(4) { width: 14%; white-space: nowrap; }
+        .mypage-point-table th:nth-child(5), .mypage-point-table td:nth-child(5) { width: 34%; word-break: keep-all; line-height: 1.5; }
+        .mypage-point-table th:nth-child(6), .mypage-point-table td:nth-child(6) { width: 14%; white-space: nowrap; }
+        .mypage-point-table td:nth-child(2) span { display: inline-flex; white-space: nowrap; }
     </style>
 </head>
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
@@ -166,7 +176,7 @@
         <!-- Data Table Section -->
         <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse">
+                <table class="mypage-point-table w-full text-left border-collapse">
                     <thead class="bg-surface-container-high border-b border-outline-variant">
                     <tr>
                         <th class="px-md py-4 font-label-md text-label-md text-on-surface-variant">날짜</th>

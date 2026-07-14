@@ -108,6 +108,7 @@
         .material-symbols-outlined[style*="'FILL' 1"] {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        .mypage-qna-row > div:last-child span { display: inline-flex; white-space: nowrap; }
     </style>
 </head>
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
@@ -143,7 +144,7 @@
                 <div th:if="${qnaBlock == null or qnaBlock.page.empty}" class="p-lg text-center text-on-surface-variant">
                     문의 내역이 없습니다.
                 </div>
-                <div class="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center"
+                <div class="mypage-qna-row flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors items-center text-center"
                      th:each="qna, stat : ${qnaBlock.page.content}">
                     <div class="hidden md:block col-span-1 font-body-md text-body-md text-outline" th:text="${(qnaBlock.currentPage - 1) * qnaBlock.page.size + stat.count}">1</div>
                     <div class="flex md:contents justify-between w-full md:w-auto">

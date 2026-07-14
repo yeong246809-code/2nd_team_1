@@ -184,6 +184,83 @@
         .modal-content {
             transition: transform 0.3s ease;
         }
+        .mypage-recent-order-table { table-layout: fixed; min-width: 780px; }
+        .mypage-recent-order-table th:nth-child(1), .mypage-recent-order-table td:nth-child(1) { width: 15%; white-space: nowrap; }
+        .mypage-recent-order-table th:nth-child(2), .mypage-recent-order-table td:nth-child(2) { width: 53%; }
+        .mypage-recent-order-table th:nth-child(3), .mypage-recent-order-table td:nth-child(3) { width: 14%; text-align: center; }
+        .mypage-recent-order-table th:nth-child(4), .mypage-recent-order-table td:nth-child(4) { width: 18%; }
+        .mypage-recent-order-table td:nth-child(3) span,
+        .mypage-recent-order-table td:nth-child(4) button,
+        .mypage-recent-order-table td:nth-child(4) a { display: inline-flex; white-space: nowrap; }
+
+        .mypage-recent-point-table { table-layout: fixed; min-width: 820px; }
+        .mypage-recent-point-table th,
+        .mypage-recent-point-table td { font-size: 14px; }
+        .mypage-recent-point-table th:nth-child(1), .mypage-recent-point-table td:nth-child(1) { width: 14%; white-space: nowrap; }
+        .mypage-recent-point-table th:nth-child(2), .mypage-recent-point-table td:nth-child(2) { width: 10%; white-space: nowrap; }
+        .mypage-recent-point-table th:nth-child(3), .mypage-recent-point-table td:nth-child(3) { width: 14%; white-space: nowrap; }
+        .mypage-recent-point-table th:nth-child(4), .mypage-recent-point-table td:nth-child(4) { width: 14%; white-space: nowrap; }
+        .mypage-recent-point-table th:nth-child(5), .mypage-recent-point-table td:nth-child(5) { width: 34%; word-break: keep-all; line-height: 1.5; }
+        .mypage-recent-point-table th:nth-child(6), .mypage-recent-point-table td:nth-child(6) { width: 14%; white-space: nowrap; }
+        .mypage-qna-table { table-layout: fixed; min-width: 820px; }
+        .mypage-qna-table th:nth-child(1), .mypage-qna-table td:nth-child(1) { width: 8%; white-space: nowrap; }
+        .mypage-qna-table th:nth-child(2), .mypage-qna-table td:nth-child(2) { width: 15%; word-break: keep-all; }
+        .mypage-qna-table th:nth-child(3), .mypage-qna-table td:nth-child(3) { width: 15%; word-break: keep-all; }
+        .mypage-qna-table th:nth-child(4), .mypage-qna-table td:nth-child(4) { width: 34%; }
+        .mypage-qna-table th:nth-child(5), .mypage-qna-table td:nth-child(5) { width: 16%; white-space: nowrap; }
+        .mypage-qna-table th:nth-child(6), .mypage-qna-table td:nth-child(6) { width: 12%; white-space: nowrap; }
+        .mypage-qna-table td:nth-child(6) span { display: inline-flex; white-space: nowrap; }
+        .mypage-action-stack {
+            width: 100%;
+            max-width: 120px;
+            margin-inline: auto;
+            gap: 8px;
+        }
+        .mypage-action-stack form { width: 100%; }
+        .mypage-action-stack button,
+        .mypage-action-stack > a {
+            display: flex;
+            min-height: 36px;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px !important;
+            padding: 7px 12px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            line-height: 1.2;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(20, 51, 59, 0.08);
+            transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease;
+        }
+        .mypage-action-stack button:hover,
+        .mypage-action-stack > a:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(20, 51, 59, 0.14);
+        }
+        .mypage-action-stack button:active,
+        .mypage-action-stack > a:active { transform: translateY(0) scale(0.98); }
+        .mypage-action-stack form[action$="/confirm"] button {
+            border: 1px solid #14333b !important;
+            background: #14333b !important;
+            color: #fff !important;
+        }
+        .mypage-action-stack > a[href*="/product/view"] {
+            border: 1px solid #acccd5 !important;
+            background: #edf7fa !important;
+            color: #14333b !important;
+        }
+        .mypage-action-stack form[action$="/claim/cancel"] button {
+            border: 1px solid #ef9a9a !important;
+            background: #fff1f0 !important;
+            color: #a3131d !important;
+        }
+        .mypage-action-stack .open-claim-btn {
+            border: 1px solid #c1c7ca !important;
+            background: #fff !important;
+            color: #41484a !important;
+        }
+        .mypage-action-stack .open-claim-btn:hover { background: #f3f4f5 !important; }
     </style>
 </head>
 <body class="font-body-md text-on-surface bg-background min-h-screen">
@@ -296,12 +373,12 @@
                 </h3>
                 <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" th:href="@{/my/order}" href="/my/order">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
             </div>
-            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-                <table class="w-full text-left border-collapse">
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-x-auto">
+                <table class="mypage-recent-order-table w-full text-left border-collapse">
                     <thead class="bg-surface-container-low border-b border-outline-variant">
                     <tr>
                         <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">날짜</th>
-                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">상품정보</th>
+                        <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">주문정보</th>
                         <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">상태</th>
                         <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant text-center">확인 / 신청</th>
                     </tr>
@@ -310,76 +387,35 @@
                     <tr th:if="${dashboard == null or #lists.isEmpty(dashboard.recentOrders)}">
                         <td colspan="4" class="px-md py-lg text-center text-on-surface-variant">최근 주문 내역이 없습니다.</td>
                     </tr>
-                    <tr class="hover:bg-surface-container-lowest transition-colors" th:each="item : ${dashboard?.recentOrders}">
-                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap" th:text="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}">2022-12-13</td>
+                    <tr class="hover:bg-surface-container-lowest transition-colors" th:each="order : ${dashboard?.recentOrders}">
+                        <td class="px-md py-md font-body-md text-body-md whitespace-nowrap" th:text="${order.orderedAt != null ? #temporals.format(order.orderedAt, 'yyyy-MM-dd') : '-'}">2022-12-13</td>
                         <td class="px-md py-md">
                             <div class="flex gap-md">
                                 <div class="w-24 h-24 shrink-0 rounded-lg overflow-hidden border border-outline-variant bg-surface-container">
                                     <img class="w-full h-full object-cover"
-                                         th:if="${item.thumb != null and !#strings.isEmpty(item.thumb)}"
-                                         th:src="@{/uploads/{file}(file=${item.thumb})}"
+                                         th:if="${order.thumb != null and !#strings.isEmpty(order.thumb)}"
+                                         th:src="${#strings.startsWith(order.thumb, 'http://') or #strings.startsWith(order.thumb, 'https://') ? order.thumb : '/uploads/' + order.thumb}"
                                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv3LTdlkAUaDFlm71RMWQb5PXwUE6rtixNXpnN_91ONw_tDp728OL0pC_DgBzwrx6xnb2-ZyTZuSs8BegkEuYim_PPukURQOo82ATYK9VnZ5lxf-1lsOPhjREEJ_fDwRO_ZAm7U3Cq78LAvqN4Rq3aWzyGDIoJwE8En9MAVeCuzVgksMmW_YQYR4IEOXb3Fo7barotMDFZTDV0nPvhmgdl4T_VM0t6FbN9b63hZbJDCaJzXRlMzirUuDURmfmjw1835LyoozcEy3ML">
-                                    <div th:if="${item.thumb == null or #strings.isEmpty(item.thumb)}" class="w-full h-full flex items-center justify-center text-outline">
+                                    <div th:if="${order.thumb == null or #strings.isEmpty(order.thumb)}" class="w-full h-full flex items-center justify-center text-outline">
                                         <span class="material-symbols-outlined">image</span>
                                     </div>
                                 </div>
                                 <div class="space-y-xs">
-                                    <p class="font-label-sm text-label-sm text-on-surface-variant">주문번호 : <span class="font-bold text-on-surface" th:text="${item.orderNo}">1012211341</span></p>
-                                    <a class="font-label-md text-label-md text-primary hover:underline cursor-pointer open-seller-btn"
-                                       th:text="${item.shopName}"
-                                       th:data-shop-name="${item.shopName}"
-                                       th:data-shop-ceo="${item.shopCeo}"
-                                       th:data-shop-phone="${item.shopPhone}"
-                                       th:data-shop-fax="${item.shopFax}"
-                                       th:data-shop-email="${item.shopEmail}"
-                                       th:data-shop-biz-number="${item.shopBizNumber}"
-                                       th:data-shop-address="${item.shopAddress}">(주) 상호명</a>
-                                    <a class="block font-headline-md text-headline-md text-primary cursor-pointer hover:underline"
-                                       th:href="@{/product/view(prodNo=${item.productNo})}"
-                                       th:text="${item.productName}">상품명 A 디자인 리빙 오브제</a>
-                                    <p class="font-body-md text-body-md">수량 : <span th:text="${item.quantity}">1</span> 개</p>
-                                    <p class="font-headline-md text-headline-md text-primary font-bold" th:text="${#numbers.formatInteger(item.totalPrice, 1, 'COMMA') + '원'}">34,000원</p>
+                                    <button type="button" class="open-order-btn font-label-sm text-label-sm text-primary font-bold hover:underline"
+                                            th:data-modal-id="|order-detail-${order.orderNo}|">주문번호 : <span th:text="${order.orderNo}">1012211341</span></button>
+                                    <p class="font-headline-md text-headline-md text-primary" th:text="${order.orderName}">주문 상품명</p>
+                                    <p class="font-body-md text-body-md">상품 <span th:text="${order.itemCount}">1</span>종 · 총 수량 <span th:text="${order.totalQuantity}">1</span>개</p>
+                                    <p class="font-headline-md text-headline-md text-primary font-bold" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 1, 'COMMA') + '원'}">34,000원</p>
                                 </div>
                             </div>
                         </td>
                         <td class="px-md py-md">
-                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm" th:text="${item.status}">배송완료</span>
+                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm whitespace-nowrap" th:text="${order.status}">배송완료</span>
                         </td>
                         <td class="px-md py-md">
-                            <div class="flex flex-col gap-2 w-32 mx-auto">
-                                <form th:action="@{/my/order/confirm}" method="post">
-                                    <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                                    <button type="submit" class="w-full bg-primary text-on-primary font-label-md text-label-md py-2 rounded-lg hover:opacity-90 transition-opacity">구매확정</button>
-                                </form>
-                                <a th:href="@{/product/view(prodNo=${item.productNo})}" class="text-center border border-primary text-primary font-label-md text-label-md py-2 rounded-lg hover:bg-primary-fixed transition-colors">상품평쓰기</a>
-                                <form th:if="${item.status == '반품신청'}" th:action="@{/my/order/claim/cancel}" method="post">
-                                    <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                                    <button type="submit" class="w-full border border-error bg-error-container text-error font-label-md text-label-md py-1 rounded-lg hover:bg-error-container/80 transition-colors">반품취소</button>
-                                </form>
-                                <button th:unless="${item.status == '반품신청'}" type="button"
-                                        class="open-claim-btn w-full border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors"
-                                        data-claim-type="return"
-                                        th:data-order-detail-no="${item.orderDetailNo}"
-                                        th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
-                                        th:data-order-no="${item.orderNo}"
-                                        th:data-shop-name="${item.shopName}"
-                                        th:data-product-name="${item.productName}"
-                                        th:data-quantity="${item.quantity}"
-                                        th:data-total-price="${item.totalPrice}"
-                                        th:data-status="${item.status}"
-                                        th:data-thumb="${item.thumb}">반품신청</button>
-                                <button type="button"
-                                        class="open-claim-btn w-full border border-outline-variant text-on-surface-variant font-label-md text-label-md py-1 rounded-lg hover:bg-surface-variant transition-colors"
-                                        data-claim-type="exchange"
-                                        th:data-order-detail-no="${item.orderDetailNo}"
-                                        th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
-                                        th:data-order-no="${item.orderNo}"
-                                        th:data-shop-name="${item.shopName}"
-                                        th:data-product-name="${item.productName}"
-                                        th:data-quantity="${item.quantity}"
-                                        th:data-total-price="${item.totalPrice}"
-                                        th:data-status="${item.status}"
-                                        th:data-thumb="${item.thumb}">교환신청</button>
+                            <div class="mypage-action-stack flex flex-col gap-2 w-32 mx-auto">
+                                <button type="button" class="open-order-btn w-full bg-primary text-on-primary font-label-md text-label-md py-2 rounded-lg hover:opacity-90 transition-opacity"
+                                        th:data-modal-id="|order-detail-${order.orderNo}|">주문상세</button>
                             </div>
                         </td>
                     </tr>
@@ -394,8 +430,8 @@
                 <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">포인트적립내역</h3>
                 <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" th:href="@{/my/point}" href="/my/point">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
             </div>
-            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-                <table class="w-full text-left border-collapse">
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-x-auto">
+                <table class="mypage-recent-point-table w-full text-left border-collapse">
                     <thead class="bg-surface-container-low border-b border-outline-variant">
                     <tr>
                         <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">날짜</th>
@@ -430,8 +466,8 @@
                 <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-xs">나의 문의 내역</h3>
                 <a class="font-label-sm text-label-sm text-on-surface-variant hover:underline flex items-center" th:href="@{/my/myqna}" href="/my/myqna">더보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
             </div>
-            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-                <table class="w-full text-left border-collapse">
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-x-auto">
+                <table class="mypage-qna-table w-full text-left border-collapse">
                     <thead class="bg-surface-container-low border-b border-outline-variant">
                     <tr>
                         <th class="px-md py-3 font-label-md text-label-md text-on-surface-variant">번호</th>
@@ -502,6 +538,7 @@
 <!-- 푸터 -->
 <div th:replace="~{layout/site :: footer}"></div>
 <div th:replace="~{my/_shared :: claimModal}"></div>
+<div th:replace="~{my/_shared :: orderDetailModals(${dashboard != null ? dashboard.recentOrders : null})}"></div>
 <!-- 주문상세정보 모달 (Order Detail Popup) -->
 <div class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 custom-modal" id="order-detail-modal">
     <!-- 배경 오버레이 -->
@@ -703,7 +740,7 @@
         const orderBtn = e.target.closest('.open-order-btn');
         if (orderBtn) {
             e.preventDefault();
-            showModal('order-detail-modal');
+            showModal(orderBtn.dataset.modalId);
             return;
         }
 

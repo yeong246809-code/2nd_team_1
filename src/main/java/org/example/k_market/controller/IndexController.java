@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.service.ProductService;
+import org.example.k_market.service.MainBannerService;
 import org.example.k_market.service.admin.SiteConfigService;
 import org.example.k_market.service.admin.VersionService;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,8 @@ public class IndexController {
     // 메인 화면 상품 목록과 상품 검색을 처리한다.
     private final ProductService productService;
 
+    private final MainBannerService mainBannerService;
+
 
     /**
      * K-market 메인 페이지
@@ -42,6 +45,11 @@ public class IndexController {
      */
     @GetMapping("/")
     public String index(Model model) {
+
+        model.addAttribute("topBanner", mainBannerService.findTopBanner().orElse(null));
+        model.addAttribute("mainBanners", mainBannerService.findSliderBanners());
+        model.addAttribute("leftSideBanner", mainBannerService.findLeftSideBanner().orElse(null));
+        model.addAttribute("rightSideBanner", mainBannerService.findRightSideBanner().orElse(null));
 
         /*
          * 사이트 공통 설정

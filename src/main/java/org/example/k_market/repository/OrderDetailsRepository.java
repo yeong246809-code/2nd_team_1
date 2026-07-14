@@ -89,6 +89,17 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long
             """)
     long countByMemberNo(@Param("memberNo") int memberNo);
 
+    @Query("""
+            SELECT CASE WHEN COUNT(od) > 0 THEN true ELSE false END
+            FROM OrderDetails od
+            JOIN Order o ON od.orderNo = o.orderNo
+            WHERE o.memberNo = :memberNo
+              AND od.productNo = :productNo
+              AND od.status IN ('구매확정', '배송준비', '배송중', '배송완료')
+            """)
+    boolean existsReviewablePurchase(@Param("memberNo") int memberNo,
+                                     @Param("productNo") long productNo);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE OrderDetails od SET od.status = :status WHERE od.orderDetailNo = :orderDetailNo")
     void updateStatus(@Param("orderDetailNo") long orderDetailNo, @Param("status") String status);

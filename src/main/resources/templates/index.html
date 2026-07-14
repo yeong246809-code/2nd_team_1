@@ -124,9 +124,52 @@
             justify-content: center;
             color: #72787a;
         }
+        .home-side-banner {
+            position: sticky;
+            top: 135px;
+            width: 200px;
+            height: 560px;
+            z-index: 35;
+            pointer-events: auto;
+        }
+        .home-side-banner-rail {
+            position: absolute;
+            top: 24px;
+            bottom: 24px;
+            width: 200px;
+            pointer-events: none;
+        }
+        .home-side-banner-rail-left {
+            left: -224px;
+        }
+        .home-side-banner-rail-right {
+            right: -224px;
+        }
+        @media (max-width: 1743px) {
+            .home-side-banner-rail {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="bg-surface font-body-md text-on-surface">
+<!-- 메인 상단 고정 배너 -->
+<section class="relative z-40 w-full bg-surface-container-low overflow-hidden"
+         data-top-banner-frame
+         th:style="${topBanner != null} ? |aspect-ratio: ${topBanner.aspectRatio};| : 'min-height: 72px;'">
+    <a th:if="${topBanner != null}"
+       th:href="${#strings.isEmpty(topBanner.linkUrl) ? null : topBanner.linkUrl}"
+       class="block w-full h-full">
+        <img th:src="${topBanner.fileUrl_stored}"
+             th:alt="${#strings.isEmpty(topBanner.name) ? '메인 상단 배너' : topBanner.name}"
+             data-top-banner-image
+             class="block w-full h-full object-cover">
+    </a>
+    <div th:unless="${topBanner != null}"
+         class="w-full min-h-[72px] h-full flex items-center justify-center text-on-surface-variant font-medium">
+        배너를 준비중입니다
+    </div>
+</section>
 <!-- 헤더 영역 -->
 <header class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
@@ -166,22 +209,80 @@
         </div>
     </div>
 </header>
-<main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
+<main class="relative max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
+    <div class="home-side-banner-rail home-side-banner-rail-left">
+        <aside class="home-side-banner overflow-hidden rounded-lg border border-outline-variant bg-white shadow-md"
+               aria-label="왼쪽 사이드 배너">
+            <a th:if="${leftSideBanner != null}"
+               th:href="${#strings.isEmpty(leftSideBanner.linkUrl) ? null : leftSideBanner.linkUrl}"
+               class="block w-full h-full">
+                <img th:src="${leftSideBanner.fileUrl_stored}"
+                     th:alt="${#strings.isEmpty(leftSideBanner.name) ? '메인 왼쪽 사이드 배너' : leftSideBanner.name}"
+                     class="block w-full h-full object-cover">
+            </a>
+            <div th:unless="${leftSideBanner != null}"
+                 class="w-full h-full flex items-center justify-center px-3 text-center text-sm text-on-surface-variant">
+                배너를<br>준비중입니다
+            </div>
+        </aside>
+    </div>
+
+    <div class="home-side-banner-rail home-side-banner-rail-right">
+        <aside class="home-side-banner overflow-hidden rounded-lg border border-outline-variant bg-white shadow-md"
+               aria-label="오른쪽 사이드 배너">
+            <a th:if="${rightSideBanner != null}"
+               th:href="${#strings.isEmpty(rightSideBanner.linkUrl) ? null : rightSideBanner.linkUrl}"
+               class="block w-full h-full">
+                <img th:src="${rightSideBanner.fileUrl_stored}"
+                     th:alt="${#strings.isEmpty(rightSideBanner.name) ? '메인 오른쪽 사이드 배너' : rightSideBanner.name}"
+                     class="block w-full h-full object-cover">
+            </a>
+            <div th:unless="${rightSideBanner != null}"
+                 class="w-full h-full flex items-center justify-center px-3 text-center text-sm text-on-surface-variant">
+                배너를<br>준비중입니다
+            </div>
+        </aside>
+    </div>
     <div th:replace="~{fragments/nav :: productTabs('deal')}"></div>
     <div class="flex flex-col md:flex-row gap-lg items-start">
         <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${mainCateNo}, ${rankingProducts})}"></div>
         <!-- Main Column -->
         <div class="flex-1 flex flex-col gap-xl">
             <!-- Hero Banner -->
-            <div class="banner-image relative w-full aspect-[2/1] md:aspect-[16/6] rounded overflow-hidden placeholder-image">
-                <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-gutter text-on-surface">
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-4">봄 맞이 세일!</h1>
-                    <p class="text-lg md:text-xl mb-6 max-w-lg">최신 컬렉션을 확인하고 특별한 할인을 만나보세요.</p>
-                    <a th:href="@{/product/list}" href="product/list"
-                       class="bg-secondary text-white px-10 py-3 rounded font-bold text-lg">
-                        상품 보기
-                    </a>
+            <div class="banner-image relative w-full aspect-[2/1] md:aspect-[16/6] rounded overflow-hidden placeholder-image"
+                 data-main-banner-slider>
+                <div th:if="${mainBanners == null or mainBanners.isEmpty()}"
+                     class="absolute inset-0 flex items-center justify-center text-on-surface-variant font-medium">
+                    배너를 준비중입니다
                 </div>
+
+                <a th:each="banner, stat : ${mainBanners}"
+                   th:href="${#strings.isEmpty(banner.linkUrl) ? null : banner.linkUrl}"
+                   th:classappend="${stat.first} ? ' opacity-100' : ' opacity-0 pointer-events-none'"
+                   class="absolute inset-0 block transition-opacity duration-300"
+                   data-main-banner-slide
+                   th:attr="aria-hidden=${!stat.first}">
+                    <img th:src="${banner.fileUrl_stored}"
+                         th:alt="${#strings.isEmpty(banner.name) ? '메인 슬라이드 배너' : banner.name}"
+                         class="block w-full h-full object-cover">
+                </a>
+
+                <th:block th:if="${mainBanners != null and mainBanners.size() > 1}">
+                    <button type="button" data-banner-prev aria-label="이전 배너"
+                            class="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-primary shadow flex items-center justify-center hover:bg-white transition-colors">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button type="button" data-banner-next aria-label="다음 배너"
+                            class="absolute z-10 right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-primary shadow flex items-center justify-center hover:bg-white transition-colors">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                    <div class="absolute z-10 bottom-3 left-1/2 -translate-x-1/2 flex gap-2" aria-hidden="true">
+                        <span th:each="banner, stat : ${mainBanners}"
+                              th:classappend="${stat.first} ? ' bg-primary' : ' bg-white/80'"
+                              class="w-2 h-2 rounded-full shadow-sm"
+                              data-banner-dot></span>
+                    </div>
+                </th:block>
             </div>
             <!-- 히트 상품: 조회수 높은 순 8개 -->
             <section id="hit-products">
@@ -564,5 +665,52 @@
 
 
 
+<script>
+    const topBannerImage = document.querySelector('[data-top-banner-image]');
+    const topBannerFrame = document.querySelector('[data-top-banner-frame]');
+
+    function fitTopBannerToImage() {
+        if (topBannerImage?.naturalWidth && topBannerImage?.naturalHeight && topBannerFrame) {
+            topBannerFrame.style.aspectRatio = `${topBannerImage.naturalWidth} / ${topBannerImage.naturalHeight}`;
+        }
+    }
+
+    if (topBannerImage) {
+        if (topBannerImage.complete) {
+            fitTopBannerToImage();
+        } else {
+            topBannerImage.addEventListener('load', fitTopBannerToImage, {once: true});
+        }
+    }
+
+    const mainBannerSlider = document.querySelector('[data-main-banner-slider]');
+    if (mainBannerSlider) {
+        const slides = [...mainBannerSlider.querySelectorAll('[data-main-banner-slide]')];
+        const dots = [...mainBannerSlider.querySelectorAll('[data-banner-dot]')];
+        const previousButton = mainBannerSlider.querySelector('[data-banner-prev]');
+        const nextButton = mainBannerSlider.querySelector('[data-banner-next]');
+        let currentIndex = 0;
+
+        function showBanner(index) {
+            if (!slides.length) return;
+            currentIndex = (index + slides.length) % slides.length;
+            slides.forEach((slide, slideIndex) => {
+                const isActive = slideIndex === currentIndex;
+                slide.classList.toggle('opacity-100', isActive);
+                slide.classList.toggle('opacity-0', !isActive);
+                slide.classList.toggle('pointer-events-none', !isActive);
+                slide.setAttribute('aria-hidden', String(!isActive));
+            });
+            dots.forEach((dot, dotIndex) => {
+                dot.classList.toggle('bg-primary', dotIndex === currentIndex);
+                dot.classList.toggle('bg-white/80', dotIndex !== currentIndex);
+            });
+        }
+
+        previousButton?.addEventListener('click', () => showBanner(currentIndex - 1));
+        nextButton?.addEventListener('click', () => showBanner(currentIndex + 1));
+    }
+
+</script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

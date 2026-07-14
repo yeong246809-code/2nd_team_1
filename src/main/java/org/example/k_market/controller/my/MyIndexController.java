@@ -202,7 +202,7 @@ public class MyIndexController {
 
     @PostMapping("/my/order/claim")
     public String claimOrder(Authentication authentication,
-                             @RequestParam long orderDetailNo,
+                             @RequestParam int orderNo,
                              @RequestParam String type,
                              @RequestParam(required = false) String reasonType,
                              @RequestParam(required = false) String reasonDetail,
@@ -214,7 +214,7 @@ public class MyIndexController {
         }
         try {
             String attachedImagePath = saveClaimImage(attachedImage);
-            myPageService.claimOrder(orderDetailNo, memberNo.get(), type, reasonType, reasonDetail, attachedImagePath);
+            myPageService.claimOrder(orderNo, memberNo.get(), type, reasonType, reasonDetail, attachedImagePath);
             redirectAttributes.addFlashAttribute("myOrderMessage", "신청이 접수되었습니다.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());
@@ -227,14 +227,14 @@ public class MyIndexController {
 
     @PostMapping("/my/order/claim/cancel")
     public String cancelReturnClaim(Authentication authentication,
-                                    @RequestParam long orderDetailNo,
+                                    @RequestParam int orderNo,
                                     RedirectAttributes redirectAttributes) {
         Optional<Integer> memberNo = currentMemberNo(authentication);
         if (memberNo.isEmpty()) {
             return "redirect:/member/login";
         }
         try {
-            myPageService.cancelReturnClaim(orderDetailNo, memberNo.get());
+            myPageService.cancelReturnClaim(orderNo, memberNo.get());
             redirectAttributes.addFlashAttribute("myOrderMessage", "반품 신청이 취소되었습니다.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());

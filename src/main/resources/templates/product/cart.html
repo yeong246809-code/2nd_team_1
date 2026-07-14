@@ -179,16 +179,19 @@
                     <h2 class="text-2xl font-bold text-primary">장바구니</h2>
                 </div>
                 <nav class="text-xs text-on-surface-variant flex items-center gap-1">
-                    <span>HOME</span> &gt; <span>패션/의류</span> &gt; <span class="font-bold text-primary">장바구니</span>
+                    <a th:href="@{/}" class="hover:underline">HOME</a> &gt; <span class="font-bold text-primary">장바구니</span>
                 </nav>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm standard-border overflow-hidden">
-                <table class="w-full text-left border-collapse">
+            <div th:if="${cartMessage != null}" class="rounded-lg border border-secondary bg-secondary-container px-md py-sm text-on-secondary-container" th:text="${cartMessage}"></div>
+            <div th:if="${cartError != null}" class="rounded-lg border border-error bg-error-container px-md py-sm text-error" th:text="${cartError}"></div>
+
+            <div class="bg-white rounded-xl shadow-sm standard-border overflow-x-auto">
+                <table class="w-full min-w-[900px] text-left border-collapse">
                     <thead class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
                     <tr>
                         <th class="px-md py-sm w-12 text-center">
-                            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+                            <input id="cart-select-all" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
                         </th>
                         <th class="px-md py-sm">상품명</th>
                         <th class="px-md py-sm text-center">수량</th>
@@ -200,23 +203,49 @@
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant">
-                    <tr th:each="item : ${cartItems}" class="hover:bg-surface-container-low/30 transition-colors">
+                    <tr th:each="item : ${cartItems}" class="hover:bg-surface-container-low/30 transition-colors" th:classappend="${item.soldOut} ? ' opacity-60'">
                         <td class="px-md py-md text-center align-middle">
-                            <input checked class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+                            <input th:checked="${!item.soldOut}" th:disabled="${item.soldOut}"
+                                   class="cart-item-checkbox rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"
+                                   th:value="${item.cartNo}"
+                                   th:data-quantity="${item.quantity}"
+                                   th:data-product-total="${item.unitPrice * item.quantity}"
+                                   th:data-shipping-fee="${item.shippingFee}"
+                                   th:data-line-total="${item.lineTotal}"
+                                   th:data-reward-points="${item.lineRewardPoints}"/>
                         </td>
                         <td class="px-md py-md">
                             <a th:href="@{/product/view(prodNo=${item.prodNo})}" class="flex items-center gap-md">
                                 <div class="w-20 h-20 placeholder-image rounded-lg shrink-0 overflow-hidden">
-                                    <img th:if="${item.thumb1 != null and !item.thumb1.isBlank()}" th:src="@{/uploads/{file}(file=${item.thumb1})}" th:alt="${item.name}" class="w-full h-full object-cover"/>
+                                    <img th:if="${item.thumb1 != null and !item.thumb1.isBlank()}"
+                                         th:src="${#strings.startsWith(item.thumb1, 'http://') or #strings.startsWith(item.thumb1, 'https://') ? item.thumb1 : '/uploads/' + item.thumb1}"
+                                         th:alt="${item.name}" class="w-full h-full object-cover"/>
                                     <span th:unless="${item.thumb1 != null and !item.thumb1.isBlank()}" class="material-symbols-outlined text-3xl">image</span>
                                 </div>
                                 <div>
                                     <h4 th:text="${item.name}" class="font-bold text-on-surface truncate max-w-xs">상품명</h4>
                                     <p th:text="${item.description}" class="text-on-surface-variant text-label-sm font-label-sm">상품 설명</p>
+                                    <p th:if="${item.skuName != null}" class="mt-1 text-label-sm font-label-sm text-primary" th:text="${'옵션: ' + item.skuName}">옵션</p>
+                                    <span th:if="${item.soldOut}" class="mt-1 inline-flex rounded-full bg-error-container px-2 py-0.5 text-label-sm font-bold text-error">품절</span>
                                 </div>
                             </a>
                         </td>
-                        <td th:text="${item.quantity}" class="px-md py-md text-center font-bold">1</td>
+                        <td class="px-md py-md text-center font-bold">
+                            <form th:action="@{/product/cart/quantity}" method="post" class="inline-flex items-center overflow-hidden rounded-lg border border-outline-variant bg-white">
+                                <input type="hidden" name="cartNo" th:value="${item.cartNo}">
+                                <button type="submit" name="quantity" th:value="${item.quantity - 1}"
+                                        th:disabled="${item.quantity <= 1 or item.soldOut}"
+                                        class="flex h-8 w-8 items-center justify-center hover:bg-surface-container disabled:cursor-not-allowed disabled:opacity-40" aria-label="수량 감소">
+                                    <span class="material-symbols-outlined text-sm">remove</span>
+                                </button>
+                                <span class="min-w-10 px-2" th:text="${item.quantity}">1</span>
+                                <button type="submit" name="quantity" th:value="${item.quantity + 1}"
+                                        th:disabled="${item.quantity >= item.maxQuantity or item.soldOut}"
+                                        class="flex h-8 w-8 items-center justify-center hover:bg-surface-container disabled:cursor-not-allowed disabled:opacity-40" aria-label="수량 증가">
+                                    <span class="material-symbols-outlined text-sm">add</span>
+                                </button>
+                            </form>
+                        </td>
                         <td th:text="${#numbers.formatInteger(item.unitPrice, 1, 'COMMA')}" class="px-md py-md text-right font-bold">0</td>
                         <td th:text="${item.discountRate > 0 ? item.discountRate + '%' : '-'}" class="px-md py-md text-center text-error font-bold">-</td>
                         <td th:text="${#numbers.formatInteger(item.lineRewardPoints, 1, 'COMMA') + 'p'}" class="px-md py-md text-center">0p</td>
@@ -290,11 +319,14 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex gap-sm">
-                    <button class="bg-white border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container transition-colors font-label-md text-label-md text-on-surface">선택삭제</button>
-                    <button class="bg-white border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container transition-colors font-label-md text-label-md text-on-surface">품절상품삭제</button>
+                    <button type="button" id="delete-selected-btn" class="bg-white border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container transition-colors font-label-md text-label-md text-on-surface">선택삭제</button>
+                    <form th:action="@{/product/cart/delete-sold-out}" method="post">
+                        <button type="submit" class="bg-white border border-outline-variant px-md py-sm rounded-lg hover:bg-surface-container transition-colors font-label-md text-label-md text-on-surface">품절상품삭제</button>
+                    </form>
                 </div>
                 <div class="text-on-surface-variant text-label-sm font-label-sm">
-                    선택된 상품 <span class="text-primary font-bold">1</span>개 / 총 <span class="text-primary font-bold">2</span>개
+                    선택된 상품 <span id="selected-item-count" class="text-primary font-bold">0</span>개 /
+                    총 <span class="text-primary font-bold" th:text="${#lists.size(cartItems)}">0</span>개
                 </div>
             </div>
 
@@ -317,30 +349,30 @@
                     <div class="space-y-sm text-body-md font-body-md text-on-surface">
                         <div class="flex justify-between">
                             <span class="text-on-surface-variant">상품수</span>
-                            <span>1</span>
+                            <span id="selected-total-quantity">0</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-on-surface-variant">상품금액</span>
-                            <span>27,000원</span>
+                            <span id="selected-product-price" class="whitespace-nowrap">0원</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-on-surface-variant">할인금액</span>
-                            <span class="text-error">-1,350원</span>
+                            <span id="selected-discount" class="text-error whitespace-nowrap">0원</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-on-surface-variant">배송비</span>
-                            <span>0원</span>
+                            <span id="selected-shipping-fee" class="whitespace-nowrap">0원</span>
                         </div>
-                        <div class="pt-md mt-md border-t-2 border-outline-variant flex justify-between items-end">
-                            <span class="font-bold text-primary">전체주문금액</span>
-                            <span class="text-3xl font-bold text-primary">25,650원</span>
+                        <div class="pt-md mt-md border-t-2 border-outline-variant flex justify-between items-center gap-3">
+                            <span class="shrink-0 whitespace-nowrap font-bold text-label-md text-primary">전체주문금액</span>
+                            <span id="selected-order-price" class="shrink-0 whitespace-nowrap text-2xl font-bold tracking-tight text-primary">0원</span>
                         </div>
                         <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant pt-xs">
                             <span>적립 포인트</span>
-                            <span>270p</span>
+                            <span id="selected-reward-points">0p</span>
                         </div>
                     </div>
-                    <button class="w-full mt-lg bg-primary text-on-primary py-md rounded-xl font-headline-md text-headline-md font-bold hover:opacity-90 active:scale-[0.98] transition-all shadow-md">
+                    <button type="button" id="order-selected-btn" class="w-full mt-lg bg-primary text-on-primary py-md rounded-xl font-headline-md text-headline-md font-bold hover:opacity-90 active:scale-[0.98] transition-all shadow-md disabled:cursor-not-allowed disabled:opacity-40">
                         주문하기
                     </button>
                 </div>
@@ -426,16 +458,79 @@
     </a>
 </nav>
 
-<script>
-    // Simple Interaction: Checkbox logic
-    const selectAll = document.querySelector('thead input[type="checkbox"]');
-    const itemCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+<form id="delete-selected-form" th:action="@{/product/cart/delete}" method="post" class="hidden"></form>
+<form id="order-selected-form" th:action="@{/product/order/cart}" method="post" class="hidden"></form>
 
-    if(selectAll) {
-        selectAll.addEventListener('change', (e) => {
-            itemCheckboxes.forEach(cb => cb.checked = e.target.checked);
-        });
+<script>
+    const selectAll = document.getElementById('cart-select-all');
+    const itemCheckboxes = Array.from(document.querySelectorAll('.cart-item-checkbox'));
+    const selectableCheckboxes = itemCheckboxes.filter((checkbox) => !checkbox.disabled);
+    const formatter = new Intl.NumberFormat('ko-KR');
+
+    function selectedCheckboxes() {
+        return selectableCheckboxes.filter((checkbox) => checkbox.checked);
     }
+
+    function setText(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    }
+
+    function updateCartSummary() {
+        const selected = selectedCheckboxes();
+        const sum = (key) => selected.reduce((total, checkbox) => total + Number(checkbox.dataset[key] || 0), 0);
+        const quantity = sum('quantity');
+        const productPrice = sum('productTotal');
+        const shippingFee = sum('shippingFee');
+        const orderPrice = sum('lineTotal');
+        const rewardPoints = sum('rewardPoints');
+        const discount = Math.max(productPrice + shippingFee - orderPrice, 0);
+
+        setText('selected-item-count', String(selected.length));
+        setText('selected-total-quantity', String(quantity));
+        setText('selected-product-price', `${formatter.format(productPrice)}원`);
+        setText('selected-discount', discount > 0 ? `-${formatter.format(discount)}원` : '0원');
+        setText('selected-shipping-fee', `${formatter.format(shippingFee)}원`);
+        setText('selected-order-price', `${formatter.format(orderPrice)}원`);
+        setText('selected-reward-points', `${formatter.format(rewardPoints)}p`);
+
+        if (selectAll) {
+            selectAll.checked = selectableCheckboxes.length > 0 && selected.length === selectableCheckboxes.length;
+            selectAll.indeterminate = selected.length > 0 && selected.length < selectableCheckboxes.length;
+            selectAll.disabled = selectableCheckboxes.length === 0;
+        }
+        const orderButton = document.getElementById('order-selected-btn');
+        if (orderButton) orderButton.disabled = selected.length === 0;
+    }
+
+    function submitSelected(formId) {
+        const selected = selectedCheckboxes();
+        if (selected.length === 0) {
+            alert('상품을 선택해주세요.');
+            return;
+        }
+        const form = document.getElementById(formId);
+        form.replaceChildren();
+        selected.forEach((checkbox) => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'cartNos';
+            input.value = checkbox.value;
+            form.appendChild(input);
+        });
+        form.submit();
+    }
+
+    selectAll?.addEventListener('change', () => {
+        selectableCheckboxes.forEach((checkbox) => checkbox.checked = selectAll.checked);
+        updateCartSummary();
+    });
+    selectableCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', updateCartSummary));
+    document.getElementById('delete-selected-btn')?.addEventListener('click', () => {
+        if (confirm('선택한 상품을 장바구니에서 삭제하시겠습니까?')) submitSelected('delete-selected-form');
+    });
+    document.getElementById('order-selected-btn')?.addEventListener('click', () => submitSelected('order-selected-form'));
+    updateCartSummary();
 </script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 </body></html>

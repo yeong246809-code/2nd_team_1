@@ -39,6 +39,27 @@ public final class MyPageDtos {
     ) {
     }
 
+    public record OrderSummary(
+            int orderNo,
+            String orderName,
+            String thumb,
+            int itemCount,
+            int totalQuantity,
+            int totalProductPrice,
+            int totalDiscountPrice,
+            int totalShippingFee,
+            int usedPoints,
+            int totalPaymentPrice,
+            String status,
+            LocalDateTime orderedAt,
+            String recipientName,
+            String recipientPhone,
+            String deliveryAddress,
+            String memo,
+            List<OrderItem> details
+    ) {
+    }
+
     public record PointItem(
             long pointNo,
             String type,
@@ -83,7 +104,7 @@ public final class MyPageDtos {
 
     public record Dashboard(
             Summary summary,
-            List<OrderItem> recentOrders,
+            List<OrderSummary> recentOrders,
             List<PointItem> recentPoints,
             List<QnaItem> recentQnas
     ) {

@@ -13,6 +13,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByProdNoOrderByCreatedAtDesc(Long prodNo);
     Page<Review> findByMemberNoOrderByCreatedAtDesc(int memberNo, Pageable pageable);
+    boolean existsByMemberNoAndProdNo(int memberNo, long prodNo);
 
     @Query("""
             SELECT r

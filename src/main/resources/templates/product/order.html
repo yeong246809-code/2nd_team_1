@@ -195,12 +195,17 @@
                 </nav>
             </div>
 
+            <form id="checkout-form" th:action="@{/product/order/complete}" method="post" class="flex flex-col gap-xl">
+                <input th:each="cartNo : ${selectedCartNos}" type="hidden" name="cartNos" th:value="${cartNo}">
+                <input th:if="${directProdNo != null}" type="hidden" name="directProdNo" th:value="${directProdNo}">
+                <input th:if="${directSkuNo != null}" type="hidden" name="directSkuNo" th:value="${directSkuNo}">
+                <input th:if="${directQuantity != null}" type="hidden" name="directQuantity" th:value="${directQuantity}">
+
             <section class="bg-white standard-border rounded overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-surface-container-low text-label-md text-on-surface-variant">
                         <tr class="border-b border-outline-variant">
-                            <th class="p-md text-center w-12"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"></th>
                             <th class="p-md font-bold">상품명</th>
                             <th class="p-md font-bold text-center">수량</th>
                             <th class="p-md font-bold text-right">판매가</th>
@@ -211,27 +216,31 @@
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant/30 text-sm">
-                        <tr class="hover:bg-surface-container-low/30 transition-colors">
-                            <td class="p-md text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"></td>
+                        <tr class="hover:bg-surface-container-low/30 transition-colors" th:each="item : ${orderItems}">
                             <td class="p-md">
                                 <div class="flex items-center gap-md">
                                     <div class="w-20 h-20 placeholder-image rounded shrink-0 overflow-hidden">
-                                        <span class="material-symbols-outlined text-2xl">image</span>
+                                        <img th:if="${item.thumb1 != null and !item.thumb1.isBlank()}"
+                                             th:src="${#strings.startsWith(item.thumb1, 'http://') or #strings.startsWith(item.thumb1, 'https://') ? item.thumb1 : '/uploads/' + item.thumb1}"
+                                             class="h-full w-full object-cover" th:alt="${item.name}">
+                                        <span th:unless="${item.thumb1 != null and !item.thumb1.isBlank()}" class="material-symbols-outlined text-2xl">image</span>
                                     </div>
                                     <div>
-                                        <p class="font-bold text-on-surface" th:text="${product.name}">${product.name} 상품명</p>
-                                        <p class="text-xs text-on-surface-variant mt-1" th:text="${product.description}">${product.description} 상품의 상세 설명이 여기에 들어갑니다.</p>
+                                        <p class="font-bold text-on-surface" th:text="${item.name}">상품명</p>
+                                        <p class="text-xs text-on-surface-variant mt-1" th:text="${item.description}">상품 설명</p>
+                                        <p th:if="${item.skuName != null}" class="text-xs font-bold text-primary mt-1" th:text="${'옵션: ' + item.skuName}">옵션</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="p-md text-center">1</td>
-                            <td class="p-md text-right font-medium">27,000 원</td>
-                            <td class="p-md text-center text-error font-bold">5%</td>
-                            <td class="p-md text-center">270</td>
+                            <td class="p-md text-center" th:text="${item.quantity}">1</td>
+                            <td class="p-md text-right font-medium" th:text="${#numbers.formatInteger(item.unitPrice, 1, 'COMMA') + '원'}">0원</td>
+                            <td class="p-md text-center text-error font-bold" th:text="${item.discountRate > 0 ? item.discountRate + '%' : '-'}">-</td>
+                            <td class="p-md text-center" th:text="${#numbers.formatInteger(item.lineRewardPoints, 1, 'COMMA') + 'p'}">0p</td>
                             <td class="p-md text-center text-on-surface-variant">
-                                <span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
+                                <span th:text="${item.shippingFee == 0 ? '무료배송' : #numbers.formatInteger(item.shippingFee, 1, 'COMMA') + '원'}"
+                                      class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
                             </td>
-                            <td class="p-md text-right font-bold text-primary">25,650 원</td>
+                            <td class="p-md text-right font-bold text-primary" th:text="${#numbers.formatInteger(item.lineTotal, 1, 'COMMA') + '원'}">0원</td>
                         </tr>
                         </tbody>
                     </table>
@@ -247,25 +256,25 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-y-sm gap-x-md items-center text-sm mt-2">
                             <label class="font-semibold text-on-surface-variant">수령자</label>
-                            <input class="rounded border-outline bg-white p-2 text-body-md" placeholder="이름을 입력하세요" type="text">
+                            <input name="recipientName" required maxlength="50" class="rounded border-outline bg-white p-2 text-body-md" placeholder="이름을 입력하세요" type="text" th:value="${orderMember?.name}">
 
                             <label class="font-semibold text-on-surface-variant">휴대폰</label>
-                            <input class="rounded border-outline bg-white p-2 text-body-md" placeholder="010-0000-0000" type="tel">
+                            <input name="recipientPhone" required maxlength="30" class="rounded border-outline bg-white p-2 text-body-md" placeholder="010-0000-0000" type="tel" th:value="${orderMember?.phone}">
 
                             <label class="font-semibold text-on-surface-variant">우편번호</label>
                             <div class="flex gap-sm">
-                                <input class="flex-1 rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="우편번호" readonly="" type="text">
-                                <button class="px-4 py-2 bg-surface-container-high hover:bg-surface-dim transition-colors rounded text-sm font-bold standard-border">주소 검색</button>
+                                <input id="order-zip-code" name="zipCode" class="flex-1 rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="우편번호" readonly type="text" th:value="${orderMember?.zipCode}">
+                                <button type="button" onclick="openPostcode()" class="px-4 py-2 bg-surface-container-high hover:bg-surface-dim transition-colors rounded text-sm font-bold standard-border">주소 검색</button>
                             </div>
 
                             <label class="font-semibold text-on-surface-variant">기본주소</label>
-                            <input class="rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="검색을 통해 입력하세요" readonly="" type="text">
+                            <input id="order-base-address" name="baseAddress" required class="rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="검색을 통해 입력하세요" readonly type="text" th:value="${orderMember?.baseAddress}">
 
                             <label class="font-semibold text-on-surface-variant">상세주소</label>
-                            <input class="rounded border-outline bg-white p-2 text-body-md" placeholder="나머지 주소를 입력하세요" type="text">
+                            <input id="order-detail-address" name="detailAddress" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md" placeholder="나머지 주소를 입력하세요" type="text" th:value="${orderMember?.detailAddress}">
 
                             <label class="font-semibold text-on-surface-variant">배송 요청사항</label>
-                            <textarea class="rounded border-outline bg-white p-2 text-body-md h-24" placeholder="배송 시 요청사항을 적어주세요"></textarea>
+                            <textarea name="memo" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md h-24" placeholder="배송 시 요청사항을 적어주세요"></textarea>
                         </div>
                     </section>
 
@@ -276,26 +285,18 @@
                         </div>
                         <div class="bg-surface-container-low p-md rounded flex flex-col gap-md mt-2 text-sm">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <span class="text-on-surface-variant">현재 사용 가능 포인트: <span class="font-bold text-primary">7,200</span> 점</span>
+                                <span class="text-on-surface-variant">현재 사용 가능 포인트: <span class="font-bold text-primary" th:text="${#numbers.formatInteger(orderMember != null ? orderMember.points : 0, 1, 'COMMA')}">0</span> 점</span>
                                 <div class="flex gap-sm">
-                                    <input class="w-32 rounded border-outline bg-white p-1.5 text-right" placeholder="0" type="number">
-                                    <button class="px-3 py-1.5 bg-primary text-white rounded text-xs hover:opacity-90 transition-opacity">포인트 사용</button>
-                                    <button class="px-3 py-1.5 bg-secondary text-white rounded text-xs hover:opacity-90 transition-opacity">전부사용</button>
+                                    <input id="used-points" name="usedPoints" value="0" min="0"
+                                           th:max="${orderMember != null ? orderMember.points : 0}"
+                                           th:data-available-points="${orderMember != null ? orderMember.points : 0}"
+                                           th:data-order-price="${totalOrderPrice}"
+                                           class="w-32 rounded border-outline bg-white p-1.5 text-right" placeholder="0" type="number">
+                                    <button type="button" onclick="applyPoints()" class="px-3 py-1.5 bg-primary text-white rounded text-xs hover:opacity-90 transition-opacity">포인트 사용</button>
+                                    <button type="button" onclick="useAllPoints()" class="px-3 py-1.5 bg-secondary text-white rounded text-xs hover:opacity-90 transition-opacity">전부사용</button>
                                 </div>
                             </div>
                             <p class="text-xs text-outline font-medium">※ 5,000점 이상 보유 시 현금처럼 사용 가능합니다.</p>
-
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between pt-sm border-t border-outline-variant/50 mt-1 gap-2">
-                                <span class="font-bold text-on-surface-variant">쿠폰적용</span>
-                                <div class="flex gap-sm">
-                                    <select class="w-48 rounded border-outline bg-white p-1.5 text-sm">
-                                        <option value="">적용 가능한 쿠폰 선택</option>
-                                        <option value="1">신규회원 10% 할인쿠폰</option>
-                                        <option value="2">배송비 무료 쿠폰</option>
-                                    </select>
-                                    <button class="px-4 py-1.5 bg-secondary text-white rounded text-xs hover:opacity-90">쿠폰 사용</button>
-                                </div>
-                            </div>
                         </div>
                     </section>
 
@@ -306,27 +307,27 @@
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-sm mt-2 text-sm">
                             <label class="flex items-center gap-base p-3 border border-outline rounded cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:border-primary has-[:checked]:bg-surface-container-low font-medium">
-                                <input checked="" class="text-primary focus:ring-primary" name="payment" type="radio">
+                                <input checked class="text-primary focus:ring-primary" name="paymentMethod" value="CARD" type="radio">
                                 <span>신용카드</span>
                             </label>
                             <label class="flex items-center gap-base p-3 border border-outline rounded cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:border-primary has-[:checked]:bg-surface-container-low font-medium">
-                                <input class="text-primary focus:ring-primary" name="payment" type="radio">
+                                <input class="text-primary focus:ring-primary" name="paymentMethod" value="BANK_TRANSFER" type="radio">
                                 <span>계좌이체</span>
                             </label>
                             <label class="flex items-center gap-base p-3 border border-outline rounded cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:border-primary has-[:checked]:bg-surface-container-low font-medium">
-                                <input class="text-primary focus:ring-primary" name="payment" type="radio">
+                                <input class="text-primary focus:ring-primary" name="paymentMethod" value="MOBILE" type="radio">
                                 <span>휴대폰결제</span>
                             </label>
                             <label class="flex items-center gap-base p-3 border border-outline rounded cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:border-primary has-[:checked]:bg-surface-container-low font-medium">
-                                <input class="text-primary focus:ring-primary" name="payment" type="radio">
+                                <input class="text-primary focus:ring-primary" name="paymentMethod" value="CHECK_CARD" type="radio">
                                 <span>체크카드</span>
                             </label>
                             <label class="flex items-center gap-base p-3 border border-outline rounded cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:border-primary has-[:checked]:bg-surface-container-low font-medium">
-                                <input class="text-primary focus:ring-primary" name="payment" type="radio">
+                                <input class="text-primary focus:ring-primary" name="paymentMethod" value="DEPOSIT" type="radio">
                                 <span>무통장입금</span>
                             </label>
                             <label class="flex items-center gap-base p-3 border border-outline rounded cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:border-primary has-[:checked]:bg-surface-container-low font-medium">
-                                <input class="text-primary focus:ring-primary" name="payment" type="radio">
+                                <input class="text-primary focus:ring-primary" name="paymentMethod" value="KAKAO_PAY" type="radio">
                                 <div class="flex items-center gap-xs">
                                     <span>카카오페이</span>
                                     <span class="bg-[#FEE500] text-[#000000] text-[9px] px-1 rounded-sm font-bold uppercase">Pay</span>
@@ -342,36 +343,38 @@
                         <ul class="flex flex-col gap-sm text-sm mb-4">
                             <li class="flex justify-between items-center">
                                 <span class="text-on-surface-variant">상품수</span>
-                                <span class="font-bold">1 개</span>
+                                <span class="font-bold" th:text="|${totalQuantity}개|">0개</span>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-on-surface-variant">상품금액</span>
-                                <span class="font-bold">27,000 원</span>
+                                <span class="font-bold" th:text="${#numbers.formatInteger(totalProductPrice, 1, 'COMMA') + '원'}">0원</span>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-on-surface-variant">할인금액</span>
-                                <span class="font-bold text-error">-1,350 원</span>
+                                <span class="font-bold text-error" th:text="${totalDiscount > 0 ? '-' + #numbers.formatInteger(totalDiscount, 1, 'COMMA') + '원' : '0원'}">0원</span>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-on-surface-variant">배송비</span>
-                                <span class="font-bold">0 원</span>
+                                <span class="font-bold" th:text="${#numbers.formatInteger(totalShippingFee, 1, 'COMMA') + '원'}">0원</span>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-on-surface-variant">포인트 할인</span>
-                                <span class="font-bold text-error">-1,000 원</span>
+                                <span id="point-discount" class="font-bold text-error">0원</span>
                             </li>
                             <li class="pt-sm border-t border-outline-variant/60 mt-2">
                                 <div class="flex justify-between items-end">
                                     <span class="font-bold text-primary">전체주문금액</span>
-                                    <span class="text-xl font-extrabold text-error" th:text="${order.totalPrice}">${order.totalPrice} 24,650 원</span>
+                                    <span id="final-payment-price" class="text-xl font-extrabold text-error"
+                                          th:data-order-price="${totalOrderPrice}"
+                                          th:text="${#numbers.formatInteger(totalOrderPrice, 1, 'COMMA') + '원'}">0원</span>
                                 </div>
                             </li>
                             <li class="flex justify-between items-center text-xs text-outline mt-1">
                                 <span>적립 예정 포인트</span>
-                                <span>270 점</span>
+                                <span th:text="${#numbers.formatInteger(totalRewardPoints, 1, 'COMMA') + '점'}">0점</span>
                             </li>
                         </ul>
-                        <button class="w-full py-3 bg-primary text-white font-bold rounded hover:bg-opacity-90 active:scale-[0.99] transition-all shadow-sm">
+                        <button id="checkout-submit" type="submit" class="w-full py-3 bg-primary text-white font-bold rounded hover:bg-opacity-90 active:scale-[0.99] transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-50">
                             결제하기
                         </button>
                         <p class="text-center text-xs text-outline mt-3">
@@ -380,6 +383,7 @@
                     </div>
                 </div>
             </div>
+            </form>
 
         </div>
     </div>
@@ -460,7 +464,63 @@
     </a>
 </nav>
 
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+    const formatter = new Intl.NumberFormat('ko-KR');
+
+    function openPostcode() {
+        if (typeof daum === 'undefined' || !daum.Postcode) {
+            alert('주소 검색 서비스를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+            return;
+        }
+        new daum.Postcode({
+            oncomplete: function(data) {
+                const address = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                document.getElementById('order-zip-code').value = data.zonecode || '';
+                document.getElementById('order-base-address').value = address || '';
+                document.getElementById('order-detail-address').focus();
+            }
+        }).open();
+    }
+
+    function normalizedUsedPoints(showAlert) {
+        const input = document.getElementById('used-points');
+        const available = Number(input?.dataset.availablePoints || 0);
+        const orderPrice = Number(input?.dataset.orderPrice || 0);
+        let value = Math.max(Number(input?.value || 0), 0);
+        if (value > 0 && available < 5000) {
+            if (showAlert) alert('포인트는 5,000점 이상 보유한 경우 사용할 수 있습니다.');
+            value = 0;
+        }
+        value = Math.min(value, available, orderPrice);
+        if (input) input.value = String(Math.floor(value));
+        return Math.floor(value);
+    }
+
+    function updatePaymentSummary(usedPoints) {
+        const finalPrice = document.getElementById('final-payment-price');
+        const orderPrice = Number(finalPrice?.dataset.orderPrice || 0);
+        const pointDiscount = document.getElementById('point-discount');
+        if (pointDiscount) pointDiscount.textContent = usedPoints > 0 ? `-${formatter.format(usedPoints)}원` : '0원';
+        if (finalPrice) finalPrice.textContent = `${formatter.format(Math.max(orderPrice - usedPoints, 0))}원`;
+    }
+
+    function applyPoints() {
+        updatePaymentSummary(normalizedUsedPoints(true));
+    }
+
+    function useAllPoints() {
+        const input = document.getElementById('used-points');
+        const available = Number(input?.dataset.availablePoints || 0);
+        const orderPrice = Number(input?.dataset.orderPrice || 0);
+        if (available < 5000) {
+            alert('포인트는 5,000점 이상 보유한 경우 사용할 수 있습니다.');
+            return;
+        }
+        input.value = String(Math.min(available, orderPrice));
+        applyPoints();
+    }
+
     // Focus search interaction
     const searchInput = document.querySelector('input[type="text"]');
     if(searchInput) {
@@ -472,11 +532,15 @@
         });
     }
 
-    // Micro-interactions for radio buttons logs
-    document.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            console.log('Selected payment:', e.target.closest('label').textContent.trim());
-        });
+    document.getElementById('used-points')?.addEventListener('change', applyPoints);
+    document.getElementById('checkout-form')?.addEventListener('submit', (event) => {
+        applyPoints();
+        if (!event.currentTarget.checkValidity()) return;
+        const submitButton = document.getElementById('checkout-submit');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = '주문 처리 중...';
+        }
     });
 </script>
 

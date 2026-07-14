@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,26 +49,29 @@ public class MyPageService {
                 .map(Member::getPoints)
                 .orElse(0);
         return new MyPageDtos.Summary(
-                orderDetailsRepository.countByMemberNo(memberNo),
+                orderRepository.countByMemberNo(memberNo),
                 couponDetailsRepository.countByMemberNoAndIsUsedIgnoreCase(memberNo, "N"),
                 points,
                 qnaRepository.countByMemberNoAndParentNo(memberNo, 0)
         );
     }
 
-    public MyPageDtos.PageBlock<MyPageDtos.OrderItem> orders(int memberNo, int page) {
+    public MyPageDtos.PageBlock<MyPageDtos.OrderSummary> orders(int memberNo, int page) {
         return orders(memberNo, page, null, null);
     }
 
-    public MyPageDtos.PageBlock<MyPageDtos.OrderItem> orders(int memberNo, int page, LocalDate startDate, LocalDate endDate) {
+    public MyPageDtos.PageBlock<MyPageDtos.OrderSummary> orders(int memberNo, int page, LocalDate startDate, LocalDate endDate) {
         Pageable pageable = pageRequest(page);
-        LocalDateTime startDateTime = startDate == null ? null : startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate == null ? null : endDate.plusDays(1).atStartOfDay();
-        Page<OrderDetails> details = startDateTime == null && endDateTime == null
-                ? orderDetailsRepository.findByMemberNo(memberNo, pageable)
-                : orderDetailsRepository.findByMemberNoAndCreatedAtBetween(memberNo, startDateTime, endDateTime, pageable);
-        Page<MyPageDtos.OrderItem> mapped = details
-                .map(this::toOrderItem);
+        Page<Order> orders;
+        if (startDate == null && endDate == null) {
+            orders = orderRepository.findByMemberNoOrderByCreatedAtDesc(memberNo, pageable);
+        } else {
+            LocalDateTime startDateTime = (startDate == null ? LocalDate.of(1970, 1, 1) : startDate).atStartOfDay();
+            LocalDateTime endDateTime = (endDate == null ? LocalDate.now() : endDate).plusDays(1).atStartOfDay();
+            orders = orderRepository.findByMemberNoAndCreatedAtBetweenOrderByCreatedAtDesc(
+                    memberNo, startDateTime, endDateTime, pageable);
+        }
+        Page<MyPageDtos.OrderSummary> mapped = orders.map(this::toOrderSummary);
         return block(mapped);
     }
 
@@ -117,38 +121,75 @@ public class MyPageService {
     @Transactional
     public void confirmOrder(long orderDetailNo, int memberNo) {
         OrderDetails detail = requireOwnedOrderDetail(orderDetailNo, memberNo);
-        orderDetailsRepository.updateStatus(detail.getOrderDetailNo(), "구매확정");
-    }
-
-    @Transactional
-    public void claimOrder(long orderDetailNo, int memberNo, String type, String reasonType, String reasonDetail, String attachedImage) {
-        requireOwnedOrderDetail(orderDetailNo, memberNo);
-        String safeType = "exchange".equalsIgnoreCase(type) ? "교환" : "반품";
-        if (orderClaimRepository.existsByOrderDetailNoAndMemberNoAndTypeAndStatus(orderDetailNo, memberNo, safeType, "접수")) {
-            return;
+        if (!"배송완료".equals(detail.getStatus())) {
+            throw new IllegalArgumentException("배송완료 상태의 상품만 구매확정할 수 있습니다.");
         }
-        OrderClaim claim = OrderClaim.builder()
-                .orderDetailNo(orderDetailNo)
-                .memberNo(memberNo)
-                .type(safeType)
-                .reasonType(valueOr(reasonType, "사유 미선택"))
-                .reasonDetail(valueOr(reasonDetail, ""))
-                .attachedImage(valueOr(attachedImage, ""))
-                .status("접수")
-                .createdAt(LocalDateTime.now())
-                .build();
-        orderClaimRepository.save(claim);
-        orderDetailsRepository.updateStatus(orderDetailNo, safeType + "신청");
+        orderDetailsRepository.updateStatus(detail.getOrderDetailNo(), "구매확정");
+        if (detail.getRewardPoints() > 0) {
+            Member member = memberRepository.findByIdForUpdate(memberNo)
+                    .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+            int remainedPoints = member.getPoints() + detail.getRewardPoints();
+            member.changePoints(remainedPoints);
+            pointHistoryRepository.save(PointHistory.builder()
+                    .memberNo(memberNo)
+                    .amount(detail.getRewardPoints())
+                    .remainedAmount(remainedPoints)
+                    .description("구매확정 포인트 적립 (주문번호: " + detail.getOrderNo() + ")")
+                    .createdAt(LocalDateTime.now())
+                    .expiredAt(LocalDate.now().plusYears(1))
+                    .build());
+        }
     }
 
     @Transactional
-    public void cancelReturnClaim(long orderDetailNo, int memberNo) {
-        requireOwnedOrderDetail(orderDetailNo, memberNo);
-        OrderClaim claim = orderClaimRepository
-                .findFirstByOrderDetailNoAndMemberNoAndTypeAndStatusOrderByCreatedAtDesc(orderDetailNo, memberNo, "반품", "접수")
-                .orElseThrow(() -> new IllegalArgumentException("취소할 반품 신청이 없습니다."));
-        claim.cancel();
-        orderDetailsRepository.updateStatus(orderDetailNo, "구매확정");
+    public void claimOrder(int orderNo, int memberNo, String type, String reasonType, String reasonDetail, String attachedImage) {
+        Order order = requireOwnedOrder(orderNo, memberNo);
+        List<OrderDetails> details = orderDetailsRepository.findByOrderNo(order.getOrderNo());
+        if (details.isEmpty()) {
+            throw new IllegalArgumentException("주문 상품을 찾을 수 없습니다.");
+        }
+        if (details.stream().anyMatch(detail -> !"배송완료".equals(detail.getStatus()))) {
+            throw new IllegalArgumentException("주문의 모든 상품이 배송완료 상태일 때 반품 또는 교환을 신청할 수 있습니다.");
+        }
+        String safeType = "exchange".equalsIgnoreCase(type) ? "교환" : "반품";
+        for (OrderDetails detail : details) {
+            if (orderClaimRepository.existsByOrderDetailNoAndMemberNoAndTypeAndStatus(
+                    detail.getOrderDetailNo(), memberNo, safeType, "접수")) {
+                continue;
+            }
+            OrderClaim claim = OrderClaim.builder()
+                    .orderDetailNo(detail.getOrderDetailNo())
+                    .memberNo(memberNo)
+                    .type(safeType)
+                    .reasonType(valueOr(reasonType, "사유 미선택"))
+                    .reasonDetail(valueOr(reasonDetail, ""))
+                    .attachedImage(valueOr(attachedImage, ""))
+                    .status("접수")
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            orderClaimRepository.save(claim);
+            orderDetailsRepository.updateStatus(detail.getOrderDetailNo(), safeType + "신청");
+        }
+    }
+
+    @Transactional
+    public void cancelReturnClaim(int orderNo, int memberNo) {
+        Order order = requireOwnedOrder(orderNo, memberNo);
+        List<OrderDetails> details = orderDetailsRepository.findByOrderNo(order.getOrderNo());
+        boolean cancelled = false;
+        for (OrderDetails detail : details) {
+            Optional<OrderClaim> claim = orderClaimRepository
+                    .findFirstByOrderDetailNoAndMemberNoAndTypeAndStatusOrderByCreatedAtDesc(
+                            detail.getOrderDetailNo(), memberNo, "반품", "접수");
+            if (claim.isPresent()) {
+                claim.get().cancel();
+                orderDetailsRepository.updateStatus(detail.getOrderDetailNo(), "배송완료");
+                cancelled = true;
+            }
+        }
+        if (!cancelled) {
+            throw new IllegalArgumentException("취소할 반품 신청이 없습니다.");
+        }
     }
 
     @Transactional
@@ -167,6 +208,12 @@ public class MyPageService {
             throw new IllegalArgumentException("본인의 주문만 처리할 수 있습니다.");
         }
         return detail;
+    }
+
+    private Order requireOwnedOrder(int orderNo, int memberNo) {
+        return orderRepository.findById(orderNo)
+                .filter(order -> order.getMemberNo() == memberNo)
+                .orElseThrow(() -> new IllegalArgumentException("본인의 주문만 처리할 수 있습니다."));
     }
 
     private MyPageDtos.OrderItem toOrderItem(OrderDetails detail) {
@@ -193,6 +240,46 @@ public class MyPageService {
                 Math.max(totalPrice, 0),
                 valueOr(detail.getStatus(), order == null ? "주문완료" : order.getStatus()),
                 order == null ? null : order.getCreatedAt()
+        );
+    }
+
+    private MyPageDtos.OrderSummary toOrderSummary(Order order) {
+        List<MyPageDtos.OrderItem> details = orderDetailsRepository.findByOrderNo(order.getOrderNo()).stream()
+                .map(this::toOrderItem)
+                .toList();
+        MyPageDtos.OrderItem representative = details.isEmpty() ? null : details.get(0);
+        int totalQuantity = details.stream()
+                .map(MyPageDtos.OrderItem::quantity)
+                .filter(java.util.Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .sum();
+        String detailStatus = details.stream()
+                .map(MyPageDtos.OrderItem::status)
+                .filter(status -> status != null && !status.isBlank())
+                .distinct()
+                .limit(2)
+                .reduce((first, second) -> "상품별 상이")
+                .orElse(valueOr(order.getStatus(), "주문완료"));
+        String orderName = valueOr(order.getOrderName(), representative == null ? "상품 정보 없음" : representative.productName());
+
+        return new MyPageDtos.OrderSummary(
+                order.getOrderNo(),
+                orderName,
+                representative == null ? null : representative.thumb(),
+                details.size(),
+                totalQuantity,
+                order.getTotalProductPrice(),
+                order.getTotalDiscountPrice(),
+                order.getTotalShippingFee(),
+                order.getUsedPoints(),
+                order.getTotalPaymentPrice(),
+                detailStatus,
+                order.getCreatedAt(),
+                valueOr(order.getRecipientName(), "-"),
+                valueOr(order.getRecipientPhone(), "-"),
+                valueOr(joinAddress(order.getZipCode(), order.getBaseAddress(), order.getDetailAddress()), "-"),
+                valueOr(order.getMemo(), "없음"),
+                details
         );
     }
 

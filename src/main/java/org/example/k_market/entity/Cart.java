@@ -15,17 +15,32 @@ import java.time.LocalDateTime;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cartNo")
     private long cartNo;
+
+    @Column(name = "memberNo", nullable = false)
     private int memberNo;
+
+    @Column(name = "productNo", nullable = false)
     private long prodNo;
-    private Long optItemNo;
+
+    @Column(name = "skuNo")
+    private Long skuNo;
+
+    @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Column(name = "createdAt")
     private LocalDateTime createdAt;
+
+    public void changeQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public CartDTO toDTO(){
         return CartDTO.builder()
                 .cartNo(cartNo).memberNo(memberNo).prodNo(prodNo)
-                .optItemNo(optItemNo).quantity(quantity).createdAt(createdAt)
+                .skuNo(skuNo).quantity(quantity).createdAt(createdAt)
                 .build();
     }
 }

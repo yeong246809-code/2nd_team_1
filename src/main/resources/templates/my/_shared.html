@@ -113,7 +113,7 @@
                 </button>
             </div>
             <form th:action="@{/my/order/claim}" method="post" enctype="multipart/form-data" class="flex flex-col overflow-hidden">
-                <input type="hidden" name="orderDetailNo" id="claim-order-detail-no">
+                <input type="hidden" name="orderNo" id="claim-order-no-input">
                 <input type="hidden" name="type" id="claim-type">
                 <div class="p-md space-y-md overflow-y-auto">
                     <section class="space-y-sm">
@@ -259,8 +259,8 @@
                     const form = modal.querySelector('form');
                     form?.reset();
                     setClaimType(openBtn.dataset.claimType || 'return');
-                    const orderDetailInput = document.getElementById('claim-order-detail-no');
-                    if (orderDetailInput) orderDetailInput.value = openBtn.dataset.orderDetailNo || '';
+                    const orderNoInput = document.getElementById('claim-order-no-input');
+                    if (orderNoInput) orderNoInput.value = openBtn.dataset.orderNo || '';
                     setText('claim-date', openBtn.dataset.orderDate);
                     setText('claim-order-no', openBtn.dataset.orderNo);
                     setText('claim-shop-name', openBtn.dataset.shopName);
@@ -275,7 +275,7 @@
                     const placeholder = document.getElementById('claim-thumb-placeholder');
                     if (img && placeholder) {
                         if (thumb) {
-                            img.src = `/uploads/${thumb}`;
+                            img.src = /^https?:\/\//i.test(thumb) ? thumb : `/uploads/${thumb}`;
                             img.classList.remove('hidden');
                             placeholder.classList.add('hidden');
                         } else {
@@ -296,6 +296,119 @@
             });
         })();
     </script>
+</div>
+
+<div th:fragment="orderDetailModals(orders)">
+    <div th:each="order : ${orders}"
+         class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 custom-modal"
+         th:id="|order-detail-${order.orderNo}|">
+        <div class="absolute inset-0 bg-on-surface/50 cursor-pointer close-modal-trigger"></div>
+        <div class="relative w-full max-w-5xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-95 opacity-0 transition-all duration-300">
+            <div class="px-md py-4 border-b border-outline-variant flex justify-between items-center bg-white sticky top-0 z-10">
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-primary">주문상세</h3>
+                    <p class="mt-1 text-label-sm text-on-surface-variant">
+                        주문번호 <span class="font-semibold text-on-surface" th:text="${order.orderNo}">104</span>
+                        <span class="mx-1">·</span>
+                        <span th:text="${order.orderedAt != null ? #temporals.format(order.orderedAt, 'yyyy-MM-dd') : '-'}">2026-07-13</span>
+                    </p>
+                </div>
+                <button type="button" class="p-2 hover:bg-surface-container-low rounded-full transition-colors text-on-surface-variant close-modal-trigger" aria-label="닫기">
+                    <span class="material-symbols-outlined pointer-events-none">close</span>
+                </button>
+            </div>
+            <div class="p-md space-y-lg overflow-y-auto">
+                <section class="space-y-sm">
+                    <h4 class="font-headline-md text-headline-md text-on-surface">주문정보</h4>
+                    <div class="border border-outline-variant rounded-xl overflow-hidden">
+                        <div class="hidden md:grid grid-cols-12 gap-3 px-md py-3 bg-surface-container-low text-label-sm font-label-sm text-on-surface-variant text-center">
+                            <div class="col-span-6">상품정보</div>
+                            <div class="col-span-2">결제금액</div>
+                            <div class="col-span-2">상태</div>
+                            <div class="col-span-2">확인 / 신청</div>
+                        </div>
+                        <div class="divide-y divide-outline-variant">
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-md p-md items-center" th:each="item : ${order.details}">
+                                <div class="md:col-span-6 flex gap-md min-w-0">
+                                    <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center">
+                                        <img th:if="${item.thumb != null and !item.thumb.isBlank()}"
+                                             th:src="${#strings.startsWith(item.thumb, 'http://') or #strings.startsWith(item.thumb, 'https://') ? item.thumb : '/uploads/' + item.thumb}"
+                                             class="w-full h-full object-cover" alt="상품 이미지">
+                                        <span th:unless="${item.thumb != null and !item.thumb.isBlank()}" class="material-symbols-outlined text-outline">image</span>
+                                    </div>
+                                    <div class="min-w-0 flex flex-col justify-center gap-1">
+                                        <button type="button" class="open-seller-btn w-fit text-label-sm font-label-sm text-primary hover:underline text-left"
+                                                th:text="${item.shopName}"
+                                                th:attr="data-shop-name=${item.shopName},data-shop-ceo=${item.shopCeo},data-shop-phone=${item.shopPhone},data-shop-fax=${item.shopFax},data-shop-email=${item.shopEmail},data-shop-biz-number=${item.shopBizNumber},data-shop-address=${item.shopAddress}">판매자</button>
+                                        <a class="font-label-md text-label-md text-on-surface hover:underline truncate"
+                                           th:href="@{/product/view(prodNo=${item.productNo})}" th:text="${item.productName}">상품명</a>
+                                        <span class="text-label-sm text-on-surface-variant" th:text="|수량 : ${item.quantity}개|">수량 : 1개</span>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2 md:text-center">
+                                    <span class="md:hidden text-label-sm text-on-surface-variant mr-2">결제금액</span>
+                                    <strong class="font-headline-md text-headline-md" th:text="${#numbers.formatInteger(item.totalPrice, 0, 'COMMA')} + '원'">34,000원</strong>
+                                </div>
+                                <div class="md:col-span-2 md:text-center">
+                                    <span class="inline-flex px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm whitespace-nowrap" th:text="${item.status}">배송완료</span>
+                                </div>
+                                <div class="mypage-action-stack md:col-span-2 flex flex-col gap-2">
+                                    <form th:if="${item.status == '배송완료'}" th:action="@{/my/order/confirm}" method="post">
+                                        <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
+                                        <button type="submit" class="w-full py-1.5 px-3 bg-primary text-on-primary rounded-lg text-label-sm font-label-sm hover:opacity-90">구매확정</button>
+                                    </form>
+                                    <a th:if="${item.status == '배송준비' or item.status == '배송중' or item.status == '배송완료' or item.status == '구매확정'}"
+                                       class="w-full text-center py-1.5 px-3 border border-primary text-primary rounded-lg text-label-sm font-label-sm hover:bg-primary-fixed"
+                                       th:href="@{/product/view(prodNo=${item.productNo})}">상품평쓰기</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-md py-4 bg-surface-container-low/50 flex flex-wrap justify-end gap-x-xl gap-y-2 border-t border-outline-variant">
+                            <div class="text-right text-label-sm text-on-surface-variant">
+                                <p th:text="${'상품금액 ' + #numbers.formatInteger(order.totalProductPrice, 0, 'COMMA') + '원'}">상품금액 34,000원</p>
+                                <p th:text="${'할인/포인트 -' + #numbers.formatInteger(order.totalDiscountPrice + order.usedPoints, 0, 'COMMA') + '원'}">할인/포인트 -0원</p>
+                                <p th:text="${'배송비 ' + #numbers.formatInteger(order.totalShippingFee, 0, 'COMMA') + '원'}">배송비 0원</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-label-sm text-on-surface-variant">최종 결제금액</p>
+                                <p class="font-headline-lg text-headline-lg text-primary" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA') + '원'}">34,000원</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="space-y-sm">
+                    <h4 class="font-headline-md text-headline-md text-on-surface">배송정보</h4>
+                    <dl class="grid grid-cols-[120px_1fr] gap-px bg-outline-variant border border-outline-variant rounded-xl overflow-hidden">
+                        <dt class="bg-surface-container-low px-md py-3 font-label-md text-label-md">받는사람</dt><dd class="bg-white px-md py-3" th:text="${order.recipientName}">홍길동</dd>
+                        <dt class="bg-surface-container-low px-md py-3 font-label-md text-label-md">연락처</dt><dd class="bg-white px-md py-3" th:text="${order.recipientPhone}">010-0000-0000</dd>
+                        <dt class="bg-surface-container-low px-md py-3 font-label-md text-label-md">배송주소</dt><dd class="bg-white px-md py-3" th:text="${order.deliveryAddress}">주소</dd>
+                        <dt class="bg-surface-container-low px-md py-3 font-label-md text-label-md">요청사항</dt><dd class="bg-white px-md py-3" th:text="${order.memo}">없음</dd>
+                    </dl>
+                </section>
+            </div>
+            <div class="p-md bg-white border-t border-outline-variant flex flex-wrap justify-end gap-2 sticky bottom-0 z-10">
+                <form th:if="${order.status == '반품신청'}" th:action="@{/my/order/claim/cancel}" method="post">
+                    <input type="hidden" name="orderNo" th:value="${order.orderNo}">
+                    <button type="submit" class="px-lg py-3 border border-error bg-error-container text-error rounded-lg font-label-md text-label-md hover:opacity-90">반품취소</button>
+                </form>
+                <button th:if="${order.status == '배송완료'}" type="button"
+                        class="open-claim-btn px-lg py-3 border border-outline-variant bg-white text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-variant"
+                        data-claim-type="return"
+                        th:data-order-date="${order.orderedAt != null ? #temporals.format(order.orderedAt, 'yyyy-MM-dd') : '-'}"
+                        th:data-order-no="${order.orderNo}" data-shop-name="주문 전체"
+                        th:data-product-name="${order.orderName}" th:data-quantity="${order.totalQuantity}"
+                        th:data-total-price="${order.totalPaymentPrice}" th:data-status="${order.status}" th:data-thumb="${order.thumb}">반품신청</button>
+                <button th:if="${order.status == '배송완료'}" type="button"
+                        class="open-claim-btn px-lg py-3 border border-outline-variant bg-white text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-variant"
+                        data-claim-type="exchange"
+                        th:data-order-date="${order.orderedAt != null ? #temporals.format(order.orderedAt, 'yyyy-MM-dd') : '-'}"
+                        th:data-order-no="${order.orderNo}" data-shop-name="주문 전체"
+                        th:data-product-name="${order.orderName}" th:data-quantity="${order.totalQuantity}"
+                        th:data-total-price="${order.totalPaymentPrice}" th:data-status="${order.status}" th:data-thumb="${order.thumb}">교환신청</button>
+                <button type="button" class="px-xl py-3 bg-surface-container-high rounded-lg font-label-md text-label-md hover:opacity-90 close-modal-trigger">닫기</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

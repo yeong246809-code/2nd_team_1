@@ -105,6 +105,61 @@
     </script>
     <style>
         body { background-color: #F7F8F9; color: #191c1d; }
+        .mypage-order-grid { min-width: 780px; }
+        .mypage-order-grid > :nth-child(1) { white-space: nowrap; font-size: 14px; }
+        .mypage-order-grid > :nth-child(3) span { display: inline-flex; white-space: nowrap; }
+        .mypage-order-grid > :nth-child(4) button,
+        .mypage-order-grid > :nth-child(4) a { white-space: nowrap; }
+        .mypage-action-stack {
+            width: 100%;
+            max-width: 120px;
+            margin-inline: auto;
+            gap: 8px;
+        }
+        .mypage-action-stack form { width: 100%; }
+        .mypage-action-stack button,
+        .mypage-action-stack > a {
+            display: flex;
+            min-height: 36px;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px !important;
+            padding: 7px 12px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            line-height: 1.2;
+            box-shadow: 0 1px 2px rgba(20, 51, 59, 0.08);
+            transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease;
+        }
+        .mypage-action-stack button:hover,
+        .mypage-action-stack > a:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(20, 51, 59, 0.14);
+        }
+        .mypage-action-stack button:active,
+        .mypage-action-stack > a:active { transform: translateY(0) scale(0.98); }
+        .mypage-action-stack form[action$="/confirm"] button {
+            border: 1px solid #14333b !important;
+            background: #14333b !important;
+            color: #fff !important;
+        }
+        .mypage-action-stack > a[href*="/product/view"] {
+            border: 1px solid #acccd5 !important;
+            background: #edf7fa !important;
+            color: #14333b !important;
+        }
+        .mypage-action-stack form[action$="/claim/cancel"] button {
+            border: 1px solid #ef9a9a !important;
+            background: #fff1f0 !important;
+            color: #a3131d !important;
+        }
+        .mypage-action-stack .open-claim-btn {
+            border: 1px solid #c1c7ca !important;
+            background: #fff !important;
+            color: #41484a !important;
+        }
+        .mypage-action-stack .open-claim-btn:hover { background: #f3f4f5 !important; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col font-body-md">
@@ -155,10 +210,10 @@
             </div>
         </form>
         <!-- Order List Table -->
-        <div class="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant overflow-hidden mb-lg">
-            <div class="grid grid-cols-12 gap-4 p-4 bg-surface-container-low border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant text-center">
+        <div class="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant overflow-x-auto custom-scrollbar mb-lg">
+            <div class="mypage-order-grid grid grid-cols-12 gap-4 p-4 bg-surface-container-low border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant text-center">
                 <div class="col-span-2">날짜</div>
-                <div class="col-span-6">상품정보</div>
+                <div class="col-span-6">주문정보</div>
                 <div class="col-span-2">상태</div>
                 <div class="col-span-2">확인 / 신청</div>
             </div>
@@ -166,68 +221,37 @@
                 <div th:if="${orderBlock == null or orderBlock.page.empty}" class="p-lg text-center text-on-surface-variant">
                     주문내역이 없습니다.
                 </div>
-                <div class="grid grid-cols-12 gap-4 p-md items-center" th:each="item : ${orderBlock.page.content}">
+                <div class="mypage-order-grid grid grid-cols-12 gap-4 p-md items-center" th:each="order : ${orderBlock.page.content}">
                     <div class="col-span-2 text-center text-body-md font-body-md text-on-surface-variant">
-                        <span th:text="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}">2022-12-13</span>
+                        <span th:text="${order.orderedAt != null ? #temporals.format(order.orderedAt, 'yyyy-MM-dd') : '-'}">2022-12-13</span>
                     </div>
                     <div class="col-span-6 flex gap-md">
                         <div class="w-24 h-24 bg-surface-variant rounded-md flex-shrink-0 flex items-center justify-center overflow-hidden border border-outline-variant">
-                            <img th:if="${item.thumb != null and !item.thumb.isBlank()}" th:src="@{/uploads/{file}(file=${item.thumb})}" class="w-full h-full object-cover" alt="상품 이미지">
-                            <span th:unless="${item.thumb != null and !item.thumb.isBlank()}" class="material-symbols-outlined text-outline text-display-lg" style="font-variation-settings: 'FILL' 0;">image</span>
+                            <img th:if="${order.thumb != null and !order.thumb.isBlank()}"
+                                 th:src="${#strings.startsWith(order.thumb, 'http://') or #strings.startsWith(order.thumb, 'https://') ? order.thumb : '/uploads/' + order.thumb}"
+                                 class="w-full h-full object-cover" alt="상품 이미지">
+                            <span th:unless="${order.thumb != null and !order.thumb.isBlank()}" class="material-symbols-outlined text-outline text-display-lg" style="font-variation-settings: 'FILL' 0;">image</span>
                         </div>
                         <div class="flex flex-col justify-center gap-1">
-                            <span class="text-label-sm font-label-sm text-on-surface-variant">주문번호 : <span th:text="${item.orderNo}">1012211341</span></span>
                             <button type="button"
-                                    class="text-label-md font-label-md text-primary font-semibold hover:underline cursor-pointer text-left open-seller-btn"
-                                    th:text="${item.shopName}"
-                                    th:attr="data-shop-name=${item.shopName},data-shop-ceo=${item.shopCeo},data-shop-phone=${item.shopPhone},data-shop-fax=${item.shopFax},data-shop-email=${item.shopEmail},data-shop-biz-number=${item.shopBizNumber},data-shop-address=${item.shopAddress}">(주) 상호명</button>
-                            <a class="text-body-md font-body-md text-on-surface hover:underline"
-                               th:href="@{/product/view(prodNo=${item.productNo})}"
-                               th:text="${item.productName}">상품명 상품명 상품명</a>
+                                    class="open-order-btn w-fit text-label-sm font-label-sm text-primary font-semibold hover:underline text-left"
+                                    th:data-modal-id="|order-detail-${order.orderNo}|">
+                                주문번호 : <span th:text="${order.orderNo}">1012211341</span>
+                            </button>
+                            <span class="text-body-md font-body-md text-on-surface font-semibold" th:text="${order.orderName}">주문 상품명</span>
+                            <span class="text-label-sm text-on-surface-variant" th:text="${order.itemCount > 1 ? '상품 ' + order.itemCount + '종' : '상품 1종'}">상품 1종</span>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-label-sm font-label-sm text-on-surface-variant">수량 : <span th:text="${item.quantity}">1</span>개</span>
-                                <span class="text-headline-md font-headline-md text-on-surface" th:text="${#numbers.formatInteger(item.totalPrice, 0, 'COMMA')} + '원'">34,000원</span>
+                                <span class="text-label-sm font-label-sm text-on-surface-variant">총 수량 : <span th:text="${order.totalQuantity}">1</span>개</span>
+                                <span class="text-headline-md font-headline-md text-on-surface" th:text="${#numbers.formatInteger(order.totalPaymentPrice, 0, 'COMMA')} + '원'">34,000원</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-span-2 text-center">
-                        <span class="inline-block px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm text-on-surface-variant" th:text="${item.status}">배송완료</span>
+                        <span class="inline-block px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm text-on-surface-variant" th:text="${order.status}">배송완료</span>
                     </div>
-                    <div class="col-span-2 flex flex-col gap-2">
-                        <form th:action="@{/my/order/confirm}" method="post">
-                            <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                            <button type="submit" class="w-full py-1.5 px-3 bg-primary text-on-primary rounded text-label-sm font-label-sm hover:bg-primary-container transition-colors">구매확정</button>
-                        </form>
-                        <a class="w-full text-center py-1.5 px-3 bg-secondary text-on-secondary rounded text-label-sm font-label-sm hover:bg-secondary-fixed transition-colors"
-                           th:href="@{/product/view(prodNo=${item.productNo})}">상품평쓰기</a>
-                        <form th:if="${item.status == '반품신청'}" th:action="@{/my/order/claim/cancel}" method="post">
-                            <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
-                            <button type="submit" class="w-full py-1.5 px-3 bg-error-container border border-error text-error rounded text-label-sm font-label-sm hover:bg-error-container/80 transition-colors">반품취소</button>
-                        </form>
-                        <button th:unless="${item.status == '반품신청'}" type="button"
-                                class="open-claim-btn w-full py-1.5 px-3 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded text-label-sm font-label-sm hover:bg-surface-variant transition-colors"
-                                data-claim-type="return"
-                                th:data-order-detail-no="${item.orderDetailNo}"
-                                th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
-                                th:data-order-no="${item.orderNo}"
-                                th:data-shop-name="${item.shopName}"
-                                th:data-product-name="${item.productName}"
-                                th:data-quantity="${item.quantity}"
-                                th:data-total-price="${item.totalPrice}"
-                                th:data-status="${item.status}"
-                                th:data-thumb="${item.thumb}">반품신청</button>
-                        <button type="button"
-                                class="open-claim-btn w-full py-1.5 px-3 bg-surface-container-lowest border border-outline-variant text-on-surface-variant rounded text-label-sm font-label-sm hover:bg-surface-variant transition-colors"
-                                data-claim-type="exchange"
-                                th:data-order-detail-no="${item.orderDetailNo}"
-                                th:data-order-date="${item.orderedAt != null ? #temporals.format(item.orderedAt, 'yyyy-MM-dd') : '-'}"
-                                th:data-order-no="${item.orderNo}"
-                                th:data-shop-name="${item.shopName}"
-                                th:data-product-name="${item.productName}"
-                                th:data-quantity="${item.quantity}"
-                                th:data-total-price="${item.totalPrice}"
-                                th:data-status="${item.status}"
-                                th:data-thumb="${item.thumb}">교환신청</button>
+                    <div class="mypage-action-stack col-span-2 flex flex-col gap-2">
+                        <button type="button" class="open-order-btn w-full py-1.5 px-3 bg-primary text-on-primary rounded text-label-sm font-label-sm hover:bg-primary-container transition-colors"
+                                th:data-modal-id="|order-detail-${order.orderNo}|">주문상세</button>
                     </div>
                 </div>
             </div>
@@ -254,6 +278,7 @@
 <!-- Footer -->
 <div th:replace="~{layout/site :: footer}"></div>
 <div th:replace="~{my/_shared :: claimModal}"></div>
+<div th:replace="~{my/_shared :: orderDetailModals(${orderBlock != null ? orderBlock.page.content : null})}"></div>
 <div class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4 custom-modal" id="seller-info-modal">
     <div class="absolute inset-0 bg-on-surface/50 modal-overlay cursor-pointer close-modal-trigger"></div>
     <div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] modal-content scale-95 opacity-0 transition-all duration-300">
@@ -316,6 +341,13 @@
     }
 
     document.addEventListener('click', (e) => {
+        const orderBtn = e.target.closest('.open-order-btn');
+        if (orderBtn) {
+            e.preventDefault();
+            showMyOrderModal(orderBtn.dataset.modalId);
+            return;
+        }
+
         const periodBtn = e.target.closest('.period-quick-btn');
         if (periodBtn) {
             e.preventDefault();
