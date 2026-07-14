@@ -160,7 +160,10 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <div th:replace="~{fragments/cart-button :: button}"></div>
+                    <button class="p-2 border border-outline-variant rounded relative">
+                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
+                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
+                    </button>
                     <button class="md:hidden p-2 border border-outline-variant rounded">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
@@ -171,14 +174,50 @@
 </header>
 
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
-    <div th:replace="~{fragments/nav :: productTabs('deal')}"></div>
+    <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
+        <a class="font-bold text-primary border-b-2 border-primary py-1" th:href="@{/product/list}">오늘의 특가</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">추천 상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">신상품</a>
+        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">베스트</a>
+        <a class="text-error font-semibold py-1" th:href="@{/product/list}">세일</a>
+    </nav>
     <div class="flex flex-col md:flex-row gap-lg items-start">
 
-        <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${mainCateNo}, ${rankingProducts})}"></div>
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg shrink-0">
+            <div class="bg-white standard-border rounded p-md">
+                <h2 class="font-bold text-lg mb-sm">카테고리</h2>
+                <nav class="flex flex-col gap-1" id="category-menu">
+                    <a th:each="c : ${categories}"
+                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
+                       class="category-item flex items-center gap-base py-2 px-2 rounded"
+                       th:href="@{/product/list(cateNo=${c.cateNo}, sort='latest', page=1)}">
+                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Simple Top Ranking (판매량 기준 실시간 인기 상품) -->
+            <div class="hidden md:block">
+                <h3 class="font-bold text-lg mb-sm">실시간 인기 상품</h3>
+                <div class="flex flex-col gap-sm" id="ranking-list">
+                    <a th:each="rp, iter : ${rankingProducts}"
+                       th:href="@{/product/view(prodNo=${rp.prodNo})}"
+                       class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
+                        <span class="font-bold text-secondary px-1" th:text="${iter.count}">1</span>
+                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate" th:text="${rp.name}">상품명</p>
+                    </a>
+                    <p th:if="${rankingProducts == null or rankingProducts.isEmpty()}" class="text-sm text-on-surface-variant">
+                        인기 상품이 아직 없습니다.
+                    </p>
+                </div>
+            </div>
+        </aside>
 
         <div class="flex-1 min-w-0 flex flex-col gap-xl">
             <div class="flex flex-col gap-md">
-                <div class="flex justify-between items-end border-b border-outline-variant pb-2">
+                <div class="flex justify-between items-end border-b border-outline-variant pb-2"
+                     th:with="activeCateNo=${subCateNo != null ? subCateNo : mainCateNo}">
                     <div>
                         <h2 class="text-2xl font-bold text-primary">상품목록</h2>
                     </div>
@@ -186,26 +225,40 @@
                         <span>HOME</span> &gt;
                         <span class="font-bold text-primary"
                               th:text="${mainCateName != null ? mainCateName : '전체'}">패션</span>
+                        <span th:if="${subCateName != null}">&gt;</span>
+                        <span th:if="${subCateName != null}" class="font-bold text-primary" th:text="${subCateName}">상의</span>
                     </nav>
                 </div>
 
-                <!-- 상품정렬 -->
-                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant">
-                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='salesDesc', page=1)}"
-                       th:classappend="${sort == 'salesDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">판매많은순</a>
-                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='priceAsc', page=1)}"
-                       th:classappend="${sort == 'priceAsc'} ? 'font-bold text-primary' : 'hover:text-primary'">낮은가격순</a>
-                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='priceDesc', page=1)}"
-                       th:classappend="${sort == 'priceDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">높은가격순</a>
-                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='ratingDesc', page=1)}"
-                       th:classappend="${sort == 'ratingDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">평점높은순</a>
-                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='reviewCount', page=1)}"
-                       th:classappend="${sort == 'reviewCount'} ? 'font-bold text-primary' : 'hover:text-primary'">후기많은순</a>
+                <!-- 소분류 탭 (대분류를 선택했을 때만 노출) -->
+                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant" th:if="${subCategories != null and !subCategories.isEmpty()}">
                     <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='latest', page=1)}"
+                       th:classappend="${subCateNo == null} ? 'font-bold text-primary' : 'hover:text-primary'">전체</a>
+                    <a th:each="sc : ${subCategories}"
+                       th:href="@{/product/list(cateNo=${sc.cateNo}, sort='latest', page=1)}"
+                       th:text="${sc.name}"
+                       th:classappend="${sc.cateNo == subCateNo} ? 'font-bold text-primary' : 'hover:text-primary'">상의</a>
+                </nav>
+
+                <!-- 상품정렬 -->
+                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant"
+                     th:with="activeCateNo=${subCateNo != null ? subCateNo : mainCateNo}">
+                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='salesDesc', page=1)}"
+                       th:classappend="${sort == 'salesDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">판매많은순</a>
+                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='priceAsc', page=1)}"
+                       th:classappend="${sort == 'priceAsc'} ? 'font-bold text-primary' : 'hover:text-primary'">낮은가격순</a>
+                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='priceDesc', page=1)}"
+                       th:classappend="${sort == 'priceDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">높은가격순</a>
+                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='ratingDesc', page=1)}"
+                       th:classappend="${sort == 'ratingDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">평점높은순</a>
+                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='reviewCount', page=1)}"
+                       th:classappend="${sort == 'reviewCount'} ? 'font-bold text-primary' : 'hover:text-primary'">후기많은순</a>
+                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='latest', page=1)}"
                        th:classappend="${sort == 'latest' or sort == null} ? 'font-bold text-primary' : 'hover:text-primary'">최근등록순</a>
                 </nav>
 
                 <div class="grid grid-cols-1 gap-gutter">
+
 
                     <div th:each="product : ${products}" class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
 
@@ -259,20 +312,21 @@
 
                 </div>
 
-                <div class="flex justify-center items-center gap-2 mt-xl" th:if="${totalPages > 0}">
+                <div class="flex justify-center items-center gap-2 mt-xl" th:if="${totalPages > 0}"
+                     th:with="activeCateNo=${subCateNo != null ? subCateNo : mainCateNo}">
                     <a th:if="${currentPage > 1}"
-                       th:href="@{/product/list(cateNo=${mainCateNo}, sort=${sort}, page=${currentPage - 1})}"
+                       th:href="@{/product/list(cateNo=${activeCateNo}, sort=${sort}, page=${currentPage - 1})}"
                        class="p-2 text-outline-variant hover:text-primary">&lt; 이전</a>
                     <span th:unless="${currentPage > 1}" class="p-2 text-outline-variant/40">&lt; 이전</span>
 
                     <a th:each="p : ${#numbers.sequence(1, totalPages)}"
-                       th:href="@{/product/list(cateNo=${mainCateNo}, sort=${sort}, page=${p})}"
+                       th:href="@{/product/list(cateNo=${activeCateNo}, sort=${sort}, page=${p})}"
                        th:text="${p}"
                        th:classappend="${p == currentPage} ? 'bg-primary text-white font-bold' : 'hover:bg-surface-container'"
                        class="w-8 h-8 flex items-center justify-center rounded">1</a>
 
                     <a th:if="${currentPage < totalPages}"
-                       th:href="@{/product/list(cateNo=${mainCateNo}, sort=${sort}, page=${currentPage + 1})}"
+                       th:href="@{/product/list(cateNo=${activeCateNo}, sort=${sort}, page=${currentPage + 1})}"
                        class="p-2 text-outline-variant hover:text-primary">다음 &gt;</a>
                     <span th:unless="${currentPage < totalPages}" class="p-2 text-outline-variant/40">다음 &gt;</span>
                 </div>

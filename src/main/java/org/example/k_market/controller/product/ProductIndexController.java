@@ -2,7 +2,6 @@ package org.example.k_market.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.example.k_market.dto.CartItemViewDTO;
 import org.example.k_market.entity.Cart;
 import org.example.k_market.entity.Category;
 import org.example.k_market.entity.Product;
@@ -14,7 +13,6 @@ import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.repository.QnaRepository;
 import org.example.k_market.repository.ReviewRepository;
 import org.example.k_market.security.MyUserDetails;
-import org.example.k_market.service.ProductService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +34,6 @@ public class ProductIndexController {
     private final CartRepository cartRepository;         // 신규 주입
     private final ReviewRepository reviewRepository;     // 신규 주입
     private final QnaRepository qnaRepository;           // 신규 주입
-    private final ProductService productService;
 
     private static final int PAGE_SIZE = 10;
 
@@ -131,28 +128,84 @@ public class ProductIndexController {
     }
 
     @GetMapping("/product/search")
-    public String search(
-            @RequestParam(name = "keyword", required = false, defaultValue = "")
-            String keyword,
-            Model model
-    ) {
+    public String search(@RequestParam(value = "keyword", defaultValue = "") String keyword,
+                         @RequestParam(defaultValue = "false") boolean searchName,
+                         @RequestParam(defaultValue = "false") boolean searchDescription,
+                         @RequestParam(defaultValue = "false") boolean searchPrice,
+                         @RequestParam(required = false) Integer minPrice,
+                         @RequestParam(required = false) Integer maxPrice,
+                         Model model) {
 
-        // 검색어 앞뒤의 공백 제거
-        String trimmedKeyword = keyword.trim();
+        List<Product> found;
+        if (keyword.isBlank()) {
+            found = List.of();
+        } else if (searchName && !searchDescription) {
+            // "상품명"만 체크한 경우
+            found = productRepository.findByNameContainingIgnoreCase(keyword);
+        } else if (searchDescription && !searchName) {
+            // "설명"만 체크한 경우
+            found = productRepository.findByDescriptionContainingIgnoreCase(keyword);
+        } else {
+            // 둘 다 체크했거나, 둘 다 안 체크한 기본 상태 -> 이름+설명 둘 다에서 검색
+            found = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
+        }
 
-        // ProductService를 통해 실제 DB 상품 검색
-        List<Product> products =
-                productService.searchProducts(trimmedKeyword);
+        // "가격" 체크박스를 켰을 때만 최소~최대 가격 필터 적용
+        if (searchPrice) {
+            if (minPrice != null) {
+                found = found.stream()
+                        .filter(p -> p.getPrice() != null && p.getPrice() >= minPrice)
+                        .toList();
+            }
+            if (maxPrice != null) {
+                found = found.stream()
+                        .filter(p -> p.getPrice() != null && p.getPrice() <= maxPrice)
+                        .toList();
+            }
+        }
 
-        // 검색 결과 화면에 필요한 데이터 전달
-        model.addAttribute("keyword", trimmedKeyword);
+        List<Map<String, Object>> products = found.stream()
+                .map(this::toSearchResultMap)
+                .toList();
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchName", searchName);
+        model.addAttribute("searchDescription", searchDescription);
+        model.addAttribute("searchPrice", searchPrice);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
-
-        // 상품 화면 공통 레이아웃 정보 전달
         addProductLayout(model, null);
 
         return "product/search";
+    }
+
+    /**
+     * product/search.html이 기대하는 Map 형태(name, description, isNew, isFreeShipping,
+     * discount, originalPrice, price, seller)로 실제 Product 엔티티를 변환
+     */
+    private Map<String, Object> toSearchResultMap(Product p) {
+        int discountRate = (p.getDiscountRate() == null) ? 0 : p.getDiscountRate();
+        int price = (p.getPrice() == null) ? 0 : p.getPrice();
+        int discountedPrice = price * (100 - discountRate) / 100;
+
+        boolean isNew = p.getCreatedAt() != null
+                && p.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(7));
+        boolean isFreeShipping = p.getShippingFee() != null && p.getShippingFee() == 0;
+
+        Map<String, Object> map = new java.util.LinkedHashMap<>();
+        map.put("prodNo", p.getProdNo());
+        map.put("name", p.getName());
+        map.put("description", p.getDescription());
+        map.put("thumb1", p.getThumb1());
+        map.put("isNew", isNew);
+        map.put("isFreeShipping", isFreeShipping);
+        map.put("discount", discountRate);
+        map.put("originalPrice", String.format("%,d", price));
+        map.put("price", String.format("%,d", discountedPrice));
+        map.put("seller", "상점 No." + p.getShopNo());
+        return map;
     }
 
     @GetMapping("/product/view")
@@ -180,6 +233,7 @@ public class ProductIndexController {
         List<Qna> qnaList = qnaRepository.findByProdNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
 
         model.addAttribute("product", product);
+        model.addAttribute("category", category);
         model.addAttribute("parentCategory", parentCategory);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("qnaList", qnaList);
@@ -234,32 +288,7 @@ public class ProductIndexController {
     }
 
     @GetMapping("/product/cart")
-    public String cart(Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
-        if (userDetails == null) {
-            return "redirect:/member/login";
-        }
-
-        List<CartItemViewDTO> cartItems = cartRepository
-                .findByMemberNoOrderByCreatedAtDesc(userDetails.getUser().getMemberNo())
-                .stream()
-                .map(this::toCartItemView)
-                .toList();
-
-        int totalQuantity = cartItems.stream().mapToInt(CartItemViewDTO::getQuantity).sum();
-        int totalProductPrice = cartItems.stream()
-                .mapToInt(item -> item.getUnitPrice() * item.getQuantity())
-                .sum();
-        int totalShippingFee = cartItems.stream().mapToInt(CartItemViewDTO::getShippingFee).sum();
-        int totalOrderPrice = cartItems.stream().mapToInt(CartItemViewDTO::getLineTotal).sum();
-        int totalRewardPoints = cartItems.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
-
-        model.addAttribute("cartItems", cartItems);
-        model.addAttribute("totalQuantity", totalQuantity);
-        model.addAttribute("totalProductPrice", totalProductPrice);
-        model.addAttribute("totalDiscount", totalProductPrice + totalShippingFee - totalOrderPrice);
-        model.addAttribute("totalShippingFee", totalShippingFee);
-        model.addAttribute("totalOrderPrice", totalOrderPrice);
-        model.addAttribute("totalRewardPoints", totalRewardPoints);
+    public String cart(Model model) {
         addProductLayout(model, null);
         return "product/cart";
     }
@@ -291,11 +320,7 @@ public class ProductIndexController {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .build();
-                // 리뷰 저장
-                reviewRepository.save(review);
-
-                // 새 리뷰를 포함하여 해당 상품의 평균 별점을 다시 계산
-                productService.updateProductRating(prodNo);
+        reviewRepository.save(review);
 
         return "redirect:/product/view?prodNo=" + prodNo;
     }
@@ -315,41 +340,44 @@ public class ProductIndexController {
         );
     }
 
-    private CartItemViewDTO toCartItemView(Cart cart) {
-        Product product = productRepository.findById(cart.getProdNo())
-                .orElseThrow(() -> new IllegalStateException("장바구니 상품이 존재하지 않습니다: " + cart.getProdNo()));
-        int price = product.getPrice() == null ? 0 : product.getPrice();
-        int discountRate = product.getDiscountRate() == null ? 0 : product.getDiscountRate();
-        int discountedPrice = (int) (price * (100L - discountRate) / 100L);
-        int shippingFee = product.getShippingFee() == null ? 0 : product.getShippingFee();
-        int rewardPoints = product.getRewardPoints() == null ? 0 : product.getRewardPoints();
-
-        return CartItemViewDTO.builder()
-                .cartNo(cart.getCartNo())
-                .prodNo(cart.getProdNo())
-                .name(product.getName())
-                .description(product.getDescription())
-                .thumb1(product.getThumb1())
-                .quantity(cart.getQuantity())
-                .unitPrice(price)
-                .discountRate(discountRate)
-                .rewardPoints(rewardPoints)
-                .shippingFee(shippingFee)
-                .lineTotal(discountedPrice * cart.getQuantity() + shippingFee)
-                .lineRewardPoints(rewardPoints * cart.getQuantity())
-                .build();
-    }
-
-    private void addProductLayout(Model model, Integer mainCateNo) {
+    private void addProductLayout(Model model, Integer selectedCateNo) {
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
-        model.addAttribute("mainCateNo", mainCateNo);
         model.addAttribute("rankingProducts", productRepository.findTop3ByOrderBySalesCountDesc());
 
-        String mainCateName = (mainCateNo == null)
+        Category selected = (selectedCateNo == null)
                 ? null
-                : categoryRepository.findById(mainCateNo)
-                .map(Category::getName)
-                .orElse(null);
+                : categoryRepository.findById(selectedCateNo).orElse(null);
+
+        Integer mainCateNo = null;
+        String mainCateName = null;
+        Integer subCateNo = null;
+        String subCateName = null;
+        List<Category> subCategories = List.of();
+
+        if (selected != null) {
+            if (selected.getParentNo() == null) {
+                // 대분류를 선택한 경우 (예: 패션)
+                mainCateNo = selected.getCateNo();
+                mainCateName = selected.getName();
+                subCategories = categoryRepository.findByParentNo(mainCateNo);
+            } else {
+                // 소분류를 선택한 경우 (예: 상의)
+                subCateNo = selected.getCateNo();
+                subCateName = selected.getName();
+
+                Category parent = categoryRepository.findById(selected.getParentNo()).orElse(null);
+                if (parent != null) {
+                    mainCateNo = parent.getCateNo();
+                    mainCateName = parent.getName();
+                    subCategories = categoryRepository.findByParentNo(mainCateNo);
+                }
+            }
+        }
+
+        model.addAttribute("mainCateNo", mainCateNo);
         model.addAttribute("mainCateName", mainCateName);
+        model.addAttribute("subCateNo", subCateNo);
+        model.addAttribute("subCateName", subCateName);
+        model.addAttribute("subCategories", subCategories);
     }
 }
