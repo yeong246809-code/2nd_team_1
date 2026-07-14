@@ -183,36 +183,6 @@
     </nav>
     <div class="flex flex-col md:flex-row gap-lg items-start">
 
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg shrink-0">
-            <div class="bg-white standard-border rounded p-md">
-                <h2 class="font-bold text-lg mb-sm">카테고리</h2>
-                <nav class="flex flex-col gap-1" id="category-menu">
-                    <a th:each="c : ${categories}"
-                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
-                       class="category-item flex items-center gap-base py-2 px-2 rounded"
-                       th:href="@{/product/list(cateNo=${c.cateNo}, sort='latest', page=1)}">
-                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Simple Top Ranking (판매량 기준 실시간 인기 상품) -->
-            <div class="hidden md:block">
-                <h3 class="font-bold text-lg mb-sm">실시간 인기 상품</h3>
-                <div class="flex flex-col gap-sm" id="ranking-list">
-                    <a th:each="rp, iter : ${rankingProducts}"
-                       th:href="@{/product/view(prodNo=${rp.prodNo})}"
-                       class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
-                        <span class="font-bold text-secondary px-1" th:text="${iter.count}">1</span>
-                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate" th:text="${rp.name}">상품명</p>
-                    </a>
-                    <p th:if="${rankingProducts == null or rankingProducts.isEmpty()}" class="text-sm text-on-surface-variant">
-                        인기 상품이 아직 없습니다.
-                    </p>
-                </div>
-            </div>
-        </aside>
         <div th:replace="~{fragments/nav :: productSidebar(
                 ${categories},
                 ${subCategoryMap},
@@ -238,7 +208,7 @@
 
                 <!-- 소분류 탭 (대분류를 선택했을 때만 노출) -->
                 <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant" th:if="${subCategories != null and !subCategories.isEmpty()}">
-                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='latest', page=1)}"
+                    <a th:href="@{/product/list(parentCateNo=${mainCateNo}, sort='latest', page=1)}"
                        th:classappend="${subCateNo == null} ? 'font-bold text-primary' : 'hover:text-primary'">전체</a>
                     <a th:each="sc : ${subCategories}"
                        th:href="@{/product/list(cateNo=${sc.cateNo}, sort='latest', page=1)}"

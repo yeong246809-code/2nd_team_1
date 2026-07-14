@@ -220,6 +220,9 @@
                     <div class="flex flex-col gap-xs">
                         <span class="text-on-surface-variant text-xs">상품코드: <span th:text="${product.prodNo}">0000</span></span>
                         <h1 class="text-2xl font-bold text-primary" th:text="${product.name}">상품명</h1>
+                        <p th:if="${product.description != null and !product.description.isBlank()}"
+                           class="text-sm leading-relaxed text-on-surface-variant"
+                           th:text="${product.description}">상품 설명</p>
                         <div class="flex items-center gap-xs">
                             <!-- product.rating(0~5, Double) 값을 CSS width로 채워서 표시. 루프/정수변환 없이 안전하게 처리 -->
                             <div class="relative inline-flex" style="font-family: 'Material Symbols Outlined';">
@@ -240,7 +243,7 @@
                                 </div>
                             </div>
                             <span class="text-xs text-on-surface-variant font-semibold"
-                                  th:text="${#numbers.formatDecimal(product.rating != null ? product.rating : 0, 1, 1)} + ' (' + ${reviewList != null ? #lists.size(reviewList) : 0} + ' 리뷰)'">4.5 (824 리뷰)</span>
+                                  th:text="${#numbers.formatDecimal(product.rating != null ? product.rating : 0, 1, 1)} + ' (' + ${reviewTotalElements != null ? reviewTotalElements : 0} + ' 리뷰)'">4.5 (824 리뷰)</span>
                         </div>
                     </div>
                     <div class="bg-surface-container-low p-md rounded-lg flex flex-col gap-xs">
@@ -263,37 +266,43 @@
                         <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="'상점 No.' + ${product.shopNo}">판매자명</span>
                     </div>
                     <!-- Options & Actions -->
-                    <form th:action="@{/product/cart/add}" method="post">
+                    <form id="selected-product-form" th:action="@{/product/cart/add-selected}" method="post" onsubmit="return validateSelectedProducts()">
                         <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
 
                         <p th:if="${cartError != null}" class="mb-sm rounded-lg border border-error bg-error-container px-sm py-2 text-sm text-error" th:text="${cartError}"></p>
 
                         <div th:if="${productSkus != null and !#lists.isEmpty(productSkus)}" class="flex flex-col gap-sm mb-md">
                             <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
-                            <select id="skuSelect" name="skuNo" required onchange="updateSelectedSku()"
+                            <select id="skuSelect" onchange="addSelectedSku()"
                                     class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
                                 <option value="">색상/사이즈를 선택하세요</option>
                                 <option th:each="sku : ${productSkus}"
                                         th:value="${sku.skuNo}"
+                                        th:data-name="${sku.skuName}"
                                         th:data-add-price="${sku.price != null ? sku.price : 0}"
                                         th:data-stock="${sku.stock != null ? sku.stock : 0}"
                                         th:disabled="${sku.stock == null or sku.stock <= 0}"
                                         th:text="${sku.skuName + (sku.price != null and sku.price > 0 ? ' (+' + #numbers.formatInteger(sku.price, 1, 'COMMA') + '원)' : '') + (sku.stock == null or sku.stock <= 0 ? ' - 품절' : '')}">옵션</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between py-sm px-md bg-surface-container-high rounded-lg">
-                            <div class="flex items-center gap-md border border-outline-variant bg-white rounded-md overflow-hidden">
-                                <button type="button" class="p-1 hover:bg-surface-variant" onclick="changeQty(-1)"><span class="material-symbols-outlined text-sm">remove</span></button>
-                                <input type="number" id="qtyInput" name="quantity" value="1" min="1" class="text-sm font-bold w-10 text-center border-0 focus:outline-none" oninput="updateTotalPrice()"/>
-                                <button type="button" class="p-1 hover:bg-surface-variant" onclick="changeQty(1)"><span class="material-symbols-outlined text-sm">add</span></button>
-                            </div>
+
+                        <div id="selected-options"
+                             class="overflow-hidden rounded-lg border border-outline-variant bg-surface-container-low"
+                             th:data-has-skus="${productSkus != null and !#lists.isEmpty(productSkus)}"
+                             th:data-base-price="${product.price}"
+                             th:data-discount-rate="${product.discountRate != null ? product.discountRate : 0}"
+                             th:data-base-stock="${product.stockQuantity != null ? product.stockQuantity : 0}"
+                             th:data-product-name="${product.name}">
+                            <p id="selected-options-empty" class="px-md py-5 text-center text-sm text-on-surface-variant">
+                                옵션을 선택하면 이곳에서 수량을 조절할 수 있습니다.
+                            </p>
+                        </div>
+
+                        <div class="mt-sm flex items-center justify-between rounded-lg border border-outline-variant bg-white px-md py-sm">
+                            <span class="text-sm font-bold">총 <strong id="selected-total-quantity" class="text-error">0</strong>개</span>
                             <div class="text-right">
                                 <span class="text-xs text-on-surface-variant">총 상품금액</span>
-                                <h3 class="text-xl font-bold text-primary">
-                                    <span id="totalPrice" th:data-unit-price="${product.price * (100 - product.discountRate) / 100}"
-                                          th:data-base-price="${product.price}" th:data-discount-rate="${product.discountRate}"
-                                          th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')}">0</span>원
-                                </h3>
+                                <h3 class="text-xl font-bold text-error"><span id="selected-total-price">0</span>원</h3>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-sm pt-sm">
@@ -301,12 +310,23 @@
                                 <span class="material-symbols-outlined">shopping_cart</span>
                                 장바구니
                             </button>
-                            <button type="submit" th:formaction="@{/product/order/direct}" class="py-3 px-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-xs shadow-md">
+                            <button type="button" onclick="buySelectedNow()" class="py-3 px-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all flex items-center justify-center gap-xs shadow-md">
                                 <span class="material-symbols-outlined">bolt</span>
                                 바로구매
                             </button>
                         </div>
                     </form>
+
+                    <aside th:if="${productDetailBanner != null}"
+                           class="mt-sm h-16 w-full max-w-[550px] overflow-hidden rounded-lg border border-outline-variant bg-white"
+                           aria-label="상품 상세 광고">
+                        <a th:href="${#strings.isEmpty(productDetailBanner.linkUrl) ? null : productDetailBanner.linkUrl}"
+                           class="block h-full w-full">
+                            <img th:src="${productDetailBanner.fileUrl_stored}"
+                                 th:alt="${#strings.isEmpty(productDetailBanner.name) ? '상품 상세보기 배너' : productDetailBanner.name}"
+                                 class="h-full w-full object-cover">
+                        </a>
+                    </aside>
                 </div>
             </div>
 
@@ -316,7 +336,7 @@
                     <button class="text-sm py-3 border-b-2 border-primary text-primary font-bold" onclick="scrollToSection('desc')">상세정보</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('specs')">규격사양</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('reviews')"
-                            th:text="'상품후기 (' + ${reviewList != null ? #lists.size(reviewList) : 0} + ')'">상품후기 (824)</button>
+                            th:text="'상품후기 (' + ${reviewTotalElements != null ? reviewTotalElements : 0} + ')'">상품후기 (824)</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('qa')"
                             th:text="'Q&amp;A (' + ${qnaList != null ? #lists.size(qnaList) : 0} + ')'">Q&amp;A</button>
                 </nav>
@@ -326,8 +346,6 @@
             <div class="mb-xl scroll-mt-[130px]" id="desc">
                 <h3 class="text-lg font-bold text-primary mb-md">상품 상세 정보</h3>
                 <div class="bg-surface-container rounded-xl min-h-[500px] border border-dashed border-outline relative overflow-hidden">
-                    <!-- product.description: 짧은 요약 설명 -->
-                    <p th:if="${product.description != null and !product.description.isBlank()}" class="p-md text-sm text-on-surface-variant" th:text="${product.description}">요약 설명</p>
                     <!-- product.detailContent: 관리자가 등록한 상세 이미지 URL -->
                     <div th:if="${product.detailContent != null and !product.detailContent.isBlank()}" class="flex justify-center p-lg">
                         <img th:src="${product.detailContent}"
@@ -363,8 +381,10 @@
                     <h3 class="text-lg font-bold text-primary">상품 후기</h3>
                 </div>
 
-                <!-- 후기 작성 폼 (로그인 사용자만 노출하고 싶다면 sec:authorize="isAuthenticated()"로 감싸세요) -->
-                <form th:if="${reviewEligible}" th:action="@{/product/review/add}" method="post" class="bg-white border border-outline-variant rounded-xl p-md mb-md flex flex-col gap-sm">
+                <p th:if="${reviewError != null}" class="mb-md rounded-lg border border-error bg-error-container px-md py-sm text-sm text-error" th:text="${reviewError}"></p>
+
+                <form th:if="${reviewEligible}" th:action="@{/product/review/add}" method="post" enctype="multipart/form-data"
+                      class="bg-white border border-outline-variant rounded-xl p-md mb-md flex flex-col gap-sm">
                     <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
                     <div class="flex items-center gap-sm">
                         <label class="text-sm font-semibold text-on-surface-variant">평점</label>
@@ -378,14 +398,20 @@
                     </div>
                     <textarea name="content" required maxlength="1000" rows="3" placeholder="상품에 대한 후기를 남겨주세요."
                               class="w-full border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none"></textarea>
+                    <div class="flex flex-col gap-xs">
+                        <label for="review-images" class="text-sm font-semibold text-on-surface-variant">사진 첨부 <span class="font-normal">(최대 3장, 장당 5MB)</span></label>
+                        <input id="review-images" name="images" type="file" accept="image/*" multiple
+                               onchange="validateReviewImages(this)"
+                               class="w-full rounded-lg border border-outline-variant bg-surface-container-low p-sm text-sm file:mr-sm file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:font-bold file:text-white">
+                        <p id="review-image-help" class="text-xs text-on-surface-variant">JPG, PNG, GIF 등 이미지 파일을 등록할 수 있습니다.</p>
+                    </div>
                     <button type="submit" class="self-end py-2 px-4 bg-primary text-white font-bold rounded-lg text-sm">후기 등록</button>
                 </form>
                 <div th:unless="${reviewEligible}" class="bg-surface-container-low border border-outline-variant rounded-xl p-md mb-md text-sm text-on-surface-variant">
                     <p th:text="${reviewEligibilityMessage}">구매확정한 상품에만 후기를 작성할 수 있습니다.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-md" th:if="${reviewList != null and !reviewList.isEmpty()}">
-                    <!-- reviewList: 상품 리뷰 목록 (review 테이블에서 productNo로 조회) -->
-                    <div class="bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow" th:each="review : ${reviewList}">
+                <div class="overflow-hidden rounded-xl border border-outline-variant bg-white" th:if="${reviewList != null and !reviewList.isEmpty()}">
+                    <article class="border-b border-outline-variant p-md last:border-b-0" th:each="review : ${reviewList}">
                         <div class="flex justify-between items-start mb-sm">
                             <div class="flex flex-col">
                                 <span class="text-sm font-bold text-on-surface" th:text="'회원' + ${review.memberNo}">회원1</span>
@@ -402,10 +428,42 @@
                                       class="material-symbols-outlined text-[16px]">star</span>
                             </div>
                         </div>
-                        <p class="text-sm text-on-surface-variant leading-relaxed" th:text="${review.content}">리뷰 내용</p>
-                    </div>
+                        <div class="flex flex-col gap-md sm:flex-row">
+                            <div th:if="${review.imageUrl1 != null or review.imageUrl2 != null or review.imageUrl3 != null}"
+                                 class="flex shrink-0 gap-xs sm:w-44 sm:flex-wrap">
+                                <a th:if="${review.imageUrl1 != null}" th:href="${review.imageUrl1}" target="_blank" rel="noopener" class="block h-20 w-20 overflow-hidden rounded-lg border border-outline-variant bg-surface-container">
+                                    <img th:src="${review.imageUrl1}" alt="후기 사진 1" class="h-full w-full object-cover">
+                                </a>
+                                <a th:if="${review.imageUrl2 != null}" th:href="${review.imageUrl2}" target="_blank" rel="noopener" class="block h-20 w-20 overflow-hidden rounded-lg border border-outline-variant bg-surface-container">
+                                    <img th:src="${review.imageUrl2}" alt="후기 사진 2" class="h-full w-full object-cover">
+                                </a>
+                                <a th:if="${review.imageUrl3 != null}" th:href="${review.imageUrl3}" target="_blank" rel="noopener" class="block h-20 w-20 overflow-hidden rounded-lg border border-outline-variant bg-surface-container">
+                                    <img th:src="${review.imageUrl3}" alt="후기 사진 3" class="h-full w-full object-cover">
+                                </a>
+                            </div>
+                            <p class="min-w-0 flex-1 text-sm leading-relaxed text-on-surface-variant whitespace-pre-line" th:text="${review.content}">리뷰 내용</p>
+                        </div>
+                    </article>
                 </div>
                 <p th:if="${reviewList == null or reviewList.isEmpty()}" class="text-sm text-on-surface-variant">등록된 후기가 없습니다.</p>
+
+                <nav th:if="${reviewTotalPages != null and reviewTotalPages > 1}" aria-label="상품 후기 페이지" class="mt-md flex items-center justify-center gap-xs">
+                    <a th:if="${reviewCurrentPage > 1}"
+                       th:href="@{/product/view(prodNo=${product.prodNo}, reviewPage=${reviewCurrentPage - 1})} + '#reviews'"
+                       class="rounded border border-outline-variant px-3 py-2 text-sm hover:bg-surface-container">이전</a>
+                    <span th:unless="${reviewCurrentPage > 1}" class="rounded border border-outline-variant px-3 py-2 text-sm text-outline-variant">이전</span>
+
+                    <a th:each="p : ${#numbers.sequence(1, reviewTotalPages)}"
+                       th:href="@{/product/view(prodNo=${product.prodNo}, reviewPage=${p})} + '#reviews'"
+                       th:text="${p}"
+                       th:classappend="${p == reviewCurrentPage} ? ' bg-primary text-white font-bold' : ' bg-white hover:bg-surface-container'"
+                       class="flex h-9 w-9 items-center justify-center rounded border border-outline-variant text-sm">1</a>
+
+                    <a th:if="${reviewCurrentPage < reviewTotalPages}"
+                       th:href="@{/product/view(prodNo=${product.prodNo}, reviewPage=${reviewCurrentPage + 1})} + '#reviews'"
+                       class="rounded border border-outline-variant px-3 py-2 text-sm hover:bg-surface-container">다음</a>
+                    <span th:unless="${reviewCurrentPage < reviewTotalPages}" class="rounded border border-outline-variant px-3 py-2 text-sm text-outline-variant">다음</span>
+                </nav>
             </div>
 
             <!-- Q&A Section -->
@@ -521,43 +579,171 @@
 
 <!-- th:inline="none" 추가로 자바스크립트 중괄호 매핑 무시 조치 -->
 <script th:inline="none">
-    // 상품 단가(할인 적용가)는 #totalPrice의 data-unit-price 속성에서 읽어옴 (th:inline 충돌 방지)
-    function changeQty(delta) {
-        const qtyInput = document.getElementById('qtyInput');
-        let value = parseInt(qtyInput.value, 10) || 1;
-        value = Math.max(1, value + delta);
-        qtyInput.value = value;
-        updateTotalPrice();
+    const selectedProducts = new Map();
+
+    function discountedPrice(basePrice, addPrice, discountRate) {
+        return Math.floor((basePrice + addPrice) * (100 - discountRate) / 100);
     }
 
-    function updateTotalPrice() {
-        const qtyInput = document.getElementById('qtyInput');
-        const totalEl = document.getElementById('totalPrice');
-        const unitPrice = parseInt(totalEl.dataset.unitPrice, 10) || 0;
-        let value = parseInt(qtyInput.value, 10) || 1;
-        if (value < 1) { value = 1; qtyInput.value = 1; }
-        totalEl.textContent = (unitPrice * value).toLocaleString('ko-KR');
-    }
-
-    function updateSelectedSku() {
+    function addSelectedSku() {
         const select = document.getElementById('skuSelect');
-        const totalEl = document.getElementById('totalPrice');
-        const qtyInput = document.getElementById('qtyInput');
-        if (!select || !totalEl || !qtyInput) return;
+        const container = document.getElementById('selected-options');
+        if (!select || !container || !select.value) return;
         const option = select.options[select.selectedIndex];
-        const basePrice = Number(totalEl.dataset.basePrice || 0);
-        const discountRate = Number(totalEl.dataset.discountRate || 0);
+        const basePrice = Number(container.dataset.basePrice || 0);
+        const discountRate = Number(container.dataset.discountRate || 0);
         const addPrice = Number(option?.dataset.addPrice || 0);
         const stock = Number(option?.dataset.stock || 0);
-        totalEl.dataset.unitPrice = Math.floor((basePrice + addPrice) * (100 - discountRate) / 100);
-        if (select.value && stock > 0) {
-            qtyInput.max = String(stock);
-            qtyInput.value = String(Math.min(Number(qtyInput.value || 1), stock));
-        } else {
-            qtyInput.removeAttribute('max');
+        const key = String(select.value);
+
+        if (stock <= 0) {
+            select.value = '';
+            return;
         }
-        updateTotalPrice();
+        if (selectedProducts.has(key)) {
+            const selected = selectedProducts.get(key);
+            selected.quantity = Math.min(selected.quantity + 1, selected.stock);
+        } else {
+            selectedProducts.set(key, {
+                skuNo: key,
+                name: option.dataset.name || option.textContent.trim(),
+                unitPrice: discountedPrice(basePrice, addPrice, discountRate),
+                stock,
+                quantity: 1
+            });
+        }
+        select.value = '';
+        renderSelectedProducts();
     }
+
+    function changeSelectedQuantity(key, delta) {
+        const selected = selectedProducts.get(String(key));
+        if (!selected) return;
+        selected.quantity = Math.max(1, Math.min(selected.quantity + delta, selected.stock));
+        renderSelectedProducts();
+    }
+
+    function removeSelectedProduct(key) {
+        selectedProducts.delete(String(key));
+        renderSelectedProducts();
+    }
+
+    function escapeHtml(value) {
+        const element = document.createElement('span');
+        element.textContent = String(value ?? '');
+        return element.innerHTML;
+    }
+
+    function renderSelectedProducts() {
+        const container = document.getElementById('selected-options');
+        const totalQuantityEl = document.getElementById('selected-total-quantity');
+        const totalPriceEl = document.getElementById('selected-total-price');
+        if (!container || !totalQuantityEl || !totalPriceEl) return;
+
+        if (selectedProducts.size === 0) {
+            container.innerHTML = '<p id="selected-options-empty" class="px-md py-5 text-center text-sm text-on-surface-variant">옵션을 선택하면 이곳에서 수량을 조절할 수 있습니다.</p>';
+            totalQuantityEl.textContent = '0';
+            totalPriceEl.textContent = '0';
+            return;
+        }
+
+        let totalQuantity = 0;
+        let totalPrice = 0;
+        container.innerHTML = Array.from(selectedProducts.entries()).map(([key, item]) => {
+            totalQuantity += item.quantity;
+            totalPrice += item.unitPrice * item.quantity;
+            return `
+                <div class="border-b border-outline-variant p-md last:border-b-0">
+                    <div class="mb-sm flex items-start justify-between gap-sm">
+                        <strong class="min-w-0 flex-1 text-sm text-on-surface">${escapeHtml(item.name)}</strong>
+                        <button type="button" onclick="removeSelectedProduct('${key}')" class="shrink-0 p-1 text-on-surface-variant hover:text-error" aria-label="선택 옵션 삭제">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between gap-md">
+                        <div class="inline-flex h-9 items-stretch overflow-hidden rounded-md border border-outline-variant bg-white">
+                            <button type="button" onclick="changeSelectedQuantity('${key}', -1)" class="flex w-9 items-center justify-center hover:bg-surface-container" aria-label="수량 줄이기">
+                                <span class="material-symbols-outlined text-[18px]">remove</span>
+                            </button>
+                            <span class="flex w-11 items-center justify-center border-x border-outline-variant text-sm font-bold">${item.quantity}</span>
+                            <button type="button" onclick="changeSelectedQuantity('${key}', 1)" class="flex w-9 items-center justify-center hover:bg-surface-container" aria-label="수량 늘리기">
+                                <span class="material-symbols-outlined text-[18px]">add</span>
+                            </button>
+                        </div>
+                        <strong class="text-base text-primary">${(item.unitPrice * item.quantity).toLocaleString('ko-KR')}원</strong>
+                    </div>
+                    <input type="hidden" name="selectedSkuNos" value="${item.skuNo}">
+                    <input type="hidden" name="quantities" value="${item.quantity}">
+                </div>`;
+        }).join('');
+        totalQuantityEl.textContent = String(totalQuantity);
+        totalPriceEl.textContent = totalPrice.toLocaleString('ko-KR');
+    }
+
+    function validateSelectedProducts() {
+        if (selectedProducts.size > 0) return true;
+        alert('상품 옵션을 선택해주세요.');
+        return false;
+    }
+
+    function buySelectedNow() {
+        if (!validateSelectedProducts()) return;
+        const sourceForm = document.getElementById('selected-product-form');
+        const prodNo = sourceForm.querySelector('input[name="prodNo"]').value;
+        const directForm = document.createElement('form');
+        directForm.method = 'post';
+        directForm.action = sourceForm.action.replace('/cart/add-selected', '/order/direct');
+
+        function appendField(name, value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = String(value);
+            directForm.appendChild(input);
+        }
+
+        appendField('prodNo', prodNo);
+        selectedProducts.forEach(item => {
+            appendField('selectedSkuNos', item.skuNo);
+            appendField('quantities', item.quantity);
+        });
+        document.body.appendChild(directForm);
+        directForm.submit();
+    }
+
+    function validateReviewImages(input) {
+        const files = Array.from(input.files || []);
+        const help = document.getElementById('review-image-help');
+        const invalid = files.length > 3 || files.some(file => file.size > 5 * 1024 * 1024 || !file.type.startsWith('image/'));
+        if (!invalid) {
+            help.textContent = files.length ? `${files.length}장의 사진을 선택했습니다.` : 'JPG, PNG, GIF 등 이미지 파일을 등록할 수 있습니다.';
+            help.classList.remove('text-error');
+            return;
+        }
+        input.value = '';
+        help.textContent = '이미지 파일을 최대 3장, 장당 5MB 이하로 선택해주세요.';
+        help.classList.add('text-error');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('selected-options');
+        if (!container || container.dataset.hasSkus === 'true') return;
+        const stock = Number(container.dataset.baseStock || 0);
+        if (stock <= 0) {
+            container.innerHTML = '<p class="px-md py-5 text-center text-sm font-bold text-error">품절된 상품입니다.</p>';
+            return;
+        }
+        const basePrice = Number(container.dataset.basePrice || 0);
+        const discountRate = Number(container.dataset.discountRate || 0);
+        selectedProducts.set('base', {
+            skuNo: 'none',
+            name: container.dataset.productName || '상품',
+            unitPrice: discountedPrice(basePrice, 0, discountRate),
+            stock,
+            quantity: 1
+        });
+        renderSelectedProducts();
+    });
 
     // Focus search interaction
     const searchInput = document.querySelector('input[type="text"]');

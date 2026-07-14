@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.example.k_market.service.member.EmailVerificationService;
 import org.example.k_market.service.member.UsersService;
+import org.example.k_market.service.admin.BannerService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +37,7 @@ public class UsersController {
     private final UsersService usersService;
     private final EmailVerificationService emailVerificationService;
     private final ObjectProvider<ClientRegistrationRepository> clientRegistrationRepository;
+    private final BannerService bannerService;
 
     @GetMapping("/member/login")
     public String loginPage(
@@ -61,6 +63,7 @@ public class UsersController {
                 ? "SNS 로그인에 실패했습니다. 설정을 확인해주세요."
                 : snsMessage);
         model.addAttribute("googleLoginEnabled", hasClientRegistration("google"));
+        model.addAttribute("loginBanner", bannerService.getDisplayableBanner("MEMBER1"));
 
         return "member/login";
     }

@@ -21,9 +21,14 @@ import org.example.k_market.security.MyUserDetails;
 import org.example.k_market.service.ProductService;
 import org.example.k_market.service.CartService;
 import org.example.k_market.service.CheckoutService;
+import org.example.k_market.service.aws.S3Uploader;
+import org.example.k_market.service.admin.BannerService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -54,8 +60,12 @@ public class ProductIndexController {
     private final QnaRepository qnaRepository;           // 신규 주입
     private final OrderDetailsRepository orderDetailsRepository;
     private final ProductService productService;
+    private final S3Uploader s3Uploader;
+    private final BannerService bannerService;
 
     private static final int PAGE_SIZE = 10;
+    private static final int REVIEW_PAGE_SIZE = 5;
+    private static final long REVIEW_IMAGE_MAX_BYTES = 5L * 1024 * 1024;
 
     /**
      * 상품 목록을 조회한다.
@@ -217,7 +227,7 @@ public class ProductIndexController {
 
             case "priceAsc" ->
                     Comparator.comparing(
-                            Product::getPrice,
+                            this::getDiscountedPrice,
                             Comparator.nullsLast(
                                     Comparator.naturalOrder()
                             )
@@ -225,7 +235,7 @@ public class ProductIndexController {
 
             case "priceDesc" ->
                     Comparator.comparing(
-                            Product::getPrice,
+                            this::getDiscountedPrice,
                             Comparator.nullsLast(
                                     Comparator.reverseOrder()
                             )
@@ -258,6 +268,15 @@ public class ProductIndexController {
         products.sort(comparator);
     }
 
+    private Integer getDiscountedPrice(Product product) {
+        if (product == null || product.getPrice() == null) {
+            return null;
+        }
+        int discountRate = product.getDiscountRate() == null ? 0 : product.getDiscountRate();
+        discountRate = Math.max(0, Math.min(discountRate, 100));
+        return (int) (product.getPrice() * (100L - discountRate) / 100L);
+    }
+
 
     @GetMapping("/search")
     public String search(@RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -266,6 +285,7 @@ public class ProductIndexController {
                          @RequestParam(defaultValue = "false") boolean searchPrice,
                          @RequestParam(required = false) Integer minPrice,
                          @RequestParam(required = false) Integer maxPrice,
+                         @RequestParam(defaultValue = "salesDesc") String sort,
                          Model model) {
 
         List<Product> found;
@@ -286,15 +306,22 @@ public class ProductIndexController {
         if (searchPrice) {
             if (minPrice != null) {
                 found = found.stream()
-                        .filter(p -> p.getPrice() != null && p.getPrice() >= minPrice)
+                        .filter(p -> getDiscountedPrice(p) != null && getDiscountedPrice(p) >= minPrice)
                         .toList();
             }
             if (maxPrice != null) {
                 found = found.stream()
-                        .filter(p -> p.getPrice() != null && p.getPrice() <= maxPrice)
+                        .filter(p -> getDiscountedPrice(p) != null && getDiscountedPrice(p) <= maxPrice)
                         .toList();
             }
         }
+
+        String normalizedSort = switch (sort) {
+            case "salesDesc", "priceAsc", "priceDesc", "ratingDesc", "reviewCount", "latest" -> sort;
+            default -> "salesDesc";
+        };
+        found = new ArrayList<>(found);
+        sortProducts(found, normalizedSort);
 
         List<Map<String, Object>> products = found.stream()
                 .map(this::toSearchResultMap)
@@ -306,6 +333,7 @@ public class ProductIndexController {
         model.addAttribute("searchPrice", searchPrice);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("sort", normalizedSort);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
         addProductLayout(model, null);
@@ -320,7 +348,7 @@ public class ProductIndexController {
     private Map<String, Object> toSearchResultMap(Product p) {
         int discountRate = (p.getDiscountRate() == null) ? 0 : p.getDiscountRate();
         int price = (p.getPrice() == null) ? 0 : p.getPrice();
-        int discountedPrice = price * (100 - discountRate) / 100;
+        int discountedPrice = getDiscountedPrice(p) == null ? 0 : getDiscountedPrice(p);
 
         boolean isNew = p.getCreatedAt() != null
                 && p.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(7));
@@ -342,6 +370,7 @@ public class ProductIndexController {
 
     @GetMapping("/view")
     public String view(@RequestParam Integer prodNo,
+                       @RequestParam(defaultValue = "1") int reviewPage,
                        Model model,
                        @AuthenticationPrincipal MyUserDetails userDetails) {
         Product product = productRepository.findById(Long.valueOf(prodNo))
@@ -360,8 +389,16 @@ public class ProductIndexController {
         // 사이드바 활성화 표시용 - 대분류 catNo
         Integer mainCateNo = (parentCategory != null) ? parentCategory.getCateNo() : (category != null ? category.getCateNo() : null);
 
-        // 상품후기 목록 (최신순)
-        List<Review> reviewList = reviewRepository.findByProdNoOrderByCreatedAtDesc(product.getProdNo());
+        // 상품후기 목록 (최신순, 페이지당 5개)
+        int requestedReviewPage = Math.max(reviewPage, 1) - 1;
+        Page<Review> reviewPageData = reviewRepository.findByProdNoOrderByCreatedAtDesc(
+                product.getProdNo(), PageRequest.of(requestedReviewPage, REVIEW_PAGE_SIZE));
+        if (reviewPageData.getTotalPages() > 0 && requestedReviewPage >= reviewPageData.getTotalPages()) {
+            requestedReviewPage = reviewPageData.getTotalPages() - 1;
+            reviewPageData = reviewRepository.findByProdNoOrderByCreatedAtDesc(
+                    product.getProdNo(), PageRequest.of(requestedReviewPage, REVIEW_PAGE_SIZE));
+        }
+        List<Review> reviewList = reviewPageData.getContent();
 
         // 상품 Q&A 목록 (해당 상품에 달린 문의 원글만, parentNo=0)
         List<Qna> qnaList = qnaRepository.findByProdNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
@@ -378,6 +415,10 @@ public class ProductIndexController {
         model.addAttribute("category", category);
         model.addAttribute("parentCategory", parentCategory);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("reviewCurrentPage", requestedReviewPage + 1);
+        model.addAttribute("reviewTotalPages", reviewPageData.getTotalPages());
+        model.addAttribute("reviewTotalElements", reviewPageData.getTotalElements());
+        model.addAttribute("productDetailBanner", bannerService.getDisplayableBanner("PRODUCT1"));
         model.addAttribute("qnaList", qnaList);
         model.addAttribute("reviewEligible", reviewEligible);
         model.addAttribute("reviewEligibilityMessage", userDetails == null
@@ -413,6 +454,35 @@ public class ProductIndexController {
         return "redirect:/product/cart";
     }
 
+    @PostMapping("/cart/add-selected")
+    public String addSelectedToCart(@RequestParam Long prodNo,
+                                    @RequestParam(required = false) List<String> selectedSkuNos,
+                                    @RequestParam(required = false) List<Integer> quantities,
+                                    @AuthenticationPrincipal MyUserDetails userDetails,
+                                    RedirectAttributes redirectAttributes) {
+        if (userDetails == null) {
+            return "redirect:/member/login";
+        }
+        try {
+            if (selectedSkuNos == null || quantities == null
+                    || selectedSkuNos.isEmpty() || selectedSkuNos.size() != quantities.size()) {
+                throw new IllegalArgumentException("장바구니에 담을 옵션을 선택해주세요.");
+            }
+            List<CartService.Selection> selections = new ArrayList<>();
+            for (int i = 0; i < selectedSkuNos.size(); i++) {
+                String skuValue = selectedSkuNos.get(i);
+                Long skuNo = "none".equals(skuValue) ? null : Long.valueOf(skuValue);
+                selections.add(new CartService.Selection(skuNo, quantities.get(i)));
+            }
+            cartService.addSelected(userDetails.getUser().getMemberNo(), prodNo, selections);
+            redirectAttributes.addFlashAttribute("cartMessage", "선택한 상품을 장바구니에 담았습니다.");
+            return "redirect:/product/cart";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            return "redirect:/product/view?prodNo=" + prodNo;
+        }
+    }
+
     /**
      * 바로구매 - 결제 페이지(주문서)로 이동
      * (실제 결제/주문 저장 로직은 별도 OrderController에서 추가 구현 필요)
@@ -421,6 +491,8 @@ public class ProductIndexController {
     public String orderDirect(@RequestParam Long prodNo,
                               @RequestParam(required = false) Long skuNo,
                               @RequestParam(defaultValue = "1") int quantity,
+                              @RequestParam(required = false) List<String> selectedSkuNos,
+                              @RequestParam(required = false) List<Integer> quantities,
                               Model model,
                               @AuthenticationPrincipal MyUserDetails userDetails,
                               RedirectAttributes redirectAttributes) {
@@ -429,11 +501,26 @@ public class ProductIndexController {
         }
 
         try {
-            CartItemViewDTO item = cartService.previewProduct(prodNo, skuNo, quantity);
-            addOrderModel(model, List.of(item), userDetails.getUser().getMemberNo());
+            List<String> directSkuNos = selectedSkuNos;
+            List<Integer> directQuantities = quantities;
+            if (directSkuNos == null || directSkuNos.isEmpty()) {
+                directSkuNos = List.of(skuNo == null ? "none" : String.valueOf(skuNo));
+                directQuantities = List.of(quantity);
+            }
+            if (directQuantities == null || directSkuNos.size() != directQuantities.size()) {
+                throw new IllegalArgumentException("바로구매할 상품 옵션을 다시 선택해주세요.");
+            }
+
+            List<CartItemViewDTO> items = new ArrayList<>();
+            for (int i = 0; i < directSkuNos.size(); i++) {
+                String skuValue = directSkuNos.get(i);
+                Long selectedSkuNo = "none".equals(skuValue) ? null : Long.valueOf(skuValue);
+                items.add(cartService.previewProduct(prodNo, selectedSkuNo, directQuantities.get(i)));
+            }
+            addOrderModel(model, items, userDetails.getUser().getMemberNo());
             model.addAttribute("directProdNo", prodNo);
-            model.addAttribute("directSkuNo", skuNo);
-            model.addAttribute("directQuantity", quantity);
+            model.addAttribute("directSkuNos", directSkuNos);
+            model.addAttribute("directQuantities", directQuantities);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("cartError", e.getMessage());
             return "redirect:/product/view?prodNo=" + prodNo;
@@ -570,7 +657,9 @@ public class ProductIndexController {
     public String addReview(@RequestParam Long prodNo,
                             @RequestParam int rating,
                             @RequestParam String content,
-                            @AuthenticationPrincipal MyUserDetails userDetails) {
+                            @RequestParam(required = false) List<MultipartFile> images,
+                            @AuthenticationPrincipal MyUserDetails userDetails,
+                            RedirectAttributes redirectAttributes) {
         if (userDetails == null) {
             return "redirect:/member/login";
         }
@@ -583,11 +672,27 @@ public class ProductIndexController {
             return "redirect:/product/view?prodNo=" + prodNo + "#reviews";
         }
 
+        if (rating < 1 || rating > 5 || content == null || content.isBlank()) {
+            redirectAttributes.addFlashAttribute("reviewError", "평점과 후기 내용을 확인해주세요.");
+            return "redirect:/product/view?prodNo=" + prodNo + "#reviews";
+        }
+
+        List<String> imageUrls;
+        try {
+            imageUrls = uploadReviewImages(images);
+        } catch (IllegalArgumentException | IOException e) {
+            redirectAttributes.addFlashAttribute("reviewError", e.getMessage());
+            return "redirect:/product/view?prodNo=" + prodNo + "#reviews";
+        }
+
         Review review = Review.builder()
                 .prodNo(prodNo)
                 .memberNo(memberNo)
                 .rating(rating)
-                .content(content)
+                .content(content.trim())
+                .imageUrl1(imageUrls.size() > 0 ? imageUrls.get(0) : null)
+                .imageUrl2(imageUrls.size() > 1 ? imageUrls.get(1) : null)
+                .imageUrl3(imageUrls.size() > 2 ? imageUrls.get(2) : null)
                 .createdAt(LocalDateTime.now())
                 .build();
         // 리뷰 저장
@@ -596,7 +701,34 @@ public class ProductIndexController {
         // 새 리뷰를 포함하여 해당 상품의 평균 별점을 다시 계산
         productService.updateProductRating(prodNo);
 
-        return "redirect:/product/view?prodNo=" + prodNo;
+        return "redirect:/product/view?prodNo=" + prodNo + "&reviewPage=1#reviews";
+    }
+
+    private List<String> uploadReviewImages(List<MultipartFile> images) throws IOException {
+        List<MultipartFile> files = images == null ? List.of() : images.stream()
+                .filter(file -> file != null && !file.isEmpty())
+                .toList();
+        if (files.size() > 3) {
+            throw new IllegalArgumentException("후기 사진은 최대 3장까지 등록할 수 있습니다.");
+        }
+
+        List<String> uploadedUrls = new ArrayList<>();
+        try {
+            for (MultipartFile file : files) {
+                if (file.getSize() > REVIEW_IMAGE_MAX_BYTES) {
+                    throw new IllegalArgumentException("후기 사진은 한 장당 5MB 이하여야 합니다.");
+                }
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    throw new IllegalArgumentException("이미지 파일만 후기 사진으로 등록할 수 있습니다.");
+                }
+                uploadedUrls.add(s3Uploader.upload(file, "reviews"));
+            }
+            return uploadedUrls;
+        } catch (IllegalArgumentException | IOException e) {
+            uploadedUrls.forEach(s3Uploader::deleteFile);
+            throw e;
+        }
     }
 
     private void addOrderModel(Model model, List<CartItemViewDTO> items, int memberNo) {

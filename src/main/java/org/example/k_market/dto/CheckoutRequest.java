@@ -12,6 +12,8 @@ public class CheckoutRequest {
     private Long directProdNo;
     private Long directSkuNo;
     private Integer directQuantity;
+    private List<String> directSkuNos;
+    private List<Integer> directQuantities;
     private String recipientName;
     private String recipientPhone;
     private String zipCode;

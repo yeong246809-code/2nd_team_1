@@ -74,6 +74,19 @@ public class CartService {
     }
 
     @Transactional
+    public void addSelected(int memberNo, long prodNo, List<Selection> selections) {
+        if (selections == null || selections.isEmpty()) {
+            throw new IllegalArgumentException("장바구니에 담을 옵션을 선택해주세요.");
+        }
+        for (Selection selection : selections) {
+            if (selection == null) {
+                throw new IllegalArgumentException("선택한 상품 옵션이 올바르지 않습니다.");
+            }
+            add(memberNo, prodNo, selection.skuNo(), selection.quantity());
+        }
+    }
+
+    @Transactional
     public void updateQuantity(int memberNo, long cartNo, int quantity) {
         Cart cart = requireOwnedCart(memberNo, cartNo);
         Product product = requireProduct(cart.getProdNo());
@@ -113,6 +126,8 @@ public class CartService {
         return productRepository.findById(prodNo)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
     }
+
+    public record Selection(Long skuNo, int quantity) {}
 
     private ProductSku requireSku(Product product, Long skuNo) {
         List<ProductSku> skus = productSkuRepository.findByProdNoOrderBySkuNoAsc(product.getProdNo());

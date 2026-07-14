@@ -198,8 +198,8 @@
             <form id="checkout-form" th:action="@{/product/order/complete}" method="post" class="flex flex-col gap-xl">
                 <input th:each="cartNo : ${selectedCartNos}" type="hidden" name="cartNos" th:value="${cartNo}">
                 <input th:if="${directProdNo != null}" type="hidden" name="directProdNo" th:value="${directProdNo}">
-                <input th:if="${directSkuNo != null}" type="hidden" name="directSkuNo" th:value="${directSkuNo}">
-                <input th:if="${directQuantity != null}" type="hidden" name="directQuantity" th:value="${directQuantity}">
+                <input th:each="directSkuNo : ${directSkuNos}" type="hidden" name="directSkuNos" th:value="${directSkuNo}">
+                <input th:each="directQuantity : ${directQuantities}" type="hidden" name="directQuantities" th:value="${directQuantity}">
 
             <section class="bg-white standard-border rounded overflow-hidden">
                 <div class="overflow-x-auto">

@@ -96,12 +96,31 @@ public class CheckoutService {
     }
 
     @Transactional(readOnly = true)
-    public CheckoutResult getReceipt(int memberNo, int orderNo) {
+    public CheckoutReceipt getReceipt(int memberNo, int orderNo) {
         Order order = orderRepository.findById(orderNo)
                 .filter(found -> found.getMemberNo() == memberNo)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
-        return new CheckoutResult(order.getOrderNo(), order.getOrderName(), order.getTotalPaymentPrice(),
-                order.getStatus(), order.getPaymentMethod());
+        List<ReceiptItem> items = orderDetailsRepository.findByOrderNo(orderNo).stream()
+                .map(detail -> {
+                    Product product = productRepository.findById(detail.getProductNo()).orElse(null);
+                    ProductSku sku = detail.getSkuNo() == null ? null
+                            : productSkuRepository.findById(detail.getSkuNo()).orElse(null);
+                    int linePaymentPrice = detail.getPrice() * detail.getQuantity()
+                            - detail.getDiscountPrice() + detail.getShippingFee();
+                    return new ReceiptItem(
+                            product == null ? "상품 정보 없음" : product.getName(),
+                            sku == null ? null : sku.getSkuName(),
+                            product == null ? null : product.getThumb1(),
+                            detail.getQuantity(), detail.getPrice(), detail.getDiscountPrice(),
+                            detail.getShippingFee(), linePaymentPrice, detail.getStatus());
+                })
+                .toList();
+        return new CheckoutReceipt(
+                order.getOrderNo(), order.getOrderName(), order.getPaymentMethod(), order.getStatus(),
+                order.getCreatedAt(), order.getTotalProductPrice(), order.getTotalDiscountPrice(),
+                order.getTotalShippingFee(), order.getUsedPoints(), order.getTotalPaymentPrice(),
+                order.getRecipientName(), order.getRecipientPhone(), order.getZipCode(),
+                order.getBaseAddress(), order.getDetailAddress(), order.getMemo(), items);
     }
 
     private OrderSource resolveSource(int memberNo, CheckoutRequest request) {
@@ -116,7 +135,26 @@ public class CheckoutService {
                     .toList();
             return new OrderSource(items, carts);
         }
-        if (request.getDirectProdNo() == null || request.getDirectQuantity() == null) {
+        if (request.getDirectProdNo() == null) {
+            throw new IllegalArgumentException("주문 상품 정보가 없습니다.");
+        }
+
+        if (request.getDirectSkuNos() != null && !request.getDirectSkuNos().isEmpty()) {
+            if (request.getDirectQuantities() == null
+                    || request.getDirectSkuNos().size() != request.getDirectQuantities().size()) {
+                throw new IllegalArgumentException("바로구매 상품 정보가 올바르지 않습니다.");
+            }
+            List<SourceItem> items = new ArrayList<>();
+            for (int i = 0; i < request.getDirectSkuNos().size(); i++) {
+                String skuValue = request.getDirectSkuNos().get(i);
+                Long skuNo = "none".equals(skuValue) ? null : Long.valueOf(skuValue);
+                items.add(new SourceItem(
+                        request.getDirectProdNo(), skuNo, request.getDirectQuantities().get(i)));
+            }
+            return new OrderSource(items, List.of());
+        }
+
+        if (request.getDirectQuantity() == null) {
             throw new IllegalArgumentException("주문 상품 정보가 없습니다.");
         }
         return new OrderSource(List.of(new SourceItem(
@@ -217,6 +255,17 @@ public class CheckoutService {
 
     public record CheckoutResult(int orderNo, String orderName, int totalPaymentPrice,
                                  String status, String paymentMethod) {}
+
+    public record CheckoutReceipt(int orderNo, String orderName, String paymentMethod, String status,
+                                  LocalDateTime createdAt, int totalProductPrice, int totalDiscountPrice,
+                                  int totalShippingFee, int usedPoints, int totalPaymentPrice,
+                                  String recipientName, String recipientPhone, String zipCode,
+                                  String baseAddress, String detailAddress, String memo,
+                                  List<ReceiptItem> items) {}
+
+    public record ReceiptItem(String productName, String skuName, String thumb1, int quantity,
+                              int unitPrice, int discountPrice, int shippingFee,
+                              int linePaymentPrice, String status) {}
 
     private record SourceItem(long prodNo, Long skuNo, int quantity) {}
     private record OrderSource(List<SourceItem> items, List<Cart> carts) {}
