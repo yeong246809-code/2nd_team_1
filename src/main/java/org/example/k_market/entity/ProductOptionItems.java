@@ -14,16 +14,18 @@ import lombok.*;
 public class ProductOptionItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "itemNo")
     private long optItemNo;
+
     private long optionNo;
+
     private String itemName;
-    private int addPrice;
-    private int stock;
 
     public ProductOptionItemsDTO toDTO(){
         return ProductOptionItemsDTO.builder()
-                .optItemNo(optItemNo).optionNo(optionNo)
-                .itemName(itemName).addPrice(addPrice).stock(stock)
+                .optItemNo(optItemNo)
+                .optionNo(optionNo)
+                .itemName(itemName)
                 .build();
     }
 }

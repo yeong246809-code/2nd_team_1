@@ -1,10 +1,12 @@
 package org.example.k_market.repository;
 
+import org.apache.ibatis.annotations.Param;
 import org.example.k_market.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -77,4 +79,25 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return 검색 조건에 맞는 상품 목록
      */
     List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
+
+    @Query("SELECT p FROM Product p " +
+            "LEFT JOIN Shop s ON p.shopNo = s.shopNo " +
+            "LEFT JOIN Category c ON p.cateNo = c.cateNo " +
+            "LEFT JOIN Category parent ON c.parentNo = parent.cateNo " +
+            "WHERE (:shopNo IS NULL OR p.shopNo = :shopNo) " +
+            "AND (" +
+            "   (:searchType = 'name' AND LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) OR " +
+            "   (:searchType = 'shopName' AND LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) OR " +
+            "   (:searchType = 'category' AND (" +
+            "       LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "       LOWER(parent.name) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
+            "   )) OR " +
+            "   (:searchType IS NULL OR :keyword IS NULL OR :keyword = '')" +
+            ")")
+    Page<Product> findProductsWithSearch(
+            @Param("shopNo") Integer shopNo,
+            @Param("searchType") String searchType,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }
