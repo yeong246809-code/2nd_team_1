@@ -2,17 +2,10 @@ package org.example.k_market.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.example.k_market.entity.Cart;
-import org.example.k_market.entity.Category;
-import org.example.k_market.entity.Product;
-import org.example.k_market.entity.Qna;
-import org.example.k_market.entity.Review;
-import org.example.k_market.repository.CartRepository;
-import org.example.k_market.repository.CategoryRepository;
-import org.example.k_market.repository.ProductRepository;
-import org.example.k_market.repository.QnaRepository;
-import org.example.k_market.repository.ReviewRepository;
+import org.example.k_market.entity.*;
+import org.example.k_market.repository.*;
 import org.example.k_market.security.MyUserDetails;
+import org.example.k_market.service.ProductService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +27,7 @@ public class ProductIndexController {
     private final CartRepository cartRepository;         // 신규 주입
     private final ReviewRepository reviewRepository;     // 신규 주입
     private final QnaRepository qnaRepository;           // 신규 주입
+    private final ProductService productService;
 
     private static final int PAGE_SIZE = 10;
 
@@ -128,23 +122,25 @@ public class ProductIndexController {
     }
 
     @GetMapping("/product/search")
-    public String search(@RequestParam(value = "keyword", defaultValue = "셔츠") String keyword, Model model) {
-        List<Map<String, Object>> products = List.of(
-                Map.of(
-                        "name", "이지 워시 옥스퍼드 셔츠",
-                        "description", "데일리 아이템으로 입기 좋은 스탠다드 핏 셔츠입니다.",
-                        "isNew", true,
-                        "isFreeShipping", true,
-                        "discount", 10,
-                        "originalPrice", "30,000",
-                        "price", "27,000",
-                        "seller", "패션빌리지"
-                )
-        );
+    public String search(
+            @RequestParam(name = "keyword", required = false, defaultValue = "")
+            String keyword,
+            Model model
+    ) {
 
-        model.addAttribute("keyword", keyword);
+        // 검색어 앞뒤의 공백 제거
+        String trimmedKeyword = keyword.trim();
+
+        // ProductService를 통해 실제 DB 상품 검색
+        List<Product> products =
+                productService.searchProducts(trimmedKeyword);
+
+        // 검색 결과 화면에 필요한 데이터 전달
+        model.addAttribute("keyword", trimmedKeyword);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
+
+        // 상품 화면 공통 레이아웃 정보 전달
         addProductLayout(model, null);
 
         return "product/search";
@@ -261,7 +257,11 @@ public class ProductIndexController {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .build();
-        reviewRepository.save(review);
+                // 리뷰 저장
+                reviewRepository.save(review);
+
+                // 새 리뷰를 포함하여 해당 상품의 평균 별점을 다시 계산
+                productService.updateProductRating(prodNo);
 
         return "redirect:/product/view?prodNo=" + prodNo;
     }

@@ -4,6 +4,8 @@ import org.example.k_market.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,6 +18,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 후기 많은 순
     long countByProdNo(Long prodNo);
+
+
+    /**
+     * 특정 상품에 등록된 리뷰의 평균 별점 조회
+     */
+    @Query("""
+           SELECT AVG(r.rating)
+           FROM Review r
+           WHERE r.prodNo = :prodNo
+           """)
+    Double findAverageRatingByProdNo(@Param("prodNo") Long prodNo);
 
 
 }
