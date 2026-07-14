@@ -204,6 +204,7 @@
             <!-- Secondary Search & Filter Bar -->
             <div class="bg-surface-container-low p-md rounded standard-border mb-lg">
                 <form class="flex flex-wrap items-center gap-md text-sm" th:action="@{/product/search}" action="/product/search" method="get">
+                    <input type="hidden" name="sort" th:value="${sort}">
                     <div class="flex-1 min-w-[280px] flex gap-2">
                         <input name="keyword" th:value="${keyword}" class="flex-1 p-2.5 rounded border-outline bg-white focus:ring-primary focus:border-primary" placeholder="결과 내 재검색" type="text"/>
                         <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded font-bold hover:opacity-90 transition-opacity">검색</button>
@@ -229,12 +230,24 @@
 
             <!-- Sort Tabs -->
             <div class="flex border-b border-outline-variant mb-md overflow-x-auto text-sm">
-                <button class="px-4 py-3 font-bold text-primary border-b-2 border-primary whitespace-nowrap">판매많은순</button>
-                <button class="px-4 py-3 font-medium text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">낮은가격순</button>
-                <button class="px-4 py-3 font-medium text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">높은가격순</button>
-                <button class="px-4 py-3 font-medium text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">평점높은순</button>
-                <button class="px-4 py-3 font-medium text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">후기많은순</button>
-                <button class="px-4 py-3 font-medium text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap">최근등록순</button>
+                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='salesDesc')}"
+                   th:classappend="${sort == 'salesDesc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
+                   class="px-4 py-3 transition-colors whitespace-nowrap">판매많은순</a>
+                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='priceAsc')}"
+                   th:classappend="${sort == 'priceAsc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
+                   class="px-4 py-3 transition-colors whitespace-nowrap">낮은가격순</a>
+                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='priceDesc')}"
+                   th:classappend="${sort == 'priceDesc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
+                   class="px-4 py-3 transition-colors whitespace-nowrap">높은가격순</a>
+                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='ratingDesc')}"
+                   th:classappend="${sort == 'ratingDesc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
+                   class="px-4 py-3 transition-colors whitespace-nowrap">평점높은순</a>
+                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='reviewCount')}"
+                   th:classappend="${sort == 'reviewCount'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
+                   class="px-4 py-3 transition-colors whitespace-nowrap">후기많은순</a>
+                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='latest')}"
+                   th:classappend="${sort == 'latest'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
+                   class="px-4 py-3 transition-colors whitespace-nowrap">최근등록순</a>
             </div>
 
             <!-- Product List Container -->

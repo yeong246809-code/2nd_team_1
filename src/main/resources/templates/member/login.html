@@ -203,17 +203,25 @@
         </section>
         <!-- Side Visual Element (사이드 비주얼 영역) -->
         <aside class="hidden lg:flex flex-1 max-w-[520px] rounded-xl overflow-hidden shadow-sm relative group bg-white">
-            <div class="absolute inset-0 z-0">
+            <a th:if="${loginBanner != null}"
+               th:href="${#strings.isEmpty(loginBanner.linkUrl) ? null : loginBanner.linkUrl}"
+               class="absolute inset-0 z-30 block h-full w-full"
+               aria-label="회원 로그인 배너">
+                <img th:src="${loginBanner.fileUrl_stored}"
+                     th:alt="${#strings.isEmpty(loginBanner.name) ? '회원 로그인 배너' : loginBanner.name}"
+                     class="h-full w-full object-cover">
+            </a>
+            <div th:if="${loginBanner == null}" class="absolute inset-0 z-0">
                 <img class="w-full h-full object-cover" data-alt="A professional, minimalist editorial photograph for a high-end e-commerce brand. A serene workspace scene with a sleek laptop, a cup of coffee, and clean geometric stationery on a bright white marble desk. The lighting is soft and natural from a side window, creating a calm, productive atmosphere. The overall aesthetic is corporate modern with a sophisticated Navy-Teal color palette accents, reflecting K-market's reliable and clear brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_8dlC4KysvZ5kHB0OFgSs6qxP2RTsViGaBiAY2Ucr8Uv36tchT5AoCdGeuHJepF3mKBxpVKlrKDhn-yW_7DXTtClRloxwQKvRxY1rVaeLHZaIlE5ZIWkiVNbbowlRl8mtmJ6otv8rjwYIPTBluCabBSLh0uP2f9A8ehZeSjbxtgln86igrf2p1AqYQ7BMqcWyLIKsKwxvgmjDXZ2YENRnET8zLwa0DhLwTXPPO4QKF_89qqw4hUVfDJsf5fNmjUWiL4JF7GtwWz9Q"/>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent z-10 flex flex-col justify-end p-lg">
+            <div th:if="${loginBanner == null}" class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent z-10 flex flex-col justify-end p-lg">
                 <div class="text-white space-y-sm">
                     <h3 class="font-headline-lg text-headline-lg">더욱 스마트한 쇼핑</h3>
                     <p class="font-body-md text-body-md opacity-90">K-market 회원만을 위한 특별한 혜택과 맞춤형 큐레이션을 지금 바로 경험해보세요.</p>
                 </div>
             </div>
             <!-- Interactive Glow -->
-            <div class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] from-secondary-fixed"></div>
+            <div th:if="${loginBanner == null}" class="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] from-secondary-fixed"></div>
         </aside>
     </div>
     <!-- Trust Indicators (하단 인증 마크 영역) -->
