@@ -1,10 +1,15 @@
 package org.example.k_market.service.admin;
 
+import org.example.k_market.dto.DailySummaryDTO;
+import org.example.k_market.dto.DashboardStatsDTO;
 import org.example.k_market.dto.OrderDTO;
+import org.example.k_market.dto.TopSalesDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable; // 이 패키지로 통일
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public interface OrderService {
@@ -19,4 +24,10 @@ public interface OrderService {
     // 주문 상태 변경
     void updateOrderStatus(int orderNo, String status);
     boolean updateOrderStatus(String orderNo, String status); // 구현체에서 위 메서드 호출
+
+    // 대시보드 통계 메서드
+    DashboardStatsDTO getTodayDashboardStats();
+    DashboardStatsDTO getYesterdayDashboardStats();
+    List<DailySummaryDTO> getRecent5DaysSummary();
+    List<TopSalesDTO> getTopSalesCategories(int days);
 }

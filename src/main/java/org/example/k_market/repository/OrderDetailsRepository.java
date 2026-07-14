@@ -51,4 +51,15 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE OrderDetails od SET od.status = :status WHERE od.orderDetailNo = :orderDetailNo")
     void updateStatus(@Param("orderDetailNo") long orderDetailNo, @Param("status") String status);
+
+    @Query("SELECT c.name, SUM((od.price * od.quantity) - od.discountPrice) " +
+            "FROM OrderDetails od " +
+            "JOIN Order o ON od.orderNo = o.orderNo " +
+            "JOIN Product p ON od.productNo = p.prodNo " +
+            "JOIN Category c ON p.cateNo = c.cateNo " +
+            "WHERE o.createdAt >= :startDate AND o.status NOT LIKE '%취소%' " +
+            "GROUP BY c.name " +
+            "ORDER BY SUM((od.price * od.quantity) - od.discountPrice) DESC")
+    List<Object[]> getTopSalesByCategory(@Param("startDate") LocalDateTime startDate);
+
 }
