@@ -1,6 +1,5 @@
 package org.example.k_market.repository;
 
-import org.apache.ibatis.annotations.Param;
 import org.example.k_market.entity.Order;
 import org.example.k_market.entity.OrderDetails;
 import org.springframework.data.domain.Page;
