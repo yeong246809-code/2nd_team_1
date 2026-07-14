@@ -181,8 +181,6 @@ public class ProductOptionService {
                     ProductOptionItems.builder()
                             .optionNo(optionNo)
                             .itemName(itemName.trim())
-                            .addPrice(0)
-                            .stock(0)
                             .build();
 
             productOptionItemsRepository.save(item);

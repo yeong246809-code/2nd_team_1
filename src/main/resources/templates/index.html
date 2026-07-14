@@ -127,6 +127,39 @@
     </style>
 </head>
 <body class="bg-surface font-body-md text-on-surface">
+<!-- 화면설계서 1번: 메인 상단 가로 배너 -->
+<section th:if="${topBanner != null}"
+         class="w-full border-b border-outline-variant"
+         th:style="${topBanner.backgroundColor != null and !topBanner.backgroundColor.isBlank()}
+                   ? |background-color:${topBanner.backgroundColor};|
+                   : 'background-color:#f3f4f5;'">
+
+    <!-- 링크가 등록된 배너 -->
+    <a th:if="${topBanner.linkUrl != null and !topBanner.linkUrl.isBlank()}"
+       th:href="${topBanner.linkUrl}"
+       class="block w-full"
+       th:aria-label="${topBanner.name != null and !topBanner.name.isBlank()
+                       ? topBanner.name
+                       : '상단 배너'}">
+
+        <img th:src="${topBanner.fileUrl_stored}"
+             th:alt="${topBanner.name != null and !topBanner.name.isBlank()
+                      ? topBanner.name
+                      : 'K-market 상단 배너'}"
+             class="block w-full h-20 md:h-24 object-cover">
+    </a>
+
+    <!-- 링크가 없는 배너 -->
+    <div th:unless="${topBanner.linkUrl != null and !topBanner.linkUrl.isBlank()}"
+         class="w-full">
+
+        <img th:src="${topBanner.fileUrl_stored}"
+             th:alt="${topBanner.name != null and !topBanner.name.isBlank()
+                      ? topBanner.name
+                      : 'K-market 상단 배너'}"
+             class="block w-full h-20 md:h-24 object-cover">
+    </div>
+</section>
 <!-- 헤더 영역 -->
 <header class="bg-white border-b border-outline-variant sticky top-0 w-full z-50">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-4">
@@ -137,6 +170,8 @@
                      th:src="@{/uploads/{file}(file=${siteConfig.headerLogo_stored})}"
                      class="h-10 w-auto max-w-48 object-contain"
                      alt="K-market 헤더 로고">
+                <span th:if="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
+                      class="text-3xl font-extrabold text-primary">K-market</span>
                 <span th:unless="${siteConfig.headerLogo_stored != null and !siteConfig.headerLogo_stored.isBlank()}"
                       class="text-3xl font-extrabold text-primary">K-market</span>
             </a>
@@ -169,7 +204,13 @@
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
     <div th:replace="~{fragments/nav :: productTabs('deal')}"></div>
     <div class="flex flex-col md:flex-row gap-lg items-start">
-        <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${mainCateNo}, ${rankingProducts})}"></div>
+        <!-- 왼쪽 사이드바: 카테고리와 판매량 기준 베스트 상품 5개 -->
+        <div th:replace="~{fragments/nav :: productSidebar(
+        ${categories},
+        ${subCategoryMap},
+        ${mainCateNo},
+        ${bestProducts}
+)}"></div>
         <!-- Main Column -->
         <div class="flex-1 flex flex-col gap-xl">
             <!-- Hero Banner -->

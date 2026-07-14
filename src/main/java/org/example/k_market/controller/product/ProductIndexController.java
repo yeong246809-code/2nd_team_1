@@ -18,15 +18,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @Log4j2
 @RequiredArgsConstructor // Repository 자동 주입을 위해 필수!
+@RequestMapping("/product")
 public class ProductIndexController {
 
     private final CategoryRepository categoryRepository; // 이미 있을 가능성 높음
@@ -37,95 +42,207 @@ public class ProductIndexController {
 
     private static final int PAGE_SIZE = 10;
 
-    @GetMapping("/product/list")
-    public String list(@RequestParam(required = false) Integer cateNo,
-                       @RequestParam(required = false, defaultValue = "latest") String sort,
-                       @RequestParam(required = false, defaultValue = "1") int page,
-                       Model model) {
+    /**
+     * 상품 목록을 조회한다.
+     *
+     * cateNo가 전달되면 해당 2차 카테고리 상품만 조회한다.
+     * parentCateNo가 전달되면 해당 1차 카테고리와 연결된
+     * 모든 2차 카테고리 상품을 조회한다.
+     */
+    @GetMapping("/list")
+    public String list(
+            @RequestParam(required = false) Integer cateNo,
+            @RequestParam(required = false) Integer parentCateNo,
+            @RequestParam(defaultValue = "latest") String sort,
+            @RequestParam(defaultValue = "1") int page,
+            Model model
+    ) {
 
-        int pageIndex = Math.max(page - 1, 0); // 화면은 1부터, Pageable은 0부터
         List<Product> products;
-        int totalPages;
+        Integer activeCateNo = null;
+        String mainCateName = "전체";
 
-        if ("reviewCount".equals(sort)) {
-            // 후기많은순은 DB 정렬이 아니라 리뷰 개수 기준 자바 정렬이라 직접 페이징 처리
-            List<Product> all = (cateNo == null)
-                    ? productRepository.findAll()
-                    : productRepository.findByCateNoIn(resolveCateNos(cateNo));
-            all = sortByReviewCountDesc(all);
+        /*
+         * 2차 카테고리 선택
+         * 예: 아우터(cateNo=2), 상의(cateNo=3)
+         */
+        if (cateNo != null) {
+            products = new ArrayList<>(
+                    productRepository.findByCateNo(cateNo)
+            );
 
-            totalPages = (int) Math.ceil((double) all.size() / PAGE_SIZE);
-            int fromIndex = Math.min(pageIndex * PAGE_SIZE, all.size());
-            int toIndex = Math.min(fromIndex + PAGE_SIZE, all.size());
-            products = all.subList(fromIndex, toIndex);
+            activeCateNo = cateNo;
+
+            Category selectedCategory =
+                    categoryRepository.findById(cateNo).orElse(null);
+
+            if (selectedCategory != null) {
+                mainCateName = selectedCategory.getName();
+            }
+
+            /*
+             * 1차 카테고리 선택
+             * 예: 패션(parentCateNo=1), 뷰티(parentCateNo=7)
+             */
+        } else if (parentCateNo != null) {
+
+            List<Integer> childCateNos =
+                    categoryRepository
+                            .findByParentNoOrderByCateNoAsc(parentCateNo)
+                            .stream()
+                            .map(Category::getCateNo)
+                            .toList();
+
+            /*
+             * 하위 카테고리가 있으면 하위 카테고리 상품 전체 조회,
+             * 없으면 1차 카테고리 번호에 직접 연결된 상품 조회
+             */
+            if (childCateNos.isEmpty()) {
+                products = new ArrayList<>(
+                        productRepository.findByCateNo(parentCateNo)
+                );
+            } else {
+                products = new ArrayList<>(
+                        productRepository.findByCateNoIn(childCateNos)
+                );
+            }
+
+            activeCateNo = parentCateNo;
+
+            Category selectedCategory =
+                    categoryRepository.findById(parentCateNo).orElse(null);
+
+            if (selectedCategory != null) {
+                mainCateName = selectedCategory.getName();
+            }
+
+            /*
+             * 카테고리 조건이 없으면 전체 상품 조회
+             */
         } else {
-            org.springframework.data.domain.Pageable pageable =
-                    org.springframework.data.domain.PageRequest.of(pageIndex, PAGE_SIZE, resolveSort(sort));
-
-            org.springframework.data.domain.Page<Product> productPage = (cateNo == null)
-                    ? productRepository.findAll(pageable)
-                    : productRepository.findByCateNoIn(resolveCateNos(cateNo), pageable);
-
-            products = productPage.getContent();
-            totalPages = productPage.getTotalPages();
+            products = new ArrayList<>(productRepository.findAll());
         }
 
-        addProductLayout(model, cateNo);
-        model.addAttribute("products", products);
-        model.addAttribute("sort", sort);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", Math.max(totalPages, 1));
+        /*
+         * 선택한 정렬 조건 적용
+         */
+        String normalizedSort =
+                (sort == null || sort.isBlank()) ? "latest" : sort;
+
+        sortProducts(products, normalizedSort);
+
+        /*
+         * 조회된 목록을 10개씩 나누어 현재 페이지에 출력
+         */
+        int totalCount = products.size();
+        int totalPages = (int) Math.ceil(
+                (double) totalCount / PAGE_SIZE
+        );
+
+        int currentPage = Math.max(page, 1);
+
+        if (totalPages > 0 && currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        int fromIndex = totalPages == 0
+                ? 0
+                : (currentPage - 1) * PAGE_SIZE;
+
+        int toIndex = Math.min(
+                fromIndex + PAGE_SIZE,
+                totalCount
+        );
+
+        List<Product> pageProducts =
+                new ArrayList<>(products.subList(fromIndex, toIndex));
+
+        /*
+         * 상품 페이지 공통 레이아웃 데이터
+         */
+        addProductLayout(model, activeCateNo);
+
+        /*
+         * 목록 화면에서 사용할 데이터
+         */
+        model.addAttribute("products", pageProducts);
+        model.addAttribute("sort", normalizedSort);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("mainCateName", mainCateName);
+
+        /*
+         * 정렬 및 페이지 이동 시 현재 카테고리 조건을 유지하기 위한 값
+         */
+        model.addAttribute("selectedCateNo", cateNo);
+        model.addAttribute("selectedParentCateNo", parentCateNo);
+
         return "product/list";
     }
 
     /**
-     * 상품정렬 스펙:
-     * 판매많은순 / 낮은가격순 / 높은가격순 / 평점높은순 / 후기많은순 / 최근등록순
+     * 상품 목록의 정렬 조건을 적용한다.
      */
-    private org.springframework.data.domain.Sort resolveSort(String sort) {
-        return switch (sort) {
-            case "salesDesc" -> org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Direction.DESC, "salesCount");
-            case "priceAsc" -> org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Direction.ASC, "price");
-            case "priceDesc" -> org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Direction.DESC, "price");
-            case "ratingDesc" -> org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Direction.DESC, "rating");
-            case "reviewCount" -> org.springframework.data.domain.Sort.unsorted(); // 아래에서 별도 처리
-            default -> org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Direction.DESC, "createdAt"); // 최근등록순 (기본값)
+    private void sortProducts(
+            List<Product> products,
+            String sort
+    ) {
+
+        Comparator<Product> comparator;
+
+        comparator = switch (sort) {
+            case "salesDesc" ->
+                    Comparator.comparing(
+                            Product::getSalesCount,
+                            Comparator.nullsLast(
+                                    Comparator.reverseOrder()
+                            )
+                    );
+
+            case "priceAsc" ->
+                    Comparator.comparing(
+                            Product::getPrice,
+                            Comparator.nullsLast(
+                                    Comparator.naturalOrder()
+                            )
+                    );
+
+            case "priceDesc" ->
+                    Comparator.comparing(
+                            Product::getPrice,
+                            Comparator.nullsLast(
+                                    Comparator.reverseOrder()
+                            )
+                    );
+
+            case "ratingDesc" ->
+                    Comparator.comparing(
+                            Product::getRating,
+                            Comparator.nullsLast(
+                                    Comparator.reverseOrder()
+                            )
+                    );
+
+            case "reviewCount" ->
+                    Comparator.comparingLong(
+                            (Product product) -> reviewRepository.countByProdNo(
+                                    product.getProdNo()
+                            )
+                    ).reversed();
+
+            default ->
+                    Comparator.comparing(
+                            Product::getCreatedAt,
+                            Comparator.nullsLast(
+                                    Comparator.reverseOrder()
+                            )
+                    );
         };
+
+        products.sort(comparator);
     }
 
-    /**
-     * 후기많은순: 상품별 리뷰 개수를 기준으로 내림차순 정렬
-     */
-    private List<Product> sortByReviewCountDesc(List<Product> products) {
-        return products.stream()
-                .sorted((a, b) -> Long.compare(
-                        reviewRepository.countByProdNo(b.getProdNo()),
-                        reviewRepository.countByProdNo(a.getProdNo())
-                ))
-                .toList();
-    }
-
-    /**
-     * 선택한 카테고리(cateNo)가 상위(대분류)인 경우, 그 하위 카테고리 번호까지
-     * 모두 포함해서 조회 대상으로 만들어준다.
-     * (상품의 cateNo는 실제로는 하위 카테고리 번호를 참조하는 경우가 많기 때문)
-     */
-    private List<Integer> resolveCateNos(Integer cateNo) {
-        List<Integer> cateNos = new java.util.ArrayList<>();
-        cateNos.add(cateNo);
-
-        List<Category> children = categoryRepository.findByParentNo(cateNo);
-        for (Category child : children) {
-            cateNos.add(child.getCateNo());
-        }
-
-        return cateNos;
-    }
 
     @GetMapping("/product/search")
     public String search(@RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -320,7 +437,11 @@ public class ProductIndexController {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .build();
+        // 리뷰 저장
         reviewRepository.save(review);
+
+        // 새 리뷰를 포함하여 해당 상품의 평균 별점을 다시 계산
+        productService.updateProductRating(prodNo);
 
         return "redirect:/product/view?prodNo=" + prodNo;
     }
@@ -379,5 +500,67 @@ public class ProductIndexController {
         model.addAttribute("subCateNo", subCateNo);
         model.addAttribute("subCateName", subCateName);
         model.addAttribute("subCategories", subCategories);
+    private CartItemViewDTO toCartItemView(Cart cart) {
+        Product product = productRepository.findById(cart.getProdNo())
+                .orElseThrow(() -> new IllegalStateException("장바구니 상품이 존재하지 않습니다: " + cart.getProdNo()));
+        int price = product.getPrice() == null ? 0 : product.getPrice();
+        int discountRate = product.getDiscountRate() == null ? 0 : product.getDiscountRate();
+        int discountedPrice = (int) (price * (100L - discountRate) / 100L);
+        int shippingFee = product.getShippingFee() == null ? 0 : product.getShippingFee();
+        int rewardPoints = product.getRewardPoints() == null ? 0 : product.getRewardPoints();
+
+        return CartItemViewDTO.builder()
+                .cartNo(cart.getCartNo())
+                .prodNo(cart.getProdNo())
+                .name(product.getName())
+                .description(product.getDescription())
+                .thumb1(product.getThumb1())
+                .quantity(cart.getQuantity())
+                .unitPrice(price)
+                .discountRate(discountRate)
+                .rewardPoints(rewardPoints)
+                .shippingFee(shippingFee)
+                .lineTotal(discountedPrice * cart.getQuantity() + shippingFee)
+                .lineRewardPoints(rewardPoints * cart.getQuantity())
+                .build();
+    }
+
+    private void addProductLayout(
+            Model model,
+            Integer mainCateNo
+    ) {
+
+        /*
+         * 1차 카테고리 조회
+         */
+        List<Category> categories =
+                categoryRepository.findByParentNoIsNull();
+
+        /*
+         * 1차 카테고리별 2차 카테고리 목록 구성
+         */
+        Map<Integer, List<Category>> subCategoryMap =
+                new LinkedHashMap<>();
+
+        for (Category category : categories) {
+            subCategoryMap.put(
+                    category.getCateNo(),
+                    categoryRepository.findByParentNoOrderByCateNoAsc(
+                            category.getCateNo()
+                    )
+            );
+        }
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("subCategoryMap", subCategoryMap);
+        model.addAttribute("mainCateNo", mainCateNo);
+
+        /*
+         * 상품 페이지 사이드바 실시간 인기 상품
+         */
+        model.addAttribute(
+                "rankingProducts",
+                productRepository.findTop3ByOrderBySalesCountDesc()
+        );
     }
 }

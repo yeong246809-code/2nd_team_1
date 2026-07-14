@@ -205,22 +205,37 @@
 
     <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md shadow-sm">
         <div class="mb-md flex flex-wrap items-center justify-between gap-sm border-b border-surface-variant pb-md">
-            <form th:action="@{/admin/product/list}" method="get" class="flex items-center gap-xs">
+            <form th:action="@{/admin/product/list}" method="get" class="flex items-center gap-xs flex-wrap">
+                <input type="hidden" name="sort" th:value="${sort}"/>
                 <div class="relative inline-block w-36">
                     <select name="searchType" class="w-full bg-surface border border-outline border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer">
                         <option value="name" th:selected="${searchType == 'name'}">상품명</option>
-                        <option value="prodNo" th:selected="${searchType == 'prodNo'}">상품코드</option>
-                        <option value="manufacturer" th:selected="${searchType == 'manufacturer'}">판매자</option>
+                        <option value="shopName" th:selected="${searchType == 'shopName'}">상호명</option>
+                        <option value="category" th:selected="${searchType == 'category'}">카테고리</option>
                     </select>
                     <span class="material-symbols-outlined absolute right-2 top-2.5 pointer-events-none text-on-surface-variant text-md">expand_more</span>
                 </div>
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="키워드입력" class="border border-outline-variant bg-surface rounded-lg px-3 py-2 text-body-md w-64 focus:outline-none focus:border-primary"/>
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="키워드 입력" class="border border-outline-variant bg-surface rounded-lg px-3 py-2 text-body-md w-64 focus:outline-none focus:border-primary"/>
                 <button type="submit" class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-label-md hover:bg-primary hover:text-white transition-colors">검색</button>
             </form>
 
-            <a th:href="@{/admin/product/register}" class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-1 transition-transform active:scale-95">
-                <span class="material-symbols-outlined text-sm">add</span>상품등록
-            </a>
+            <div class="flex items-center gap-2">
+                <div class="relative inline-block w-44">
+                    <select id="sortSelect" onchange="changeSort(this.value)" class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer">
+                        <option value="latest" th:selected="${sort == 'latest'}">등록일 최신순</option>
+                        <option value="oldest" th:selected="${sort == 'oldest'}">등록일 오래된순</option>
+                        <option value="priceAsc" th:selected="${sort == 'priceAsc'}">판매가 낮은순</option>
+                        <option value="priceDesc" th:selected="${sort == 'priceDesc'}">판매가 높은순</option>
+                        <option value="salesDesc" th:selected="${sort == 'salesDesc'}">판매량 높은순</option>
+                        <option value="salesAsc" th:selected="${sort == 'salesAsc'}">판매량 낮은순</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-2 top-2.5 pointer-events-none text-on-surface-variant text-md">expand_more</span>
+                </div>
+
+                <a th:href="@{/admin/product/register}" class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-1 transition-transform active:scale-95 whitespace-nowrap">
+                    <span class="material-symbols-outlined text-sm">add</span>상품등록
+                </a>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -235,16 +250,17 @@
                     <th class="py-4 px-2 font-bold">할인율</th>
                     <th class="py-4 px-2 font-bold">포인트</th>
                     <th class="py-4 px-2 font-bold">재고</th>
-                    <th class="py-4 px-2 font-bold">판매자</th>
+                    <th class="py-4 px-2 font-bold">상호명</th>
                     <th class="py-4 px-2 font-bold">조회</th>
+                    <th class="py-4 px-2 font-bold">판매량</th>
                     <th class="py-4 px-2 font-bold w-24">관리</th>
                 </tr>
                 </thead>
                 <tbody class="text-body-md text-on-surface-variant divide-y divide-surface-variant">
                 <tr th:if="${#lists.isEmpty(productList)}">
-                    <td colspan="11" class="py-8 text-center text-outline">등록된 상품 데이터가 없습니다.</td>
+                    <td colspan="12" class="py-8 text-center text-outline">등록된 상품 데이터가 없습니다.</td>
                 </tr>
-                <tr th:unless="${#lists.isEmpty(productList)}" th:each="product, loop : ${productList}">
+                <tr th:unless="${#lists.isEmpty(productList)}" th:each="product : ${productList}">
                     <td class="py-4 px-2"><input type="checkbox" name="chkProduct" th:value="${product.prodNo}" class="rounded text-primary focus:ring-primary"/></td>
                     <td class="py-2 px-2 flex justify-center">
                         <div class="w-12 h-12 rounded border border-outline-variant bg-surface-container overflow-hidden flex items-center justify-center">
@@ -258,8 +274,9 @@
                     <td class="py-4 px-2 text-error font-bold" th:text="${product.discountRate != null && product.discountRate > 0} ? ${product.discountRate} + '%' : '-'"></td>
                     <td class="py-4 px-2" th:text="${#numbers.formatInteger(product.rewardPoints, 0, 'COMMA')}"></td>
                     <td class="py-4 px-2" th:text="${#numbers.formatInteger(product.stockQuantity, 0, 'COMMA')}"></td>
-                    <td class="py-4 px-2" th:text="${product.manufacturer}"></td>
-                    <td class="py-4 px-2" th:text="${product.viewCount}"></td>
+                    <td class="py-4 px-2 font-medium text-on-surface" th:text="${shopNameMap[product.shopNo] != null ? shopNameMap[product.shopNo] : '상점정보없음'}"></td>
+                    <td class="py-4 px-2" th:text="${#numbers.formatInteger(product.viewCount, 0, 'COMMA')}"></td>
+                    <td class="py-4 px-2 font-bold text-secondary" th:text="${#numbers.formatInteger(product.salesCount, 0, 'COMMA')}"></td>
                     <td class="py-4 px-2 text-sm">
                         <div class="flex flex-col gap-1 items-center">
                             <button class="text-error hover:underline text-xs" th:onclick="'deleteProduct(' + ${product.prodNo} + ')'">[삭제]</button>
@@ -274,23 +291,24 @@
         <div class="mt-lg flex flex-col sm:flex-row items-center justify-between gap-md">
             <button onclick="deleteSelected()" class="bg-error-container text-on-error-container border border-error px-4 py-2 rounded-lg font-label-md hover:bg-error hover:text-white transition-colors w-full sm:w-auto">선택삭제</button>
 
-            <div class="flex justify-center items-center gap-md" th:if="${totalPages > 0}">
-                <a th:href="@{/admin/product/list(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}"
-                   th:classappend="${currentPage == 0} ? 'pointer-events-none opacity-50' : ''"
+            <div class="flex justify-center items-center gap-md" th:if="${pageResponse != null && pageResponse.total > 0}">
+                <a th:href="@{/admin/product/list(page=${pageResponse.prevPage}, searchType=${searchType}, keyword=${keyword}, sort=${sort})}"
+                   th:classappend="${!pageResponse.prev} ? 'pointer-events-none opacity-40' : ''"
                    class="px-3 py-1.5 rounded border border-outline-variant text-label-sm text-on-surface-variant hover:bg-surface-container-high transition-colors block">
                     이전
                 </a>
-                <div class="flex gap-1" th:with="start=${(currentPage/5)*5}, end=${(start + 4 < totalPages) ? start + 4 : totalPages - 1}">
-                    <a th:each="pageNo : ${#numbers.sequence(start, end)}"
-                       th:href="@{/admin/product/list(page=${pageNo}, searchType=${searchType}, keyword=${keyword})}"
-                       th:text="${pageNo + 1}"
-                       th:classappend="${pageNo == currentPage} ? 'bg-primary text-on-primary font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'"
+
+                <div class="flex gap-1">
+                    <a th:each="pageNo : ${#numbers.sequence(pageResponse.startPage, pageResponse.endPage)}"
+                       th:href="@{/admin/product/list(page=${pageNo}, searchType=${searchType}, keyword=${keyword}, sort=${sort})}"
+                       th:text="${pageNo}"
+                       th:classappend="${pageNo == pageResponse.pg} ? 'bg-primary text-on-primary font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'"
                        class="w-8 h-8 flex items-center justify-center rounded text-label-md transition-colors block">
-                        1
                     </a>
                 </div>
-                <a th:href="@{/admin/product/list(page=${currentPage + 1}, searchType=${searchType}, keyword=${keyword})}"
-                   th:classappend="${currentPage + 1 >= totalPages} ? 'pointer-events-none opacity-50' : ''"
+
+                <a th:href="@{/admin/product/list(page=${pageResponse.nextPage}, searchType=${searchType}, keyword=${keyword}, sort=${sort})}"
+                   th:classappend="${!pageResponse.next} ? 'pointer-events-none opacity-40' : ''"
                    class="px-3 py-1.5 rounded border border-outline-variant text-label-sm text-on-surface-variant hover:bg-surface-container-high transition-colors block">
                     다음
                 </a>
@@ -301,6 +319,15 @@
 </main>
 
 <script th:inline="javascript">
+    // 정렬 변경 시 파라미터를 유지하면서 페이지 이동
+    function changeSort(sortValue) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('sort', sortValue);
+        urlParams.set('page', '1'); // 정렬을 바꾸면 1페이지로 리셋
+        window.location.href = '/admin/product/list?' + urlParams.toString();
+    }
+
+    // 기존 체크박스 및 삭제 스크립트 유지
     document.getElementById('selectAll').addEventListener('change', function() {
         const checkboxes = document.getElementsByName('chkProduct');
         checkboxes.forEach((checkbox) => { checkbox.checked = this.checked; });

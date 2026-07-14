@@ -15,7 +15,10 @@ public class ProductOptions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long optionNo;
+
     private long prodNo;
+
+    @Column(name = "optionName")
     private String name;
 
     public ProductOptionsDTO toDTO(){

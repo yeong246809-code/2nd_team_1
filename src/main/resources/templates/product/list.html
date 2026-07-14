@@ -213,6 +213,12 @@
                 </div>
             </div>
         </aside>
+        <div th:replace="~{fragments/nav :: productSidebar(
+                ${categories},
+                ${subCategoryMap},
+                ${mainCateNo},
+                ${rankingProducts}
+        )}"></div>
 
         <div class="flex-1 min-w-0 flex flex-col gap-xl">
             <div class="flex flex-col gap-md">
@@ -241,19 +247,18 @@
                 </nav>
 
                 <!-- 상품정렬 -->
-                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant"
-                     th:with="activeCateNo=${subCateNo != null ? subCateNo : mainCateNo}">
-                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='salesDesc', page=1)}"
+                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant">
+                    <a th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort='salesDesc', page=1)}"
                        th:classappend="${sort == 'salesDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">판매많은순</a>
-                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='priceAsc', page=1)}"
+                    <a th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort='priceAsc', page=1)}"
                        th:classappend="${sort == 'priceAsc'} ? 'font-bold text-primary' : 'hover:text-primary'">낮은가격순</a>
-                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='priceDesc', page=1)}"
+                    <a th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort='priceDesc', page=1)}"
                        th:classappend="${sort == 'priceDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">높은가격순</a>
-                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='ratingDesc', page=1)}"
+                    <a th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort='ratingDesc', page=1)}"
                        th:classappend="${sort == 'ratingDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">평점높은순</a>
-                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='reviewCount', page=1)}"
+                    <a th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort='reviewCount', page=1)}"
                        th:classappend="${sort == 'reviewCount'} ? 'font-bold text-primary' : 'hover:text-primary'">후기많은순</a>
-                    <a th:href="@{/product/list(cateNo=${activeCateNo}, sort='latest', page=1)}"
+                    <a th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort='latest', page=1)}"
                        th:classappend="${sort == 'latest' or sort == null} ? 'font-bold text-primary' : 'hover:text-primary'">최근등록순</a>
                 </nav>
 
@@ -281,16 +286,16 @@
                             <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
                                 <div class="flex flex-col">
                                     <div class="flex items-center gap-2">
-                                        <span th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')} + ' 원'" class="text-xl font-bold text-primary">0 원</span>
+                                        <span th:text="${#numbers.formatInteger((product.price != null ? product.price : 0) * (100 - (product.discountRate != null ? product.discountRate : 0)) / 100, 3, 'COMMA')} + ' 원'" class="text-xl font-bold text-primary">0 원</span>
 
-                                        <th:block th:if="${product.discountRate > 0}">
+                                        <th:block th:if="${product.discountRate != null and product.discountRate > 0}">
                                             <span th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'" class="text-sm text-outline line-through">0원</span>
                                             <span th:text="${product.discountRate} + '% ↓'" class="text-sm text-error font-bold">0% ↓</span>
                                         </th:block>
                                     </div>
                                     <div class="mt-2">
-                                        <span th:if="${product.shippingFee == 0}" class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
-                                        <span th:if="${product.shippingFee > 0}" th:text="'배송비 ' + ${#numbers.formatInteger(product.shippingFee, 3, 'COMMA')} + '원'" class="bg-surface-container text-on-surface-variant text-[10px] px-2 py-0.5 rounded font-bold">배송비</span>
+                                        <span th:if="${product.shippingFee == null or product.shippingFee == 0}" class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
+                                        <span th:if="${product.shippingFee != null and product.shippingFee > 0}" th:text="'배송비 ' + ${#numbers.formatInteger(product.shippingFee, 3, 'COMMA')} + '원'" class="bg-surface-container text-on-surface-variant text-[10px] px-2 py-0.5 rounded font-bold">배송비</span>
                                     </div>
                                 </div>
 
@@ -299,10 +304,10 @@
                                         <span class="material-symbols-outlined text-sm">store</span>
                                         <span th:text="'상점 No.' + ${product.shopNo}">판매자 식별번호</span>
                                     </div>
-                                    <div class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating}">
+                                    <div class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating != null ? product.rating : 0}">
                                         <th:block th:each="i : ${#numbers.sequence(1, 5)}">
                                             <span class="material-symbols-outlined text-yellow-500 text-sm"
-                                                  th:style="${i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
+                                                  th:style="${product.rating != null and i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
                                         </th:block>
                                     </div>
                                 </div>
@@ -315,18 +320,18 @@
                 <div class="flex justify-center items-center gap-2 mt-xl" th:if="${totalPages > 0}"
                      th:with="activeCateNo=${subCateNo != null ? subCateNo : mainCateNo}">
                     <a th:if="${currentPage > 1}"
-                       th:href="@{/product/list(cateNo=${activeCateNo}, sort=${sort}, page=${currentPage - 1})}"
+                       th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort=${sort}, page=${currentPage - 1})}"
                        class="p-2 text-outline-variant hover:text-primary">&lt; 이전</a>
                     <span th:unless="${currentPage > 1}" class="p-2 text-outline-variant/40">&lt; 이전</span>
 
                     <a th:each="p : ${#numbers.sequence(1, totalPages)}"
-                       th:href="@{/product/list(cateNo=${activeCateNo}, sort=${sort}, page=${p})}"
+                       th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort=${sort}, page=${p})}"
                        th:text="${p}"
                        th:classappend="${p == currentPage} ? 'bg-primary text-white font-bold' : 'hover:bg-surface-container'"
                        class="w-8 h-8 flex items-center justify-center rounded">1</a>
 
                     <a th:if="${currentPage < totalPages}"
-                       th:href="@{/product/list(cateNo=${activeCateNo}, sort=${sort}, page=${currentPage + 1})}"
+                       th:href="@{/product/list(cateNo=${selectedCateNo}, parentCateNo=${selectedParentCateNo}, sort=${sort}, page=${currentPage + 1})}"
                        class="p-2 text-outline-variant hover:text-primary">다음 &gt;</a>
                     <span th:unless="${currentPage < totalPages}" class="p-2 text-outline-variant/40">다음 &gt;</span>
                 </div>

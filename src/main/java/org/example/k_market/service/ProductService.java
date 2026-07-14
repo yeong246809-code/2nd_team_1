@@ -1,11 +1,18 @@
 package org.example.k_market.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.k_market.dto.PageResponseDTO;
 import org.example.k_market.dto.ProductDTO;
 import org.example.k_market.entity.Product;
+import org.example.k_market.entity.Shop;
 import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.repository.ReviewRepository;
+import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.service.aws.S3Uploader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -15,6 +22,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 상품 비즈니스 로직을 담당하는 서비스 클래스.
@@ -30,6 +39,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductService {
+
+    private final ShopRepository shopRepository;
 
     /** S3에 상품 이미지를 저장할 기본 폴더명 */
     private static final String PRODUCT_IMAGE_DIR = "products";
@@ -394,6 +405,45 @@ public class ProductService {
         }
 
         productRepository.save(product);
+    }
+
+    public PageResponseDTO<ProductDTO> getProductsPaged(
+            Integer shopNo, String searchType, String keyword, String sort, int page, int size) {
+
+        // 1. 정렬 조건 설정
+        Sort sortObj = switch (sort != null ? sort : "latest") {
+            case "oldest" -> Sort.by(Sort.Direction.ASC, "createdAt");
+            case "priceAsc" -> Sort.by(Sort.Direction.ASC, "price");
+            case "priceDesc" -> Sort.by(Sort.Direction.DESC, "price");
+            case "salesAsc" -> Sort.by(Sort.Direction.ASC, "salesCount");
+            case "salesDesc" -> Sort.by(Sort.Direction.DESC, "salesCount");
+            default -> Sort.by(Sort.Direction.DESC, "createdAt"); // latest
+        };
+
+        // 2. 페이지 요청 객체 생성 (JPA는 0부터 시작하므로 page - 1 처리, 만약 파라미터가 0부터 오면 그대로 사용)
+        int pageIndex = Math.max(page - 1, 0);
+        Pageable pageable = PageRequest.of(pageIndex, size, sortObj);
+
+        // 3. DB 조회
+        Page<Product> resultPage = productRepository.findProductsWithSearch(shopNo, searchType, keyword, pageable);
+
+        // 4. Page<Product> -> Page<ProductDTO> 변환
+        Page<ProductDTO> dtoPage = resultPage.map(Product::toDTO);
+
+        // 5. PageResponseDTO 생성 (블록 사이즈 5로 설정)
+        return new PageResponseDTO<>(dtoPage, 5);
+    }
+
+    /**
+     * 화면에 상호명을 출력하기 위해 전체 상호명 맵(Map<shopNo, shopName>)을 반환
+     */
+    public Map<Integer, String> getShopNameMap() {
+        return shopRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        Shop::getShopNo,
+                        Shop::getName, // 만약 Shop 엔티티의 필드가 shopName이면 Shop::getShopName으로 변경
+                        (existing, replacement) -> existing
+                ));
     }
 
 }

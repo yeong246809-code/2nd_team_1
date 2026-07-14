@@ -2,19 +2,28 @@ package org.example.k_market.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.entity.Category;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.service.ProductService;
+import org.example.k_market.service.admin.BannerService;
 import org.example.k_market.service.admin.SiteConfigService;
 import org.example.k_market.service.admin.VersionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @Log4j2
 @RequiredArgsConstructor
 public class IndexController {
+
+    // 메인 화면 배너를 조회한다.
+    private final BannerService bannerService;
 
     // 관리자 사이트 설정 정보
     // 사이트명, 로고, 회사 정보, 고객센터 정보 등을 메인 화면에 출력한다.
@@ -43,6 +52,19 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model) {
 
+
+        /*
+         * 화면설계서 1번: 메인 상단 가로 배너
+         *
+         * 관리자 배너 관리에서 위치가 MAIN1이고,
+         * 상태가 활성이며 현재 노출 기간에 해당하는 배너 1개를 조회한다.
+         * 등록된 배너가 없으면 topBanner에는 null이 전달되어 HTML에서 영역을 숨긴다.
+         */
+        model.addAttribute(
+                "topBanner",
+                bannerService.getDisplayableBanner("MAIN1")
+        );
+
         /*
          * 사이트 공통 설정
          * 기존 팀 작업이므로 그대로 유지한다.
@@ -62,13 +84,32 @@ public class IndexController {
         );
 
         /*
-         * 최상위 카테고리 목록
-         * parentNo가 null인 1차 카테고리만 조회한다.
+         * 1차 카테고리 목록 조회
          */
-        model.addAttribute(
-                "categories",
-                categoryRepository.findByParentNoIsNull()
-        );
+        List<Category> categories =
+                categoryRepository.findByParentNoIsNull();
+
+        model.addAttribute("categories", categories);
+
+        /*
+         * 1차 카테고리별 2차 카테고리 목록
+         *
+         * key   : 1차 카테고리 번호
+         * value : 해당 카테고리에 속한 2차 카테고리 목록
+         */
+        Map<Integer, List<Category>> subCategoryMap =
+                new LinkedHashMap<>();
+
+        for (Category category : categories) {
+            subCategoryMap.put(
+                    category.getCateNo(),
+                    categoryRepository.findByParentNoOrderByCateNoAsc(
+                            category.getCateNo()
+                    )
+            );
+        }
+
+        model.addAttribute("subCategoryMap", subCategoryMap);
 
         /*
          * 현재 선택된 메인 카테고리 번호
@@ -137,5 +178,5 @@ public class IndexController {
     }
 
 
-    
+
 }
