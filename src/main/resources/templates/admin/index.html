@@ -128,6 +128,7 @@
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
 <!-- Shared Component: SideNavBar -->
@@ -270,28 +271,34 @@
     <div class="flex flex-col gap-lg">
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+
             <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
                 <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">운영현황 (주문상세 기준)</h3>
                 <div class="grid grid-cols-5 gap-sm">
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">입금대기</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold" th:text="${todayStats != null ? todayStats.pendingDeposit : 0}">0</span>
+                        <span class="font-headline-md text-headline-md text-primary font-bold"
+                              th:text="${todayStats != null ? todayStats.pendingDeposit : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">배송준비</span>
-                        <span class="font-headline-md text-headline-md text-primary font-bold" th:text="${todayStats != null ? todayStats.preparingDelivery : 0}">0</span>
+                        <span class="font-headline-md text-headline-md text-primary font-bold"
+                              th:text="${todayStats != null ? todayStats.preparingDelivery : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">취소요청</span>
-                        <span class="font-headline-md text-headline-md text-error font-bold" th:text="${todayStats != null ? todayStats.cancelRequest : 0}">0</span>
+                        <span class="font-headline-md text-headline-md text-error font-bold"
+                              th:text="${todayStats != null ? todayStats.cancelRequest : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">교환요청</span>
-                        <span class="font-headline-md text-headline-md text-secondary font-bold" th:text="${todayStats != null ? todayStats.exchangeRequest : 0}">0</span>
+                        <span class="font-headline-md text-headline-md text-secondary font-bold"
+                              th:text="${todayStats != null ? todayStats.exchangeRequest : 0}">0</span>
                     </div>
                     <div class="flex flex-col items-center justify-center bg-surface p-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
                         <span class="font-label-sm text-label-sm text-on-surface-variant mb-1">반품요청</span>
-                        <span class="font-headline-md text-headline-md text-tertiary font-bold" th:text="${todayStats != null ? todayStats.returnRequest : 0}">0</span>
+                        <span class="font-headline-md text-headline-md text-tertiary font-bold"
+                              th:text="${todayStats != null ? todayStats.returnRequest : 0}">0</span>
                     </div>
                 </div>
             </section>
@@ -299,102 +306,80 @@
             <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
                 <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">주요 지표 (오늘 / 어제)</h3>
                 <div class="grid grid-cols-5 gap-2 text-center">
-                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+
+                    <div class="flex flex-col justify-center bg-surface p-2 rounded border border-outline-variant">
                         <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">주문건수</span>
                         <span class="font-headline-md text-sm text-primary font-bold">
-                            <span th:text="${todayStats != null ? todayStats.orderCount : 0}">0</span>
-                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.orderCount : 0}">0</span></span>
+                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.orderCount, 0, 'COMMA') : 0}">0</span><span class="text-xs font-normal">건</span>
+                        </span>
+                        <span class="text-[11px] text-gray-400 mt-0.5">
+                            어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.orderCount, 0, 'COMMA') : 0}">0</span>
                         </span>
                     </div>
-                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+
+                    <div class="flex flex-col justify-center bg-surface p-2 rounded border border-outline-variant">
                         <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">주문금액</span>
-                        <span class="font-headline-md text-sm text-primary font-bold truncate">
-                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.orderAmount, 0, 'COMMA') : 0}">0</span>
+                        <span class="font-headline-md text-sm text-primary font-bold tracking-tight">
+                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.orderAmount, 0, 'COMMA') : 0}">0</span><span class="text-xs font-normal">원</span>
                         </span>
-                        <span class="text-[10px] text-gray-400 truncate">어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.orderAmount, 0, 'COMMA') : 0}">0</span></span>
+                        <span class="text-[11px] text-gray-400 mt-0.5 tracking-tight">
+                            어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.orderAmount, 0, 'COMMA') : 0}">0</span>
+                        </span>
                     </div>
-                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+
+                    <div class="flex flex-col justify-center bg-surface p-2 rounded border border-outline-variant">
                         <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">회원가입</span>
                         <span class="font-headline-md text-sm text-primary font-bold">
-                            <span th:text="${todayStats != null ? todayStats.memberJoinCount : 0}">0</span>
-                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.memberJoinCount : 0}">0</span></span>
+                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.memberJoinCount, 0, 'COMMA') : 0}">0</span><span class="text-xs font-normal">명</span>
+                        </span>
+                        <span class="text-[11px] text-gray-400 mt-0.5">
+                            어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.memberJoinCount, 0, 'COMMA') : 0}">0</span>
                         </span>
                     </div>
-                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+
+                    <div class="flex flex-col justify-center bg-surface p-2 rounded border border-outline-variant">
                         <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">방문자수</span>
                         <span class="font-headline-md text-sm text-primary font-bold">
-                            <span th:text="${todayStats != null ? todayStats.visitorCount : 0}">0</span>
-                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.visitorCount : 0}">0</span></span>
+                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.visitorCount, 0, 'COMMA') : 0}">0</span><span class="text-xs font-normal">명</span>
+                        </span>
+                        <span class="text-[11px] text-gray-400 mt-0.5">
+                            어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.visitorCount, 0, 'COMMA') : 0}">0</span>
                         </span>
                     </div>
-                    <div class="flex flex-col bg-surface p-2 rounded border border-outline-variant">
+
+                    <div class="flex flex-col justify-center bg-surface p-2 rounded border border-outline-variant">
                         <span class="font-label-sm text-[11px] text-on-surface-variant mb-1">문의게시글</span>
                         <span class="font-headline-md text-sm text-primary font-bold">
-                            <span th:text="${todayStats != null ? todayStats.qnaCount : 0}">0</span>
-                            <span class="text-[10px] text-gray-400">/ <span th:text="${yesterdayStats != null ? yesterdayStats.qnaCount : 0}">0</span></span>
+                            <span th:text="${todayStats != null ? #numbers.formatInteger(todayStats.qnaCount, 0, 'COMMA') : 0}">0</span><span class="text-xs font-normal">건</span>
+                        </span>
+                        <span class="text-[11px] text-gray-400 mt-0.5">
+                            어제: <span th:text="${yesterdayStats != null ? #numbers.formatInteger(yesterdayStats.qnaCount, 0, 'COMMA') : 0}">0</span>
                         </span>
                     </div>
+
                 </div>
             </section>
         </div>
 
         <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
             <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">집계 및 매출 현황 (최근 5일)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg min-h-[16rem]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg min-h-[18rem]">
 
                 <div class="flex flex-col h-full border border-outline-variant rounded p-sm bg-surface">
                     <span class="font-label-md text-label-md text-on-surface-variant mb-3">최근 5일 주문 · 결제 · 취소 집계</span>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-center text-xs border-collapse">
-                            <thead>
-                            <tr class="border-b border-outline-variant text-on-surface-variant bg-surface-container-low">
-                                <th class="py-1.5 font-semibold">날짜</th>
-                                <th class="py-1.5 font-semibold text-blue-600">주문(건)</th>
-                                <th class="py-1.5 font-semibold text-green-600">결제(건)</th>
-                                <th class="py-1.5 font-semibold text-red-600">취소(건)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="daily : ${dailySummaryList}" class="border-b border-outline-variant/50 hover:bg-white transition-colors">
-                                <td class="py-1.5 font-medium" th:text="${daily.date}">07-13</td>
-                                <td class="py-1.5 font-bold text-blue-600" th:text="${daily.orderCount}">0</td>
-                                <td class="py-1.5 font-bold text-green-600" th:text="${daily.payCount}">0</td>
-                                <td class="py-1.5 font-bold text-red-600" th:text="${daily.cancelCount}">0</td>
-                            </tr>
-                            <tr th:if="${dailySummaryList == null or dailySummaryList.isEmpty()}">
-                                <td colspan="4" class="py-6 text-gray-400">집계 데이터가 없습니다.</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="flex-1 relative w-full h-64 flex items-center justify-center">
+                        <canvas id="dailySummaryChart"></canvas>
+                        <div th:if="${dailySummaryList == null or dailySummaryList.isEmpty()}" class="absolute text-gray-400 text-xs">
+                            집계 데이터가 없습니다.
+                        </div>
                     </div>
                 </div>
 
                 <div class="flex flex-col h-full border border-outline-variant rounded p-sm bg-surface">
                     <span class="font-label-md text-label-md text-on-surface-variant mb-3">5일간 주요 카테고리 매출 (Top 3 + 기타)</span>
-
-                    <div class="flex flex-col gap-3 my-auto px-2">
-                        <th:block th:each="sales, stat : ${topSalesList}">
-                            <div class="flex flex-col gap-1">
-                                <div class="flex justify-between text-xs font-medium">
-                                    <span class="text-on-background font-bold flex items-center gap-1">
-                                        <span class="w-2 h-2 rounded-full"
-                                              th:classappend="${stat.index == 0 ? 'bg-primary' : (stat.index == 1 ? 'bg-secondary' : (stat.index == 2 ? 'bg-tertiary' : 'bg-gray-400'))}"></span>
-                                        <span th:text="${sales.categoryName}">가전</span>
-                                    </span>
-                                    <span class="text-on-surface-variant font-semibold">
-                                        <span th:text="${#numbers.formatInteger(sales.totalSales, 0, 'COMMA')}">0</span>원
-                                        (<span th:text="${sales.percentage}">0</span>%)
-                                    </span>
-                                </div>
-                                <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full transition-all duration-500"
-                                         th:style="'width: ' + ${sales.percentage} + '%;'"
-                                         th:classappend="${stat.index == 0 ? 'bg-primary' : (stat.index == 1 ? 'bg-secondary' : (stat.index == 2 ? 'bg-tertiary' : 'bg-gray-400'))}"></div>
-                                </div>
-                            </div>
-                        </th:block>
-                        <div th:if="${topSalesList == null or topSalesList.isEmpty()}" class="py-12 text-center text-xs text-gray-400">
+                    <div class="flex-1 relative w-full h-64 flex items-center justify-center">
+                        <canvas id="topSalesChart"></canvas>
+                        <div th:if="${topSalesList == null or topSalesList.isEmpty()}" class="absolute text-gray-400 text-xs">
                             매출 집계 데이터가 없습니다.
                         </div>
                     </div>
@@ -454,24 +439,94 @@
         </div>
     </div>
 </main>
+
 <script>
     function toggleAccordion(button) {
         const menuItem = button.closest('.group\\/menu');
         if (!menuItem) return;
 
         const isActive = menuItem.classList.contains('menu-item-active');
-
         if (isActive) {
             menuItem.classList.remove('menu-item-active');
         } else {
             document.querySelectorAll('.menu-item-active').forEach(item => {
-                if (item !== menuItem) {
-                    item.classList.remove('menu-item-active');
-                }
+                if (item !== menuItem) item.classList.remove('menu-item-active');
             });
             menuItem.classList.add('menu-item-active');
         }
     }
+</script>
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        /* [1] 최근 5일 주문·결제·취소 집계 (막대 그래프) */
+        const dailyData = /*[[${dailySummaryList}]]*/ [];
+        if (dailyData && dailyData.length > 0) {
+            const labels = dailyData.map(item => item.date);
+            const orderCounts = dailyData.map(item => item.orderCount);
+            const payCounts = dailyData.map(item => item.payCount);
+            const cancelCounts = dailyData.map(item => item.cancelCount);
+
+            const ctxDaily = document.getElementById('dailySummaryChart').getContext('2d');
+            new Chart(ctxDaily, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: '주문', data: orderCounts, backgroundColor: '#3b82f6', borderRadius: 4 },
+                        { label: '결제', data: payCounts, backgroundColor: '#22c55e', borderRadius: 4 },
+                        { label: '취소', data: cancelCounts, backgroundColor: '#ef4444', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } }
+                }
+            });
+        }
+
+        /* [2] 5일간 주요 카테고리 매출 (원 그래프 - 도넛) */
+        const topSalesData = /*[[${topSalesList}]]*/ [];
+        if (topSalesData && topSalesData.length > 0) {
+            const salesLabels = topSalesData.map(item => item.categoryName);
+            const salesValues = topSalesData.map(item => item.totalSales);
+            const bgColors = ['#14333b', '#3e6659', '#452916', '#9ca3af', '#6b7280'];
+
+            const ctxSales = document.getElementById('topSalesChart').getContext('2d');
+            new Chart(ctxSales, {
+                type: 'doughnut',
+                data: {
+                    labels: salesLabels,
+                    datasets: [{
+                        data: salesValues,
+                        backgroundColor: bgColors.slice(0, salesLabels.length),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('ko-KR').format(context.parsed) + '원';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
 </script>
 <script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 <script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>

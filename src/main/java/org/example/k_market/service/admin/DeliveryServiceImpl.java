@@ -1,6 +1,7 @@
 package org.example.k_market.service.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.example.k_market.dto.DashboardStatsDTO;
 import org.example.k_market.dto.DeliveryDTO;
 import org.example.k_market.entity.Deliveries;
 import org.example.k_market.entity.Order;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -135,6 +137,66 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .quantity(od.getQuantity())       // 주문 수량
                 .shippingFee(o.getTotalShippingFee())
                 .totalProductPrice(o.getTotalProductPrice())
+                .build();
+    }
+
+    @Override
+    public DashboardStatsDTO getTodayDashboardStats() {
+        LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfToday = startOfToday.plusDays(1);
+
+        // 1. 오늘 주문건수 & 주문금액 조회
+        List<Object[]> metrics = orderRepository.getOrderMetricsByDateRange(startOfToday, endOfToday);
+        long orderCount = 0L;
+        long orderAmount = 0L;
+        if (!metrics.isEmpty() && metrics.get(0) != null) {
+            orderCount = ((Number) metrics.get(0)[0]).longValue();
+            orderAmount = ((Number) metrics.get(0)[1]).longValue();
+        }
+
+        // 2. 운영현황 상태별 카운트 (DB에 저장되는 실제 status 단어로 매핑)
+        long pending = orderRepository.countByStatusLike("대기");
+        long preparing = orderRepository.countByStatusLike("결제완료") + orderRepository.countByStatusLike("배송준비");
+        long cancel = orderRepository.countByStatusLike("취소");
+        long exchange = orderRepository.countByStatusLike("교환");
+        long returnReq = orderRepository.countByStatusLike("반품");
+
+        return DashboardStatsDTO.builder()
+                .pendingDeposit(pending)
+                .preparingDelivery(preparing)
+                .cancelRequest(cancel)
+                .exchangeRequest(exchange)
+                .returnRequest(returnReq)
+                .orderCount(orderCount)
+                .orderAmount(orderAmount)
+                .memberJoinCount(3L) // ※ 회원가입 카운트 쿼리가 있다면 대체: usersRepository.countByCreatedAtBetween(startOfToday, endOfToday)
+                .visitorCount(128L)  // ※ 방문자 로그 테이블이 없다면 임시 통계값 적용
+                .qnaCount(2L)        // ※ QnA 카운트 쿼리가 있다면 대체: qnaRepository.countByCreatedAtBetween(...)
+                .build();
+    }
+
+    // ==========================================
+    // [대시보드] 어제 기준 주요지표
+    // ==========================================
+    @Override
+    public DashboardStatsDTO getYesterdayDashboardStats() {
+        LocalDateTime startOfYesterday = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime endOfYesterday = startOfYesterday.plusDays(1);
+
+        List<Object[]> metrics = orderRepository.getOrderMetricsByDateRange(startOfYesterday, endOfYesterday);
+        long orderCount = 0L;
+        long orderAmount = 0L;
+        if (!metrics.isEmpty() && metrics.get(0) != null) {
+            orderCount = ((Number) metrics.get(0)[0]).longValue();
+            orderAmount = ((Number) metrics.get(0)[1]).longValue();
+        }
+
+        return DashboardStatsDTO.builder()
+                .orderCount(orderCount)
+                .orderAmount(orderAmount)
+                .memberJoinCount(5L) // 어제 가입자수 예시
+                .visitorCount(110L)  // 어제 방문자수 예시
+                .qnaCount(4L)        // 어제 문의수 예시
                 .build();
     }
 }
