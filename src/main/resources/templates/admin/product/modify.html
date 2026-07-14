@@ -410,24 +410,23 @@
     <!-- 상품 선택 정보 -->
     <section class="mb-8">
       <div class="mb-4 border-b border-outline-variant pb-2">
-        <h2 class="font-bold text-lg text-primary">상품 선택 정보</h2>
-        <p class="mt-1 text-label-sm text-on-surface-variant">옵션명과 옵션항목을 입력합니다. 옵션항목은 쉼표로 구분하세요. 예: S, M, L, XL</p>
+        <h2 class="font-bold text-lg text-primary">상품 옵션 조합</h2>
+        <p class="mt-1 text-label-sm text-on-surface-variant">옵션명과 옵션값을 입력한 후 [조합 생성하기] 버튼을 눌러 SKU 목록을 생성하세요. 옵션값은 콤마(,)로 구분합니다.</p>
       </div>
 
-      <div id="optionContainer" class="space-y-3">
-        <!-- 기존 옵션 출력 -->
+      <div id="optionGroupContainer" class="space-y-3 mb-4">
         <div th:each="option : ${options}"
-             class="grid grid-cols-1 md:grid-cols-[1fr,1fr,auto] gap-3 option-row items-center rounded-lg border border-outline-variant p-3">
+             class="grid grid-cols-1 md:grid-cols-[1fr,2fr,auto] gap-3 option-row items-center rounded-lg border border-outline-variant p-3">
           <input type="text"
-                 name="optionName[]"
+                 name="optionNames"
                  th:value="${option.name}"
                  placeholder="옵션명 (예: 사이즈)"
                  class="border-outline-variant rounded-lg w-full"/>
 
           <input type="text"
-                 name="optionValue[]"
+                 name="optionValues"
                  th:value="${optionValueMap[option.optionNo]}"
-                 placeholder="옵션항목 (예: S, M, L, XL)"
+                 placeholder="옵션값 (예: S, M, L, XL)"
                  class="border-outline-variant rounded-lg w-full"/>
 
           <button type="button"
@@ -438,23 +437,55 @@
           </button>
         </div>
 
-        <!-- 기존 옵션이 없을 때 기본 입력행 -->
         <div th:if="${#lists.isEmpty(options)}"
-             class="grid grid-cols-1 md:grid-cols-[1fr,1fr,auto] gap-3 option-row items-center rounded-lg border border-outline-variant p-3">
-          <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full"/>
-          <input type="text" name="optionValue[]" placeholder="옵션항목 (예: S, M, L, XL)" class="border-outline-variant rounded-lg w-full"/>
+             class="grid grid-cols-1 md:grid-cols-[1fr,2fr,auto] gap-3 option-row items-center rounded-lg border border-outline-variant p-3">
+          <input type="text" name="optionNames" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full"/>
+          <input type="text" name="optionValues" placeholder="옵션값 (예: S, M, L, XL)" class="border-outline-variant rounded-lg w-full"/>
           <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors flex items-center justify-center" aria-label="옵션 삭제">
             <span class="material-symbols-outlined text-sm">delete</span>
           </button>
         </div>
       </div>
 
-      <div class="mt-4 flex justify-end">
-        <button type="button" onclick="addOption()" class="px-4 py-2 bg-primary text-white rounded-lg text-sm flex items-center gap-1 hover:opacity-90">
+      <div class="flex gap-2 mb-6">
+        <button type="button" onclick="addOptionGroup()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1 hover:opacity-90">
           <span class="material-symbols-outlined text-sm">add</span>
-          옵션 추가
+          옵션 그룹 추가
+        </button>
+        <button type="button" onclick="generateSkuTable()" class="bg-secondary text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1 hover:opacity-90">
+          <span class="material-symbols-outlined text-sm">grid_on</span>
+          조합 생성하기
         </button>
       </div>
+
+      <table class="w-full mt-4 border-collapse border border-outline-variant rounded-lg overflow-hidden text-sm">
+        <thead class="bg-surface-container-high">
+        <tr>
+          <th class="border border-outline-variant p-3 text-left font-bold text-primary">옵션 조합 (SKU)</th>
+          <th class="border border-outline-variant p-3 text-left font-bold text-primary w-40">추가 금액 (원)</th>
+          <th class="border border-outline-variant p-3 text-left font-bold text-primary w-40">재고 수량 (개)</th>
+          <th class="border border-outline-variant p-3 text-center font-bold text-primary w-20">관리</th>
+        </tr>
+        </thead>
+        <tbody id="skuTableBody">
+        <tr th:if="${skuList != null}" th:each="sku : ${skuList}" class="hover:bg-surface-container-low sku-row">
+          <td class="border border-outline-variant p-2">
+            <input type="text" name="skuNames" th:value="${sku.skuName}" readonly class="w-full border-none bg-transparent font-medium text-on-surface">
+          </td>
+          <td class="border border-outline-variant p-2">
+            <input type="number" name="prices" th:value="${sku.price}" class="w-full border-outline-variant rounded-lg text-sm">
+          </td>
+          <td class="border border-outline-variant p-2">
+            <input type="number" name="stocks" th:value="${sku.stock}" class="w-full border-outline-variant rounded-lg text-sm">
+          </td>
+          <td class="border border-outline-variant p-2 text-center">
+            <button type="button" onclick="removeSkuRow(this)" class="p-1 bg-error-container text-error rounded hover:bg-error hover:text-white transition-colors" title="이 조합 삭제">
+              <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </section>
 
     <!-- 상품정보 제공고시 -->
@@ -554,37 +585,80 @@
             });
   }
 
-  // 빈 옵션 입력행을 추가한다.
-  function addOption() {
-    const container = document.getElementById('optionContainer');
-    const row = document.createElement('div');
-
-    row.className = 'grid grid-cols-1 md:grid-cols-[1fr,1fr,auto] gap-3 option-row items-center rounded-lg border border-outline-variant p-3';
-    row.innerHTML = `
-            <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
-            <input type="text" name="optionValue[]" placeholder="옵션항목 (예: S, M, L, XL)" class="border-outline-variant rounded-lg w-full">
-            <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors flex items-center justify-center" aria-label="옵션 삭제">
-                <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
-        `;
-
-    container.appendChild(row);
+  function addOptionGroup() {
+    const container = document.getElementById('optionGroupContainer');
+    const newRow = document.createElement('div');
+    newRow.className = 'grid grid-cols-1 md:grid-cols-[1fr,2fr,auto] gap-3 option-row items-center rounded-lg border border-outline-variant p-3';
+    newRow.innerHTML = `
+      <input type="text" name="optionNames" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
+      <input type="text" name="optionValues" placeholder="옵션값 (예: S, M, L, XL)" class="border-outline-variant rounded-lg w-full">
+      <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors flex items-center justify-center" aria-label="옵션 삭제">
+        <span class="material-symbols-outlined text-sm">delete</span>
+      </button>
+    `;
+    container.appendChild(newRow);
   }
 
-  // 선택한 옵션 입력행을 화면에서 제거한다.
+  // 옵션 그룹 삭제 함수
   function removeOption(button) {
     const row = button.closest('.option-row');
-
     if (row) {
       row.remove();
     }
   }
 
-  document.addEventListener('DOMContentLoaded', initializeCategorySelection);
-</script>
+  // 카테시안 곱 (옵션 조합 생성 알고리즘)
+  function cartesianProduct(arrays) {
+    if (arrays.length === 0) return [];
+    return arrays.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+  }
 
+  // SKU 조합 생성 및 테이블 출력 함수
+  function generateSkuTable() {
+    const inputs = Array.from(document.querySelectorAll('.option-row input[placeholder*="옵션값"]'));
+    const values = inputs.map(i => i.value.split(',').map(v => v.trim()).filter(v => v !== ""));
 
-<script>
+    // 입력값이 없을 경우 방지
+    if (values.length === 0 || values.some(v => v.length === 0)) {
+      alert("옵션값을 정확히 입력해주세요 (콤마로 구분)");
+      return;
+    }
+
+    const combinations = cartesianProduct(values);
+    const tbody = document.getElementById('skuTableBody');
+    tbody.innerHTML = ''; // 기존 테이블 내용 초기화
+
+    combinations.forEach(combo => {
+      const row = document.createElement('tr');
+      row.className = 'hover:bg-surface-container-low sku-row';
+      row.innerHTML = `
+        <td class="border border-outline-variant p-2">
+          <input type="text" name="skuNames" value="${Array.isArray(combo) ? combo.join('/') : combo}" readonly class="w-full border-none bg-transparent font-medium text-on-surface">
+        </td>
+        <td class="border border-outline-variant p-2">
+          <input type="number" name="prices" value="0" class="w-full border-outline-variant rounded-lg text-sm">
+        </td>
+        <td class="border border-outline-variant p-2">
+          <input type="number" name="stocks" value="0" class="w-full border-outline-variant rounded-lg text-sm">
+        </td>
+        <td class="border border-outline-variant p-2 text-center">
+          <button type="button" onclick="removeSkuRow(this)" class="p-1 bg-error-container text-error rounded hover:bg-error hover:text-white transition-colors" title="이 조합 삭제">
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // 🚨 [새로 추가된 함수!] 특정 SKU 행을 테이블에서 삭제하는 함수
+  function removeSkuRow(button) {
+    const row = button.closest('tr');
+    if (row) {
+      row.remove();
+    }
+  }
+
   function toggleAccordion(button) {
     const menuItem = button.closest('.group\\/menu');
     if (!menuItem) return;

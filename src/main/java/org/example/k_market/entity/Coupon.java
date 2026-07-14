@@ -22,11 +22,16 @@ public class Coupon {
     private String name;
     private String benefitType;
     private int benefitValue;
+
+    @Transient
     private String dateType;
+    
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer validDays;
     private String notes;
+
+    @Setter
     private String status;
     private LocalDateTime createdAt;
 
