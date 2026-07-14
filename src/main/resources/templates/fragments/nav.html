@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="productTabs(activeTab)"
+     class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm"
+     aria-label="상품 메뉴">
+    <a th:href="@{/product/list}"
+       th:classappend="${activeTab == 'deal'} ? ' font-bold text-primary border-b-2 border-primary' : ' text-on-surface-variant hover:text-primary'"
+       class="py-1">오늘의 특가</a>
+    <a th:href="@{/product/list}"
+       th:classappend="${activeTab == 'recommend'} ? ' font-bold text-primary border-b-2 border-primary' : ' text-on-surface-variant hover:text-primary'"
+       class="py-1">추천 상품</a>
+    <a th:href="@{/product/list}"
+       th:classappend="${activeTab == 'new'} ? ' font-bold text-primary border-b-2 border-primary' : ' text-on-surface-variant hover:text-primary'"
+       class="py-1">신상품</a>
+    <a th:href="@{/product/list}"
+       th:classappend="${activeTab == 'best'} ? ' font-bold text-primary border-b-2 border-primary' : ' text-on-surface-variant hover:text-primary'"
+       class="py-1">베스트</a>
+    <a th:href="@{/product/list}"
+       class="text-error font-semibold py-1">세일</a>
+</nav>
+
+<aside th:fragment="productSidebar(categories, mainCateNo, rankingProducts)"
+       class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg shrink-0">
+    <div class="bg-white standard-border rounded p-md">
+        <h2 class="font-bold text-lg mb-sm">카테고리</h2>
+        <nav class="flex flex-col gap-1" aria-label="상품 카테고리">
+            <a th:each="category : ${categories}"
+               th:classappend="${category.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
+               class="category-item flex items-center gap-base py-2 px-2 rounded"
+               th:href="@{/product/list(cateNo=${category.cateNo})}">
+                <span class="text-on-surface font-medium" th:text="${category.name}">카테고리명</span>
+            </a>
+            <p th:if="${categories == null or #lists.isEmpty(categories)}"
+               class="py-3 px-2 text-sm text-on-surface-variant">등록된 카테고리가 없습니다.</p>
+        </nav>
+    </div>
+
+    <div class="hidden md:block">
+        <h3 class="font-bold text-lg mb-sm">실시간 인기 상품</h3>
+        <div class="flex flex-col gap-sm">
+            <a th:each="item, stat : ${rankingProducts}"
+               th:href="@{/product/view(prodNo=${item.prodNo})}"
+               class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group hover:bg-surface-container transition-colors">
+                <span class="font-bold text-secondary px-1" th:text="${stat.count}">1</span>
+                <p class="text-sm text-on-surface-variant group-hover:text-primary truncate" th:text="${item.name}">인기 상품명</p>
+            </a>
+            <p th:if="${rankingProducts == null or #lists.isEmpty(rankingProducts)}"
+               class="p-sm bg-white standard-border rounded text-sm text-on-surface-variant text-center">인기 상품이 없습니다.</p>
+        </div>
+    </div>
+</aside>
+
+</body>
+</html>

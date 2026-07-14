@@ -10,5 +10,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCateNo(Integer cateNo);
 
+    List<Product> findByShopNo(Integer shopNo);
+
     List<Product> findTop3ByOrderBySalesCountDesc();
 }

@@ -35,12 +35,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 1. 배송 정보 저장
         deliveryRepository.save(deliveryDTO.toEntity());
 
-        // 2. 주문 상태를 '배송중'으로 변경
-        Order order = orderRepository.findById((int) deliveryDTO.getOrderNo())
-                .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다."));
+        orderDetailsRepository.updateStatus(deliveryDTO.getOrderDetailNo(), "배송중");
 
-        order.setStatus("배송중");
-        // orderRepository.save(order); // @Transactional이 있다면 자동 반영(Dirty Checking)됨
     }
 
     @Override
@@ -71,7 +67,17 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     @Transactional(readOnly = true)
     public Page<DeliveryDTO> getDeliveryList(Pageable pageable) {
-        return deliveryRepository.findAll(pageable).map(d -> {
+        return mapDeliveryPage(deliveryRepository.findAll(pageable));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DeliveryDTO> getSellerDeliveryList(long shopNo, Pageable pageable) {
+        return mapDeliveryPage(deliveryRepository.findByShopNo(shopNo, pageable));
+    }
+
+    private Page<DeliveryDTO> mapDeliveryPage(Page<Deliveries> deliveries) {
+        return deliveries.map(d -> {
             Order o = orderRepository.findById((int) d.getOrderNo()).orElse(new Order());
 
             String status = "배송준비"; // 기본값
@@ -122,6 +128,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         Product p = productRepository.findById(od.getProductNo()).orElseThrow();
 
         return DeliveryDTO.builder()
+                .orderDetailNo(d.getOrderDetailNo())
                 .trackingNumber(d.getTrackingNumber())
                 .orderNo(d.getOrderNo())
                 .recipientName(o.getRecipientName())

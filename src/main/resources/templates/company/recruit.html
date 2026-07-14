@@ -122,11 +122,7 @@
             <a th:href="@{/member/login}" href="/member/login" class="hover:text-primary transition-colors">로그인</a>
             <a th:href="@{/member/join}" href="/member/join" class="hover:text-primary transition-colors">회원가입</a>
             <a th:href="@{/my/index}" href="/my/index" class="hidden hover:text-primary transition-colors" data-auth-required="true">마이페이지</a>
-            <a th:href="@{/product/cart}" href="/product/cart" class="flex items-center gap-1 hover:text-primary transition-colors">
-                <span class="material-symbols-outlined text-sm">shopping_cart</span>
-                장바구니
-                <span class="bg-primary text-white px-1.5 py-0.5 rounded-full text-[10px] font-bold">3</span>
-            </a>
+            <div th:replace="~{fragments/cart-button :: button}"></div>
         </div>
 
         <!-- Main Header Content -->

@@ -170,10 +170,7 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <button class="p-2 border border-outline-variant rounded relative">
-                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
-                    </button>
+                    <div th:replace="~{fragments/cart-button :: button}"></div>
                     <button class="md:hidden p-2 border border-outline-variant rounded">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
@@ -184,54 +181,10 @@
 </header>
 
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
-    <!-- Sub Nav -->
-    <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">오늘의 특가</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">추천 상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">신상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">베스트</a>
-        <a class="text-error font-semibold py-1" th:href="@{/product/list}">세일</a>
-    </nav>
+    <div th:replace="~{fragments/nav :: productTabs('')}"></div>
 
     <div class="flex flex-col md:flex-row gap-lg items-start">
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 shrink-0 sticky top-[100px] flex flex-col gap-lg">
-            <div class="bg-white standard-border rounded p-md">
-                <h2 class="font-bold text-lg mb-sm">카테고리</h2>
-                <nav class="flex flex-col gap-1" id="category-menu">
-                    <a th:each="c : ${categories}"
-                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
-                       class="category-item flex items-center gap-base py-2 px-2 rounded"
-                       th:href="@{/product/list(cateNo=${c.cateNo})}">
-                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
-                    </a>
-                </nav>
-            </div>
-            <!-- Simple Top Ranking / 베스트 상품 -->
-            <div class="hidden md:block">
-                <h3 class="font-bold text-lg mb-sm">인기 순위</h3>
-                <div class="flex flex-col gap-sm" id="ranking-list">
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded hover:bg-surface-container transition-colors cursor-pointer">
-                        <div class="ranking-image w-12 h-12 bg-surface-container-low rounded shrink-0 overflow-hidden">
-                            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkF5PQj6Dj_mcuCJyjZXNdX3YcRS9iwiQol66AE8T45JVoNQqNdc2VQ-S35PsWBa9h-UkHDFze_JKaC-EYPTN9HTJA5DA7nZkEEFFa2b-_Llfxts2FB_mteJfEOjUhls-wugtAP7hR72VGs18pgEXjpfLaV52a03D5vJ4sQSIQ0jzI-OjPXspPdhgISN-V06PIhUesreGsXtM7Yxp6YaMdOqylvqGq28atfj4qznou-EQ7VbmTqK7A2T5hAqD4GbrZ4K4UTFGeQaMq" alt="프리미엄 린넨 셔츠"/>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate text-on-surface">프리미엄 린넨 셔츠</p>
-                            <p class="text-primary font-bold text-xs">27,000 원</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded hover:bg-surface-container transition-colors cursor-pointer">
-                        <div class="ranking-image w-12 h-12 bg-surface-container-low rounded shrink-0 overflow-hidden">
-                            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABE38GqSrbdr-7Y7ABcejfqAyL3pzLzyykl_lxPql9P7B8Vp0l603zCJmJufYKuYPeMTcp9kxNEHa4MQmgV04x_cAbMAD64hp_3mqJdsLFEg79WuJD1fBNLLAKS0jZDZjtZrrQM9VT7aQw2YF0WS2TvLSwgn74hIbtO2BoMr77VmYx8TAGky4QYrBTmCRSSW4LUWYUZy8xE6LKmJbYzwnuESedYNceuROqh8Ua8Blm67Tt8dIpy-2-9L5uAgSnj7xqnz8A-e9lUkbQ" alt="옥스퍼드 버튼다운"/>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate text-on-surface">옥스퍼드 버튼다운</p>
-                            <p class="text-primary font-bold text-xs">32,000 원</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${mainCateNo}, ${rankingProducts})}"></div>
 
         <!-- Main Column (Search Results) -->
         <div class="flex-1 flex flex-col w-full">

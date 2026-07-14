@@ -321,6 +321,26 @@ public class UsersController {
         }
     }
 
+    @PostMapping("/member/find/changePassword")
+    public String changeLoggedInPassword(
+            Authentication authentication,
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            @RequestParam String passwordConfirm,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        String loginId = authentication.getName();
+        try {
+            usersService.changePassword(loginId, currentPassword, newPassword, passwordConfirm);
+            redirectAttributes.addAttribute("changed", "success");
+            return "redirect:/member/find/changePassword";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("loginId", loginId);
+            model.addAttribute("changePasswordError", e.getMessage());
+            return "member/find/changePassword";
+        }
+    }
+
     private boolean isAuthenticated(Authentication authentication) {
         return authentication != null
                 && authentication.isAuthenticated()

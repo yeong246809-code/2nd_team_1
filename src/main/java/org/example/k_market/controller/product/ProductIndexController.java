@@ -2,6 +2,7 @@ package org.example.k_market.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.dto.CartItemViewDTO;
 import org.example.k_market.entity.Cart;
 import org.example.k_market.entity.Category;
 import org.example.k_market.entity.Product;
@@ -143,7 +144,32 @@ public class ProductIndexController {
     }
 
     @GetMapping("/product/cart")
-    public String cart(Model model) {
+    public String cart(Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
+        if (userDetails == null) {
+            return "redirect:/member/login";
+        }
+
+        List<CartItemViewDTO> cartItems = cartRepository
+                .findByMemberNoOrderByCreatedAtDesc(userDetails.getUser().getMemberNo())
+                .stream()
+                .map(this::toCartItemView)
+                .toList();
+
+        int totalQuantity = cartItems.stream().mapToInt(CartItemViewDTO::getQuantity).sum();
+        int totalProductPrice = cartItems.stream()
+                .mapToInt(item -> item.getUnitPrice() * item.getQuantity())
+                .sum();
+        int totalShippingFee = cartItems.stream().mapToInt(CartItemViewDTO::getShippingFee).sum();
+        int totalOrderPrice = cartItems.stream().mapToInt(CartItemViewDTO::getLineTotal).sum();
+        int totalRewardPoints = cartItems.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("totalProductPrice", totalProductPrice);
+        model.addAttribute("totalDiscount", totalProductPrice + totalShippingFee - totalOrderPrice);
+        model.addAttribute("totalShippingFee", totalShippingFee);
+        model.addAttribute("totalOrderPrice", totalOrderPrice);
+        model.addAttribute("totalRewardPoints", totalRewardPoints);
         addProductLayout(model, null);
         return "product/cart";
     }
@@ -193,6 +219,31 @@ public class ProductIndexController {
                 Map.entry("modelName", "KM-SAMPLE-001"),
                 Map.entry("description", "샘플 상품 설명")
         );
+    }
+
+    private CartItemViewDTO toCartItemView(Cart cart) {
+        Product product = productRepository.findById(cart.getProdNo())
+                .orElseThrow(() -> new IllegalStateException("장바구니 상품이 존재하지 않습니다: " + cart.getProdNo()));
+        int price = product.getPrice() == null ? 0 : product.getPrice();
+        int discountRate = product.getDiscountRate() == null ? 0 : product.getDiscountRate();
+        int discountedPrice = (int) (price * (100L - discountRate) / 100L);
+        int shippingFee = product.getShippingFee() == null ? 0 : product.getShippingFee();
+        int rewardPoints = product.getRewardPoints() == null ? 0 : product.getRewardPoints();
+
+        return CartItemViewDTO.builder()
+                .cartNo(cart.getCartNo())
+                .prodNo(cart.getProdNo())
+                .name(product.getName())
+                .description(product.getDescription())
+                .thumb1(product.getThumb1())
+                .quantity(cart.getQuantity())
+                .unitPrice(price)
+                .discountRate(discountRate)
+                .rewardPoints(rewardPoints)
+                .shippingFee(shippingFee)
+                .lineTotal(discountedPrice * cart.getQuantity() + shippingFee)
+                .lineRewardPoints(rewardPoints * cart.getQuantity())
+                .build();
     }
 
     private void addProductLayout(Model model, Integer mainCateNo) {

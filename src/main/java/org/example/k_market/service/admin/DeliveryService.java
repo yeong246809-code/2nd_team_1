@@ -19,6 +19,7 @@ public interface DeliveryService {
 
     @Transactional(readOnly = true)
     Page<DeliveryDTO> getDeliveryList(Pageable pageable);
+    Page<DeliveryDTO> getSellerDeliveryList(long shopNo, Pageable pageable);
 
     DeliveryDTO getDetailByTrackingNumber(String trackingNumber);
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<a th:fragment="button"
+   th:href="@{/product/cart}"
+   href="/product/cart"
+   class="relative flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca]"
+   aria-label="장바구니">
+    <span class="material-symbols-outlined text-[#14333b]" data-icon="shopping_cart">shopping_cart</span>
+    <span th:if="${cartItemCount != null and cartItemCount > 0}"
+          th:text="${cartItemCount > 99 ? '99+' : cartItemCount}"
+          class="absolute -right-2 -top-2 rounded-full bg-[#ba1a1a] px-1 text-[10px] font-bold text-white">1</span>
+</a>
+</body>
+</html>

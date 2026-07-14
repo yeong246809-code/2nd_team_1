@@ -58,6 +58,24 @@ public class OrderServiceImpl implements OrderService {
         return dto;
     }
 
+    @Override
+    public OrderDTO findSellerOrderDetail(long shopNo, int orderNo) {
+        Order order = orderRepository.findById(orderNo)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+        var details = orderDetailsRepository.findByOrderNoAndShopNo(orderNo, shopNo);
+        if (details.isEmpty()) {
+            throw new org.springframework.security.access.AccessDeniedException("다른 판매자의 주문입니다.");
+        }
+        OrderDTO dto = toSellerOrderDTO(order, details);
+        dto.setOrderItems(details.stream().map(detail -> {
+            OrderDetailsDTO item = detail.toDTO();
+            productRepository.findById(detail.getProductNo()).ifPresent(p -> item.setProdName(p.getName()));
+            item.setTotalPaymentPrice((detail.getPrice() * detail.getQuantity()) - detail.getDiscountPrice());
+            return item;
+        }).toList());
+        return dto;
+    }
+
     // 3. 주문 상태 변경
     @Transactional
     @Override
@@ -68,8 +86,35 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
+    @Override
+    @Transactional
+    public void updateSellerOrderStatus(long shopNo, int orderNo, String status) {
+        int updated = orderDetailsRepository.updateStatusByOrderNoAndShopNo(orderNo, shopNo, status);
+        if (updated == 0) {
+            throw new org.springframework.security.access.AccessDeniedException("다른 판매자의 주문입니다.");
+        }
+    }
+
     public Page<OrderDTO> findOrderList(Pageable pageable, String searchType, String keyword) {
         return orderRepository.findAllWithJoin(pageable).map(Order::toDTO);
+    }
+
+    @Override
+    public Page<OrderDTO> findSellerOrderList(long shopNo, Pageable pageable, String searchType, String keyword) {
+        return orderRepository.findSellerOrders(shopNo, searchType, keyword, pageable)
+                .map(order -> toSellerOrderDTO(
+                        order, orderDetailsRepository.findByOrderNoAndShopNo(order.getOrderNo(), shopNo)));
+    }
+
+    private OrderDTO toSellerOrderDTO(Order order, java.util.List<org.example.k_market.entity.OrderDetails> details) {
+        OrderDTO dto = order.toDTO();
+        dto.setTotalProductPrice(details.stream().mapToInt(d -> d.getPrice() * d.getQuantity()).sum());
+        dto.setTotalDiscountPrice(details.stream().mapToInt(org.example.k_market.entity.OrderDetails::getDiscountPrice).sum());
+        dto.setTotalShippingFee(details.stream().mapToInt(org.example.k_market.entity.OrderDetails::getShippingFee).sum());
+        dto.setTotalPaymentPrice(details.stream()
+                .mapToInt(d -> d.getPrice() * d.getQuantity() - d.getDiscountPrice() + d.getShippingFee()).sum());
+        if (!details.isEmpty()) dto.setStatus(details.get(0).getStatus());
+        return dto;
     }
 
     @Override

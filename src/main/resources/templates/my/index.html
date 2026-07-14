@@ -213,6 +213,10 @@
                     <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
                     관리자
                 </a>
+                <a th:if="${isSeller and sellerShopStatus != null and #strings.equalsIgnoreCase(sellerShopStatus, 'ACTIVE')}" th:href="@{/admin/product/list}" href="/admin/product/list" class="inline-flex items-center gap-xs px-md py-2 rounded-lg border border-primary bg-primary-container/70 text-primary font-bold hover:bg-primary-container transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">storefront</span>
+                    판매자 관리
+                </a>
                 <a th:href="@{/cs/index}" href="/cs/index" class="inline-flex items-center gap-xs px-md py-2 rounded-lg border border-outline-variant text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors">
                     <span class="material-symbols-outlined text-[18px]">support_agent</span>
                     고객센터
@@ -220,6 +224,51 @@
             </div>
         </div>
         <!-- 사용자 요약 요약바 -->
+        <div th:if="${isSeller}" class="space-y-lg">
+            <div th:if="${sellerShopStatus == null or #strings.equalsIgnoreCase(sellerShopStatus, 'PENDING')}" class="rounded-xl border border-secondary bg-secondary-container p-xl text-center text-on-secondary-container">
+                <span class="material-symbols-outlined text-5xl mb-sm">schedule</span>
+                <h3 class="text-headline-lg font-bold">운영 준비중입니다</h3>
+                <p class="mt-sm">상점 승인 후 운영현황과 매출 통계를 확인할 수 있습니다.</p>
+            </div>
+            <div th:if="${sellerShopStatus != null and !#strings.equalsIgnoreCase(sellerShopStatus, 'ACTIVE') and !#strings.equalsIgnoreCase(sellerShopStatus, 'PENDING')}" class="rounded-xl border border-error bg-error-container p-xl text-center text-error">
+                <span class="material-symbols-outlined text-5xl mb-sm">block</span>
+                <h3 class="text-headline-lg font-bold">운영 중지되었습니다</h3>
+                <p class="mt-sm">운영 재개가 필요한 경우 관리자에게 문의해주세요.</p>
+            </div>
+            <div th:if="${sellerDashboard != null}">
+                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
+                    <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">운영현황 (주문상세 기준)</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-sm text-center">
+                        <div class="bg-surface p-sm rounded border border-outline-variant"><p class="text-label-sm text-on-surface-variant">입금대기</p><strong class="text-headline-md text-primary" th:text="${sellerDashboard.pendingDeposit}">0</strong></div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant"><p class="text-label-sm text-on-surface-variant">배송준비</p><strong class="text-headline-md text-primary" th:text="${sellerDashboard.preparingDelivery}">0</strong></div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant"><p class="text-label-sm text-on-surface-variant">취소요청</p><strong class="text-headline-md text-error" th:text="${sellerDashboard.cancelRequest}">0</strong></div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant"><p class="text-label-sm text-on-surface-variant">교환요청</p><strong class="text-headline-md text-secondary" th:text="${sellerDashboard.exchangeRequest}">0</strong></div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant"><p class="text-label-sm text-on-surface-variant">반품요청</p><strong class="text-headline-md text-tertiary" th:text="${sellerDashboard.returnRequest}">0</strong></div>
+                    </div>
+                </section>
+            </div>
+            <section th:if="${sellerDashboard != null}" class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
+                <h3 class="font-headline-md text-headline-md text-on-background mb-md border-b border-outline-variant pb-sm">집계 및 매출 현황 (최근 5일)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-lg min-h-64">
+                    <div class="border border-outline-variant rounded-lg p-sm bg-surface">
+                        <p class="font-label-md text-on-surface-variant mb-sm">최근 5일 주문 · 결제 · 취소 집계</p>
+                        <table class="w-full text-center text-label-sm"><thead><tr class="border-b border-outline-variant bg-surface-container-low"><th class="py-2">날짜</th><th>주문(건)</th><th>결제(건)</th><th>취소(건)</th></tr></thead>
+                            <tbody><tr th:each="daily : ${sellerDashboard.dailySummaryList}" class="border-b border-outline-variant/50"><td class="py-2" th:text="${daily.date}">07-14</td><td th:text="${daily.orderCount}">0</td><td th:text="${daily.payCount}">0</td><td th:text="${daily.cancelCount}">0</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div class="border border-outline-variant rounded-lg p-sm bg-surface">
+                        <p class="font-label-md text-on-surface-variant mb-sm">5일간 주요 카테고리 매출</p>
+                        <div th:if="${#lists.isEmpty(sellerDashboard.topSalesList)}" class="py-16 text-center text-outline">매출 집계 데이터가 없습니다.</div>
+                        <div th:each="sales : ${sellerDashboard.topSalesList}" class="mb-md">
+                            <div class="flex justify-between text-label-sm"><strong th:text="${sales.categoryName}">카테고리</strong><span><span th:text="${#numbers.formatInteger(sales.totalSales, 0, 'COMMA')}">0</span>원 (<span th:text="${sales.percentage}">0</span>%)</span></div>
+                            <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden mt-1"><div class="h-full bg-primary" th:style="'width:' + ${sales.percentage} + '%' "></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div th:unless="${isSeller}" class="contents">
         <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-md flex justify-around items-center divide-x divide-outline-variant">
             <div class="flex-1 text-center">
                 <p class="font-label-md text-label-md text-on-surface-variant">주문</p>
@@ -446,6 +495,7 @@
                     <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 </main>

@@ -123,7 +123,7 @@
         <!-- 제목 섹션 -->
         <div class="flex items-center space-x-sm mb-md border-b border-outline-variant pb-sm">
             <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span>
-            <h1 class="font-headline-lg text-headline-lg text-primary">나의리뷰</h1>
+            <h1 class="font-headline-lg text-headline-lg text-primary" th:text="${isSeller} ? '리뷰관리' : '나의리뷰'">나의리뷰</h1>
         </div>
         <!-- 리뷰 리스트 테이블 -->
         <div class="flex items-start gap-sm">
@@ -176,7 +176,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="w-16 shrink-0" th:if="${reviewBlock != null and !reviewBlock.page.empty}">
+        <div class="w-16 shrink-0" th:if="${!isSeller and reviewBlock != null and !reviewBlock.page.empty}">
             <div class="h-[66px]"></div>
             <div class="h-[74px] flex items-center justify-center"
                  th:each="review : ${reviewBlock.page.content}">

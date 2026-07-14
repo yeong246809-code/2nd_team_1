@@ -31,6 +31,12 @@ public class ProductService {
                 .toList();
     }
 
+    public List<ProductDTO> findByShopNo(Integer shopNo) {
+        return productRepository.findByShopNo(shopNo).stream()
+                .map(Product::toDTO)
+                .toList();
+    }
+
     public Product findById(Long prodNo) {
         if (prodNo == null) {
             return null;

@@ -15,6 +15,7 @@ import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.service.member.MemberWithdrawalService;
 import org.example.k_market.service.member.MyInfoService;
 import org.example.k_market.service.member.MyPageService;
+import org.example.k_market.service.member.SellerDashboardService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,12 +50,24 @@ public class MyIndexController {
     private final MemberWithdrawalService memberWithdrawalService;
     private final MyInfoService myInfoService;
     private final MyPageService myPageService;
+    private final SellerDashboardService sellerDashboardService;
 
     @GetMapping("/my/index")
     public String index(Authentication authentication, HttpSession session, Model model) {
         addLoginModel(authentication, session, model);
-        currentMemberNo(authentication).ifPresent(memberNo ->
-                model.addAttribute("dashboard", myPageService.dashboard(memberNo)));
+        if (isSeller(authentication)) {
+            currentUser(authentication)
+                    .flatMap(user -> shopRepository.findById(user.getMemberNo()))
+                    .ifPresent(shop -> {
+                        model.addAttribute("sellerShopStatus", shop.getStatus());
+                        if ("ACTIVE".equalsIgnoreCase(shop.getStatus()) && shop.getShopNo() != null) {
+                            model.addAttribute("sellerDashboard", sellerDashboardService.getDashboard(shop.getShopNo()));
+                        }
+                    });
+        } else {
+            currentMemberNo(authentication).ifPresent(memberNo ->
+                    model.addAttribute("dashboard", myPageService.dashboard(memberNo)));
+        }
         return "my/index";
     }
 
@@ -97,8 +110,16 @@ public class MyIndexController {
     public String review(Authentication authentication, HttpSession session, Model model,
                          @RequestParam(defaultValue = "1") int pg) {
         addLoginModel(authentication, session, model);
-        currentMemberNo(authentication).ifPresent(memberNo ->
-                model.addAttribute("reviewBlock", myPageService.reviews(memberNo, pg)));
+        if (isSeller(authentication)) {
+            currentUser(authentication)
+                    .flatMap(user -> shopRepository.findById(user.getMemberNo()))
+                    .filter(shop -> shop.getShopNo() != null)
+                    .ifPresent(shop -> model.addAttribute(
+                            "reviewBlock", myPageService.sellerReviews(shop.getShopNo(), pg)));
+        } else {
+            currentMemberNo(authentication).ifPresent(memberNo ->
+                    model.addAttribute("reviewBlock", myPageService.reviews(memberNo, pg)));
+        }
         return "my/review";
     }
 
@@ -255,6 +276,12 @@ public class MyIndexController {
         model.addAttribute("loginUserId", authenticated ? sessUser : "");
         model.addAttribute("loginUserRole", role.isBlank() ? "USER" : role);
         model.addAttribute("isAdmin", "ADMIN".equalsIgnoreCase(role));
+        model.addAttribute("isSeller", "SELLER".equalsIgnoreCase(role));
+    }
+
+    private boolean isSeller(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SELLER".equals(authority.getAuthority()));
     }
 
     private void addMyInfoModel(Authentication authentication, Model model) {

@@ -50,6 +50,7 @@ public class AdminProductController {
     @GetMapping("/list")
     public String list(
             Model model,
+            Authentication authentication,
             @RequestParam(value = "searchType", required = false)
             String searchType,
             @RequestParam(value = "keyword", required = false)
@@ -57,7 +58,11 @@ public class AdminProductController {
             @RequestParam(value = "page", defaultValue = "0")
             int page) {
 
-        List<ProductDTO> productList = productService.findAll();
+        List<ProductDTO> productList = isAdmin(authentication)
+                ? productService.findAll()
+                : currentShopNo(authentication)
+                    .map(productService::findByShopNo)
+                    .orElse(List.of());
 
         // 검색어가 있을 때 선택한 검색조건으로 목록 필터링
         if (keyword != null
@@ -267,6 +272,7 @@ public class AdminProductController {
         if (product == null) {
             return "redirect:/admin/product/list";
         }
+        assertProductOwnership(product, authentication);
 
         // 해당 상품에 등록된 옵션 그룹 조회
         List<ProductOptions> options =
@@ -398,6 +404,9 @@ public class AdminProductController {
         }
 
         try {
+            Product existingProduct = productService.findById(productDTO.getProdNo());
+            if (existingProduct == null) throw new IllegalArgumentException("상품을 찾을 수 없습니다.");
+            assertProductOwnership(existingProduct, authentication);
             // 수정 시에도 카테고리와 상점정보 검증
             validateProduct(
                     productDTO,
@@ -459,9 +468,13 @@ public class AdminProductController {
     @ResponseBody
     public Map<String, Object> deleteProduct(
             @PathVariable("prodNo")
-            Long prodNo) {
+            Long prodNo,
+            Authentication authentication) {
 
         try {
+            Product product = productService.findById(prodNo);
+            if (product == null) throw new IllegalArgumentException("상품을 찾을 수 없습니다.");
+            assertProductOwnership(product, authentication);
             /*
              * 상품 삭제 전에 옵션과 옵션항목을 먼저 삭제한다.
              * 외래키가 연결되어 있을 경우 오류를 방지할 수 있다.
@@ -499,13 +512,20 @@ public class AdminProductController {
     @ResponseBody
     public Map<String, Object> deleteSelectedProducts(
             @RequestBody
-            List<Long> prodNos) {
+            List<Long> prodNos,
+            Authentication authentication) {
 
         try {
             if (prodNos == null || prodNos.isEmpty()) {
                 throw new IllegalArgumentException(
                         "삭제할 상품을 선택해 주세요."
                 );
+            }
+
+            for (Long prodNo : prodNos) {
+                Product product = productService.findById(prodNo);
+                if (product == null) throw new IllegalArgumentException("상품을 찾을 수 없습니다.");
+                assertProductOwnership(product, authentication);
             }
 
             // 각 상품의 옵션을 먼저 삭제
@@ -693,6 +713,21 @@ public class AdminProductController {
         return shopRepository.findById(
                 userDetails.getUser().getMemberNo()
         );
+    }
+
+    private Optional<Integer> currentShopNo(Authentication authentication) {
+        return findCurrentUserShop(authentication).map(Shop::getShopNo);
+    }
+
+    private void assertProductOwnership(Product product, Authentication authentication) {
+        if (isAdmin(authentication)) return;
+        Integer shopNo = currentShopNo(authentication)
+                .orElseThrow(() -> new org.springframework.security.access.AccessDeniedException(
+                        "판매자 상점 정보를 찾을 수 없습니다."));
+        if (!shopNo.equals(product.getShopNo())) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "다른 판매자의 상품에는 접근할 수 없습니다.");
+        }
     }
 
 
