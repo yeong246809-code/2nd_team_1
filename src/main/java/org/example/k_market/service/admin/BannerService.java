@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -25,6 +27,47 @@ public class BannerService {
 
     private final BannerRepository bannerRepository;
     private final S3Uploader s3Uploader;
+
+
+    /**
+     * 사용자 메인 화면에 노출할 배너 목록을 조회한다.
+     *
+     * 활성 상태이고 현재 날짜/시간이 노출 기간 안에 있으며,
+     * 실제 이미지 주소가 등록된 배너만 조회한다.
+     *
+     * @param position 배너 위치 코드 (예: MAIN1, MAIN2)
+     * @param limit    최대 조회 개수
+     * @return 노출 가능한 배너 DTO 목록
+     */
+    @Transactional(readOnly = true)
+    public List<BannerDTO> getDisplayableBanners(String position, int limit) {
+
+        int safeLimit = Math.max(limit, 1);
+
+        return bannerRepository.findDisplayableByPosition(
+                        position,
+                        LocalDate.now(),
+                        LocalTime.now(),
+                        PageRequest.of(0, safeLimit)
+                )
+                .stream()
+                .map(Banner::toDTO)
+                .toList();
+    }
+
+    /**
+     * 지정한 위치에서 가장 최근에 등록된 노출 가능 배너 1개를 조회한다.
+     *
+     * @param position 배너 위치 코드
+     * @return 노출 가능한 배너 1개, 없으면 null
+     */
+    @Transactional(readOnly = true)
+    public BannerDTO getDisplayableBanner(String position) {
+        return getDisplayableBanners(position, 1)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
 
     // 1. 페이징 + 위치 필터링 + 정렬이 적용된 목록 조회
     public PageResponseDTO<BannerDTO> getBannerList(String position, String sort, int pg) {

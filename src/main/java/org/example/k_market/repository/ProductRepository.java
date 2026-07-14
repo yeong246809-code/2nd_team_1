@@ -77,4 +77,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return 검색 조건에 맞는 상품 목록
      */
     List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
-}
+
+    }
