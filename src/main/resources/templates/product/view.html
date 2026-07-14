@@ -266,15 +266,19 @@
                     <form th:action="@{/product/cart/add}" method="post">
                         <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
 
-                        <div class="flex flex-col gap-sm mb-md">
-                            <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
-                            <select class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
-                                <option value="">색상/사이즈를 선택하세요</option>
+                        <p th:if="${cartError != null}" class="mb-sm rounded-lg border border-error bg-error-container px-sm py-2 text-sm text-error" th:text="${cartError}"></p>
 
-                                <!-- 하드코딩된 것들을 지우고 반복문으로 대체 -->
-                                <option th:each="option : ${options}"
-                                        th:value="${option.optionNo}"
-                                        th:text="${option.name}">옵션명</option>
+                        <div th:if="${productSkus != null and !#lists.isEmpty(productSkus)}" class="flex flex-col gap-sm mb-md">
+                            <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
+                            <select id="skuSelect" name="skuNo" required onchange="updateSelectedSku()"
+                                    class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
+                                <option value="">색상/사이즈를 선택하세요</option>
+                                <option th:each="sku : ${productSkus}"
+                                        th:value="${sku.skuNo}"
+                                        th:data-add-price="${sku.price != null ? sku.price : 0}"
+                                        th:data-stock="${sku.stock != null ? sku.stock : 0}"
+                                        th:disabled="${sku.stock == null or sku.stock <= 0}"
+                                        th:text="${sku.skuName + (sku.price != null and sku.price > 0 ? ' (+' + #numbers.formatInteger(sku.price, 1, 'COMMA') + '원)' : '') + (sku.stock == null or sku.stock <= 0 ? ' - 품절' : '')}">옵션</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between py-sm px-md bg-surface-container-high rounded-lg">
@@ -287,6 +291,7 @@
                                 <span class="text-xs text-on-surface-variant">총 상품금액</span>
                                 <h3 class="text-xl font-bold text-primary">
                                     <span id="totalPrice" th:data-unit-price="${product.price * (100 - product.discountRate) / 100}"
+                                          th:data-base-price="${product.price}" th:data-discount-rate="${product.discountRate}"
                                           th:text="${#numbers.formatInteger(product.price * (100 - product.discountRate) / 100, 3, 'COMMA')}">0</span>원
                                 </h3>
                             </div>
@@ -322,12 +327,14 @@
                 <h3 class="text-lg font-bold text-primary mb-md">상품 상세 정보</h3>
                 <div class="bg-surface-container rounded-xl min-h-[500px] border border-dashed border-outline relative overflow-hidden">
                     <!-- product.description: 짧은 요약 설명 -->
-                    <p th:if="${product.description != null}" class="p-md text-sm text-on-surface-variant" th:text="${product.description}">요약 설명</p>
-                    <!-- product.detailContent: 관리자가 등록한 상세 설명 본문(HTML) -->
-                    <div class="p-lg" th:utext="${product.detailContent}">
-                        상품 상세 설명이 여기에 표시됩니다.
+                    <p th:if="${product.description != null and !product.description.isBlank()}" class="p-md text-sm text-on-surface-variant" th:text="${product.description}">요약 설명</p>
+                    <!-- product.detailContent: 관리자가 등록한 상세 이미지 URL -->
+                    <div th:if="${product.detailContent != null and !product.detailContent.isBlank()}" class="flex justify-center p-lg">
+                        <img th:src="${product.detailContent}"
+                             th:alt="${product.name + ' 상세 이미지'}"
+                             class="h-auto max-w-full object-contain"/>
                     </div>
-                    <p th:if="${product.detailContent == null}" class="p-md text-sm text-on-surface-variant">등록된 상세 설명이 없습니다.</p>
+                    <p th:if="${product.detailContent == null or product.detailContent.isBlank()}" class="p-md text-sm text-on-surface-variant">등록된 상세 설명이 없습니다.</p>
                 </div>
             </div>
 
@@ -357,7 +364,7 @@
                 </div>
 
                 <!-- 후기 작성 폼 (로그인 사용자만 노출하고 싶다면 sec:authorize="isAuthenticated()"로 감싸세요) -->
-                <form th:action="@{/product/review/add}" method="post" class="bg-white border border-outline-variant rounded-xl p-md mb-md flex flex-col gap-sm">
+                <form th:if="${reviewEligible}" th:action="@{/product/review/add}" method="post" class="bg-white border border-outline-variant rounded-xl p-md mb-md flex flex-col gap-sm">
                     <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
                     <div class="flex items-center gap-sm">
                         <label class="text-sm font-semibold text-on-surface-variant">평점</label>
@@ -373,7 +380,9 @@
                               class="w-full border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none"></textarea>
                     <button type="submit" class="self-end py-2 px-4 bg-primary text-white font-bold rounded-lg text-sm">후기 등록</button>
                 </form>
-
+                <div th:unless="${reviewEligible}" class="bg-surface-container-low border border-outline-variant rounded-xl p-md mb-md text-sm text-on-surface-variant">
+                    <p th:text="${reviewEligibilityMessage}">구매확정한 상품에만 후기를 작성할 수 있습니다.</p>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md" th:if="${reviewList != null and !reviewList.isEmpty()}">
                     <!-- reviewList: 상품 리뷰 목록 (review 테이블에서 productNo로 조회) -->
                     <div class="bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow" th:each="review : ${reviewList}">
@@ -528,6 +537,26 @@
         let value = parseInt(qtyInput.value, 10) || 1;
         if (value < 1) { value = 1; qtyInput.value = 1; }
         totalEl.textContent = (unitPrice * value).toLocaleString('ko-KR');
+    }
+
+    function updateSelectedSku() {
+        const select = document.getElementById('skuSelect');
+        const totalEl = document.getElementById('totalPrice');
+        const qtyInput = document.getElementById('qtyInput');
+        if (!select || !totalEl || !qtyInput) return;
+        const option = select.options[select.selectedIndex];
+        const basePrice = Number(totalEl.dataset.basePrice || 0);
+        const discountRate = Number(totalEl.dataset.discountRate || 0);
+        const addPrice = Number(option?.dataset.addPrice || 0);
+        const stock = Number(option?.dataset.stock || 0);
+        totalEl.dataset.unitPrice = Math.floor((basePrice + addPrice) * (100 - discountRate) / 100);
+        if (select.value && stock > 0) {
+            qtyInput.max = String(stock);
+            qtyInput.value = String(Math.min(Number(qtyInput.value || 1), stock));
+        } else {
+            qtyInput.removeAttribute('max');
+        }
+        updateTotalPrice();
     }
 
     // Focus search interaction

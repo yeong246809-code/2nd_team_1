@@ -14,6 +14,7 @@ public class OrderDetailsDTO {
     private long orderDetailNo;
     private long orderNo;
     private long productNo;
+    private Long skuNo;
     private long shopNo;
     private int quantity;
     private int price;
@@ -28,7 +29,7 @@ public class OrderDetailsDTO {
 
     public OrderDetails toEntity(){
         return OrderDetails.builder()
-                .orderDetailNo(orderDetailNo).orderNo(orderNo).productNo(productNo)
+                .orderDetailNo(orderDetailNo).orderNo(orderNo).productNo(productNo).skuNo(skuNo)
                 .shopNo(shopNo).quantity(quantity).price(price)
                 .discountPrice(discountPrice).shippingFee(shippingFee)
                 .rewardPoints(rewardPoints).status(status)

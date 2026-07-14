@@ -2,31 +2,40 @@ package org.example.k_market.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.dto.CartItemViewDTO;
+import org.example.k_market.dto.CheckoutRequest;
 import org.example.k_market.entity.Cart;
 import org.example.k_market.entity.Category;
+import org.example.k_market.entity.Member;
 import org.example.k_market.entity.Product;
 import org.example.k_market.entity.Qna;
 import org.example.k_market.entity.Review;
-import org.example.k_market.repository.CartRepository;
 import org.example.k_market.repository.CategoryRepository;
+import org.example.k_market.repository.MemberRepository;
+import org.example.k_market.repository.OrderDetailsRepository;
 import org.example.k_market.repository.ProductRepository;
+import org.example.k_market.repository.ProductSkuRepository;
 import org.example.k_market.repository.QnaRepository;
 import org.example.k_market.repository.ReviewRepository;
 import org.example.k_market.security.MyUserDetails;
+import org.example.k_market.service.ProductService;
+import org.example.k_market.service.CartService;
+import org.example.k_market.service.CheckoutService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @Log4j2
@@ -36,9 +45,14 @@ public class ProductIndexController {
 
     private final CategoryRepository categoryRepository; // 이미 있을 가능성 높음
     private final ProductRepository productRepository;   // 탭에 열려있던 그거
-    private final CartRepository cartRepository;         // 신규 주입
+    private final CartService cartService;
+    private final CheckoutService checkoutService;
+    private final ProductSkuRepository productSkuRepository;
+    private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;     // 신규 주입
     private final QnaRepository qnaRepository;           // 신규 주입
+    private final OrderDetailsRepository orderDetailsRepository;
+    private final ProductService productService;
 
     private static final int PAGE_SIZE = 10;
 
@@ -326,7 +340,9 @@ public class ProductIndexController {
     }
 
     @GetMapping("/product/view")
-    public String view(@RequestParam Integer prodNo, Model model) {
+    public String view(@RequestParam Integer prodNo,
+                       Model model,
+                       @AuthenticationPrincipal MyUserDetails userDetails) {
         Product product = productRepository.findById(Long.valueOf(prodNo))
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
 
@@ -349,11 +365,25 @@ public class ProductIndexController {
         // 상품 Q&A 목록 (해당 상품에 달린 문의 원글만, parentNo=0)
         List<Qna> qnaList = qnaRepository.findByProdNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
 
+        int reviewMemberNo = userDetails == null ? 0 : userDetails.getUser().getMemberNo();
+        boolean alreadyReviewed = userDetails != null
+                && reviewRepository.existsByMemberNoAndProdNo(reviewMemberNo, product.getProdNo());
+        boolean reviewEligible = userDetails != null
+                && !alreadyReviewed
+                && orderDetailsRepository.existsReviewablePurchase(reviewMemberNo, product.getProdNo());
+
         model.addAttribute("product", product);
+        model.addAttribute("productSkus", productSkuRepository.findByProdNoOrderBySkuNoAsc(product.getProdNo()));
         model.addAttribute("category", category);
         model.addAttribute("parentCategory", parentCategory);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("qnaList", qnaList);
+        model.addAttribute("reviewEligible", reviewEligible);
+        model.addAttribute("reviewEligibilityMessage", userDetails == null
+                ? "로그인 후 배송준비 이상의 구매 상품에만 후기를 작성할 수 있습니다."
+                : alreadyReviewed
+                    ? "이미 이 상품의 후기를 작성했습니다. 후기는 상품별로 한 번만 작성할 수 있습니다."
+                    : "배송준비, 배송중, 배송완료 또는 구매확정 상태의 구매 내역이 있어야 후기를 작성할 수 있습니다.");
         addProductLayout(model, mainCateNo);
         return "product/view";
     }
@@ -361,24 +391,24 @@ public class ProductIndexController {
     /**
      * 장바구니 담기
      * - 로그인 안 되어 있으면 로그인 페이지로 보냄
-     * - 같은 상품이 이미 담겨 있어도 우선 새 행으로 추가 (중복 병합 로직은 다음 단계에서 개선)
+     * - 같은 상품과 같은 SKU가 이미 있으면 기존 행의 수량에 합산
      */
     @PostMapping("/product/cart/add")
     public String addToCart(@RequestParam Long prodNo,
+                            @RequestParam(required = false) Long skuNo,
                             @RequestParam(defaultValue = "1") int quantity,
-                            @AuthenticationPrincipal MyUserDetails userDetails) {
+                            @AuthenticationPrincipal MyUserDetails userDetails,
+                            RedirectAttributes redirectAttributes) {
         if (userDetails == null) {
             return "redirect:/member/login";
         }
-
-        Cart cart = Cart.builder()
-                .memberNo(userDetails.getUser().getMemberNo())
-                .prodNo(prodNo)
-                .quantity(quantity)
-                .createdAt(LocalDateTime.now())
-                .build();
-        cartRepository.save(cart);
-
+        try {
+            cartService.add(userDetails.getUser().getMemberNo(), prodNo, skuNo, quantity);
+            redirectAttributes.addFlashAttribute("cartMessage", "장바구니에 상품을 담았습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            return "redirect:/product/view?prodNo=" + prodNo;
+        }
         return "redirect:/product/cart";
     }
 
@@ -388,34 +418,148 @@ public class ProductIndexController {
      */
     @PostMapping("/product/order/direct")
     public String orderDirect(@RequestParam Long prodNo,
+                              @RequestParam(required = false) Long skuNo,
                               @RequestParam(defaultValue = "1") int quantity,
                               Model model,
-                              @AuthenticationPrincipal MyUserDetails userDetails) {
+                              @AuthenticationPrincipal MyUserDetails userDetails,
+                              RedirectAttributes redirectAttributes) {
         if (userDetails == null) {
             return "redirect:/member/login";
         }
 
-        Product product = productRepository.findById(prodNo)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
-
-        model.addAttribute("product", product);
-        model.addAttribute("quantity", quantity);
-        addProductLayout(model, product.getCateNo());
+        try {
+            CartItemViewDTO item = cartService.previewProduct(prodNo, skuNo, quantity);
+            addOrderModel(model, List.of(item), userDetails.getUser().getMemberNo());
+            model.addAttribute("directProdNo", prodNo);
+            model.addAttribute("directSkuNo", skuNo);
+            model.addAttribute("directQuantity", quantity);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            return "redirect:/product/view?prodNo=" + prodNo;
+        }
         return "product/order";
     }
 
     @GetMapping("/product/cart")
-    public String cart(Model model) {
+    public String cart(Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
+        if (userDetails == null) {
+            return "redirect:/member/login";
+        }
+
+        List<CartItemViewDTO> cartItems = cartService.getItems(userDetails.getUser().getMemberNo());
+
+        int totalQuantity = cartItems.stream().mapToInt(CartItemViewDTO::getQuantity).sum();
+        int totalProductPrice = cartItems.stream()
+                .mapToInt(item -> item.getUnitPrice() * item.getQuantity())
+                .sum();
+        int totalShippingFee = cartItems.stream().mapToInt(CartItemViewDTO::getShippingFee).sum();
+        int totalOrderPrice = cartItems.stream().mapToInt(CartItemViewDTO::getLineTotal).sum();
+        int totalRewardPoints = cartItems.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("totalProductPrice", totalProductPrice);
+        model.addAttribute("totalDiscount", totalProductPrice + totalShippingFee - totalOrderPrice);
+        model.addAttribute("totalShippingFee", totalShippingFee);
+        model.addAttribute("totalOrderPrice", totalOrderPrice);
+        model.addAttribute("totalRewardPoints", totalRewardPoints);
         addProductLayout(model, null);
         return "product/cart";
     }
 
     @GetMapping("/product/order")
-    public String order(Model model) {
-        model.addAttribute("product", sampleProduct());
-        model.addAttribute("order", Map.of("totalPrice", "24,650"));
-        addProductLayout(model, null);
-        return "product/order";
+    public String order() {
+        return "redirect:/product/cart";
+    }
+
+    @PostMapping("/product/cart/quantity")
+    public String updateCartQuantity(@RequestParam long cartNo,
+                                     @RequestParam int quantity,
+                                     @AuthenticationPrincipal MyUserDetails userDetails,
+                                     RedirectAttributes redirectAttributes) {
+        if (userDetails == null) return "redirect:/member/login";
+        try {
+            cartService.updateQuantity(userDetails.getUser().getMemberNo(), cartNo, quantity);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+        }
+        return "redirect:/product/cart";
+    }
+
+    @PostMapping("/product/cart/delete")
+    public String deleteCartItems(@RequestParam(required = false) List<Long> cartNos,
+                                  @AuthenticationPrincipal MyUserDetails userDetails,
+                                  RedirectAttributes redirectAttributes) {
+        if (userDetails == null) return "redirect:/member/login";
+        try {
+            cartService.deleteSelected(userDetails.getUser().getMemberNo(), cartNos);
+            redirectAttributes.addFlashAttribute("cartMessage", "선택한 상품을 삭제했습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+        }
+        return "redirect:/product/cart";
+    }
+
+    @PostMapping("/product/cart/delete-sold-out")
+    public String deleteSoldOutCartItems(@AuthenticationPrincipal MyUserDetails userDetails,
+                                         RedirectAttributes redirectAttributes) {
+        if (userDetails == null) return "redirect:/member/login";
+        int deleted = cartService.deleteSoldOut(userDetails.getUser().getMemberNo());
+        redirectAttributes.addFlashAttribute("cartMessage",
+                deleted == 0 ? "삭제할 품절 상품이 없습니다." : "품절 상품 " + deleted + "개를 삭제했습니다.");
+        return "redirect:/product/cart";
+    }
+
+    @PostMapping("/product/order/cart")
+    public String orderCartItems(@RequestParam(required = false) List<Long> cartNos,
+                                 @AuthenticationPrincipal MyUserDetails userDetails,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
+        if (userDetails == null) return "redirect:/member/login";
+        try {
+            List<CartItemViewDTO> items = cartService.getSelectedItems(userDetails.getUser().getMemberNo(), cartNos);
+            addOrderModel(model, items, userDetails.getUser().getMemberNo());
+            model.addAttribute("selectedCartNos", cartNos);
+            return "product/order";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            return "redirect:/product/cart";
+        }
+    }
+
+    @PostMapping("/product/order/complete")
+    public String completeOrder(@ModelAttribute CheckoutRequest checkoutRequest,
+                                @AuthenticationPrincipal MyUserDetails userDetails,
+                                RedirectAttributes redirectAttributes) {
+        if (userDetails == null) return "redirect:/member/login";
+        try {
+            CheckoutService.CheckoutResult result = checkoutService.placeOrder(
+                    userDetails.getUser().getMemberNo(), checkoutRequest);
+            redirectAttributes.addAttribute("orderNo", result.orderNo());
+            return "redirect:/product/order/complete";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            if (checkoutRequest.isCartOrder()) {
+                return "redirect:/product/cart";
+            }
+            Long prodNo = checkoutRequest.getDirectProdNo();
+            return prodNo == null ? "redirect:/product/cart" : "redirect:/product/view?prodNo=" + prodNo;
+        }
+    }
+
+    @GetMapping("/product/order/complete")
+    public String orderComplete(@RequestParam int orderNo,
+                                @AuthenticationPrincipal MyUserDetails userDetails,
+                                Model model) {
+        if (userDetails == null) return "redirect:/member/login";
+        try {
+            model.addAttribute("receipt", checkoutService.getReceipt(
+                    userDetails.getUser().getMemberNo(), orderNo));
+            addProductLayout(model, null);
+            return "product/order-complete";
+        } catch (IllegalArgumentException e) {
+            return "redirect:/my/order";
+        }
     }
 
     /**
@@ -430,9 +574,17 @@ public class ProductIndexController {
             return "redirect:/member/login";
         }
 
+        int memberNo = userDetails.getUser().getMemberNo();
+        if (!orderDetailsRepository.existsReviewablePurchase(memberNo, prodNo)) {
+            return "redirect:/product/view?prodNo=" + prodNo + "#reviews";
+        }
+        if (reviewRepository.existsByMemberNoAndProdNo(memberNo, prodNo)) {
+            return "redirect:/product/view?prodNo=" + prodNo + "#reviews";
+        }
+
         Review review = Review.builder()
                 .prodNo(prodNo)
-                .memberNo(userDetails.getUser().getMemberNo())
+                .memberNo(memberNo)
                 .rating(rating)
                 .content(content)
                 .createdAt(LocalDateTime.now())
@@ -446,21 +598,22 @@ public class ProductIndexController {
         return "redirect:/product/view?prodNo=" + prodNo;
     }
 
-    private Map<String, Object> sampleProduct() {
-        return Map.ofEntries(
-                Map.entry("id", 1001),
-                Map.entry("name", "프리미엄 데일리 상품"),
-                Map.entry("category", "패션"),
-                Map.entry("subcategory", "셔츠"),
-                Map.entry("price", "27,000"),
-                Map.entry("originalPrice", "30,000"),
-                Map.entry("origin", "대한민국"),
-                Map.entry("sellerName", "K-market"),
-                Map.entry("modelName", "KM-SAMPLE-001"),
-                Map.entry("description", "샘플 상품 설명")
-        );
-    }
+    private void addOrderModel(Model model, List<CartItemViewDTO> items, int memberNo) {
+        int totalQuantity = items.stream().mapToInt(CartItemViewDTO::getQuantity).sum();
+        int totalProductPrice = items.stream().mapToInt(item -> item.getUnitPrice() * item.getQuantity()).sum();
+        int totalShippingFee = items.stream().mapToInt(CartItemViewDTO::getShippingFee).sum();
+        int totalOrderPrice = items.stream().mapToInt(CartItemViewDTO::getLineTotal).sum();
+        int totalRewardPoints = items.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
 
+        model.addAttribute("orderItems", items);
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("totalProductPrice", totalProductPrice);
+        model.addAttribute("totalShippingFee", totalShippingFee);
+        model.addAttribute("totalDiscount", totalProductPrice + totalShippingFee - totalOrderPrice);
+        model.addAttribute("totalOrderPrice", totalOrderPrice);
+        model.addAttribute("totalRewardPoints", totalRewardPoints);
+        model.addAttribute("orderMember", memberRepository.findById(memberNo).orElse(null));
+        addProductLayout(model, null);
     private void addProductLayout(Model model, Integer selectedCateNo) {
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
         model.addAttribute("rankingProducts", productRepository.findTop3ByOrderBySalesCountDesc());

@@ -67,6 +67,7 @@ public class Order {
                 .id(this.user != null ? this.user.getId() : "비회원")
                 .recipientName(this.recipientName)
                 .recipientPhone(this.recipientPhone)
+                .recipientPhone(this.recipientPhone)
                 .zipCode(this.zipCode)
                 .baseAddress(this.baseAddress)
                 .detailAddress(this.detailAddress)

@@ -5,6 +5,11 @@ import org.example.k_market.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +23,10 @@ import java.util.List;
  * 별도의 JPQL 없이 카테고리, 검색, 정렬 조건을 처리한다.
  */
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select p from Product p where p.prodNo = :prodNo")
+    java.util.Optional<Product> findByIdForUpdate(@Param("prodNo") Long prodNo);
 
     /**
      * 선택한 카테고리에 속한 상품을 조회한다.

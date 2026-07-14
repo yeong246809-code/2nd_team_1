@@ -6,6 +6,7 @@ import org.example.k_market.entity.Category;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.service.ProductService;
+import org.example.k_market.service.MainBannerService;
 import org.example.k_market.service.admin.BannerService;
 import org.example.k_market.service.admin.SiteConfigService;
 import org.example.k_market.service.admin.VersionService;
@@ -42,6 +43,8 @@ public class IndexController {
     // 메인 화면 상품 목록과 상품 검색을 처리한다.
     private final ProductService productService;
 
+    private final MainBannerService mainBannerService;
+
 
     /**
      * K-market 메인 페이지
@@ -52,18 +55,10 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model) {
 
-
-        /*
-         * 화면설계서 1번: 메인 상단 가로 배너
-         *
-         * 관리자 배너 관리에서 위치가 MAIN1이고,
-         * 상태가 활성이며 현재 노출 기간에 해당하는 배너 1개를 조회한다.
-         * 등록된 배너가 없으면 topBanner에는 null이 전달되어 HTML에서 영역을 숨긴다.
-         */
-        model.addAttribute(
-                "topBanner",
-                bannerService.getDisplayableBanner("MAIN1")
-        );
+        model.addAttribute("topBanner", mainBannerService.findTopBanner().orElse(null));
+        model.addAttribute("mainBanners", mainBannerService.findSliderBanners());
+        model.addAttribute("leftSideBanner", mainBannerService.findLeftSideBanner().orElse(null));
+        model.addAttribute("rightSideBanner", mainBannerService.findRightSideBanner().orElse(null));
 
         /*
          * 사이트 공통 설정
@@ -178,5 +173,5 @@ public class IndexController {
     }
 
 
-
+    
 }

@@ -55,6 +55,7 @@ public class OrderDTO {
                 .createdAt(createdAt)
                 .status(status)
                 .recipientName(recipientName)
+                .recipientPhone(recipientPhone)
                 .zipCode(zipCode)
                 .baseAddress(baseAddress)
                 .detailAddress(detailAddress)

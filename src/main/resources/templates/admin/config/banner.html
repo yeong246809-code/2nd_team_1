@@ -309,6 +309,12 @@
                 <a th:href="@{/admin/config/banner(position='MAIN2', sort=${currentSort})}"
                    th:classappend="${currentPosition == 'MAIN2'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
                    class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">메인슬라이더배너</a>
+                <a th:href="@{/admin/config/banner(position='MAIN3', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'MAIN3'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">메인사이드배너 1</a>
+                <a th:href="@{/admin/config/banner(position='MAIN4', sort=${currentSort})}"
+                   th:classappend="${currentPosition == 'MAIN4'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
+                   class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">메인사이드배너 2</a>
                 <a th:href="@{/admin/config/banner(position='PRODUCT1', sort=${currentSort})}"
                    th:classappend="${currentPosition == 'PRODUCT1'} ? 'bg-white text-black border-b-0' : 'bg-gray-200 text-gray-600'"
                    class="px-6 py-3 border border-r-0 border-gray-300 transition-colors">상품 상세보기 배너</a>
@@ -445,6 +451,8 @@
                         <option value="">선택</option>
                         <option value="MAIN1">메인상단</option>
                         <option value="MAIN2">메인슬라이더</option>
+                        <option value="MAIN3">메인사이드배너 1</option>
+                        <option value="MAIN4">메인사이드배너 2</option>
                         <option value="PRODUCT1">상품상세보기</option>
                         <option value="MEMBER1">회원로그인</option>
                         <option value="MY1">마이페이지</option>

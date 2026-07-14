@@ -123,6 +123,13 @@
         .coupon-table th {
             border-bottom: 1px solid #e1e3e4;
         }
+        .coupon-table { table-layout: fixed; min-width: 820px; }
+        .coupon-table th:nth-child(1), .coupon-table td:nth-child(1) { width: 30%; }
+        .coupon-table th:nth-child(2), .coupon-table td:nth-child(2) { width: 16%; white-space: nowrap; }
+        .coupon-table th:nth-child(3), .coupon-table td:nth-child(3) { width: 30%; word-break: keep-all; }
+        .coupon-table th:nth-child(4), .coupon-table td:nth-child(4) { width: 12%; white-space: nowrap; }
+        .coupon-table th:nth-child(5), .coupon-table td:nth-child(5) { width: 12%; white-space: nowrap; }
+        .coupon-table td:nth-child(4) span { display: inline-flex; white-space: nowrap; }
     </style>
 </head>
 <body class="font-body-md text-on-surface">

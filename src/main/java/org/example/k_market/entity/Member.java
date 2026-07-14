@@ -34,6 +34,13 @@ public class Member {
     private String memo;
     private String locationPolicyAgreed;
 
+    public void changePoints(int points) {
+        if (points < 0) {
+            throw new IllegalArgumentException("포인트 잔액은 0보다 작을 수 없습니다.");
+        }
+        this.points = points;
+    }
+
     @Transient
     private String id;
 
