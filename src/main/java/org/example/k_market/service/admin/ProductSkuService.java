@@ -2,7 +2,7 @@ package org.example.k_market.service.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.entity.ProductSkus;
-import org.example.k_market.repository.ProductSkuRepository;
+import org.example.k_market.repository.ProductSkusRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public class ProductSkuService {
 
-    private final ProductSkuRepository productSkuRepository;
+    private final ProductSkusRepository productSkuRepository;
 
     // 상품 등록 시 SKU 저장
     public void saveAll(List<ProductSkus> skuList) {

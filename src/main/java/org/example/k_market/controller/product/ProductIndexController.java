@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Log4j2
@@ -258,7 +259,7 @@ public class ProductIndexController {
     }
 
 
-    @GetMapping("/product/search")
+    @GetMapping("/search")
     public String search(@RequestParam(value = "keyword", defaultValue = "") String keyword,
                          @RequestParam(defaultValue = "false") boolean searchName,
                          @RequestParam(defaultValue = "false") boolean searchDescription,
@@ -339,7 +340,7 @@ public class ProductIndexController {
         return map;
     }
 
-    @GetMapping("/product/view")
+    @GetMapping("/view")
     public String view(@RequestParam Integer prodNo,
                        Model model,
                        @AuthenticationPrincipal MyUserDetails userDetails) {
@@ -393,7 +394,7 @@ public class ProductIndexController {
      * - 로그인 안 되어 있으면 로그인 페이지로 보냄
      * - 같은 상품과 같은 SKU가 이미 있으면 기존 행의 수량에 합산
      */
-    @PostMapping("/product/cart/add")
+    @PostMapping("/cart/add")
     public String addToCart(@RequestParam Long prodNo,
                             @RequestParam(required = false) Long skuNo,
                             @RequestParam(defaultValue = "1") int quantity,
@@ -416,7 +417,7 @@ public class ProductIndexController {
      * 바로구매 - 결제 페이지(주문서)로 이동
      * (실제 결제/주문 저장 로직은 별도 OrderController에서 추가 구현 필요)
      */
-    @PostMapping("/product/order/direct")
+    @PostMapping("/order/direct")
     public String orderDirect(@RequestParam Long prodNo,
                               @RequestParam(required = false) Long skuNo,
                               @RequestParam(defaultValue = "1") int quantity,
@@ -440,7 +441,7 @@ public class ProductIndexController {
         return "product/order";
     }
 
-    @GetMapping("/product/cart")
+    @GetMapping("/cart")
     public String cart(Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
         if (userDetails == null) {
             return "redirect:/member/login";
@@ -467,12 +468,12 @@ public class ProductIndexController {
         return "product/cart";
     }
 
-    @GetMapping("/product/order")
+    @GetMapping("/order")
     public String order() {
         return "redirect:/product/cart";
     }
 
-    @PostMapping("/product/cart/quantity")
+    @PostMapping("/cart/quantity")
     public String updateCartQuantity(@RequestParam long cartNo,
                                      @RequestParam int quantity,
                                      @AuthenticationPrincipal MyUserDetails userDetails,
@@ -486,7 +487,7 @@ public class ProductIndexController {
         return "redirect:/product/cart";
     }
 
-    @PostMapping("/product/cart/delete")
+    @PostMapping("/cart/delete")
     public String deleteCartItems(@RequestParam(required = false) List<Long> cartNos,
                                   @AuthenticationPrincipal MyUserDetails userDetails,
                                   RedirectAttributes redirectAttributes) {
@@ -500,7 +501,7 @@ public class ProductIndexController {
         return "redirect:/product/cart";
     }
 
-    @PostMapping("/product/cart/delete-sold-out")
+    @PostMapping("/cart/delete-sold-out")
     public String deleteSoldOutCartItems(@AuthenticationPrincipal MyUserDetails userDetails,
                                          RedirectAttributes redirectAttributes) {
         if (userDetails == null) return "redirect:/member/login";
@@ -510,7 +511,7 @@ public class ProductIndexController {
         return "redirect:/product/cart";
     }
 
-    @PostMapping("/product/order/cart")
+    @PostMapping("/order/cart")
     public String orderCartItems(@RequestParam(required = false) List<Long> cartNos,
                                  @AuthenticationPrincipal MyUserDetails userDetails,
                                  Model model,
@@ -527,7 +528,7 @@ public class ProductIndexController {
         }
     }
 
-    @PostMapping("/product/order/complete")
+    @PostMapping("/order/complete")
     public String completeOrder(@ModelAttribute CheckoutRequest checkoutRequest,
                                 @AuthenticationPrincipal MyUserDetails userDetails,
                                 RedirectAttributes redirectAttributes) {
@@ -547,7 +548,7 @@ public class ProductIndexController {
         }
     }
 
-    @GetMapping("/product/order/complete")
+    @GetMapping("/order/complete")
     public String orderComplete(@RequestParam int orderNo,
                                 @AuthenticationPrincipal MyUserDetails userDetails,
                                 Model model) {
@@ -565,7 +566,7 @@ public class ProductIndexController {
     /**
      * 상품후기 등록
      */
-    @PostMapping("/product/review/add")
+    @PostMapping("/review/add")
     public String addReview(@RequestParam Long prodNo,
                             @RequestParam int rating,
                             @RequestParam String content,
@@ -614,6 +615,8 @@ public class ProductIndexController {
         model.addAttribute("totalRewardPoints", totalRewardPoints);
         model.addAttribute("orderMember", memberRepository.findById(memberNo).orElse(null));
         addProductLayout(model, null);
+    }
+
     private void addProductLayout(Model model, Integer selectedCateNo) {
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
         model.addAttribute("rankingProducts", productRepository.findTop3ByOrderBySalesCountDesc());
@@ -633,7 +636,7 @@ public class ProductIndexController {
                 // 대분류를 선택한 경우 (예: 패션)
                 mainCateNo = selected.getCateNo();
                 mainCateName = selected.getName();
-                subCategories = categoryRepository.findByParentNo(mainCateNo);
+                subCategories = categoryRepository.findByParentNoOrderByCateNoAsc(mainCateNo);
             } else {
                 // 소분류를 선택한 경우 (예: 상의)
                 subCateNo = selected.getCateNo();
@@ -643,7 +646,7 @@ public class ProductIndexController {
                 if (parent != null) {
                     mainCateNo = parent.getCateNo();
                     mainCateName = parent.getName();
-                    subCategories = categoryRepository.findByParentNo(mainCateNo);
+                    subCategories = categoryRepository.findByParentNoOrderByCateNoAsc(mainCateNo);
                 }
             }
         }
@@ -653,6 +656,9 @@ public class ProductIndexController {
         model.addAttribute("subCateNo", subCateNo);
         model.addAttribute("subCateName", subCateName);
         model.addAttribute("subCategories", subCategories);
+        addProductSidebarMap(model, mainCateNo);
+    }
+
     private CartItemViewDTO toCartItemView(Cart cart) {
         Product product = productRepository.findById(cart.getProdNo())
                 .orElseThrow(() -> new IllegalStateException("장바구니 상품이 존재하지 않습니다: " + cart.getProdNo()));
@@ -678,7 +684,7 @@ public class ProductIndexController {
                 .build();
     }
 
-    private void addProductLayout(
+    private void addProductSidebarMap(
             Model model,
             Integer mainCateNo
     ) {
