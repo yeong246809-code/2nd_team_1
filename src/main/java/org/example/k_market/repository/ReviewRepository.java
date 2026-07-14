@@ -14,5 +14,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     long countByMemberNo(int memberNo);
     // 기존에 있던 다른 메서드가 있다면 그대로 두고 위 메서드만 추가하세요.
 
+    // 후기 많은 순
+    long countByProdNo(Long prodNo);
+
 
 }
