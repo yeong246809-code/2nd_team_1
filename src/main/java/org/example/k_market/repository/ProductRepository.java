@@ -30,7 +30,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByCateNoIn(List<Integer> cateNos, Pageable pageable);
 
-    List<Product> findTop3ByOrderBySalesCountDesc();
     /**
      * 메인 사이드바용 인기 상품을 조회한다.
      * 판매량이 높은 순서대로 최대 3개를 반환한다.
@@ -75,8 +74,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param description 상품 설명 검색어
      * @return 검색 조건에 맞는 상품 목록
      */
-    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-            String name,
-            String description
-    );
+    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
 }
