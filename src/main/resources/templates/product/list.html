@@ -183,16 +183,34 @@
                         <h2 class="text-2xl font-bold text-primary">상품목록</h2>
                     </div>
                     <nav class="text-xs text-on-surface-variant flex items-center gap-1">
-                        <span>HOME</span> &gt; <span>패션/의류</span> &gt; <span class="font-bold text-primary">남성의류</span>
+                        <span>HOME</span> &gt;
+                        <span class="font-bold text-primary"
+                              th:text="${mainCateName != null ? mainCateName : '전체'}">패션</span>
                     </nav>
                 </div>
+
+                <!-- 상품정렬 -->
+                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant">
+                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='salesDesc', page=1)}"
+                       th:classappend="${sort == 'salesDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">판매많은순</a>
+                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='priceAsc', page=1)}"
+                       th:classappend="${sort == 'priceAsc'} ? 'font-bold text-primary' : 'hover:text-primary'">낮은가격순</a>
+                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='priceDesc', page=1)}"
+                       th:classappend="${sort == 'priceDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">높은가격순</a>
+                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='ratingDesc', page=1)}"
+                       th:classappend="${sort == 'ratingDesc'} ? 'font-bold text-primary' : 'hover:text-primary'">평점높은순</a>
+                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='reviewCount', page=1)}"
+                       th:classappend="${sort == 'reviewCount'} ? 'font-bold text-primary' : 'hover:text-primary'">후기많은순</a>
+                    <a th:href="@{/product/list(cateNo=${mainCateNo}, sort='latest', page=1)}"
+                       th:classappend="${sort == 'latest' or sort == null} ? 'font-bold text-primary' : 'hover:text-primary'">최근등록순</a>
+                </nav>
 
                 <div class="grid grid-cols-1 gap-gutter">
 
                     <div th:each="product : ${products}" class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
 
                         <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0 overflow-hidden block relative">
-                            <img th:if="${product.thumb1 != null}" th:src="@{'/uploads' + ${product.thumb1}}" class="w-full h-full object-cover" alt="상품 이미지"/>
+                            <img th:if="${product.thumb1 != null}" th:src="${product.thumb1}" class="w-full h-full object-cover" alt="상품 이미지"/>
 
                             <span th:if="${product.thumb1 == null}" class="material-symbols-outlined text-4xl">image</span>
                         </a>
@@ -241,14 +259,22 @@
 
                 </div>
 
-                <div class="flex justify-center items-center gap-2 mt-xl">
-                    <button class="p-2 text-outline-variant hover:text-primary">&lt; 이전</button>
-                    <button class="w-8 h-8 rounded bg-primary text-white font-bold">1</button>
-                    <button class="w-8 h-8 rounded hover:bg-surface-container">2</button>
-                    <button class="w-8 h-8 rounded hover:bg-surface-container">3</button>
-                    <button class="w-8 h-8 rounded hover:bg-surface-container">4</button>
-                    <button class="w-8 h-8 rounded hover:bg-surface-container">5</button>
-                    <button class="p-2 text-outline-variant hover:text-primary">다음 &gt;</button>
+                <div class="flex justify-center items-center gap-2 mt-xl" th:if="${totalPages > 0}">
+                    <a th:if="${currentPage > 1}"
+                       th:href="@{/product/list(cateNo=${mainCateNo}, sort=${sort}, page=${currentPage - 1})}"
+                       class="p-2 text-outline-variant hover:text-primary">&lt; 이전</a>
+                    <span th:unless="${currentPage > 1}" class="p-2 text-outline-variant/40">&lt; 이전</span>
+
+                    <a th:each="p : ${#numbers.sequence(1, totalPages)}"
+                       th:href="@{/product/list(cateNo=${mainCateNo}, sort=${sort}, page=${p})}"
+                       th:text="${p}"
+                       th:classappend="${p == currentPage} ? 'bg-primary text-white font-bold' : 'hover:bg-surface-container'"
+                       class="w-8 h-8 flex items-center justify-center rounded">1</a>
+
+                    <a th:if="${currentPage < totalPages}"
+                       th:href="@{/product/list(cateNo=${mainCateNo}, sort=${sort}, page=${currentPage + 1})}"
+                       class="p-2 text-outline-variant hover:text-primary">다음 &gt;</a>
+                    <span th:unless="${currentPage < totalPages}" class="p-2 text-outline-variant/40">다음 &gt;</span>
                 </div>
             </div>
         </div>

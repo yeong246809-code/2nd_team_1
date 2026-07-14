@@ -77,4 +77,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     void updateStatus(
             @Param("memberNo") int memberNo,
             @Param("status") MemberAccountStatus status);
+
+    @Query("SELECT COUNT(m) FROM Member m WHERE m.createdAt >= :start AND m.createdAt < :end")
+    long countByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

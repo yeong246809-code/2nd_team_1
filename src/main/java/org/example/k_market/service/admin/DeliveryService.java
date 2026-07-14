@@ -1,5 +1,6 @@
 package org.example.k_market.service.admin;
 
+import org.example.k_market.dto.DashboardStatsDTO;
 import org.example.k_market.dto.DeliveryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +23,11 @@ public interface DeliveryService {
     Page<DeliveryDTO> getSellerDeliveryList(long shopNo, Pageable pageable);
 
     DeliveryDTO getDetailByTrackingNumber(String trackingNumber);
+
+    DashboardStatsDTO getTodayDashboardStats();
+
+    // ==========================================
+    // [대시보드] 어제 기준 주요지표
+    // ==========================================
+    DashboardStatsDTO getYesterdayDashboardStats();
 }

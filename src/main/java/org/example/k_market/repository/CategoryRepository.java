@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> findByParentNoIsNull();
+
+    List<Category> findByParentNo(Integer cateNo);
 }

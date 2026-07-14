@@ -6,6 +6,7 @@ import org.example.k_market.entity.Notice;
 import org.example.k_market.entity.Qna;
 import org.example.k_market.entity.Users;
 import org.example.k_market.repository.UsersRepository;
+import org.example.k_market.service.admin.OrderService;
 import org.example.k_market.service.cs.NoticeService;
 import org.example.k_market.service.cs.QnaService;
 import org.springframework.stereotype.Controller;
@@ -24,9 +25,18 @@ public class AdminIndexController {
     private final NoticeService noticeService;
     private final QnaService qnaService;
     private final UsersRepository usersRepository;
+    private final OrderService orderService;
 
     @GetMapping({ "/index"})
     public String index(Model model) {
+        // [1] 운영현황 & 주요지표 (오늘/어제) 바인딩
+        model.addAttribute("todayStats", orderService.getTodayDashboardStats());
+        model.addAttribute("yesterdayStats", orderService.getYesterdayDashboardStats());
+
+        // [2] 5일 차트 통계 바인딩
+        model.addAttribute("dailySummaryList", orderService.getRecent5DaysSummary());
+        model.addAttribute("topSalesList", orderService.getTopSalesCategories(5));
+
         // 1. 최신 공지사항 5개 조회
         List<Notice> noticeList = noticeService.findTop5();
 
@@ -53,6 +63,8 @@ public class AdminIndexController {
         // 4. 모델에 담아서 HTML로 전달
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("qnaList", qnaDtoList);
+        model.addAttribute("dailySummaryList", orderService.getRecent5DaysSummary());
+        model.addAttribute("topSalesList", orderService.getTopSalesCategories(5));
 
         return "admin/index";
     }

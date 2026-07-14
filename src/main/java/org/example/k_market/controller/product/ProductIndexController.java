@@ -14,6 +14,7 @@ import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.repository.QnaRepository;
 import org.example.k_market.repository.ReviewRepository;
 import org.example.k_market.security.MyUserDetails;
+import org.example.k_market.service.ProductService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,36 +36,120 @@ public class ProductIndexController {
     private final CartRepository cartRepository;         // 신규 주입
     private final ReviewRepository reviewRepository;     // 신규 주입
     private final QnaRepository qnaRepository;           // 신규 주입
+    private final ProductService productService;
+
+    private static final int PAGE_SIZE = 10;
 
     @GetMapping("/product/list")
-    public String list(@RequestParam(required = false) Integer cateNo, Model model) {
-        List<Product> products = (cateNo == null)
-                ? productRepository.findAll()
-                : productRepository.findByCateNo(cateNo);
+    public String list(@RequestParam(required = false) Integer cateNo,
+                       @RequestParam(required = false, defaultValue = "latest") String sort,
+                       @RequestParam(required = false, defaultValue = "1") int page,
+                       Model model) {
+
+        int pageIndex = Math.max(page - 1, 0); // 화면은 1부터, Pageable은 0부터
+        List<Product> products;
+        int totalPages;
+
+        if ("reviewCount".equals(sort)) {
+            // 후기많은순은 DB 정렬이 아니라 리뷰 개수 기준 자바 정렬이라 직접 페이징 처리
+            List<Product> all = (cateNo == null)
+                    ? productRepository.findAll()
+                    : productRepository.findByCateNoIn(resolveCateNos(cateNo));
+            all = sortByReviewCountDesc(all);
+
+            totalPages = (int) Math.ceil((double) all.size() / PAGE_SIZE);
+            int fromIndex = Math.min(pageIndex * PAGE_SIZE, all.size());
+            int toIndex = Math.min(fromIndex + PAGE_SIZE, all.size());
+            products = all.subList(fromIndex, toIndex);
+        } else {
+            org.springframework.data.domain.Pageable pageable =
+                    org.springframework.data.domain.PageRequest.of(pageIndex, PAGE_SIZE, resolveSort(sort));
+
+            org.springframework.data.domain.Page<Product> productPage = (cateNo == null)
+                    ? productRepository.findAll(pageable)
+                    : productRepository.findByCateNoIn(resolveCateNos(cateNo), pageable);
+
+            products = productPage.getContent();
+            totalPages = productPage.getTotalPages();
+        }
 
         addProductLayout(model, cateNo);
         model.addAttribute("products", products);
+        model.addAttribute("sort", sort);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", Math.max(totalPages, 1));
         return "product/list";
     }
 
-    @GetMapping("/product/search")
-    public String search(@RequestParam(value = "keyword", defaultValue = "셔츠") String keyword, Model model) {
-        List<Map<String, Object>> products = List.of(
-                Map.of(
-                        "name", "이지 워시 옥스퍼드 셔츠",
-                        "description", "데일리 아이템으로 입기 좋은 스탠다드 핏 셔츠입니다.",
-                        "isNew", true,
-                        "isFreeShipping", true,
-                        "discount", 10,
-                        "originalPrice", "30,000",
-                        "price", "27,000",
-                        "seller", "패션빌리지"
-                )
-        );
+    /**
+     * 상품정렬 스펙:
+     * 판매많은순 / 낮은가격순 / 높은가격순 / 평점높은순 / 후기많은순 / 최근등록순
+     */
+    private org.springframework.data.domain.Sort resolveSort(String sort) {
+        return switch (sort) {
+            case "salesDesc" -> org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Direction.DESC, "salesCount");
+            case "priceAsc" -> org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Direction.ASC, "price");
+            case "priceDesc" -> org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Direction.DESC, "price");
+            case "ratingDesc" -> org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Direction.DESC, "rating");
+            case "reviewCount" -> org.springframework.data.domain.Sort.unsorted(); // 아래에서 별도 처리
+            default -> org.springframework.data.domain.Sort.by(
+                    org.springframework.data.domain.Sort.Direction.DESC, "createdAt"); // 최근등록순 (기본값)
+        };
+    }
 
-        model.addAttribute("keyword", keyword);
+    /**
+     * 후기많은순: 상품별 리뷰 개수를 기준으로 내림차순 정렬
+     */
+    private List<Product> sortByReviewCountDesc(List<Product> products) {
+        return products.stream()
+                .sorted((a, b) -> Long.compare(
+                        reviewRepository.countByProdNo(b.getProdNo()),
+                        reviewRepository.countByProdNo(a.getProdNo())
+                ))
+                .toList();
+    }
+
+    /**
+     * 선택한 카테고리(cateNo)가 상위(대분류)인 경우, 그 하위 카테고리 번호까지
+     * 모두 포함해서 조회 대상으로 만들어준다.
+     * (상품의 cateNo는 실제로는 하위 카테고리 번호를 참조하는 경우가 많기 때문)
+     */
+    private List<Integer> resolveCateNos(Integer cateNo) {
+        List<Integer> cateNos = new java.util.ArrayList<>();
+        cateNos.add(cateNo);
+
+        List<Category> children = categoryRepository.findByParentNo(cateNo);
+        for (Category child : children) {
+            cateNos.add(child.getCateNo());
+        }
+
+        return cateNos;
+    }
+
+    @GetMapping("/product/search")
+    public String search(
+            @RequestParam(name = "keyword", required = false, defaultValue = "")
+            String keyword,
+            Model model
+    ) {
+
+        // 검색어 앞뒤의 공백 제거
+        String trimmedKeyword = keyword.trim();
+
+        // ProductService를 통해 실제 DB 상품 검색
+        List<Product> products =
+                productService.searchProducts(trimmedKeyword);
+
+        // 검색 결과 화면에 필요한 데이터 전달
+        model.addAttribute("keyword", trimmedKeyword);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
+
+        // 상품 화면 공통 레이아웃 정보 전달
         addProductLayout(model, null);
 
         return "product/search";
@@ -74,6 +159,11 @@ public class ProductIndexController {
     public String view(@RequestParam Integer prodNo, Model model) {
         Product product = productRepository.findById(Long.valueOf(prodNo))
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
+
+        // 조회수 +1 (상세페이지 진입 시마다 증가)
+        int currentViewCount = (product.getViewCount() == null) ? 0 : product.getViewCount();
+        product.setViewCount(currentViewCount + 1);
+        productRepository.save(product);
 
         Category category = categoryRepository.findById(product.getCateNo()).orElse(null);
         Category parentCategory = (category != null && category.getParentNo() != null)
@@ -201,7 +291,11 @@ public class ProductIndexController {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .build();
-        reviewRepository.save(review);
+                // 리뷰 저장
+                reviewRepository.save(review);
+
+                // 새 리뷰를 포함하여 해당 상품의 평균 별점을 다시 계산
+                productService.updateProductRating(prodNo);
 
         return "redirect:/product/view?prodNo=" + prodNo;
     }
@@ -250,5 +344,12 @@ public class ProductIndexController {
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
         model.addAttribute("mainCateNo", mainCateNo);
         model.addAttribute("rankingProducts", productRepository.findTop3ByOrderBySalesCountDesc());
+
+        String mainCateName = (mainCateNo == null)
+                ? null
+                : categoryRepository.findById(mainCateNo)
+                .map(Category::getName)
+                .orElse(null);
+        model.addAttribute("mainCateName", mainCateName);
     }
 }

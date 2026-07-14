@@ -1,10 +1,13 @@
 package org.example.k_market.repository;
 
+import org.apache.ibatis.annotations.Param;
 import org.example.k_market.entity.Qna;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +33,7 @@ public interface QnaRepository extends JpaRepository<Qna, Integer> {
     Page<Qna> findByMemberNoAndParentNoOrderByNoDesc(Integer memberNo, Integer parentNo, Pageable pageable);
 
     long countByMemberNoAndParentNo(Integer memberNo, Integer parentNo);
+
+    @Query("SELECT COUNT(q) FROM Qna q WHERE q.createdAt >= :start AND q.createdAt < :end")
+    long countByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
