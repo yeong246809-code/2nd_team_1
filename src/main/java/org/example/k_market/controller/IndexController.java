@@ -2,20 +2,29 @@ package org.example.k_market.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.k_market.entity.Category;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.service.ProductService;
 import org.example.k_market.service.MainBannerService;
+import org.example.k_market.service.admin.BannerService;
 import org.example.k_market.service.admin.SiteConfigService;
 import org.example.k_market.service.admin.VersionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @Log4j2
 @RequiredArgsConstructor
 public class IndexController {
+
+    // 메인 화면 배너를 조회한다.
+    private final BannerService bannerService;
 
     // 관리자 사이트 설정 정보
     // 사이트명, 로고, 회사 정보, 고객센터 정보 등을 메인 화면에 출력한다.
@@ -70,13 +79,32 @@ public class IndexController {
         );
 
         /*
-         * 최상위 카테고리 목록
-         * parentNo가 null인 1차 카테고리만 조회한다.
+         * 1차 카테고리 목록 조회
          */
-        model.addAttribute(
-                "categories",
-                categoryRepository.findByParentNoIsNull()
-        );
+        List<Category> categories =
+                categoryRepository.findByParentNoIsNull();
+
+        model.addAttribute("categories", categories);
+
+        /*
+         * 1차 카테고리별 2차 카테고리 목록
+         *
+         * key   : 1차 카테고리 번호
+         * value : 해당 카테고리에 속한 2차 카테고리 목록
+         */
+        Map<Integer, List<Category>> subCategoryMap =
+                new LinkedHashMap<>();
+
+        for (Category category : categories) {
+            subCategoryMap.put(
+                    category.getCateNo(),
+                    categoryRepository.findByParentNoOrderByCateNoAsc(
+                            category.getCateNo()
+                    )
+            );
+        }
+
+        model.addAttribute("subCategoryMap", subCategoryMap);
 
         /*
          * 현재 선택된 메인 카테고리 번호

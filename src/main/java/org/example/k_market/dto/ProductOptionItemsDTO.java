@@ -14,13 +14,12 @@ public class ProductOptionItemsDTO {
     private long optItemNo;
     private long optionNo;
     private String itemName;
-    private int addPrice;
-    private int stock;
 
     public ProductOptionItems toEntity(){
         return ProductOptionItems.builder()
-                .optItemNo(optItemNo).optionNo(optionNo)
-                .itemName(itemName).addPrice(addPrice).stock(stock)
+                .optItemNo(optItemNo)
+                .optionNo(optionNo)
+                .itemName(itemName)
                 .build();
     }
 }
