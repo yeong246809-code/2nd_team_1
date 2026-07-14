@@ -270,9 +270,11 @@
                             <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
                             <select class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
                                 <option value="">색상/사이즈를 선택하세요</option>
-                                <option value="1">블랙 / Large (+0원)</option>
-                                <option value="2">실버 / Medium (+5,000원)</option>
-                                <option value="3">골드 / Small (+10,000원)</option>
+
+                                <!-- 하드코딩된 것들을 지우고 반복문으로 대체 -->
+                                <option th:each="option : ${options}"
+                                        th:value="${option.optionNo}"
+                                        th:text="${option.name}">옵션명</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between py-sm px-md bg-surface-container-high rounded-lg">

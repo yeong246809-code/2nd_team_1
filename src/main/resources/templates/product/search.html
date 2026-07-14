@@ -203,26 +203,26 @@
 
             <!-- Secondary Search & Filter Bar -->
             <div class="bg-surface-container-low p-md rounded standard-border mb-lg">
-                <form class="flex flex-wrap items-center gap-md text-sm">
+                <form class="flex flex-wrap items-center gap-md text-sm" th:action="@{/product/search}" action="/product/search" method="get">
                     <div class="flex-1 min-w-[280px] flex gap-2">
-                        <input class="flex-1 p-2.5 rounded border-outline bg-white focus:ring-primary focus:border-primary" placeholder="결과 내 재검색" type="text"/>
-                        <button class="bg-primary text-white px-6 py-2.5 rounded font-bold hover:opacity-90 transition-opacity">검색</button>
+                        <input name="keyword" th:value="${keyword}" class="flex-1 p-2.5 rounded border-outline bg-white focus:ring-primary focus:border-primary" placeholder="결과 내 재검색" type="text"/>
+                        <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded font-bold hover:opacity-90 transition-opacity">검색</button>
                     </div>
                     <div class="flex items-center gap-md text-on-surface-variant font-medium">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 상품명
+                            <input name="searchName" value="true" th:checked="${searchName}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 상품명
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 설명
+                            <input name="searchDescription" value="true" th:checked="${searchDescription}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 설명
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 가격
+                            <input name="searchPrice" value="true" th:checked="${searchPrice}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 가격
                         </label>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input class="w-24 p-2 rounded border-outline bg-white" placeholder="최소(원)" type="number"/>
+                        <input name="minPrice" th:value="${minPrice}" class="w-24 p-2 rounded border-outline bg-white" placeholder="최소(원)" type="number"/>
                         <span class="text-outline-variant">~</span>
-                        <input class="w-24 p-2 rounded border-outline bg-white" placeholder="최대(원)" type="number"/>
+                        <input name="maxPrice" th:value="${maxPrice}" class="w-24 p-2 rounded border-outline bg-white" placeholder="최대(원)" type="number"/>
                     </div>
                 </form>
             </div>
@@ -243,7 +243,9 @@
                 <div class="product-card-shadow flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded transition-all" th:each="product : ${products}">
                     <!-- Image -->
                     <div class="w-full md:w-48 h-48 rounded bg-surface-container-low shrink-0 relative overflow-hidden">
-                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdWmML6wVLoLeEh4sMK7eyhvZq4yE7dZpGnQ66-jCH7oBW2l_z-8ZxoucezAEtjspPufgAcV9LGm4vgPyhYZ4ZH4PYk_fYKFBPDCzggqyv4UiQIwBW9I_VPy_mWr4BWKmzqp2baVPU9JtqsjOQDujk7IaMPGD8CKkjh2WmqRFJEtTmhOrxBuQ9HfNyDK4bow87nPbvcTaFL-l7Eae33oP1EJXDm1qvXLomlOmvcSaqRL8GsJky1NssxNQOEUUOGgkrLBqB87_5v6ET" th:alt="${product.name}"/>
+                        <img class="w-full h-full object-cover"
+                             th:src="${product.thumb1 != null} ? ${product.thumb1} : '/images/no-image.png'"
+                             th:alt="${product.name}"/>
                         <div class="absolute top-2 left-2 px-2 py-0.5 bg-secondary text-white text-xs font-bold rounded" th:if="${product.isNew}">NEW</div>
                     </div>
                     <!-- Content -->
@@ -288,89 +290,10 @@
                     </div>
                 </div>
 
-                <!-- Repeat Mock Item 2 -->
-                <div class="product-card-shadow flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded transition-all">
-                    <div class="w-full md:w-48 h-48 rounded bg-surface-container-low shrink-0 relative overflow-hidden">
-                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmkcVCwaqRmNg3HYvlkELjyeLJR4Xr8GQ4eCyxobauvqLxCWHSycfue_H1fu2vqu5Rnv0xWxpKqQPee9w3bf6DCEldD7SD9yTzWgdkrzrbMd7M54uT52v4BuQ0n8oB0GvzYa3u6rBVZE3Kxw5CLZk3BzgoHbbuzFTT_DZsn_glU4CfJcJMtvGkS8d5TVOKRgFjjqgfP33g_ptC6nTORVr-IE-VegqlpiUddYKjUhr45ItaO3hATLN3ahxCRjm1aX7N9G8XIfNGulcb" alt="프리미엄 린넨 헨리넥 셔츠"/>
-                    </div>
-                    <div class="flex-1 flex flex-col justify-between py-1">
-                        <div>
-                            <h3 class="text-lg font-bold text-on-surface hover:text-primary transition-colors mb-1 cursor-pointer">프리미엄 린넨 헨리넥 셔츠</h3>
-                            <p class="text-sm text-on-surface-variant line-clamp-2 mb-4">여름철 시원하게 착용 가능한 천연 린넨 소재의 셔츠입니다. 통기성이 뛰어나며 세련된 실루엣을 선사합니다.</p>
-                            <div class="flex items-center gap-md text-sm">
-                                <span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-xs font-bold">무료배송</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-48 border-t md:border-t-0 md:border-l border-outline-variant/50 pt-md md:pt-0 md:pl-md flex flex-col justify-between items-start md:items-end text-left md:text-right">
-                        <div>
-                            <div class="flex items-baseline gap-2 md:justify-end">
-                                <span class="text-error font-bold text-sm">15% ↓</span>
-                                <span class="text-outline-variant text-sm line-through">45,000원</span>
-                            </div>
-                            <div class="text-xl font-extrabold text-primary">38,250원</div>
-                        </div>
-                        <div class="mt-md w-full">
-                            <div class="flex items-center gap-1 md:justify-end mb-1">
-                                <span class="text-xs font-medium text-on-surface-variant">모던웨어</span>
-                                <span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                            </div>
-                            <div class="flex items-center gap-1 md:justify-end">
-                                <div class="flex text-tertiary-container">
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                </div>
-                                <span class="text-xs text-outline-variant">(124)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Repeat Mock Item 3 -->
-                <div class="product-card-shadow flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded transition-all">
-                    <div class="w-full md:w-48 h-48 rounded bg-surface-container-low shrink-0 relative overflow-hidden">
-                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7yW8TE6nLo4DPtbbMRPqQfM2MnbmX4IC5yYJEz0s-bwKj17IdfhonfmEJHZJSrvaEx3SkPUROJmeJx2ZVsfCpYa2DiqiYKY_rcPDHD40h2ZIHlfoFHJIPytdXk6cI4Ro4zJeu2H5OaZ69HPHJ973hWcHK-AiNy7kBWONfKDSscszd_ldye4iejgEY1Jk34fr_c_qkHRRHc7ZtpoW9FFiVJZWatyFz8VPni9DISlfBSKT7iOzgTZGdu6ZZFaiAjWXB_RGZrJApv-9H" alt="데일리 코튼 스트라이프 셔츠"/>
-                    </div>
-                    <div class="flex-1 flex flex-col justify-between py-1">
-                        <div>
-                            <h3 class="text-lg font-bold text-on-surface hover:text-primary transition-colors mb-1 cursor-pointer">데일리 코튼 스트라이프 셔츠</h3>
-                            <p class="text-sm text-on-surface-variant line-clamp-2 mb-4">잔잔한 스트라이프 패턴으로 지적인 분위기를 연출하는 비즈니스 캐주얼 셔츠입니다.</p>
-                            <div class="flex items-center gap-md text-sm">
-                                <span class="text-on-surface-variant flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">local_shipping</span>
-                                    배송비 3,000원
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-48 border-t md:border-t-0 md:border-l border-outline-variant/50 pt-md md:pt-0 md:pl-md flex flex-col justify-between items-start md:items-end text-left md:text-right">
-                        <div>
-                            <div class="flex items-baseline gap-2 md:justify-end">
-                                <span class="text-error font-bold text-sm">20% ↓</span>
-                                <span class="text-outline-variant text-sm line-through">29,000원</span>
-                            </div>
-                            <div class="text-xl font-extrabold text-primary">23,200원</div>
-                        </div>
-                        <div class="mt-md w-full">
-                            <div class="flex items-center gap-1 md:justify-end mb-1">
-                                <span class="text-xs font-medium text-on-surface-variant">베이직라인</span>
-                            </div>
-                            <div class="flex items-center gap-1 md:justify-end">
-                                <div class="flex text-tertiary-container">
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]">star_outline</span>
-                                </div>
-                                <span class="text-xs text-outline-variant">(12)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- 검색 결과가 없을 때 -->
+                <p th:if="${totalCount == 0}" class="text-center text-on-surface-variant py-xl">
+                    검색 결과가 없습니다.
+                </p>
 
             </div>
 
@@ -380,10 +303,6 @@
                     <span class="material-symbols-outlined text-sm">chevron_left</span>
                 </button>
                 <button class="w-8 h-8 rounded bg-primary text-white font-bold text-sm">1</button>
-                <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container transition-colors text-sm">2</button>
-                <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container transition-colors text-sm">3</button>
-                <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container transition-colors text-sm">4</button>
-                <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container transition-colors text-sm">5</button>
                 <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors">
                     <span class="material-symbols-outlined text-sm">chevron_right</span>
                 </button>
