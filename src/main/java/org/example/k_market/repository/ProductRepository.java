@@ -1,6 +1,9 @@
 package org.example.k_market.repository;
 
 import org.example.k_market.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -21,6 +24,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     List<Product> findByCateNo(Integer cateNo);
 
+    List<Product> findByCateNoIn(List<Integer> cateNos);
+
+    List<Product> findByCateNoIn(List<Integer> cateNos, Sort sort);
+
+    Page<Product> findByCateNoIn(List<Integer> cateNos, Pageable pageable);
+
+    List<Product> findTop3ByOrderBySalesCountDesc();
     /**
      * 메인 사이드바용 인기 상품을 조회한다.
      * 판매량이 높은 순서대로 최대 3개를 반환한다.
