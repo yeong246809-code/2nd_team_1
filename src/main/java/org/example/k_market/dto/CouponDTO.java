@@ -27,6 +27,9 @@ public class CouponDTO {
     private String status;
     private LocalDateTime createdAt;
 
+    private long issueCount; // 추가
+    private long useCount;   // 추가
+
     public Coupon toEntity(){
         return Coupon.builder()
                 .couponNo(couponNo).issuerName(issuerName).couponType(couponType)

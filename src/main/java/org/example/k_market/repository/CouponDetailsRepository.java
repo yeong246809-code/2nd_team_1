@@ -11,4 +11,8 @@ public interface CouponDetailsRepository extends JpaRepository<CouponDetails, Lo
     Page<CouponDetails> findByMemberNoOrderByIssuedAtDesc(int memberNo, Pageable pageable);
 
     long countByMemberNoAndIsUsedIgnoreCase(int memberNo, String isUsed);
+
+    long countByCouponNo(long couponNo);
+
+    long countByCouponNoAndIsUsed(long couponNo, String isUsed);
 }
