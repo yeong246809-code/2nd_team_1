@@ -3,27 +3,27 @@
 <body>
 <aside th:fragment="sidebar(activeMenu)" class="w-64 shrink-0 flex flex-col space-y-2 py-md bg-surface-container-low rounded-xl shadow-sm border-r border-outline-variant h-fit sticky top-24">
     <div class="px-4 pb-4 border-b border-outline-variant mb-2">
-        <h2 class="font-headline-md text-headline-md text-primary">나의쇼핑정보</h2>
+        <h2 class="font-headline-md text-headline-md text-primary" th:text="${isSeller} ? '판매자정보' : '나의쇼핑정보'">나의쇼핑정보</h2>
         <p class="font-body-md text-body-md text-on-surface-variant opacity-70" th:text="${loginUserId} != '' ? |${loginUserId}님 환영합니다| : '환영합니다'">환영합니다</p>
     </div>
     <nav class="flex flex-col space-y-1">
-        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'order'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/order}" href="/my/order">
+        <a th:unless="${isSeller}" class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'order'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/order}" href="/my/order">
             <span class="material-symbols-outlined">list_alt</span>
             전체주문내역
         </a>
-        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'point'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/point}" href="/my/point">
+        <a th:unless="${isSeller}" class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'point'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/point}" href="/my/point">
             <span class="material-symbols-outlined">payments</span>
             포인트내역
         </a>
-        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'coupon'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/coupon}" href="/my/coupon">
+        <a th:unless="${isSeller}" class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'coupon'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/coupon}" href="/my/coupon">
             <span class="material-symbols-outlined">confirmation_number</span>
             쿠폰
         </a>
         <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'review'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/review}" href="/my/review">
             <span class="material-symbols-outlined">rate_review</span>
-            나의리뷰
+            <span th:text="${isSeller} ? '리뷰관리' : '나의리뷰'">나의리뷰</span>
         </a>
-        <a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'myqna'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/myqna}" href="/my/myqna">
+        <a th:unless="${isSeller}" class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all active:scale-95" th:classappend="${activeMenu == 'myqna'} ? ' bg-[#2c4a52] hover:bg-[#2c4a52] text-white font-semibold scale-95'" th:href="@{/my/myqna}" href="/my/myqna">
             <span class="material-symbols-outlined">contact_support</span>
             문의하기
         </a>

@@ -16,6 +16,47 @@ import java.util.List;
 public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long> {
     List<OrderDetails> findByOrderNo(long orderNo);
 
+    List<OrderDetails> findByOrderNoAndShopNo(long orderNo, long shopNo);
+
+    List<OrderDetails> findByShopNo(long shopNo);
+
+    boolean existsByOrderNoAndShopNo(long orderNo, long shopNo);
+
+    boolean existsByOrderDetailNoAndShopNo(long orderDetailNo, long shopNo);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE OrderDetails od SET od.status = :status WHERE od.orderNo = :orderNo AND od.shopNo = :shopNo")
+    int updateStatusByOrderNoAndShopNo(@Param("orderNo") long orderNo,
+                                       @Param("shopNo") long shopNo,
+                                       @Param("status") String status);
+
+    @Query("""
+            SELECT od
+            FROM OrderDetails od
+            JOIN Order o ON od.orderNo = o.orderNo
+            WHERE od.shopNo = :shopNo
+              AND (:searchType IS NULL OR :searchType = '' OR :keyword IS NULL OR :keyword = ''
+                   OR (:searchType = 'orderNo' AND str(o.orderNo) LIKE concat('%', :keyword, '%'))
+                   OR (:searchType = 'orderName' AND lower(o.orderName) LIKE lower(concat('%', :keyword, '%'))))
+            ORDER BY o.createdAt DESC, od.orderDetailNo DESC
+            """)
+    Page<OrderDetails> findSellerOrderDetails(@Param("shopNo") long shopNo,
+                                               @Param("searchType") String searchType,
+                                               @Param("keyword") String keyword,
+                                               Pageable pageable);
+
+    @Query("""
+            SELECT od
+            FROM OrderDetails od
+            JOIN Order o ON od.orderNo = o.orderNo
+            WHERE od.shopNo = :shopNo
+              AND o.createdAt >= :startDateTime
+              AND o.createdAt < :endDateTime
+            """)
+    List<OrderDetails> findSellerDetailsBetween(@Param("shopNo") long shopNo,
+                                                 @Param("startDateTime") LocalDateTime startDateTime,
+                                                 @Param("endDateTime") LocalDateTime endDateTime);
+
     @Query("""
             SELECT od
             FROM OrderDetails od

@@ -101,6 +101,13 @@ public class MyPageService {
         return block(mapped);
     }
 
+    public MyPageDtos.PageBlock<MyPageDtos.ReviewItem> sellerReviews(int shopNo, int page) {
+        Page<MyPageDtos.ReviewItem> mapped = reviewRepository
+                .findSellerProductReviews(shopNo, pageRequest(page))
+                .map(this::toReviewItem);
+        return block(mapped);
+    }
+
     public MyPageDtos.PageBlock<MyPageDtos.QnaItem> qnas(int memberNo, int page) {
         Page<MyPageDtos.QnaItem> mapped = qnaRepository.findByMemberNoAndParentNoOrderByNoDesc(memberNo, 0, pageRequest(page))
                 .map(this::toQnaItem);

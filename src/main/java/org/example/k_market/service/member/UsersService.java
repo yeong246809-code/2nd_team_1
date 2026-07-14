@@ -111,6 +111,32 @@ public class UsersService implements UserDetailsService {
     }
 
     @Transactional
+    public void changePassword(String id, String currentPassword, String newPassword, String passwordConfirm) {
+        String safeId = trimToNull(id);
+        if (safeId == null) {
+            throw new IllegalArgumentException("로그인 정보를 확인할 수 없습니다.");
+        }
+        Users user = userRepository.findById(safeId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        if (currentPassword == null || !passwordEncoder.matches(currentPassword, user.getPass())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("새 비밀번호를 입력해주세요.");
+        }
+        if (newPassword.length() < 4) {
+            throw new IllegalArgumentException("비밀번호는 4자 이상 입력해주세요.");
+        }
+        if (!newPassword.equals(passwordConfirm)) {
+            throw new IllegalArgumentException("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        }
+        if (passwordEncoder.matches(newPassword, user.getPass())) {
+            throw new IllegalArgumentException("현재 비밀번호와 다른 비밀번호를 입력해주세요.");
+        }
+        userRepository.updatePasswordByLoginId(safeId, passwordEncoder.encode(newPassword));
+    }
+
+    @Transactional
     public Users register(String id, String password, String passwordConfirm, String role) {
         Users user = createUser(id, password, passwordConfirm, role);
         if ("USER".equalsIgnoreCase(user.getRole())) {

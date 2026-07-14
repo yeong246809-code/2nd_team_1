@@ -6,6 +6,7 @@ import org.example.k_market.dto.PolicyDTO;
 import org.example.k_market.service.admin.PolicyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -78,7 +79,8 @@ public class MemberIndexController {
     }
 
     @GetMapping("/member/find/changePassword")
-    public String changePassword() {
+    public String changePassword(Authentication authentication, Model model) {
+        model.addAttribute("loginId", authentication.getName());
         return "member/find/changePassword";
     }
 }

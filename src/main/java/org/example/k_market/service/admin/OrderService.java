@@ -16,13 +16,16 @@ public interface OrderService {
     // 주문 전체 목록 조회
     Page<OrderDTO> findAllOrders(Pageable pageable);
     Page<OrderDTO> findOrderList(Pageable pageable, String searchType, String keyword);
+    Page<OrderDTO> findSellerOrderList(long shopNo, Pageable pageable, String searchType, String keyword);
 
     // 주문 상세 조회 (두 메서드 중 하나만 남기고 나머지는 구현체에서 호출하도록 유도해도 됩니다)
     OrderDTO findOrderDetail(int orderNo);
+    OrderDTO findSellerOrderDetail(long shopNo, int orderNo);
     OrderDTO getOrderDetail(int orderNo); // 구현체에서 findOrderDetail(orderNo) 호출
 
     // 주문 상태 변경
     void updateOrderStatus(int orderNo, String status);
+    void updateSellerOrderStatus(long shopNo, int orderNo, String status);
     boolean updateOrderStatus(String orderNo, String status); // 구현체에서 위 메서드 호출
 
     // 대시보드 통계 메서드

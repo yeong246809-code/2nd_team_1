@@ -50,6 +50,12 @@ public class ProductService {
                 .toList();
     }
 
+    public List<ProductDTO> findByShopNo(Integer shopNo) {
+        return productRepository.findByShopNo(shopNo).stream()
+                .map(Product::toDTO)
+                .toList();
+    }
+
     /**
      * 상품 번호로 상품을 조회한다.
      *

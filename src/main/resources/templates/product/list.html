@@ -160,10 +160,7 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <button class="p-2 border border-outline-variant rounded relative">
-                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
-                    </button>
+                    <div th:replace="~{fragments/cart-button :: button}"></div>
                     <button class="md:hidden p-2 border border-outline-variant rounded">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
@@ -174,48 +171,10 @@
 </header>
 
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
-    <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
-        <a class="font-bold text-primary border-b-2 border-primary py-1" th:href="@{/product/list}">오늘의 특가</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">추천 상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">신상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">베스트</a>
-        <a class="text-error font-semibold py-1" th:href="@{/product/list}">세일</a>
-    </nav>
+    <div th:replace="~{fragments/nav :: productTabs('deal')}"></div>
     <div class="flex flex-col md:flex-row gap-lg items-start">
 
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg shrink-0">
-            <div class="bg-white standard-border rounded p-md">
-                <h2 class="font-bold text-lg mb-sm">카테고리</h2>
-                <nav class="flex flex-col gap-1" id="category-menu">
-                    <a th:each="c : ${categories}"
-                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
-                       class="category-item flex items-center gap-base py-2 px-2 rounded"
-                       th:href="@{/product/list(cateNo=${c.cateNo}, sort='latest', page=1)}">
-                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Simple Top Ranking (실시간 인기 상품 수동 이식 완료) -->
-            <div class="hidden md:block">
-                <h3 class="font-bold text-lg mb-sm">실시간 인기 상품</h3>
-                <div class="flex flex-col gap-sm" id="ranking-list">
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
-                        <span class="font-bold text-secondary px-1">1</span>
-                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate">아이폰 15 프로 자급제</p>
-                    </div>
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
-                        <span class="font-bold text-secondary px-1">2</span>
-                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate">고급 호텔식 타월 세트</p>
-                    </div>
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded cursor-pointer group">
-                        <span class="font-bold text-secondary px-1">3</span>
-                        <p class="text-sm text-on-surface-variant group-hover:text-primary truncate">친환경 무라벨 생수 2L</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${mainCateNo}, ${rankingProducts})}"></div>
 
         <div class="flex-1 min-w-0 flex flex-col gap-xl">
             <div class="flex flex-col gap-md">

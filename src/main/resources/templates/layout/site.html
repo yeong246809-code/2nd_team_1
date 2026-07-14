@@ -42,10 +42,7 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a class="relative flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca]" th:href="@{/product/cart}" href="/product/cart" aria-label="장바구니">
-                        <span class="material-symbols-outlined text-[#14333b]" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -right-2 -top-2 rounded-full bg-[#ba1a1a] px-1 text-[10px] font-bold text-white">0</span>
-                    </a>
+                    <div th:replace="~{fragments/cart-button :: button}"></div>
                     <button class="flex h-10 w-10 items-center justify-center rounded border border-[#c1c7ca] md:hidden" type="button" aria-label="메뉴 열기">
                         <span class="material-symbols-outlined text-[#14333b]" data-icon="menu">menu</span>
                     </button>

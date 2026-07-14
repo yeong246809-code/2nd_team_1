@@ -124,6 +124,7 @@ public class SecurityConfig {
 
         // 인가 설정 (권한 제어)
         httpSecurity.authorizeHttpRequests( authorize -> authorize
+                .requestMatchers("/member/find/changePassword").authenticated()
                 .requestMatchers(
                         "/member/login", "/member/join", "/member/signup", "/member/welcome",
                         "/member/session", "/member/check-id", "/member/email/send", "/member/email/verify",
@@ -133,8 +134,10 @@ public class SecurityConfig {
                 ).permitAll()
                 //셀러 권한 필요하면 여기에 추가
                 .requestMatchers("/admin/product/**").hasAnyRole("ADMIN", "SELLER")
+                .requestMatchers("/admin/order/**").hasAnyRole("ADMIN", "SELLER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/my/**").authenticated()
+                .requestMatchers("/product/cart", "/product/cart/**").authenticated()
                 .requestMatchers("/cs/notice/write").hasRole("ADMIN")
                 .anyRequest().permitAll()
         );
@@ -144,14 +147,32 @@ public class SecurityConfig {
         httpSecurity.exceptionHandling( exception -> exception
                 .defaultAuthenticationEntryPointFor(loginEntryPoint, new AntPathRequestMatcher("/admin/**"))
                 .defaultAuthenticationEntryPointFor(loginEntryPoint, new AntPathRequestMatcher("/my/**"))
+                .defaultAuthenticationEntryPointFor(loginEntryPoint, new AntPathRequestMatcher("/product/cart/**"))
+                .defaultAuthenticationEntryPointFor(loginEntryPoint, new AntPathRequestMatcher("/product/cart"))
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     String contextPath = request.getContextPath();
+                    boolean seller = SecurityContextHolder.getContext().getAuthentication() != null
+                            && SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                            .anyMatch(authority -> "ROLE_SELLER".equals(authority.getAuthority()));
 
                     response.setContentType("text/html; charset=UTF-8");
                     PrintWriter out = response.getWriter();
                     out.print("<script>");
-                    out.print("alert('접근할 수 없는 페이지입니다.');");
-                    out.print("location.href='" + contextPath + "/';");
+                    if (seller && accessDeniedException.getMessage() != null
+                            && accessDeniedException.getMessage().contains("운영 준비")) {
+                        out.print("alert('운영 준비중인 판매자는 관리자 페이지를 이용할 수 없습니다.');");
+                        out.print("location.href='" + contextPath + "/my/index';");
+                    } else if (seller && accessDeniedException.getMessage() != null
+                            && accessDeniedException.getMessage().contains("운영 중지")) {
+                        out.print("alert('운영 중지된 판매자는 관리자 페이지를 이용할 수 없습니다.');");
+                        out.print("location.href='" + contextPath + "/my/index';");
+                    } else if (seller && request.getRequestURI().contains("/admin/")) {
+                        out.print("alert('상품관리와 주문관리 페이지를 제외하고는 admin만 이용할 수 있습니다.');");
+                        out.print("location.href='" + contextPath + "/admin/product/list';");
+                    } else {
+                        out.print("alert('접근 권한이 없는 페이지입니다.');");
+                        out.print("location.href='" + contextPath + "/';");
+                    }
                     out.print("</script>");
                     out.flush();
                 })

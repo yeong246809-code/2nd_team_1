@@ -24,6 +24,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     List<Product> findByCateNo(Integer cateNo);
 
+    List<Product> findByShopNo(Integer shopNo);
+
     List<Product> findByCateNoIn(List<Integer> cateNos);
 
     List<Product> findByCateNoIn(List<Integer> cateNos, Sort sort);

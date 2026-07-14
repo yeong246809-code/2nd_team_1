@@ -157,10 +157,7 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <button class="relative flex h-10 w-10 items-center justify-center rounded border border-outline-variant">
-                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
-                    </button>
+                    <div th:replace="~{fragments/cart-button :: button}"></div>
                     <button class="flex h-10 w-10 items-center justify-center rounded border border-outline-variant md:hidden">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
@@ -171,51 +168,10 @@
 </header>
 
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-md">
-    <nav class="hidden md:flex items-center gap-lg border-b border-outline-variant mb-lg pb-sm">
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">오늘의 특가</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">추천 상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">신상품</a>
-        <a class="text-on-surface-variant hover:text-primary py-1" th:href="@{/product/list}">베스트</a>
-        <a class="text-error font-semibold py-1" th:href="@{/product/list}">세일</a>
-    </nav>
+    <div th:replace="~{fragments/nav :: productTabs('')}"></div>
 
     <div class="flex flex-col md:flex-row gap-lg items-start">
-        <aside class="w-full md:w-64 sticky top-[100px] flex flex-col gap-lg">
-            <div class="bg-white standard-border rounded p-md">
-                <h2 class="font-bold text-lg mb-sm">카테고리</h2>
-                <nav class="flex flex-col gap-1" id="category-menu">
-                    <a th:each="c : ${categories}"
-                       th:classappend="${c.cateNo == mainCateNo} ? 'bg-secondary-container text-on-secondary-container font-bold' : 'hover:bg-surface-container'"
-                       class="category-item flex items-center gap-base py-2 px-2 rounded"
-                       th:href="@{/product/list(cateNo=${c.cateNo})}">
-                        <span class="text-on-surface font-medium" th:text="${c.name}">카테고리명</span>
-                    </a>
-                </nav>
-            </div>
-            <div class="hidden md:block">
-                <h3 class="font-bold text-lg mb-sm">인기 순위</h3>
-                <div class="flex flex-col gap-sm" id="ranking-list">
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
-                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
-                            <span class="material-symbols-outlined text-xl">image</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate">레드 스포츠 슈즈</p>
-                            <p class="text-primary font-bold text-xs">27,000 KRW</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-sm items-center p-sm bg-white standard-border rounded">
-                        <div class="ranking-image w-12 h-12 placeholder-image rounded shrink-0 overflow-hidden">
-                            <span class="material-symbols-outlined text-xl">image</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold truncate">모던 스마트워치</p>
-                            <p class="text-primary font-bold text-xs">89,000 KRW</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${mainCateNo}, ${rankingProducts})}"></div>
 
         <section class="flex-1 flex flex-col gap-md w-full">
             <div class="flex justify-between items-end border-b border-outline-variant pb-2">
@@ -244,6 +200,34 @@
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant">
+                    <tr th:each="item : ${cartItems}" class="hover:bg-surface-container-low/30 transition-colors">
+                        <td class="px-md py-md text-center align-middle">
+                            <input checked class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+                        </td>
+                        <td class="px-md py-md">
+                            <a th:href="@{/product/view(prodNo=${item.prodNo})}" class="flex items-center gap-md">
+                                <div class="w-20 h-20 placeholder-image rounded-lg shrink-0 overflow-hidden">
+                                    <img th:if="${item.thumb1 != null and !item.thumb1.isBlank()}" th:src="@{/uploads/{file}(file=${item.thumb1})}" th:alt="${item.name}" class="w-full h-full object-cover"/>
+                                    <span th:unless="${item.thumb1 != null and !item.thumb1.isBlank()}" class="material-symbols-outlined text-3xl">image</span>
+                                </div>
+                                <div>
+                                    <h4 th:text="${item.name}" class="font-bold text-on-surface truncate max-w-xs">상품명</h4>
+                                    <p th:text="${item.description}" class="text-on-surface-variant text-label-sm font-label-sm">상품 설명</p>
+                                </div>
+                            </a>
+                        </td>
+                        <td th:text="${item.quantity}" class="px-md py-md text-center font-bold">1</td>
+                        <td th:text="${#numbers.formatInteger(item.unitPrice, 1, 'COMMA')}" class="px-md py-md text-right font-bold">0</td>
+                        <td th:text="${item.discountRate > 0 ? item.discountRate + '%' : '-'}" class="px-md py-md text-center text-error font-bold">-</td>
+                        <td th:text="${#numbers.formatInteger(item.lineRewardPoints, 1, 'COMMA') + 'p'}" class="px-md py-md text-center">0p</td>
+                        <td th:text="${item.shippingFee == 0 ? '무료배송' : #numbers.formatInteger(item.shippingFee, 1, 'COMMA') + '원'}" class="px-md py-md text-center text-on-surface-variant">무료배송</td>
+                        <td th:text="${#numbers.formatInteger(item.lineTotal, 1, 'COMMA')}" class="px-md py-md text-right font-bold text-primary">0</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(cartItems)}">
+                        <td colspan="8" class="px-md py-16 text-center text-on-surface-variant">장바구니에 담긴 상품이 없습니다.</td>
+                    </tr>
+                    </tbody>
+                    <tbody th:remove="all" class="divide-y divide-outline-variant">
                     <tr class="hover:bg-surface-container-low/30 transition-colors">
                         <td class="px-md py-md text-center align-middle">
                             <input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
