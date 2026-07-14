@@ -220,20 +220,42 @@
                 const selectedCateNo = /*[[${product.cateNo}]]*/ null;
 
                 function updateCate2() {
-                    const parentNo = document.getElementById('cate1').value;
+                    const cate1Select = document.getElementById('cate1');
                     const cate2Select = document.getElementById('cate2');
+                    const parentNo = cate1Select.value;
 
-                    cate2Select.innerHTML = '<option value="">2차 분류 선택</option>';
+                    // 선택한 1차 카테고리에 속한 2차 카테고리 목록 필터링
+                    const children = allCategories.filter(c => String(c.parentNo) === String(parentNo));
 
-                    allCategories.filter(c => String(c.parentNo) === String(parentNo)).forEach(c => {
-                        const opt = document.createElement('option');
-                        opt.value = c.cateNo;
-                        opt.text = c.name;
-                        if (selectedCateNo && String(c.cateNo) === String(selectedCateNo)) {
-                            opt.selected = true;
-                        }
-                        cate2Select.appendChild(opt);
-                    });
+                    cate2Select.innerHTML = '';
+
+                    if (children.length === 0) {
+                        // 1. 2차 카테고리가 없는 경우
+                        // -> 1차 카테고리에 name="cateNo"를 부여하여 1차 ID를 서버로 전송하고 2차 선택창은 비활성화
+                        cate1Select.setAttribute('name', 'cateNo');
+                        cate2Select.removeAttribute('name');
+                        cate2Select.required = false;
+                        cate2Select.disabled = true;
+                        cate2Select.innerHTML = '<option value="">하위 분류 없음</option>';
+                    } else {
+                        // 2. 2차 카테고리가 있는 경우
+                        // -> 2차 카테고리에 name="cateNo"와 required를 부여하여 2차 필수 선택 유도
+                        cate1Select.removeAttribute('name');
+                        cate2Select.setAttribute('name', 'cateNo');
+                        cate2Select.required = true;
+                        cate2Select.disabled = false;
+                        cate2Select.innerHTML = '<option value="">2차 분류 선택</option>';
+
+                        children.forEach(c => {
+                            const opt = document.createElement('option');
+                            opt.value = c.cateNo;
+                            opt.text = c.name;
+                            if (selectedCateNo && String(c.cateNo) === String(selectedCateNo)) {
+                                opt.selected = true;
+                            }
+                            cate2Select.appendChild(opt);
+                        });
+                    }
                 }
             </script>
         </div>
@@ -259,18 +281,47 @@
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <input type="text" th:field="*{name}" placeholder="상품명" class="border-outline-variant rounded-lg" required>
-                    <input type="number" th:field="*{price}" placeholder="판매가격(원)" class="border-outline-variant rounded-lg" required min="0">
+                    <input type="text" th:field="*{manufacturer}" placeholder="제조사" class="border-outline-variant rounded-lg">
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="number" th:field="*{discountRate}" placeholder="할인율(%)" class="border-outline-variant rounded-lg" min="0">
-                    <input type="number" th:field="*{rewardPoints}" placeholder="포인트(원)" class="border-outline-variant rounded-lg" min="0">
+                    <input type="number" id="price" th:field="*{price}" oninput="calcRewardPoints()" placeholder="판매가격(원)" class="border-outline-variant rounded-lg" required min="0">
+                    <input type="number" id="discountRate" th:field="*{discountRate}" oninput="calcRewardPoints()" placeholder="할인율(%)" class="border-outline-variant rounded-lg" min="0">
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="rewardPoints" th:field="*{rewardPoints}" placeholder="포인트(원) - 1% 자동계산" class="border-outline-variant rounded-lg bg-surface-container-low cursor-not-allowed" min="0" readonly>
                     <input type="number" th:field="*{stockQuantity}" placeholder="재고수량(개)" class="border-outline-variant rounded-lg" min="0">
+
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="number" th:field="*{shippingFee}" placeholder="배송비(원)" class="border-outline-variant rounded-lg" min="0">
                 </div>
-                <textarea th:field="*{description}" placeholder="상품 상세 설명" class="w-full border-outline-variant rounded-lg h-32"></textarea>
+
+                <textarea th:field="*{description}" placeholder="상품 기본 정보" class="w-full border-outline-variant rounded-lg h-32"></textarea>
             </div>
+
+            <script>
+                function calcRewardPoints() {
+                    const priceInput = document.getElementById('price');
+                    const discountInput = document.getElementById('discountRate');
+                    const rewardInput = document.getElementById('rewardPoints');
+
+                    const price = Number(priceInput.value) || 0;
+                    const discountRate = Number(discountInput.value) || 0;
+
+                    if (price > 0) {
+                        // 할인가 적용 금액 = 판매가격 * (1 - 할인율/100)
+                        const discountPrice = price * (1 - (discountRate / 100));
+                        // 1% 적립금 계산 (소수점 버림 처리)
+                        const points = Math.floor(discountPrice * 0.01);
+                        rewardInput.value = points > 0 ? points : 0;
+                    } else {
+                        rewardInput.value = 0;
+                    }
+                }
+            </script>
         </div>
 
         <div class="mb-8">
@@ -324,56 +375,108 @@
             </div>
         </div>
 
-        <div class="mb-8">
-            <h2 class="font-bold text-lg mb-4 border-b pb-2">상품 선택 정보</h2>
-            <div id="optionContainer" class="space-y-3">
-                <!-- 이제 모든 행이 아래 구조를 따릅니다 -->
-                <div class="grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center">
-                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
-                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg w-full">
-                    <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
-                </div>
-                <div class="grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center">
-                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
-                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg w-full">
-                    <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
-                </div>
-                <div class="grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center">
-                    <input type="text" name="optionName[]" placeholder="옵션명 (예: 사이즈)" class="border-outline-variant rounded-lg w-full">
-                    <input type="text" name="optionValue[]" placeholder="옵션항목 (예: XL, L, M, S)" class="border-outline-variant rounded-lg w-full">
-                    <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
+        <section class="mb-8">
+            <div class="mb-4 border-b pb-2">
+                <h2 class="font-bold text-lg">상품 옵션 조합</h2>
+                <p class="mt-1 text-label-sm text-on-surface-variant">옵션명과 옵션값을 입력한 후 [조합 생성하기] 버튼을 눌러 SKU 목록을 생성하세요. 옵션값은 콤마(,)로 구분합니다.</p>
+            </div>
+
+            <div id="optionGroupContainer" class="space-y-3 mb-4">
+                <div class="grid grid-cols-[1fr,2fr,auto] gap-3 option-row items-center">
+                    <input type="text" name="optionNames" placeholder="옵션명(예: 사이즈)" class="border rounded-lg">
+                    <input type="text" name="optionValues" placeholder="옵션값(예: S,M,L)" class="border rounded-lg">
+                    <button type="button" onclick="removeOption(this)" class="p-2 bg-red-100 text-red-600 rounded">삭제</button>
                 </div>
             </div>
-            <div class="mt-4 flex justify-end">
-                <button type="button" onclick="addOption()" class="px-4 py-2 bg-primary text-white rounded-lg text-sm flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">add</span>옵션 추가</button>
+
+            <div class="flex gap-2 mb-6">
+                <button type="button" onclick="addOptionGroup()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1 hover:opacity-90">+ 옵션 그룹 추가</button>
+                <button type="button" onclick="generateSkuTable()" class="bg-secondary text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1 hover:opacity-90">조합 생성하기</button>
             </div>
-        </div>
+
+            <table class="w-full mt-6 border-collapse border border-outline-variant rounded-lg overflow-hidden text-sm">
+                <thead class="bg-surface-container-high">
+                <tr>
+                    <th class="border border-outline-variant p-3 text-left font-bold text-primary">옵션 조합 (SKU)</th>
+                    <th class="border border-outline-variant p-3 text-left font-bold text-primary w-40">추가 금액 (원)</th>
+                    <th class="border border-outline-variant p-3 text-left font-bold text-primary w-40">재고 수량 (개)</th>
+                    <th class="border border-outline-variant p-3 text-center font-bold text-primary w-20">관리</th>
+                </tr>
+                </thead>
+                <tbody id="skuTableBody">
+                </tbody>
+            </table>
+        </section>
 
         <script>
-            function addOption() {
-                const container = document.getElementById('optionContainer');
+            // 옵션 그룹 추가 함수
+            function addOptionGroup() {
+                const container = document.getElementById('optionGroupContainer');
                 const newRow = document.createElement('div');
-                // grid-cols-[1fr,1fr,auto]로 설정하여 입력창 2개는 동일 비율로, 삭제버튼은 딱 필요한 만큼만 차지하게 합니다.
-                newRow.className = 'grid grid-cols-[1fr,1fr,auto] gap-3 option-row items-center';
+                newRow.className = 'grid grid-cols-[1fr,2fr,auto] gap-3 option-row items-center';
                 newRow.innerHTML = `
-            <input type="text" name="optionName[]" placeholder="옵션명" class="border-outline-variant rounded-lg w-full">
-            <input type="text" name="optionValue[]" placeholder="옵션항목" class="border-outline-variant rounded-lg w-full">
-            <button type="button" onclick="removeOption(this)" class="px-3 py-2 bg-error-container text-error rounded-lg hover:bg-error hover:text-white transition-colors">
-                <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
-        `;
+                    <input type="text" name="optionNames" placeholder="옵션명(예: 사이즈)" class="border rounded-lg">
+                    <input type="text" name="optionValues" placeholder="옵션값(예: S,M,L)" class="border rounded-lg">
+                    <button type="button" onclick="removeOption(this)" class="p-2 bg-red-100 text-red-600 rounded">삭제</button>
+                `;
                 container.appendChild(newRow);
             }
 
+            // 옵션 그룹 삭제 함수
             function removeOption(button) {
                 button.closest('.option-row').remove();
+            }
+
+            // 카테시안 곱 (옵션 조합 생성 알고리즘)
+            function cartesianProduct(arrays) {
+                if (arrays.length === 0) return [];
+                return arrays.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+            }
+
+            // 조합 생성 함수
+            function generateSkuTable() {
+                const inputs = Array.from(document.querySelectorAll('.option-row input[placeholder*="옵션값"]'));
+                const values = inputs.map(i => i.value.split(',').map(v => v.trim()).filter(v => v !== ""));
+
+                // 입력값이 없을 경우 방지
+                if (values.length === 0 || values.some(v => v.length === 0)) {
+                    alert("옵션값을 정확히 입력해주세요 (콤마로 구분)");
+                    return;
+                }
+
+                const combinations = cartesianProduct(values);
+                const tbody = document.getElementById('skuTableBody');
+                tbody.innerHTML = ''; // 기존 테이블 내용 초기화
+
+                combinations.forEach(combo => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-surface-container-low sku-row';
+                    row.innerHTML = `
+                        <td class="border border-outline-variant p-2">
+                          <input type="text" name="skuNames" value="${Array.isArray(combo) ? combo.join('/') : combo}" readonly class="w-full border-none bg-transparent font-medium text-on-surface">
+                        </td>
+                        <td class="border border-outline-variant p-2">
+                          <input type="number" name="prices" value="0" class="w-full border-outline-variant rounded-lg text-sm">
+                        </td>
+                        <td class="border border-outline-variant p-2">
+                          <input type="number" name="stocks" value="0" class="w-full border-outline-variant rounded-lg text-sm">
+                        </td>
+                        <td class="border border-outline-variant p-2 text-center">
+                          <button type="button" onclick="removeSkuRow(this)" class="p-1 bg-error-container text-error rounded hover:bg-error hover:text-white transition-colors" title="이 조합 삭제">
+                            <span class="material-symbols-outlined text-sm">delete</span>
+                          </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            // 조합 행 삭제 함수
+            function removeSkuRow(button) {
+                const row = button.closest('tr');
+                if (row) {
+                    row.remove();
+                }
             }
         </script>
 

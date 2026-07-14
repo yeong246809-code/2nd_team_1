@@ -17,7 +17,9 @@ public class ProductOptionsDTO {
 
     public ProductOptions toEntity(){
         return ProductOptions.builder()
-                .optionNo(optionNo).prodNo(prodNo).name(name)
+                .optionNo(optionNo)
+                .prodNo(prodNo)
+                .name(name)
                 .build();
     }
 }
