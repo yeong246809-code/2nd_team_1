@@ -186,137 +186,153 @@
     <div class="flex flex-col md:flex-row gap-lg items-start">
         <div th:replace="~{fragments/nav :: productSidebar(${categories}, ${subCategoryMap}, ${mainCateNo}, ${rankingProducts})}"></div>
 
-        <!-- Main Column (Search Results) -->
-        <div class="flex-1 flex flex-col w-full">
-            <!-- Breadcrumbs & Title -->
-            <div class="flex justify-between items-end border-b border-outline-variant pb-2 mb-md">
-                <div>
-                    <h1 class="text-2xl font-bold text-on-surface">
-                        "<span class="text-primary" th:text="${keyword}">셔츠</span>" 검색결과
-                        <span class="text-base font-normal text-on-surface-variant ml-2">(총 <span th:text="${totalCount}">20</span>건)</span>
-                    </h1>
+        <div class="flex-1 min-w-0 flex flex-col gap-xl w-full">
+
+            <div class="flex flex-col gap-md">
+                <div class="flex justify-between items-end border-b border-outline-variant pb-2">
+                    <div>
+                        <h1 class="text-2xl font-bold text-on-surface">
+                            "<span class="text-primary" th:text="${keyword}">검색어</span>" 검색결과
+                            <span class="text-base font-normal text-on-surface-variant ml-2">(총 <span th:text="${totalCount != null ? totalCount : 0}">0</span>건)</span>
+                        </h1>
+                    </div>
+                    <nav class="text-xs text-on-surface-variant flex items-center gap-1">
+                        <span>HOME</span> &gt; <span>상품검색</span> &gt; <span class="font-bold text-primary">검색결과</span>
+                    </nav>
                 </div>
-                <nav class="text-xs text-on-surface-variant flex items-center gap-1">
-                    <span>HOME</span> &gt; <span>상품검색</span> &gt; <span class="font-bold text-primary">검색결과</span>
+
+                <div class="bg-surface-container-low p-md rounded standard-border">
+                    <form class="flex flex-wrap items-center gap-md text-sm" th:action="@{/product/search}" action="/product/search" method="get">
+                        <input type="hidden" name="sort" th:value="${sort}">
+                        <div class="flex-1 min-w-[280px] flex gap-2">
+                            <input name="keyword" th:value="${keyword}" class="flex-1 p-2.5 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none" placeholder="결과 내 재검색" type="text"/>
+                            <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded font-bold hover:opacity-90 transition-opacity">검색</button>
+                        </div>
+                        <div class="flex items-center gap-md text-on-surface-variant font-medium">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input name="searchName" value="true" th:checked="${searchName}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 상품명
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input name="searchDescription" value="true" th:checked="${searchDescription}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 설명
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input name="searchPrice" value="true" th:checked="${searchPrice}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 가격
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input name="minPrice" th:value="${minPrice}" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최소(원)" type="number"/>
+                            <span class="text-outline-variant">~</span>
+                            <input name="maxPrice" th:value="${maxPrice}" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최대(원)" type="number"/>
+                        </div>
+                    </form>
+                </div>
+
+                <nav class="flex flex-wrap gap-md text-sm text-on-surface-variant border-b border-outline-variant pb-3">
+                    <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='salesDesc')}"
+                       th:classappend="${sort == 'salesDesc'} ? 'font-bold text-primary border-b-2 border-primary pb-3 -mb-3' : 'hover:text-primary'">판매많은순</a>
+                    <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='priceAsc')}"
+                       th:classappend="${sort == 'priceAsc'} ? 'font-bold text-primary border-b-2 border-primary pb-3 -mb-3' : 'hover:text-primary'">낮은가격순</a>
+                    <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='priceDesc')}"
+                       th:classappend="${sort == 'priceDesc'} ? 'font-bold text-primary border-b-2 border-primary pb-3 -mb-3' : 'hover:text-primary'">높은가격순</a>
+                    <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='ratingDesc')}"
+                       th:classappend="${sort == 'ratingDesc'} ? 'font-bold text-primary border-b-2 border-primary pb-3 -mb-3' : 'hover:text-primary'">평점높은순</a>
+                    <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='reviewCount')}"
+                       th:classappend="${sort == 'reviewCount'} ? 'font-bold text-primary border-b-2 border-primary pb-3 -mb-3' : 'hover:text-primary'">후기많은순</a>
+                    <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='latest')}"
+                       th:classappend="${sort == 'latest' or sort == null} ? 'font-bold text-primary border-b-2 border-primary pb-3 -mb-3' : 'hover:text-primary'">최근등록순</a>
                 </nav>
-            </div>
 
-            <!-- Secondary Search & Filter Bar -->
-            <div class="bg-surface-container-low p-md rounded standard-border mb-lg">
-                <form class="flex flex-wrap items-center gap-md text-sm" th:action="@{/product/search}" action="/product/search" method="get">
-                    <input type="hidden" name="sort" th:value="${sort}">
-                    <div class="flex-1 min-w-[280px] flex gap-2">
-                        <input name="keyword" th:value="${keyword}" class="flex-1 p-2.5 rounded border-outline bg-white focus:ring-primary focus:border-primary" placeholder="결과 내 재검색" type="text"/>
-                        <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded font-bold hover:opacity-90 transition-opacity">검색</button>
-                    </div>
-                    <div class="flex items-center gap-md text-on-surface-variant font-medium">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input name="searchName" value="true" th:checked="${searchName}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 상품명
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input name="searchDescription" value="true" th:checked="${searchDescription}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 설명
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input name="searchPrice" value="true" th:checked="${searchPrice}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 가격
-                        </label>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <input name="minPrice" th:value="${minPrice}" class="w-24 p-2 rounded border-outline bg-white" placeholder="최소(원)" type="number"/>
-                        <span class="text-outline-variant">~</span>
-                        <input name="maxPrice" th:value="${maxPrice}" class="w-24 p-2 rounded border-outline bg-white" placeholder="최대(원)" type="number"/>
-                    </div>
-                </form>
-            </div>
+                <div class="grid grid-cols-1 gap-gutter">
 
-            <!-- Sort Tabs -->
-            <div class="flex border-b border-outline-variant mb-md overflow-x-auto text-sm">
-                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='salesDesc')}"
-                   th:classappend="${sort == 'salesDesc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
-                   class="px-4 py-3 transition-colors whitespace-nowrap">판매많은순</a>
-                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='priceAsc')}"
-                   th:classappend="${sort == 'priceAsc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
-                   class="px-4 py-3 transition-colors whitespace-nowrap">낮은가격순</a>
-                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='priceDesc')}"
-                   th:classappend="${sort == 'priceDesc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
-                   class="px-4 py-3 transition-colors whitespace-nowrap">높은가격순</a>
-                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='ratingDesc')}"
-                   th:classappend="${sort == 'ratingDesc'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
-                   class="px-4 py-3 transition-colors whitespace-nowrap">평점높은순</a>
-                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='reviewCount')}"
-                   th:classappend="${sort == 'reviewCount'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
-                   class="px-4 py-3 transition-colors whitespace-nowrap">후기많은순</a>
-                <a th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort='latest')}"
-                   th:classappend="${sort == 'latest'} ? ' font-bold text-primary border-b-2 border-primary' : ' font-medium text-on-surface-variant hover:text-primary'"
-                   class="px-4 py-3 transition-colors whitespace-nowrap">최근등록순</a>
-            </div>
+                    <div th:each="product : ${products}" class="flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded hover:shadow-md transition-shadow">
 
-            <!-- Product List Container -->
-            <div class="flex flex-col gap-sm">
-                <!-- Single Product Item 1 (Dynamic iteration block) -->
-                <div class="product-card-shadow flex flex-col md:flex-row gap-md p-md bg-white standard-border rounded transition-all" th:each="product : ${products}">
-                    <!-- Image -->
-                    <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="w-full md:w-48 h-48 rounded bg-surface-container-low shrink-0 relative overflow-hidden block">
-                        <img class="w-full h-full object-cover"
-                             th:src="${product.thumb1 != null} ? ${product.thumb1} : '/images/no-image.png'"
-                             th:alt="${product.name}"/>
-                        <div class="absolute top-2 left-2 px-2 py-0.5 bg-secondary text-white text-xs font-bold rounded" th:if="${product.isNew}">NEW</div>
-                    </a>
-                    <!-- Content -->
-                    <div class="flex-1 flex flex-col justify-between py-1">
-                        <div>
-                            <h3 class="text-lg font-bold text-on-surface hover:text-primary transition-colors mb-1">
-                                <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="hover:underline" th:text="${product.name}">이지 워시 옥스퍼드 셔츠</a>
-                            </h3>
-                            <p class="text-sm text-on-surface-variant line-clamp-2 mb-4" th:text="${product.description}">다양한 체형에 어울리는 스탠다드 핏으로 제작되어 데일리 아이템으로 최적화된 코튼 셔츠입니다.</p>
-                            <div class="flex items-center gap-md text-sm">
-                                <span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-xs font-bold" th:if="${product.isFreeShipping}">무료배송</span>
-                                <span class="text-on-surface-variant flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">local_shipping</span>
-                                    배송비 2,500원
-                                </span>
+                        <!-- 상품 이미지 (NEW 뱃지 제거) -->
+                        <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="w-full md:w-48 aspect-square placeholder-image rounded shrink-0 overflow-hidden block relative">
+                            <img th:if="${product.thumb1 != null}" th:src="${product.thumb1}" class="w-full h-full object-cover" th:alt="${product.name}"/>
+                            <span th:if="${product.thumb1 == null}" class="material-symbols-outlined text-4xl">image</span>
+                        </a>
+
+                        <!-- 상품 정보 및 하단 바 -->
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <a th:href="@{/product/view(prodNo=${product.prodNo})}" class="hover:underline">
+                                    <h3 th:text="${product.name}" class="text-lg font-bold text-on-surface mb-1">상품명</h3>
+                                </a>
+                                <p th:text="${product.description}" class="text-sm text-on-surface-variant line-clamp-2">
+                                    상품 상세 설명
+                                </p>
+                            </div>
+
+                            <!-- 하단 가격, 배송비, 상점명, 별점 영역 -->
+                            <div class="mt-4 flex flex-wrap items-end justify-between gap-md">
+
+                                <div class="flex flex-col">
+                                    <div class="flex items-center gap-2">
+                                        <!-- 최종 가격 -->
+                                        <span th:text="${product.price} + ' 원'" class="text-xl font-bold text-primary">0 원</span>
+
+                                        <!-- 원가 및 할인율 -->
+                                        <th:block th:if="${product.discount != null and product.discount > 0}">
+                                            <span th:text="${product.originalPrice} + '원'" class="text-sm text-outline line-through">0원</span>
+                                            <span th:text="${product.discount} + '% ↓'" class="text-sm text-error font-bold">0% ↓</span>
+                                        </th:block>
+                                    </div>
+                                    <!-- 🟢 실제 배송비 금액 출력 -->
+                                    <div class="mt-2">
+                                        <span th:if="${product.shippingFee == null or product.shippingFee == 0}" class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded font-bold">무료배송</span>
+                                        <span th:if="${product.shippingFee != null and product.shippingFee > 0}" th:text="'배송비 ' + ${#numbers.formatInteger(product.shippingFee, 3, 'COMMA')} + '원'" class="bg-surface-container text-on-surface-variant text-[10px] px-2 py-0.5 rounded font-bold">배송비</span>
+                                    </div>
+                                </div>
+
+                                <!-- 상점명 및 별점 -->
+                                <div class="flex flex-col items-end gap-1">
+                                    <div class="flex items-center gap-1 text-on-surface-variant text-sm">
+                                        <span class="material-symbols-outlined text-sm">store</span>
+                                        <span th:text="${product.seller != null ? product.seller : '상호명'}">상호명</span>
+                                    </div>
+                                    <!-- 🟢 별점 출력 로직 추가 -->
+                                    <div th:if="${product.rating == null}" class="text-xs text-on-surface-variant">
+                                        후기 없음
+                                    </div>
+                                    <div th:if="${product.rating != null}" class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating}">
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <span class="material-symbols-outlined text-yellow-500 text-sm"
+                                                  th:style="${i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
+                                        </th:block>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
-                    <!-- Price & Seller Info -->
-                    <div class="w-full md:w-48 border-t md:border-t-0 md:border-l border-outline-variant/50 pt-md md:pt-0 md:pl-md flex flex-col justify-between items-start md:items-end text-left md:text-right">
-                        <div>
-                            <div class="flex items-baseline gap-2 md:justify-end">
-                                <span class="text-error font-bold text-sm" th:text="${product.discount} + '%'">10% ↓</span>
-                                <span class="text-outline-variant text-sm line-through" th:text="${product.originalPrice} + '원'">30,000원</span>
-                            </div>
-                            <div class="text-xl font-extrabold text-primary" th:text="${product.price} + '원'">27,000원</div>
-                        </div>
-                        <div class="mt-md w-full">
-                            <div class="flex items-center gap-1 md:justify-end mb-1">
-                                <span class="text-xs font-medium text-on-surface-variant" th:text="${product.seller}">패션빌리지</span>
-                                <span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                            </div>
-                            <div class="flex md:justify-end">
-                                <div th:replace="~{fragments/rating :: productRating(${product.rating}, ${product.reviewCount})}"></div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <!-- 검색 결과가 없을 때 -->
+                    <p th:if="${totalCount == null or totalCount == 0 or products == null or products.isEmpty()}" class="text-center text-on-surface-variant py-xl">
+                        검색 결과가 없습니다.
+                    </p>
+
                 </div>
 
-                <!-- 검색 결과가 없을 때 -->
-                <p th:if="${totalCount == 0}" class="text-center text-on-surface-variant py-xl">
-                    검색 결과가 없습니다.
-                </p>
+                <div class="flex justify-center items-center gap-2 mt-xl" th:if="${totalPages != null and totalPages > 0}">
+                    <a th:if="${currentPage > 1}"
+                       th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort}, page=${currentPage - 1})}"
+                       class="p-2 text-outline-variant hover:text-primary">&lt; 이전</a>
+                    <span th:unless="${currentPage > 1}" class="p-2 text-outline-variant/40">&lt; 이전</span>
+
+                    <a th:each="p : ${#numbers.sequence(1, totalPages)}"
+                       th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort}, page=${p})}"
+                       th:text="${p}"
+                       th:classappend="${p == currentPage} ? 'bg-primary text-white font-bold' : 'hover:bg-surface-container'"
+                       class="w-8 h-8 flex items-center justify-center rounded">1</a>
+
+                    <a th:if="${currentPage < totalPages}"
+                       th:href="@{/product/search(keyword=${keyword}, searchName=${searchName}, searchDescription=${searchDescription}, searchPrice=${searchPrice}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort}, page=${currentPage + 1})}"
+                       class="p-2 text-outline-variant hover:text-primary">다음 &gt;</a>
+                    <span th:unless="${currentPage < totalPages}" class="p-2 text-outline-variant/40">다음 &gt;</span>
+                </div>
 
             </div>
-
-            <!-- Pagination -->
-            <div class="flex justify-center items-center gap-1 mt-xl mb-lg">
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-outline-variant hover:bg-surface-container transition-colors disabled:opacity-30" disabled="">
-                    <span class="material-symbols-outlined text-sm">chevron_left</span>
-                </button>
-                <button class="w-8 h-8 rounded bg-primary text-white font-bold text-sm">1</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors">
-                    <span class="material-symbols-outlined text-sm">chevron_right</span>
-                </button>
-            </div>
-            <!-- Pagination End -->
-
         </div>
     </div>
 </main>

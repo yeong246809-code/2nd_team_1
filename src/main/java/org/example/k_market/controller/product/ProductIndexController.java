@@ -398,17 +398,15 @@ public class ProductIndexController {
         int price = (p.getPrice() == null) ? 0 : p.getPrice();
         int discountedPrice = getDiscountedPrice(p) == null ? 0 : getDiscountedPrice(p);
 
-        boolean isNew = p.getCreatedAt() != null
-                && p.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(7));
-        boolean isFreeShipping = p.getShippingFee() != null && p.getShippingFee() == 0;
-
         Map<String, Object> map = new java.util.LinkedHashMap<>();
         map.put("prodNo", p.getProdNo());
         map.put("name", p.getName());
         map.put("description", p.getDescription());
         map.put("thumb1", p.getThumb1());
-        map.put("isNew", isNew);
-        map.put("isFreeShipping", isFreeShipping);
+
+        map.put("shippingFee", p.getShippingFee());
+        map.put("rating", p.getRating());
+
         map.put("discount", discountRate);
         map.put("originalPrice", String.format("%,d", price));
         map.put("price", String.format("%,d", discountedPrice));

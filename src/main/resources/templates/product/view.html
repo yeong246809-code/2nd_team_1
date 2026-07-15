@@ -196,7 +196,7 @@
                 <div class="flex-1">
                     <div class="bg-surface-container-lowest rounded-xl aspect-square relative overflow-hidden shadow-sm flex items-center justify-center group border border-outline-variant">
                         <img id="mainProductImage" th:alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             th:src="@{${product.thumb1} ?: '/images/no-image.png'}"/>
+                             th:src="@{${product.thumb1 ?: '/images/no-image.png'}}"/>
                         <div class="absolute bottom-md right-md bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]">zoom_in</span>
                             <span class="text-xs font-semibold">확대보기</span>
