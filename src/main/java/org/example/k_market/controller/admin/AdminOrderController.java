@@ -158,7 +158,7 @@ public class AdminOrderController {
         Shop shop = shopRepository.findById(userDetails.getUser().getMemberNo())
                 .orElseThrow(() -> new org.springframework.security.access.AccessDeniedException(
                         "판매자 상점 정보를 확인할 수 없습니다."));
-        if (shop.getShopNo() == null) {
+        if (shop.getShopNo() == 0) {
             throw new org.springframework.security.access.AccessDeniedException("판매자 상점 번호가 없습니다.");
         }
         return shop.getShopNo();

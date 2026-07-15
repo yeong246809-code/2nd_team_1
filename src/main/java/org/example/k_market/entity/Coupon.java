@@ -22,6 +22,8 @@ public class Coupon {
     private String name;
     private String benefitType;
     private int benefitValue;
+    private Integer shopNo;
+    private Long prodNo;
 
     @Transient
     private String dateType;
@@ -41,6 +43,7 @@ public class Coupon {
                 .name(name).benefitType(benefitType).benefitValue(benefitValue)
                 .dateType(dateType).startDate(startDate).endDate(endDate)
                 .validDays(validDays).notes(notes).status(status).createdAt(createdAt)
+                .shopNo(shopNo).prodNo(prodNo)
                 .build();
     }
 }
