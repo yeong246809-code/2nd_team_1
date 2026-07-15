@@ -261,7 +261,7 @@
                         <span class="text-on-surface-variant">배송정보</span>
                         <span class="text-on-surface font-bold">무료배송 (내일 도착 보장)</span>
                         <span class="text-on-surface-variant">제조사/원산지</span>
-                        <span class="text-on-surface">국산</span>
+                        <span class="text-on-surface" th:text="${(product.manufacturer != null ? product.manufacturer : '') + ' / ' + (product.origin != null ? product.origin : '정보 없음')}">국산</span>
                         <span class="text-on-surface-variant">판매자</span>
                         <span class="flex flex-wrap items-center gap-xs">
                             <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="${shopName}">상호명</span>
@@ -349,6 +349,7 @@
                 <nav class="flex gap-lg">
                     <button class="text-sm py-3 border-b-2 border-primary text-primary font-bold" onclick="scrollToSection('desc')">상세정보</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('specs')">규격사양</button>
+                    <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('notice')">상품정보 제공고시</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('reviews')"
                             th:text="'상품후기 (' + ${reviewTotalElements != null ? reviewTotalElements : 0} + ')'">상품후기 (824)</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('qa')"
@@ -374,23 +375,42 @@
                 </div>
             </div>
 
-            <div class="mb-xl scroll-mt-[130px]" id="specs">
-                <h3 class="text-lg font-bold text-primary mb-md">제품 사양 (Specification)</h3>
+            <div class="mb-xl scroll-mt-[130px]" id="notice">
+                <h3 class="text-lg font-bold text-primary mb-md">상품정보 제공고시</h3>
+                <p class="text-xs text-on-surface-variant mb-md">[전자상거래에 관한 상품정보 제공에 관한 고시] 항목에 의거 등록되는 정보입니다.</p>
                 <div class="overflow-hidden rounded-lg border border-outline-variant bg-white">
                     <table class="w-full text-left border-collapse">
                         <tbody>
                         <tr class="border-b border-outline-variant">
-                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant w-1/3 text-sm">품명 및 모델명</th>
-                            <td class="p-md text-sm" th:text="${product.name}">모델명</td>
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant w-1/3 text-sm">상품번호</th>
+                            <td class="p-md text-sm" th:text="${product.prodNo}">0000</td>
                         </tr>
-                        <!-- specList: 상품별 규격사양 key-value 목록 (product_spec 테이블 등에서 조회) -->
-                        <tr th:each="spec, stat : ${specList}" th:classappend="${!stat.last} ? 'border-b border-outline-variant' : ''">
-                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm" th:text="${spec.specName}">사양명</th>
-                            <td class="p-md text-sm" th:text="${spec.specValue}">사양값</td>
+                        <tr class="border-b border-outline-variant">
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">상품상태</th>
+                            <td class="p-md text-sm" th:text="${product.status != null ? product.status : '-'}">새상품</td>
+                        </tr>
+                        <tr class="border-b border-outline-variant">
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">부가세 면세여부</th>
+                            <td class="p-md text-sm" th:text="${product.taxFreeYn != null ? product.taxFreeYn : '-'}">과세상품</td>
+                        </tr>
+                        <tr class="border-b border-outline-variant">
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">영수증 발행</th>
+                            <td class="p-md text-sm" th:text="${product.receiptYn != null ? product.receiptYn : '-'}">발행가능</td>
+                        </tr>
+                        <tr class="border-b border-outline-variant">
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">사업자구분</th>
+                            <td class="p-md text-sm" th:text="${product.bizType != null ? product.bizType : '-'}">일반</td>
+                        </tr>
+                        <tr class="border-b border-outline-variant">
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">브랜드</th>
+                            <td class="p-md text-sm" th:text="${product.manufacturer != null ? product.manufacturer : '-'}">브랜드명</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-surface-container-low p-md font-semibold text-on-surface-variant text-sm">원산지</th>
+                            <td class="p-md text-sm" th:text="${product.origin != null ? product.origin : '-'}">국내산</td>
                         </tr>
                         </tbody>
                     </table>
-                    <p th:if="${specList == null or specList.isEmpty()}" class="text-sm text-on-surface-variant p-md">등록된 규격사양 정보가 없습니다.</p>
                 </div>
             </div>
 

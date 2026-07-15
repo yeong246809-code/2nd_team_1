@@ -95,7 +95,6 @@ public class ProductIndexController {
         List<Product> visibleProducts = productRepository.findAllVisible();
         List<Product> products;
         Integer activeCateNo = null;
-        String mainCateName = "전체";
 
         /*
          * 2차 카테고리 선택
@@ -107,13 +106,6 @@ public class ProductIndexController {
             );
 
             activeCateNo = cateNo;
-
-            Category selectedCategory =
-                    categoryRepository.findById(cateNo).orElse(null);
-
-            if (selectedCategory != null) {
-                mainCateName = selectedCategory.getName();
-            }
 
             /*
              * 1차 카테고리 선택
@@ -143,13 +135,6 @@ public class ProductIndexController {
             }
 
             activeCateNo = parentCateNo;
-
-            Category selectedCategory =
-                    categoryRepository.findById(parentCateNo).orElse(null);
-
-            if (selectedCategory != null) {
-                mainCateName = selectedCategory.getName();
-            }
 
             /*
              * 카테고리 조건이 없으면 전체 상품 조회
@@ -392,6 +377,7 @@ public class ProductIndexController {
         model.addAttribute("sort", normalizedSort);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
+        model.addAttribute("shopNameMap", productService.getShopNameMap());
         addProductLayout(model, null);
 
         return "product/search";
@@ -495,8 +481,8 @@ public class ProductIndexController {
         model.addAttribute("reviewEligibilityMessage", userDetails == null
                 ? "로그인 후 배송준비 이상의 구매 상품에만 후기를 작성할 수 있습니다."
                 : alreadyReviewed
-                    ? "이미 이 상품의 후기를 작성했습니다. 후기는 상품별로 한 번만 작성할 수 있습니다."
-                    : "배송준비, 배송중, 배송완료 또는 구매확정 상태의 구매 내역이 있어야 후기를 작성할 수 있습니다.");
+                  ? "이미 이 상품의 후기를 작성했습니다. 후기는 상품별로 한 번만 작성할 수 있습니다."
+                  : "배송준비, 배송중, 배송완료 또는 구매확정 상태의 구매 내역이 있어야 후기를 작성할 수 있습니다.");
         addProductLayout(model, mainCateNo);
         return "product/view";
     }

@@ -274,10 +274,13 @@
                                         <span class="material-symbols-outlined text-sm">store</span>
                                         <span th:text="${shopNames[product.shopNo]}">상호명</span>
                                     </div>
-                                    <div class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating != null ? product.rating : 0}">
+                                    <div th:if="${product.rating == null}" class="text-xs text-on-surface-variant">
+                                        후기 없음
+                                    </div>
+                                    <div th:if="${product.rating != null}" class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating}">
                                         <th:block th:each="i : ${#numbers.sequence(1, 5)}">
                                             <span class="material-symbols-outlined text-yellow-500 text-sm"
-                                                  th:style="${product.rating != null and i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
+                                                  th:style="${i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
                                         </th:block>
                                     </div>
                                 </div>
