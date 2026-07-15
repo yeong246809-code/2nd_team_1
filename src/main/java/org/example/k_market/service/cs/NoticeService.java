@@ -71,6 +71,18 @@ public class NoticeService {
         return noticeRepository.findAllByTypeOrderByNoDesc(type);
     }
 
+    //조회수증가
+    @Transactional
+    public Notice getNoticeAndIncreaseViewCount(int no) {
+        Notice notice = noticeRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항입니다."));
+
+        // 조회수 1 증가 (Notice 엔티티에 setViewCount 메서드가 있어야 합니다)
+        notice.setViewCount(notice.getViewCount() + 1);
+
+        return notice; // @Transactional에 의해 메서드가 끝날 때 자동으로 DB에 UPDATE 쿼리가 날아갑니다.
+    }
+
     
 
 }

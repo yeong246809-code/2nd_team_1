@@ -58,7 +58,8 @@ public class QnaController {
     @GetMapping("/view/{no}")
     public String view(@PathVariable int no, Model model) {
 
-        Qna qna = qnaService.findById(no);
+        // 기존의 findById(no) 대신 조회수를 1 증가시키는 메서드 호출!
+        Qna qna = qnaService.getQnaAndIncreaseViewCount(no);
         Qna answer = qnaService.findAnswer(no);
 
         model.addAttribute("qna", qna);
