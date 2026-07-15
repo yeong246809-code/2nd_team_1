@@ -403,51 +403,49 @@
     </div>
 </main>
 
-
 <div id="bannerModal" class="modal-fade fixed inset-0 z-50 flex items-center justify-center">
     <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal()"></div>
 
-    <div class="relative bg-white w-[600px] shadow-2xl rounded-sm">
-
-        <div class="bg-gray-700 text-white flex justify-between items-center px-4 py-3">
+    <div class="relative bg-white w-[650px] shadow-2xl rounded-sm max-h-[90vh] overflow-y-auto">
+        <div class="bg-gray-700 text-white flex justify-between items-center px-4 py-3 sticky top-0 z-10">
             <h2 class="font-bold">배너등록</h2>
             <button type="button" onclick="closeModal()" class="text-white hover:text-gray-300 font-bold text-xl leading-none">&times;</button>
         </div>
 
-        <form th:action="@{/admin/config/banner/add}" method="post" enctype="multipart/form-data" class="p-6 flex flex-col gap-3 text-sm">
+        <form th:action="@{/admin/config/banner/add}" method="post" enctype="multipart/form-data" onsubmit="return validateBannerForm(this);" class="p-6 flex flex-col gap-3 text-sm">
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너이름</div>
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">배너이름</div>
                 <div class="flex-1 p-2">
                     <input type="text" name="name" placeholder="배너명입력" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
                 </div>
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너크기</div>
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">배너크기</div>
                 <div class="flex-1 p-2">
                     <input type="text" name="sizeType" placeholder="배너크기입력 (예: 1200x80)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
                 </div>
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배경색</div>
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">배경색</div>
                 <div class="flex-1 p-2">
                     <input type="text" name="backgroundColor" placeholder="배너배경색입력 (예: #FFFFFF)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
                 </div>
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너링크</div>
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">배너링크</div>
                 <div class="flex-1 p-2">
                     <input type="text" name="linkUrl" placeholder="배너링크입력 (예: /event/1)" class="w-full border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
                 </div>
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너위치</div>
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">배너위치</div>
                 <div class="flex-1 p-2">
-                    <select name="position" class="w-32 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                    <select name="position" class="w-40 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
                         <option value="">선택</option>
                         <option value="MAIN1">메인상단</option>
                         <option value="MAIN2">메인슬라이더</option>
@@ -461,37 +459,77 @@
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">노출날짜</div>
-                <div class="flex-1 p-2 flex items-center gap-2">
-                    <input type="date" name="startDate" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
-                    <span>~</span>
-                    <input type="date" name="endDate" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">노출날짜</div>
+                <div class="flex-1 p-2 flex items-center flex-wrap gap-2">
+                    <div class="flex items-center gap-1">
+                        <input type="text" name="startDate" id="reg-start-date" placeholder="YYYY-MM-DD" maxlength="10" oninput="autoFormatDate(this)"
+                               class="w-28 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-800 text-center px-2">
+                        <div class="relative flex items-center">
+                            <input type="date" onchange="document.getElementById('reg-start-date').value = this.value;"
+                                   class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" title="달력에서 시작일 선택">
+                            <button type="button" class="p-1.5 bg-gray-100 border border-gray-300 rounded-sm hover:bg-gray-200 text-gray-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-base">calendar_month</span>
+                            </button>
+                        </div>
+                    </div>
+                    <span class="text-gray-500 font-bold">~</span>
+                    <div class="flex items-center gap-1">
+                        <input type="text" name="endDate" id="reg-end-date" placeholder="YYYY-MM-DD" maxlength="10" oninput="autoFormatDate(this)"
+                               class="w-28 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-800 text-center px-2">
+                        <div class="relative flex items-center">
+                            <input type="date" onchange="document.getElementById('reg-end-date').value = this.value;"
+                                   class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" title="달력에서 종료일 선택">
+                            <button type="button" class="p-1.5 bg-gray-100 border border-gray-300 rounded-sm hover:bg-gray-200 text-gray-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-base">calendar_month</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">노출시간</div>
-                <div class="flex-1 p-2 flex items-center gap-2">
-                    <input type="time" name="startTime" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
-                    <span>~</span>
-                    <input type="time" name="endTime" class="border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-600">
+                <div class="w-28 bg-gray-100 py-2.5 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">노출시간</div>
+                <div class="flex-1 p-2 flex items-center flex-wrap gap-2">
+                    <div class="flex items-center gap-1">
+                        <input type="text" name="startTime" id="reg-start-time" placeholder="HH:MM" maxlength="5" oninput="autoFormatTime(this)"
+                               class="w-20 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-800 text-center px-2">
+                        <div class="relative flex items-center">
+                            <input type="time" onchange="document.getElementById('reg-start-time').value = this.value;"
+                                   class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" title="시계에서 시작시간 선택">
+                            <button type="button" class="p-1.5 bg-gray-100 border border-gray-300 rounded-sm hover:bg-gray-200 text-gray-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-base">schedule</span>
+                            </button>
+                        </div>
+                    </div>
+                    <span class="text-gray-500 font-bold">~</span>
+                    <div class="flex items-center gap-1">
+                        <input type="text" name="endTime" id="reg-end-time" placeholder="HH:MM" maxlength="5" oninput="autoFormatTime(this)"
+                               class="w-20 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm text-gray-800 text-center px-2">
+                        <div class="relative flex items-center">
+                            <input type="time" onchange="document.getElementById('reg-end-time').value = this.value;"
+                                   class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" title="시계에서 종료시간 선택">
+                            <button type="button" class="p-1.5 bg-gray-100 border border-gray-300 rounded-sm hover:bg-gray-200 text-gray-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-base">schedule</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="flex items-center border border-gray-300">
-                <div class="w-32 bg-gray-100 py-3 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너파일</div>
+                <div class="w-28 bg-gray-100 py-3 px-3 font-bold text-gray-700 border-r border-gray-300 text-center flex-shrink-0">배너파일</div>
                 <div class="flex-1 p-2 flex items-center gap-3">
-                    <label class="cursor-pointer bg-gray-200 border border-gray-300 px-3 py-1 text-xs text-gray-700 hover:bg-gray-300">
+                    <label class="cursor-pointer bg-gray-200 border border-gray-300 px-3 py-1 text-xs text-gray-700 hover:bg-gray-300 rounded-sm flex-shrink-0">
                         파일선택
                         <input type="file" name="file" class="hidden" onchange="updateFileName(this)">
                     </label>
-                    <span id="fileNameDisplay" class="text-xs text-gray-500">선택된파일없음</span>
-                    <span class="text-xs text-gray-400 ml-auto">노출 위치에 맞는 크기 권장</span>
+                    <span id="fileNameDisplay" class="text-xs text-gray-500 truncate max-w-[180px]">선택된파일없음</span>
+                    <span class="text-xs text-gray-400 ml-auto flex-shrink-0">노출 위치에 맞는 크기 권장</span>
                 </div>
             </div>
 
             <div class="text-center mt-4 mb-2">
-                <button type="submit" class="bg-gray-700 hover:bg-gray-800 text-white px-10 py-2 font-bold text-base transition-colors shadow-sm">
+                <button type="submit" class="bg-gray-700 hover:bg-gray-800 text-white px-10 py-2.5 font-bold text-base transition-colors shadow-sm rounded-sm">
                     등록하기
                 </button>
             </div>
@@ -500,7 +538,7 @@
 </div>
 
 <script>
-    /* 메뉴 아코디언 로직 (기존 유지) */
+    /* 메뉴 아코디언 로직 */
     function toggleAccordion(button) {
         const menuItem = button.closest('.group\\/menu');
         if (!menuItem) return;
@@ -532,23 +570,6 @@
         }
     }
 
-    function filterBanner(position, btn) {
-        document.querySelectorAll('#bannerTabs button').forEach(b => {
-            b.classList.remove('bg-white', 'text-black');
-            b.classList.add('bg-gray-200', 'text-gray-600');
-        });
-        btn.classList.remove('bg-gray-200', 'text-gray-600');
-        btn.classList.add('bg-white', 'text-black');
-
-        document.querySelectorAll('.banner-row').forEach(row => {
-            row.style.display = (row.getAttribute('data-position') === position) ? '' : 'none';
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
-    });
-
     /* 파일 선택 시 파일명 표시 로직 */
     function updateFileName(input) {
         const display = document.getElementById('fileNameDisplay');
@@ -556,7 +577,7 @@
             display.textContent = input.files[0].name;
             display.classList.replace('text-gray-500', 'text-gray-900');
         } else {
-            display.textContent = '선택된 파일 없음';
+            display.textContent = '선택된파일없음';
             display.classList.replace('text-gray-900', 'text-gray-500');
         }
     }
@@ -567,17 +588,13 @@
 
         images.forEach(img => {
             img.onload = function() {
-                // 이미지가 로드되면 JS를 통해 강제로 스타일 주입 (가로/세로 100% 채우고 넘치는 부분은 잘라냄)
                 this.style.width = '100%';
                 this.style.height = '100%';
                 this.style.objectFit = 'cover';
                 this.style.objectPosition = 'center';
-
-                // 로딩 완료 후 부드럽게 나타나도록 opacity 변경
                 this.classList.remove('opacity-0');
             };
 
-            // 캐시된 이미지의 경우 onload가 안 탈 수 있으므로 강제 트리거
             if (img.complete) {
                 img.onload();
             }
@@ -585,31 +602,6 @@
     });
 
     function filterBanner(position, btn) {
-        // 탭 활성 디자인 처리
-        document.querySelectorAll('#bannerTabs button').forEach(b => {
-            b.classList.replace('bg-white', 'bg-gray-200');
-            b.classList.replace('text-black', 'text-gray-600');
-        });
-        btn.classList.replace('bg-gray-200', 'bg-white');
-        btn.classList.replace('text-gray-600', 'text-black');
-
-        // 모든 행을 숨긴 뒤, 해당 position인 행만 보여줌
-        document.querySelectorAll('.banner-row').forEach(row => {
-            if(row.dataset.position === position) {
-                row.style.display = ''; // 보여줌
-            } else {
-                row.style.display = 'none'; // 숨김
-            }
-        });
-    }
-
-    // 페이지 로드 시 기본 탭(MAIN1) 실행
-    document.addEventListener("DOMContentLoaded", () => {
-        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
-    });
-
-    function filterBanner(position, btn) {
-        // 탭 디자인 업데이트
         document.querySelectorAll('#bannerTabs button').forEach(b => {
             b.classList.remove('bg-white', 'text-black');
             b.classList.add('bg-gray-200', 'text-gray-600');
@@ -617,22 +609,147 @@
         btn.classList.remove('bg-gray-200', 'text-gray-600');
         btn.classList.add('bg-white', 'text-black');
 
-        // 행 필터링
         document.querySelectorAll('.banner-row').forEach(row => {
             row.style.display = (row.getAttribute('data-position') === position) ? '' : 'none';
         });
     }
 
-    // 초기 실행
     document.addEventListener("DOMContentLoaded", () => {
-        filterBanner('MAIN1', document.querySelector('#bannerTabs button'));
+        const firstTab = document.querySelector('#bannerTabs button');
+        if (firstTab) filterBanner('MAIN1', firstTab);
     });
 
     // 모달 제어
     function openModal() { document.getElementById('bannerModal').classList.add('show'); }
     function closeModal() { document.getElementById('bannerModal').classList.remove('show'); }
 
+    /* 🟢 1. 날짜 자동 하이픈(-) 생성 함수 */
+    function autoFormatDate(input) {
+        let val = input.value.replace(/[^0-9]/g, '');
+        if (val.length > 4 && val.length <= 6) {
+            val = val.substring(0, 4) + '-' + val.substring(4);
+        } else if (val.length > 6) {
+            val = val.substring(0, 4) + '-' + val.substring(4, 6) + '-' + val.substring(6, 8);
+        }
+        input.value = val;
+    }
+
+    /* 🟢 2. 시간 자동 콜론(:) 생성 함수 */
+    function autoFormatTime(input) {
+        let val = input.value.replace(/[^0-9]/g, '');
+        if (val.length > 2) {
+            val = val.substring(0, 2) + ':' + val.substring(2, 4);
+        }
+        input.value = val;
+    }
+
+    /* 🟢 3. 400 Bad Request 방지를 위한 전체 입력값 및 날짜/시간 유효성 검증 함수 */
+    function validateBannerForm(form) {
+        // 1) 배너 이름 검증
+        if (!form.name.value.trim()) {
+            alert('배너 이름을 입력해주세요.');
+            form.name.focus();
+            return false;
+        }
+        // 2) 배너 크기 검증
+        if (!form.sizeType.value.trim()) {
+            alert('배너 크기를 입력해주세요. (예: 1200x80)');
+            form.sizeType.focus();
+            return false;
+        }
+        // 3) 배경색 검증
+        if (!form.backgroundColor.value.trim()) {
+            alert('배경색을 입력해주세요. (예: #FFFFFF)');
+            form.backgroundColor.focus();
+            return false;
+        }
+        // 4) 배너 링크 검증
+        if (!form.linkUrl.value.trim()) {
+            alert('배너 링크를 입력해주세요. (예: /event/1)');
+            form.linkUrl.focus();
+            return false;
+        }
+        // 5) 배너 노출 위치 검증
+        if (!form.position.value) {
+            alert('배너 노출 위치를 선택해주세요.');
+            form.position.focus();
+            return false;
+        }
+
+        // 6) 시작 날짜 검증
+        const startDate = form.startDate.value.trim();
+        const dateRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+        if (!startDate) {
+            alert('노출 시작 날짜를 입력해주세요. (예: 2026-07-01)');
+            form.startDate.focus();
+            return false;
+        }
+        if (!dateRegex.test(startDate)) {
+            alert('시작 날짜 형식이 올바르지 않습니다.\nYYYY-MM-DD 형식으로 입력하거나 달력 아이콘을 선택해주세요.');
+            form.startDate.focus();
+            return false;
+        }
+
+        // 7) 종료 날짜 검증
+        const endDate = form.endDate.value.trim();
+        if (!endDate) {
+            alert('노출 종료 날짜를 입력해주세요. (예: 2026-07-31)');
+            form.endDate.focus();
+            return false;
+        }
+        if (!dateRegex.test(endDate)) {
+            alert('종료 날짜 형식이 올바르지 않습니다.\nYYYY-MM-DD 형식으로 입력하거나 달력 아이콘을 선택해주세요.');
+            form.endDate.focus();
+            return false;
+        }
+        if (startDate > endDate) {
+            alert('종료 날짜는 시작 날짜보다 빠를 수 없습니다.');
+            form.endDate.focus();
+            return false;
+        }
+
+        // 8) 시작 시간 검증
+        const startTime = form.startTime.value.trim();
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        if (!startTime) {
+            alert('노출 시작 시간을 입력해주세요. (예: 00:00)');
+            form.startTime.focus();
+            return false;
+        }
+        if (!timeRegex.test(startTime)) {
+            alert('시작 시간 형식이 올바르지 않습니다.\nHH:MM (24시간제) 형식으로 입력하거나 시계 아이콘을 선택해주세요.');
+            form.startTime.focus();
+            return false;
+        }
+
+        // 9) 종료 시간 검증
+        const endTime = form.endTime.value.trim();
+        if (!endTime) {
+            alert('노출 종료 시간을 입력해주세요. (예: 23:59)');
+            form.endTime.focus();
+            return false;
+        }
+        if (!timeRegex.test(endTime)) {
+            alert('종료 시간 형식이 올바르지 않습니다.\nHH:MM (24시간제) 형식으로 입력하거나 시계 아이콘을 선택해주세요.');
+            form.endTime.focus();
+            return false;
+        }
+        if (startDate === endDate && startTime > endTime) {
+            alert('시작 날짜와 종료 날짜가 같을 경우, 종료 시간은 시작 시간보다 빠를 수 없습니다.');
+            form.endTime.focus();
+            return false;
+        }
+
+        // 10) 배너 이미지 파일 검증
+        if (!form.file.files || form.file.files.length === 0) {
+            alert('배너 이미지 파일을 선택해주세요.');
+            return false;
+        }
+
+        return true;
+    }
 </script>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
 <script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
 </body>
 </html>
