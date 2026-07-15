@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -314,7 +315,8 @@ public class ProductService {
      * 판매량(salesCount)이 높은 순서대로 최대 5개를 반환한다.
      */
     public List<Product> getBestProducts() {
-        return productRepository.findTop5ByOrderBySalesCountDesc();
+        return visibleProducts(Comparator.comparing(Product::getSalesCount,
+                Comparator.nullsLast(Comparator.reverseOrder())), 5);
     }
 
     /**
@@ -322,7 +324,8 @@ public class ProductService {
      * 조회수(viewCount)가 높은 순서대로 최대 8개를 반환한다.
      */
     public List<Product> getHitProducts() {
-        return productRepository.findTop8ByOrderByViewCountDesc();
+        return visibleProducts(Comparator.comparing(Product::getViewCount,
+                Comparator.nullsLast(Comparator.reverseOrder())), 8);
     }
 
     /**
@@ -332,7 +335,8 @@ public class ProductService {
      * 평점(rating)이 높은 순서대로 최대 8개를 추천 상품으로 사용한다.
      */
     public List<Product> getRecommendedProducts() {
-        return productRepository.findTop8ByOrderByRatingDesc();
+        return visibleProducts(Comparator.comparing(Product::getRating,
+                Comparator.nullsLast(Comparator.reverseOrder())), 8);
     }
 
     /**
@@ -340,7 +344,8 @@ public class ProductService {
      * 등록일(createdAt)이 최근인 순서대로 최대 8개를 반환한다.
      */
     public List<Product> getLatestProducts() {
-        return productRepository.findTop8ByOrderByCreatedAtDesc();
+        return visibleProducts(Comparator.comparing(Product::getCreatedAt,
+                Comparator.nullsLast(Comparator.reverseOrder())), 8);
     }
 
     /**
@@ -348,7 +353,8 @@ public class ProductService {
      * 할인율(discountRate)이 높은 순서대로 최대 8개를 반환한다.
      */
     public List<Product> getDiscountProducts() {
-        return productRepository.findTop8ByOrderByDiscountRateDesc();
+        return visibleProducts(Comparator.comparing(Product::getDiscountRate,
+                Comparator.nullsLast(Comparator.reverseOrder())), 8);
     }
 
     /**
@@ -359,16 +365,23 @@ public class ProductService {
      */
     public List<Product> searchProducts(String keyword) {
         if (!StringUtils.hasText(keyword)) {
-            return productRepository.findAll();
+            return productRepository.findAllVisible();
         }
 
         String trimmedKeyword = keyword.trim();
 
-        return productRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                        trimmedKeyword,
-                        trimmedKeyword
-                );
+        String loweredKeyword = trimmedKeyword.toLowerCase();
+        return productRepository.findAllVisible().stream()
+                .filter(product -> (product.getName() != null && product.getName().toLowerCase().contains(loweredKeyword))
+                        || (product.getDescription() != null && product.getDescription().toLowerCase().contains(loweredKeyword)))
+                .toList();
+    }
+
+    private List<Product> visibleProducts(Comparator<Product> comparator, int limit) {
+        return productRepository.findAllVisible().stream()
+                .sorted(comparator)
+                .limit(limit)
+                .toList();
     }
 
     private final ReviewRepository reviewRepository;

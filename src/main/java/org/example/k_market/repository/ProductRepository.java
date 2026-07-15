@@ -22,6 +22,13 @@ import java.util.List;
  */
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    @Query("SELECT p FROM Product p JOIN Shop s ON p.shopNo = s.shopNo WHERE s.status = 'ACTIVE'")
+    List<Product> findAllVisible();
+
+    @Query("SELECT p FROM Product p JOIN Shop s ON p.shopNo = s.shopNo " +
+            "WHERE p.prodNo = :prodNo AND s.status = 'ACTIVE'")
+    java.util.Optional<Product> findVisibleById(@Param("prodNo") Long prodNo);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Product p where p.prodNo = :prodNo")
     java.util.Optional<Product> findByIdForUpdate(@Param("prodNo") Long prodNo);

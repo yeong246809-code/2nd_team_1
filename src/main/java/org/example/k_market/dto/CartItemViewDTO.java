@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class CartItemViewDTO {
+    private String itemKey;
     private long cartNo;
     private long prodNo;
+    private long shopNo;
     private Long skuNo;
     private String skuName;
     private String name;

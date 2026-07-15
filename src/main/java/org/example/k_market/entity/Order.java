@@ -45,6 +45,11 @@ public class Order {
     private String baseAddress;
     private String detailAddress;  // 추가
     private String memo;           // 추가
+    private String ordererName;
+    private String ordererPhone;
+    private String ordererZipCode;
+    private String ordererBaseAddress;
+    private String ordererDetailAddress;
 
     // --- 수정 및 추가 메서드 ---
 
