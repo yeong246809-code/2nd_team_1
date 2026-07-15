@@ -19,6 +19,18 @@ import java.time.LocalDateTime;
 public interface CouponDetailsRepository extends JpaRepository<CouponDetails, Long>, JpaSpecificationExecutor<CouponDetails> {
     Page<CouponDetails> findByMemberNoOrderByIssuedAtDesc(int memberNo, Pageable pageable);
 
+    List<CouponDetails> findByMemberNoOrderByIssuedAtDesc(int memberNo);
+
+    @Query("""
+           SELECT d
+           FROM CouponDetails d
+           WHERE d.memberNo = :memberNo
+             AND (d.isUsed IS NULL OR UPPER(d.isUsed) NOT IN ('Y', '사용'))
+             AND (d.status IS NULL OR d.status <> '사용완료')
+           ORDER BY d.issuedAt DESC
+           """)
+    Page<CouponDetails> findUnusedByMemberNo(@Param("memberNo") int memberNo, Pageable pageable);
+
     long countByMemberNoAndIsUsedIgnoreCase(int memberNo, String isUsed);
 
     long countByCouponNo(long couponNo);

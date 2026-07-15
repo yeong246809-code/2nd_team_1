@@ -353,6 +353,7 @@
                             <h4 class="font-medium text-on-surface-variant line-clamp-2 mb-1"
                                 th:text="${product.name}">상품명</h4>
                         </a>
+                        <div class="mb-1" th:replace="~{fragments/rating :: productRating(${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].averageRating : 0}, ${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].reviewCount : 0})}"></div>
 
                         <div class="mt-auto">
                             <div class="flex items-center gap-1">
@@ -415,10 +416,7 @@
                             <h4 class="font-medium text-on-surface-variant line-clamp-2 mb-1"
                                 th:text="${product.name}">상품명</h4>
                         </a>
-                        <div class="flex items-center gap-1 text-xs text-on-surface-variant mb-1">
-                            <span class="material-symbols-outlined text-[16px] text-secondary" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 16;">star</span>
-                            <span th:text="${product.rating != null ? product.rating : 0}">0.0</span>
-                        </div>
+                        <div class="mb-1" th:replace="~{fragments/rating :: productRating(${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].averageRating : 0}, ${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].reviewCount : 0})}"></div>
 
                         <div class="mt-auto">
                             <div class="flex items-center gap-1">
@@ -481,6 +479,7 @@
                             <h4 class="font-medium text-on-surface-variant line-clamp-2 mb-1"
                                 th:text="${product.name}">상품명</h4>
                         </a>
+                        <div class="mb-1" th:replace="~{fragments/rating :: productRating(${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].averageRating : 0}, ${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].reviewCount : 0})}"></div>
 
                         <div class="mt-auto">
                             <div class="flex items-center gap-1">
@@ -543,6 +542,7 @@
                             <h4 class="font-medium text-on-surface-variant line-clamp-2 mb-1"
                                 th:text="${product.name}">상품명</h4>
                         </a>
+                        <div class="mb-1" th:replace="~{fragments/rating :: productRating(${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].averageRating : 0}, ${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].reviewCount : 0})}"></div>
 
                         <div class="mt-auto">
                             <div class="flex items-center gap-1">

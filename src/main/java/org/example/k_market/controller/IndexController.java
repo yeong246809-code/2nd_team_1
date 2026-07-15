@@ -3,6 +3,7 @@ package org.example.k_market.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.example.k_market.entity.Category;
+import org.example.k_market.entity.Product;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.service.ProductService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 @Controller
 @Log4j2
@@ -136,38 +138,35 @@ public class IndexController {
          * 히트 상품
          * 조회수(viewCount)가 높은 순서대로 8개를 출력한다.
          */
-        model.addAttribute(
-                "hitProducts",
-                productService.getHitProducts()
-        );
+        List<Product> hitProducts = productService.getHitProducts();
+        model.addAttribute("hitProducts", hitProducts);
 
         /*
          * 추천 상품
          * 추천 상품의 구체적인 기준이 별도로 없으므로
          * 현재는 ProductService에서 정한 기준으로 8개를 조회한다.
          */
-        model.addAttribute(
-                "recommendedProducts",
-                productService.getRecommendedProducts()
-        );
+        List<Product> recommendedProducts = productService.getRecommendedProducts();
+        model.addAttribute("recommendedProducts", recommendedProducts);
 
         /*
          * 최신 상품
          * 상품 등록일(createdAt)이 최근인 순서대로 8개를 출력한다.
          */
-        model.addAttribute(
-                "latestProducts",
-                productService.getLatestProducts()
-        );
+        List<Product> latestProducts = productService.getLatestProducts();
+        model.addAttribute("latestProducts", latestProducts);
 
         /*
          * 할인 상품
          * 할인율(discountRate)이 높은 순서대로 8개를 출력한다.
          */
-        model.addAttribute(
-                "discountProducts",
-                productService.getDiscountProducts()
-        );
+        List<Product> discountProducts = productService.getDiscountProducts();
+        model.addAttribute("discountProducts", discountProducts);
+
+        List<Long> displayedProductNos = new ArrayList<>();
+        List.of(hitProducts, recommendedProducts, latestProducts, discountProducts)
+                .forEach(products -> products.forEach(product -> displayedProductNos.add(product.getProdNo())));
+        model.addAttribute("reviewStats", productService.getProductRatingStats(displayedProductNos));
 
         return "index";
     }
