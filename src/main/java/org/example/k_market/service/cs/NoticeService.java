@@ -58,4 +58,19 @@ public class NoticeService {
     public void deleteChecked(List<Integer> nos) {
         noticeRepository.deleteAllById(nos);
     }
+
+    // 유형별 검색 (상단 버튼 누르면 해당 글만 조회)
+    @Transactional(readOnly = true)
+    public List<Notice> findByType(String type) {
+
+        // 전체를 선택했거나 값이 없으면 전체 조회
+        if (type == null || type.isBlank() || "전체".equals(type)) {
+            return noticeRepository.findAllByOrderByNoDesc();
+        }
+
+        return noticeRepository.findAllByTypeOrderByNoDesc(type);
+    }
+
+    
+
 }

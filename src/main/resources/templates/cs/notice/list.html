@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -90,174 +90,286 @@
 
 <!-- Header -->
 <div th:replace="~{layout/site :: header}"></div>
+
 <!-- Main -->
-<main class="flex-1 w-full max-w-container-max mx-auto px-md py-lg flex flex-col md:flex-row gap-lg">
+<main class="flex-1 bg-background">
 
-    <!-- Sidebar -->
-    <aside class="w-full md:w-64 shrink-0 flex flex-col gap-base">
-        <h2 class="font-headline-md text-headline-md text-primary mb-sm px-sm">고객센터</h2>
+    <div class="max-w-[1180px] mx-auto px-6 py-12">
 
-        <nav class="flex flex-col gap-xs">
-            <a class="font-label-md text-label-md text-primary font-bold bg-secondary-container rounded-lg p-sm flex items-center gap-sm transition-all duration-200"
-               th:href="@{/cs/notice/list}">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">campaign</span>
-                공지사항
-            </a>
+        <div class="flex gap-12">
 
-            <a class="font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant rounded-lg p-sm flex items-center gap-sm transition-all duration-200"
-               th:href="@{/cs/faq/list}">
-                <span class="material-symbols-outlined">help</span>
-                자주묻는 질문
-            </a>
+            <!-- 왼쪽 고객센터 메뉴 -->
+            <aside class="w-64 shrink-0">
 
-            <a class="font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant rounded-lg p-sm flex items-center gap-sm transition-all duration-200"
-               th:href="@{/cs/qna/list}">
-                <span class="material-symbols-outlined">edit_note</span>
-                1:1 문의
-            </a>
-        </nav>
-    </aside>
+                <h2 class="text-2xl font-bold text-on-background mb-5">
+                    고객센터
+                </h2>
 
-    <!-- Content -->
-    <section class="flex-1 flex flex-col gap-md min-w-0">
+                <nav class="flex flex-col gap-2">
 
-        <!-- Page Header -->
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-2xl font-bold text-primary">공지사항</h3>
+                    <a th:href="@{/cs/notice/list}"
+                       class="flex items-center gap-3 px-4 py-3 rounded-lg
+                              bg-secondary-container text-on-secondary-container
+                              font-semibold">
 
+                        <span class="material-symbols-outlined text-[20px]">
+                            campaign
+                        </span>
+
+                        공지사항
+                    </a>
+
+                    <a th:href="@{/cs/faq/list}"
+                       class="flex items-center gap-3 px-4 py-3 rounded-lg
+                              text-on-surface hover:bg-surface-container">
+
+                        <span class="material-symbols-outlined text-[20px]">
+                            help
+                        </span>
+
+                        자주묻는 질문
+                    </a>
+
+                    <a th:href="@{/cs/qna/list}"
+                       class="flex items-center gap-3 px-4 py-3 rounded-lg
+                              text-on-surface hover:bg-surface-container">
+
+                        <span class="material-symbols-outlined text-[20px]">
+                            edit_note
+                        </span>
+
+                        1:1 문의
+                    </a>
+
+                </nav>
+
+            </aside>
+
+
+            <!-- 공지사항 본문 -->
+            <section class="flex-1 min-w-0">
+
+                <div class="mb-8">
+
+                    <h1 class="text-3xl font-bold text-on-background">
+                        공지사항
+                    </h1>
+
+                </div>
+
+
+                <!-- 공지 유형 필터 -->
+                <div class="flex flex-wrap gap-3 mb-10">
+
+                    <!-- 전체 -->
+                    <a th:href="@{/cs/notice/list(type='전체')}"
+                       class="inline-flex items-center justify-center
+                              min-w-[76px] px-6 py-3 rounded-full
+                              text-sm font-semibold transition"
+                       th:classappend="${selectedType == null or selectedType == '전체'} ? ' bg-primary text-on-primary' : ' bg-surface-container text-on-surface hover:bg-surface-container-high'">
+
+                        전체
+                    </a>
+
+                    <!-- 고객서비스 -->
+                    <a th:href="@{/cs/notice/list(type='고객서비스')}"
+                       class="inline-flex items-center justify-center
+                              min-w-[108px] px-6 py-3 rounded-full
+                              text-sm font-semibold transition"
+                       th:classappend="${selectedType == '고객서비스'} ? ' bg-primary text-on-primary' : ' bg-surface-container text-on-surface hover:bg-surface-container-high'">
+
+                        고객서비스
+                    </a>
+
+                    <!-- 안전거래 -->
+                    <a th:href="@{/cs/notice/list(type='안전거래')}"
+                       class="inline-flex items-center justify-center
+                              min-w-[108px] px-6 py-3 rounded-full
+                              text-sm font-semibold transition"
+                       th:classappend="${selectedType == '안전거래'} ? ' bg-primary text-on-primary' : ' bg-surface-container text-on-surface hover:bg-surface-container-high'">
+
+                        안전거래
+                    </a>
+
+                    <!-- 위해상품 -->
+                    <a th:href="@{/cs/notice/list(type='위해상품')}"
+                       class="inline-flex items-center justify-center
+                              min-w-[108px] px-6 py-3 rounded-full
+                              text-sm font-semibold transition"
+                       th:classappend="${selectedType == '위해상품'} ? ' bg-primary text-on-primary' : ' bg-surface-container text-on-surface hover:bg-surface-container-high'">
+
+                        위해상품
+                    </a>
+
+                    <!-- 화면에는 이벤트 당첨,
+                         실제 DB 조회값은 이벤트 -->
+                    <a th:href="@{/cs/notice/list(type='이벤트')}"
+                       class="inline-flex items-center justify-center
+                              min-w-[120px] px-6 py-3 rounded-full
+                              text-sm font-semibold transition"
+                       th:classappend="${selectedType == '이벤트'} ? ' bg-primary text-on-primary' : ' bg-surface-container text-on-surface hover:bg-surface-container-high'">
+
+                        이벤트 당첨
+                    </a>
+
+                </div>
+
+
+                <!-- 현재 분류 안내 -->
+                <p class="mb-5 text-sm text-on-surface-variant"
+                   th:if="${selectedType == null or selectedType == '전체'}">
+                    공지사항 전체 내용입니다.
+                </p>
+
+                <p class="mb-5 text-sm text-on-surface-variant"
+                   th:if="${selectedType == '이벤트'}">
+                    이벤트 당첨 공지사항입니다.
+                </p>
+
+                <p class="mb-5 text-sm text-on-surface-variant"
+                   th:if="${selectedType != null and selectedType != '전체' and selectedType != '이벤트'}"
+                   th:text="|${selectedType} 공지사항입니다.|">
+                    고객서비스 공지사항입니다.
+                </p>
+
+
+                <!-- 공지사항 목록 -->
+                <div class="overflow-hidden rounded-xl border border-outline-variant
+                            bg-surface-container-lowest">
+
+                    <table class="w-full table-fixed">
+
+                        <colgroup>
+                            <col style="width: 90px;">
+                            <col>
+                            <col style="width: 150px;">
+                        </colgroup>
+
+                        <thead class="bg-surface-container">
+
+                        <tr class="border-b border-outline-variant">
+
+                            <th class="px-6 py-5 text-center text-sm font-bold
+                                       text-on-surface">
+                                번호
+                            </th>
+
+                            <th class="px-4 py-5 text-left text-sm font-bold
+                                       text-on-surface">
+                                제목
+                            </th>
+
+                            <th class="px-6 py-5 text-center text-sm font-bold
+                                       text-on-surface">
+                                작성일
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <!-- 조회된 공지사항이 없을 경우 -->
+                        <tr th:if="${#lists.isEmpty(notices)}">
+
+                            <td colspan="3"
+                                class="px-6 py-16 text-center
+                                       text-on-surface-variant">
+
+                                해당 유형의 공지사항이 없습니다.
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- 공지사항 반복 출력 -->
+                        <tr th:each="notice : ${notices}"
+                            class="border-b border-outline-variant
+                                   last:border-b-0 hover:bg-surface-container-low
+                                   transition-colors">
+
+                            <!-- 번호 -->
+                            <td class="px-6 py-6 text-center
+                                       text-on-surface-variant"
+                                th:text="${notice.no}">
+
+                                1
+
+                            </td>
+
+
+                            <!-- 제목 -->
+                            <td class="px-4 py-6 min-w-0">
+
+                                <a th:href="@{/cs/notice/view/{no}(no=${notice.no})}"
+                                   class="flex items-center gap-3 min-w-0
+                                          text-on-surface hover:text-primary">
+
+                                    <!-- 유형 배지 -->
+                                    <span th:if="${notice.type == '고객서비스'}"
+                                          class="shrink-0 inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-surface-container-high text-on-surface">
+                                        [고객서비스]
+                                    </span>
+
+                                    <span th:if="${notice.type == '안전거래'}"
+                                          class="shrink-0 inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-secondary-container text-on-secondary-container">
+                                        [안전거래]
+                                    </span>
+
+                                    <span th:if="${notice.type == '위해상품'}"
+                                          class="shrink-0 inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-surface-container-highest text-on-surface">
+                                        [위해상품]
+                                    </span>
+
+                                    <span th:if="${notice.type == '이벤트'}"
+                                          class="shrink-0 inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-secondary-container text-on-secondary-container">
+                                        [이벤트]
+                                    </span>
+
+                                    <span th:if="${notice.type != '고객서비스' and notice.type != '안전거래' and notice.type != '위해상품' and notice.type != '이벤트'}"
+                                          class="shrink-0 inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-surface-container-high text-on-surface"
+                                          th:text="|[${notice.type}]|">
+                                        [기타]
+                                    </span>
+
+                                    <!-- 제목 -->
+                                    <span class="font-semibold truncate"
+                                          th:text="${notice.title}">
+
+                                        공지사항 제목
+
+                                    </span>
+
+                                </a>
+
+                            </td>
+
+
+                            <!-- 작성일 -->
+                            <td class="px-6 py-6 text-center text-on-surface-variant whitespace-nowrap">
+                                <span th:if="${notice.createdAt != null}"
+                                      th:text="${#temporals.format(notice.createdAt, 'yy.MM.dd')}">
+                                    26.07.15
+                                </span>
+                                <span th:if="${notice.createdAt == null}">-</span>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
 
         </div>
 
-        <!-- Type Filter -->
-        <div class="flex gap-sm overflow-x-auto pb-sm">
-            <a th:href="@{/cs/notice/list}"
-               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
-               th:classappend="${param.type == null} ? ' bg-primary text-on-primary' : ' bg-surface-container-low hover:bg-surface-variant text-on-surface'">
-                전체
-            </a>
+    </div>
 
-            <a th:href="@{/cs/notice/list(type='고객서비스')}"
-               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
-               th:classappend="${param.type != null and param.type[0] == '고객서비스'} ? ' bg-primary text-on-primary' : ' bg-surface-container-low hover:bg-surface-variant text-on-surface'">
-                고객서비스
-            </a>
-
-            <a th:href="@{/cs/notice/list(type='안전거래')}"
-               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
-               th:classappend="${param.type != null and param.type[0] == '안전거래'} ? ' bg-primary text-on-primary' : ' bg-surface-container-low hover:bg-surface-variant text-on-surface'">
-                안전거래
-            </a>
-
-            <a th:href="@{/cs/notice/list(type='위해상품')}"
-               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
-               th:classappend="${param.type != null and param.type[0] == '위해상품'} ? ' bg-primary text-on-primary' : ' bg-surface-container-low hover:bg-surface-variant text-on-surface'">
-                위해상품
-            </a>
-
-            <a th:href="@{/cs/notice/list(type='이벤트당첨')}"
-               class="px-md py-sm rounded-full font-label-md text-label-md whitespace-nowrap transition-colors"
-               th:classappend="${param.type != null and param.type[0] == '이벤트당첨'} ? ' bg-primary text-on-primary' : ' bg-surface-container-low hover:bg-surface-variant text-on-surface'">
-                이벤트당첨
-            </a>
-        </div>
-
-        <!-- List Summary -->
-        <p class="font-label-md text-label-md text-on-surface-variant mt-sm">
-            공지사항 전체 내용 입니다.
-        </p>
-
-        <!-- Notice Table -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low font-label-md text-label-md text-on-surface">
-                <tr>
-                    <th class="py-md px-md font-semibold border-b border-surface-variant w-[80px] text-center">번호</th>
-                    <th class="py-md px-md font-semibold border-b border-surface-variant">제목</th>
-                    <th class="py-md px-md font-semibold border-b border-surface-variant w-[120px] text-center">작성일</th>
-                </tr>
-                </thead>
-
-                <tbody class="font-body-md text-body-md text-on-background divide-y divide-surface-variant">
-
-                <!-- 공지사항이 없을 때 -->
-                <tr th:if="${#lists.isEmpty(notices)}">
-                    <td colspan="3" class="py-xl px-md text-center text-on-surface-variant">
-                        등록된 공지사항이 없습니다.
-                    </td>
-                </tr>
-
-                <!-- 공지사항 목록 출력 -->
-                <tr th:each="notice, stat : ${notices}"
-                    class="hover:bg-surface-container-low transition-colors group">
-
-                    <!-- 번호 -->
-                    <td class="px-md py-md text-center text-on-surface-variant"
-                        th:text="${pageResponseDTO != null ? pageResponseDTO.startNo - stat.index : stat.count}">
-                        1
-                    </td>
-
-                    <!-- 제목 / 분류 -->
-                    <td class="px-md py-md">
-                        <div class="flex items-center gap-sm">
-                            <span th:class="${notice.type == '이벤트당첨' or notice.type == '이벤트'}
-                                    ? 'px-2 py-1 bg-secondary-container rounded text-xs font-bold text-on-secondary-container'
-                                    : 'px-2 py-1 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant'"
-                                  th:text="|[${notice.type}]|">
-                                [공지]
-                            </span>
-
-                            <a class="group-hover:text-primary transition-colors font-semibold text-body-lg"
-                               th:href="@{/cs/notice/view/{no}(no=${notice.no})}"
-                               th:text="${notice.title}">
-                                공지사항 제목입니다.
-                            </a>
-                        </div>
-                    </td>
-
-                    <!-- 작성일 -->
-                    <td class="px-md py-md text-center text-on-surface-variant font-label-sm"
-                        th:text="${#temporals.format(notice.createdAt, 'yy.MM.dd')}">
-                        24.01.01
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="flex justify-center items-center gap-sm mt-lg"
-             th:if="${pageResponseDTO != null and pageResponseDTO.end > 0}">
-
-            <!-- 이전 페이지 -->
-            <a th:href="@{/cs/notice/list(pg=${pageResponseDTO.start - 1}, type=${param.type != null ? param.type[0] : null})}"
-               th:classappend="${!pageResponseDTO.prev} ? ' pointer-events-none opacity-50'"
-               class="p-sm flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-                <span class="font-label-md ml-xs">이전</span>
-            </a>
-
-            <!-- 페이지 번호 -->
-            <div class="flex items-center gap-xs">
-                <a th:each="num : ${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}"
-                   th:href="@{/cs/notice/list(pg=${num}, type=${param.type != null ? param.type[0] : null})}"
-                   th:text="${num}"
-                   th:classappend="${num == pageResponseDTO.pg}
-                        ? ' bg-primary text-on-primary font-bold'
-                        : ' hover:bg-surface-container-highest text-on-surface'"
-                   class="w-8 h-8 flex items-center justify-center rounded-full font-medium text-label-md transition-colors">
-                    1
-                </a>
-            </div>
-
-            <!-- 다음 페이지 -->
-            <a th:href="@{/cs/notice/list(pg=${pageResponseDTO.end + 1}, type=${param.type != null ? param.type[0] : null})}"
-               th:classappend="${!pageResponseDTO.next} ? ' pointer-events-none opacity-50'"
-               class="p-sm flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-                <span class="font-label-md mr-xs">다음</span>
-                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-            </a>
-        </div>
-    </section>
 </main>
 
 <!-- Footer -->
