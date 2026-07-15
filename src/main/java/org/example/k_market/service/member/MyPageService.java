@@ -260,7 +260,7 @@ public class MyPageService {
                 .limit(2)
                 .reduce((first, second) -> "상품별 상이")
                 .orElse(valueOr(order.getStatus(), "주문완료"));
-        String orderName = valueOr(order.getOrderName(), representative == null ? "상품 정보 없음" : representative.productName());
+        String orderName = buildProductSummary(details);
 
         return new MyPageDtos.OrderSummary(
                 order.getOrderNo(),
@@ -281,6 +281,13 @@ public class MyPageService {
                 valueOr(order.getMemo(), "없음"),
                 details
         );
+    }
+
+    private String buildProductSummary(List<MyPageDtos.OrderItem> details) {
+        if (details.isEmpty()) return "상품 정보 없음";
+        String name = valueOr(details.get(0).productName(), "상품 정보 없음");
+        if (details.size() > 1) name += " 외 " + (details.size() - 1) + "건";
+        return name.length() <= 20 ? name : name.substring(0, 20);
     }
 
     private MyPageDtos.PointItem toPointItem(PointHistory point) {

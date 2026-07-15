@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.LockModeType;
 
@@ -21,6 +22,8 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     Optional<Coupon> findByIdForUpdate(@Param("couponNo") long couponNo);
 
     Optional<Coupon> findFirstByNameAndStatusOrderByCouponNoDesc(String name, String status);
+
+    Optional<Coupon> findFirstByNameInAndStatusOrderByCouponNoDesc(List<String> names, String status);
 
     Optional<Coupon> findFirstByProdNoAndCouponTypeAndStatusOrderByCouponNoDesc(
             Long prodNo, String couponType, String status);

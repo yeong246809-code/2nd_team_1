@@ -142,11 +142,16 @@
                         </div>
                         <p id="pw-check-msg" class="hidden text-label-sm mt-xs md:col-span-2"></p>
                     </div>
-                    <!-- Name & Gender -->
+                    <!-- Name, Birth Date & Gender -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
-                        <div class="md:col-span-2 grid grid-cols-1 gap-xs">
+                        <div class="grid grid-cols-1 gap-xs">
                             <label class="font-label-md text-primary" for="name">성함</label>
-                            <input class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow" id="name" name="name" placeholder="실명을 입력하세요" type="text">
+                            <input class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow" id="name" name="name" placeholder="실명을 입력하세요" required type="text">
+                        </div>
+                        <div class="grid grid-cols-1 gap-xs">
+                            <label class="font-label-md text-primary" for="birth-date">생년월일</label>
+                            <input class="bg-surface-container-low border-none rounded-lg p-base font-body-md focus:ring-2 focus:ring-primary form-input-shadow"
+                                   id="birth-date" name="birthDate" required type="date">
                         </div>
                         <div class="grid grid-cols-1 gap-xs">
                             <label class="font-label-md text-primary">성별</label>

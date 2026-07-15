@@ -44,6 +44,9 @@ public class AdminOrderController {
                        @RequestParam(required = false) String searchType,
                        @RequestParam(required = false) String keyword) {
 
+        searchType = "memberId".equals(searchType) ? "memberId" : "orderNo";
+        keyword = keyword == null ? "" : keyword.trim();
+
         Page<OrderDTO> orderPage = isAdmin(authentication)
                 ? orderService.findOrderList(pageable, searchType, keyword)
                 : orderService.findSellerOrderList(currentShopNo(authentication), pageable, searchType, keyword);

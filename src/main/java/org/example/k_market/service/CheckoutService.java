@@ -66,7 +66,6 @@ public class CheckoutService {
         int totalPaymentPrice = beforePoints - usedPoints;
         String paymentLabel = PAYMENT_LABELS.get(request.getPaymentMethod());
         String status = "DEPOSIT".equals(request.getPaymentMethod()) ? "입금대기" : "결제완료";
-        String orderName = buildOrderName(lines);
         NormalizedShipment primaryShipment = shipments.get(0);
         String ordererName = firstText(request.getOrdererName(), firstText(member.getName(), request.getRecipientName()));
         String ordererPhone = firstText(request.getOrdererPhone(), firstText(member.getPhone(), request.getRecipientPhone()));
@@ -77,7 +76,7 @@ public class CheckoutService {
 
         Order order = orderRepository.save(Order.builder()
                 .memberNo(memberNo)
-                .orderName(orderName)
+                .orderName(ordererName)
                 .paymentMethod(paymentLabel)
                 .totalProductPrice(totalProductPrice)
                 .totalDiscountPrice(totalDiscountPrice)
@@ -139,7 +138,7 @@ public class CheckoutService {
         if (!source.carts().isEmpty()) {
             cartRepository.deleteAll(source.carts());
         }
-        return new CheckoutResult(order.getOrderNo(), orderName, totalPaymentPrice, status, paymentLabel);
+        return new CheckoutResult(order.getOrderNo(), ordererName, totalPaymentPrice, status, paymentLabel);
     }
 
     @Transactional(readOnly = true)
@@ -162,8 +161,9 @@ public class CheckoutService {
                             detail.getShippingFee(), linePaymentPrice, detail.getStatus());
                 })
                 .toList();
+        String productSummary = buildProductSummary(items.stream().map(ReceiptItem::productName).toList());
         return new CheckoutReceipt(
-                order.getOrderNo(), order.getOrderName(), order.getPaymentMethod(), order.getStatus(),
+                order.getOrderNo(), productSummary, order.getPaymentMethod(), order.getStatus(),
                 order.getCreatedAt(), order.getTotalProductPrice(), order.getTotalDiscountPrice(),
                 order.getTotalShippingFee(), order.getUsedPoints(), order.getTotalPaymentPrice(),
                 order.getRecipientName(), order.getRecipientPhone(), order.getZipCode(),
@@ -404,9 +404,10 @@ public class CheckoutService {
         if (usedPoints > paymentPrice) throw new IllegalArgumentException("결제금액보다 많은 포인트를 사용할 수 없습니다.");
     }
 
-    private String buildOrderName(List<Line> lines) {
-        String name = lines.get(0).product().getName();
-        if (lines.size() > 1) name += " 외 " + (lines.size() - 1) + "건";
+    private String buildProductSummary(List<String> productNames) {
+        if (productNames.isEmpty()) return "상품 정보 없음";
+        String name = productNames.get(0);
+        if (productNames.size() > 1) name += " 외 " + (productNames.size() - 1) + "건";
         return name.length() <= 20 ? name : name.substring(0, 20);
     }
 

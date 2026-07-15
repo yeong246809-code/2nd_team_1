@@ -23,6 +23,24 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findAllWithJoin(Pageable pageable);
 
     @Query(value = """
+            SELECT o FROM Order o
+            LEFT JOIN FETCH o.user
+            WHERE (:keyword IS NULL OR :keyword = ''
+                   OR (:searchType = 'orderNo' AND str(o.orderNo) LIKE concat('%', :keyword, '%'))
+                   OR (:searchType = 'memberId' AND lower(o.user.id) LIKE lower(concat('%', :keyword, '%'))))
+            """,
+            countQuery = """
+            SELECT count(o) FROM Order o
+            LEFT JOIN o.user u
+            WHERE (:keyword IS NULL OR :keyword = ''
+                   OR (:searchType = 'orderNo' AND str(o.orderNo) LIKE concat('%', :keyword, '%'))
+                   OR (:searchType = 'memberId' AND lower(u.id) LIKE lower(concat('%', :keyword, '%'))))
+            """)
+    Page<Order> findAdminOrders(@Param("searchType") String searchType,
+                                @Param("keyword") String keyword,
+                                Pageable pageable);
+
+    @Query(value = """
             SELECT DISTINCT o FROM Order o
             LEFT JOIN FETCH o.user
             JOIN OrderDetails od ON od.orderNo = o.orderNo
