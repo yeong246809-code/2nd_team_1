@@ -81,4 +81,31 @@ public class CouponController {
             return "fail";
         }
     }
+
+    @GetMapping("/issued")
+    public String issuedList(PageRequestDTO pageRequestDTO, Model model) {
+        // 기본 검색 타입을 '발급번호'로 세팅
+        if(pageRequestDTO.getSearchType() == null) pageRequestDTO.setSearchType("couponDetailNo");
+
+        PageResponseDTO<CouponDetailsDTO> responseDTO = couponService.getIssuedCouponList(pageRequestDTO);
+
+        model.addAttribute("pageData", responseDTO);
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
+
+        return "admin/coupon/issued";
+    }
+
+    /**
+     * 쿠폰 발급 중단 (개별)
+     */
+    @PostMapping("/issued/stop")
+    @ResponseBody
+    public String stopIssuedCoupon(@RequestParam("couponDetailNo") Long couponDetailNo) {
+        try {
+            couponService.stopIssuedCoupon(couponDetailNo);
+            return "success";
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
 }

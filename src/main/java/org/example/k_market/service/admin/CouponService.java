@@ -3,14 +3,8 @@ package org.example.k_market.service.admin;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.*;
-import org.example.k_market.entity.Coupon;
-import org.example.k_market.entity.Product;
-import org.example.k_market.entity.Shop;
-import org.example.k_market.entity.Users;
-import org.example.k_market.repository.CouponRepository;
-import org.example.k_market.repository.ProductRepository;
-import org.example.k_market.repository.ShopRepository;
-import org.example.k_market.repository.UsersRepository;
+import org.example.k_market.entity.*;
+import org.example.k_market.repository.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -29,6 +23,7 @@ public class CouponService {
     private final ShopRepository shopRepository;
     private final ProductRepository productRepository;
     private final UsersRepository usersRepository;
+    private final CouponDetailsRepository couponDetailsRepository;
 
     /**
      * 1. 쿠폰 목록 조회 (검색 + 페이징)
@@ -141,5 +136,66 @@ public class CouponService {
         Coupon coupon = couponRepository.findById(couponNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 쿠폰이 존재하지 않습니다."));
         coupon.setStatus("END"); // 상태를 종료로 변경 (DB 설계에 따라 "종료" 또는 "INACTIVE"로 수정 가능)
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponseDTO<CouponDetailsDTO> getIssuedCouponList(PageRequestDTO requestDTO) {
+        int page = (requestDTO.getPg() > 0) ? requestDTO.getPg() - 1 : 0;
+        int size = (requestDTO.getSize() > 0) ? requestDTO.getSize() : 10;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("couponDetailNo").descending());
+
+        Specification<CouponDetails> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            String type = requestDTO.getSearchType();
+            String keyword = requestDTO.getKeyword();
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String cleanKeyword = keyword.trim();
+                if ("couponDetailNo".equals(type)) {
+                    try { predicates.add(cb.equal(root.get("couponDetailNo"), Long.parseLong(cleanKeyword))); } catch (Exception e) { predicates.add(cb.equal(root.get("couponDetailNo"), -1L)); }
+                } else if ("couponNo".equals(type)) {
+                    try { predicates.add(cb.equal(root.get("couponNo"), Long.parseLong(cleanKeyword))); } catch (Exception e) { predicates.add(cb.equal(root.get("couponNo"), -1L)); }
+                }
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<CouponDetails> result = couponDetailsRepository.findAll(spec, pageable);
+
+        // 엔티티 -> DTO 변환 및 부족한 정보(쿠폰명, 사용자ID) 채워넣기 (원시 조인)
+        Page<CouponDetailsDTO> dtoPage = result.map(detail -> {
+            CouponDetailsDTO dto = detail.toDTO();
+
+            // 1. 원본 쿠폰 정보 매핑 (팝업창용 데이터 포함)
+            couponRepository.findById(detail.getCouponNo()).ifPresent(c -> {
+                dto.setCouponType(c.getCouponType());
+                dto.setCouponName(c.getName());
+                dto.setIssuerName(c.getIssuerName()); // 발급처
+                dto.setBenefitType(c.getBenefitType()); // 혜택 타입
+                dto.setBenefitValue(c.getBenefitValue()); // 혜택 값
+                dto.setDateType(c.getDateType()); // 날짜 타입
+                dto.setStartDate(c.getStartDate());
+                dto.setEndDate(c.getEndDate());
+                dto.setValidDays(c.getValidDays());
+                dto.setNotes(c.getNotes()); // 유의사항
+            });
+
+            // 2. 유저(ID) 매핑
+            usersRepository.findByMemberNo(detail.getMemberNo()).ifPresent(u -> {
+                dto.setUserId(u.getId());
+            });
+            return dto;
+        });
+
+        return new PageResponseDTO<>(dtoPage, 5);
+    }
+
+    /**
+     * 6. 쿠폰 발급 중단 처리
+     */
+    public void stopIssuedCoupon(Long couponDetailNo) {
+        CouponDetails details = couponDetailsRepository.findById(couponDetailNo)
+                .orElseThrow(() -> new IllegalArgumentException("발급 내역이 존재하지 않습니다."));
+        details.stopIssue();
     }
 }
