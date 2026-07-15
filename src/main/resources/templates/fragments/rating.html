@@ -18,5 +18,21 @@
     <span class="text-xs font-semibold text-on-surface-variant"
           th:text="${count > 0 ? #numbers.formatDecimal(score, 1, 1) + ' (' + count + ')' : '후기 없음'}">후기 없음</span>
 </div>
+
+<div th:fragment="reviewRating(rating)"
+     th:with="score=${rating == null ? 0.0 : (rating < 0 ? 0.0 : (rating > 5 ? 5.0 : rating))}"
+     class="inline-flex items-center whitespace-nowrap"
+     th:attr="aria-label=${'평점 ' + #numbers.formatDecimal(score, 1, 1) + '점'}">
+    <div class="relative h-4 w-20 shrink-0" aria-hidden="true">
+        <div class="absolute inset-0 flex text-surface-container-high">
+            <span th:each="i : ${#numbers.sequence(1, 5)}" class="material-symbols-outlined w-4 text-[16px] leading-4" style="font-variation-settings: 'FILL' 1;">star</span>
+        </div>
+        <div class="absolute inset-y-0 left-0 overflow-hidden text-amber-500" th:style="|width: ${score * 20}%;|">
+            <div class="flex w-20">
+                <span th:each="i : ${#numbers.sequence(1, 5)}" class="material-symbols-outlined w-4 text-[16px] leading-4" style="font-variation-settings: 'FILL' 1;">star</span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
