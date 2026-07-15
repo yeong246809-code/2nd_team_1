@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -335,8 +337,18 @@ public class ProductService {
      * 평점(rating)이 높은 순서대로 최대 8개를 추천 상품으로 사용한다.
      */
     public List<Product> getRecommendedProducts() {
-        return visibleProducts(Comparator.comparing(Product::getRating,
-                Comparator.nullsLast(Comparator.reverseOrder())), 8);
+        List<Product> products = productRepository.findAllVisible();
+        Map<Long, ProductRating> stats = getProductRatingStats(
+                products.stream().map(Product::getProdNo).toList());
+        return products.stream()
+                .sorted(Comparator
+                        .comparingDouble((Product product) -> stats
+                                .getOrDefault(product.getProdNo(), new ProductRating(0, 0)).averageRating())
+                        .thenComparingLong(product -> stats
+                                .getOrDefault(product.getProdNo(), new ProductRating(0, 0)).reviewCount())
+                        .reversed())
+                .limit(8)
+                .toList();
     }
 
     /**
@@ -385,6 +397,18 @@ public class ProductService {
     }
 
     private final ReviewRepository reviewRepository;
+
+    public Map<Long, ProductRating> getProductRatingStats(Collection<Long> productNos) {
+        Map<Long, ProductRating> stats = new LinkedHashMap<>();
+        if (productNos == null || productNos.isEmpty()) return stats;
+        reviewRepository.findProductRatingStats(productNos).forEach(stat -> stats.put(
+                stat.getProdNo(),
+                new ProductRating(stat.getAverageRating() == null ? 0.0 : stat.getAverageRating(), stat.getReviewCount())
+        ));
+        return stats;
+    }
+
+    public record ProductRating(double averageRating, long reviewCount) {}
 
     /**
      * 특정 상품의 리뷰 평균 평점을 다시 계산하여 저장한다.

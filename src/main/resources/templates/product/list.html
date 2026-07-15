@@ -160,10 +160,7 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <button class="p-2 border border-outline-variant rounded relative">
-                        <span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
-                        <span class="absolute -top-2 -right-2 bg-error text-white text-[10px] px-1 rounded-full font-bold">3</span>
-                    </button>
+                    <div th:replace="~{fragments/cart-button :: button}"></div>
                     <button class="md:hidden p-2 border border-outline-variant rounded">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
@@ -274,15 +271,7 @@
                                         <span class="material-symbols-outlined text-sm">store</span>
                                         <span th:text="${shopNames[product.shopNo]}">상호명</span>
                                     </div>
-                                    <div th:if="${product.rating == null}" class="text-xs text-on-surface-variant">
-                                        후기 없음
-                                    </div>
-                                    <div th:if="${product.rating != null}" class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating}">
-                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                            <span class="material-symbols-outlined text-yellow-500 text-sm"
-                                                  th:style="${i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
-                                        </th:block>
-                                    </div>
+                                    <div th:replace="~{fragments/rating :: productRating(${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].averageRating : 0}, ${reviewStats[product.prodNo] != null ? reviewStats[product.prodNo].reviewCount : 0})}"></div>
                                 </div>
                             </div>
                         </div>

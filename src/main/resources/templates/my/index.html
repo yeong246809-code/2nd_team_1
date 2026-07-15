@@ -352,7 +352,7 @@
                 <p class="font-headline-lg text-headline-lg text-primary" th:text="${dashboard != null ? #numbers.formatInteger(dashboard.summary.orderCount, 1, 'COMMA') : '0'}">0</p>
             </div>
             <div class="flex-1 text-center">
-                <p class="font-label-md text-label-md text-on-surface-variant">쿠폰</p>
+                <p class="font-label-md text-label-md text-on-surface-variant">사용가능 쿠폰</p>
                 <p class="font-headline-lg text-headline-lg text-primary" th:text="${dashboard != null ? #numbers.formatInteger(dashboard.summary.couponCount, 1, 'COMMA') : '0'}">0</p>
             </div>
             <div class="flex-1 text-center">
@@ -512,23 +512,28 @@
                         <p class="font-label-md text-label-md text-on-surface font-bold">기본배송지설정</p>
                         <a class="text-primary font-label-sm text-label-sm hover:underline" th:href="@{/my/myinfo}" href="/my/myinfo">변경</a>
                     </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant">부산광역시 부산진구 중앙대로 300 한빛빌딩 10층</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant"
+                       th:text="${mySettingAddress != null ? mySettingAddress : '등록된 배송지가 없습니다.'}">등록된 배송지가 없습니다.</p>
                 </div>
                 <div class="space-y-2 md:pl-md pt-md md:pt-0">
                     <div class="flex justify-between items-center">
                         <p class="font-label-md text-label-md text-on-surface font-bold">Email 설정</p>
                         <a class="text-primary font-label-sm text-label-sm hover:underline" th:href="@{/my/myinfo}" href="/my/myinfo">변경</a>
                     </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant">abc123@naver.com</p>
-                    <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant"
+                       th:text="${mySettingEmail != null ? mySettingEmail : '등록된 이메일이 없습니다.'}">등록된 이메일이 없습니다.</p>
+                    <p class="text-label-sm text-outline" th:if="${mySettingRegisteredAt != null}"
+                       th:text="|회원정보 등록일 ${#temporals.format(mySettingRegisteredAt, 'yyyy-MM-dd')}|">회원정보 등록일</p>
                 </div>
                 <div class="space-y-2 md:pl-md pt-md md:pt-0">
                     <div class="flex justify-between items-center">
                         <p class="font-label-md text-label-md text-on-surface font-bold">휴대폰 설정</p>
                         <a class="text-primary font-label-sm text-label-sm hover:underline" th:href="@{/my/myinfo}" href="/my/myinfo">변경</a>
                     </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant">010 - 1234 - 1001</p>
-                    <p class="text-label-sm text-outline">(최종수정일 2021-12-10)</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant"
+                       th:text="${mySettingPhone != null ? mySettingPhone : '등록된 휴대폰 번호가 없습니다.'}">등록된 휴대폰 번호가 없습니다.</p>
+                    <p class="text-label-sm text-outline" th:if="${mySettingRegisteredAt != null}"
+                       th:text="|회원정보 등록일 ${#temporals.format(mySettingRegisteredAt, 'yyyy-MM-dd')}|">회원정보 등록일</p>
                 </div>
             </div>
         </div>

@@ -291,14 +291,8 @@
                                 <span class="text-xs font-medium text-on-surface-variant" th:text="${product.seller}">패션빌리지</span>
                                 <span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                             </div>
-                            <div class="flex items-center gap-1 md:justify-end">
-                                <div class="flex text-tertiary-container">
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
-                                </div>
+                            <div class="flex md:justify-end">
+                                <div th:replace="~{fragments/rating :: productRating(${product.rating}, ${product.reviewCount})}"></div>
                             </div>
                         </div>
                     </div>

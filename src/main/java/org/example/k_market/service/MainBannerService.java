@@ -69,12 +69,9 @@ public class MainBannerService {
             banner.setFileUrl_stored("/uploads/" + stored);
         }
 
-        String linkUrl = banner.getLinkUrl();
-        if (StringUtils.hasText(linkUrl)
-                && !linkUrl.startsWith("http://") && !linkUrl.startsWith("https://")
-                && !linkUrl.startsWith("/") && !linkUrl.startsWith("#")) {
-            banner.setLinkUrl("/" + linkUrl);
-        }
+        // 쿠폰 배너는 조회 메서드에서 발급 주소로 다시 지정한다.
+        // 그 외 일반 배너는 관리자 입력 링크와 관계없이 메인으로 이동한다.
+        banner.setLinkUrl("/");
     }
 
     private void normalizeAspectRatio(BannerDTO banner, String fallbackAspectRatio) {
