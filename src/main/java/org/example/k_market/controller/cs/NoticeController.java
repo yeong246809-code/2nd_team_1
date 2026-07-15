@@ -29,7 +29,7 @@ public class NoticeController {
     @GetMapping("/view/{no}")
     public String view(@PathVariable int no, Model model) {
 
-        Notice notice = noticeService.findById(no);
+        Notice notice = noticeService.getNoticeAndIncreaseViewCount(no);
 
         model.addAttribute("notice", notice);
 

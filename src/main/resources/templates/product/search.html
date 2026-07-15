@@ -220,9 +220,9 @@
                             </label>
                         </div>
                         <div class="flex items-center gap-2">
-                            <input name="minPrice" th:value="${minPrice}" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최소(원)" type="number"/>
+                            <input name="minPrice" th:value="${minPrice}" type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최소(원)"/>
                             <span class="text-outline-variant">~</span>
-                            <input name="maxPrice" th:value="${maxPrice}" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최대(원)" type="number"/>
+                            <input name="maxPrice" th:value="${maxPrice}" type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최대(원)"/>
                         </div>
                     </form>
                 </div>

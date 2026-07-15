@@ -2,6 +2,7 @@ package org.example.k_market.service.cs;
 
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.QnaDTO;
+import org.example.k_market.entity.Notice;
 import org.example.k_market.entity.Qna;
 import org.example.k_market.repository.QnaRepository;
 import org.springframework.data.domain.Page;
@@ -143,4 +144,17 @@ public class QnaService {
 
         qnaRepository.deleteAllById(nos);
     }
+
+    @Transactional
+    public Qna getQnaAndIncreaseViewCount(int no) {
+        Qna qna = qnaRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 문의글입니다."));
+
+        // 조회수 1 증가 (Qna 엔티티에 setViewCount 메서드가 있어야 합니다)
+        qna.setViewCount(qna.getViewCount() + 1);
+
+        return qna; // @Transactional이 붙어있으므로 메서드 종료 시 DB에 자동으로 UPDATE 됩니다.
+    }
+
+
 }
