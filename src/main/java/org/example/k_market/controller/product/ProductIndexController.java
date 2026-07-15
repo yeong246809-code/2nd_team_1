@@ -317,7 +317,7 @@ public class ProductIndexController {
         List<Product> visibleProducts = productRepository.findAllVisible();
         List<Product> found;
         if (keyword.isBlank()) {
-            found = List.of();
+            found = new ArrayList<>(visibleProducts);
         } else if (searchName && !searchDescription) {
             // "상품명"만 체크한 경우
             String loweredKeyword = keyword.toLowerCase();
