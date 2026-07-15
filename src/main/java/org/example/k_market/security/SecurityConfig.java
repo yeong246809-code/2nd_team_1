@@ -135,6 +135,7 @@ public class SecurityConfig {
                 //셀러 권한 필요하면 여기에 추가
                 .requestMatchers("/admin/product/**").hasAnyRole("ADMIN", "SELLER")
                 .requestMatchers("/admin/order/**").hasAnyRole("ADMIN", "SELLER")
+                .requestMatchers("/admin/coupon/**").hasAnyRole("ADMIN", "SELLER")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/my/**").authenticated()
                 .requestMatchers("/product/cart", "/product/cart/**").authenticated()

@@ -1,6 +1,9 @@
 package org.example.k_market.repository;
 
 import org.example.k_market.entity.Coupon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +39,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
         LocalDate getEndDate();
     }
+
+    Page<Coupon> findAll(Specification<Coupon> spec, Pageable pageable);
 }

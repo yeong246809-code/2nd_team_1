@@ -26,6 +26,8 @@ public class CouponDTO {
     private String notes;
     private String status;
     private LocalDateTime createdAt;
+    private Integer shopNo;
+    private Long prodNo;
 
     private long issueCount; // 추가
     private long useCount;   // 추가
@@ -36,6 +38,7 @@ public class CouponDTO {
                 .name(name).benefitType(benefitType).benefitValue(benefitValue)
                 .dateType(dateType).startDate(startDate).endDate(endDate)
                 .validDays(validDays).notes(notes).status(status).createdAt(createdAt)
+                .shopNo(shopNo).prodNo(prodNo)
                 .build();
     }
 }
