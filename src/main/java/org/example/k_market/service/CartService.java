@@ -24,6 +24,7 @@ public class CartService {
 
     public List<CartItemViewDTO> getItems(int memberNo) {
         return cartRepository.findByMemberNoOrderByCreatedAtDesc(memberNo).stream()
+                .filter(cart -> productRepository.findVisibleById(cart.getProdNo()).isPresent())
                 .map(this::toView)
                 .toList();
     }
@@ -123,8 +124,8 @@ public class CartService {
     }
 
     private Product requireProduct(long prodNo) {
-        return productRepository.findById(prodNo)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
+        return productRepository.findVisibleById(prodNo)
+                .orElseThrow(() -> new IllegalArgumentException("판매 중인 상품이 아닙니다: " + prodNo));
     }
 
     public record Selection(Long skuNo, int quantity) {}
@@ -174,8 +175,10 @@ public class CartService {
         int stock = availableStock(product, sku);
 
         return CartItemViewDTO.builder()
+                .itemKey(cartNo > 0 ? "cart:" + cartNo : null)
                 .cartNo(cartNo)
                 .prodNo(product.getProdNo())
+                .shopNo(product.getShopNo() == null ? 0 : product.getShopNo())
                 .skuNo(sku == null ? null : sku.getSkuNo())
                 .skuName(sku == null ? null : sku.getSkuName())
                 .name(product.getName())
@@ -186,7 +189,7 @@ public class CartService {
                 .discountRate(discountRate)
                 .rewardPoints(rewardPoints)
                 .shippingFee(shippingFee)
-                .lineTotal(discountedPrice * quantity + shippingFee)
+                .lineTotal(discountedPrice * quantity)
                 .lineRewardPoints(rewardPoints * quantity)
                 .maxQuantity(stock)
                 .soldOut(stock < quantity || stock <= 0)

@@ -3,9 +3,11 @@ package org.example.k_market.service.member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.example.k_market.entity.Member;
+import org.example.k_market.entity.PointHistory;
 import org.example.k_market.entity.Shop;
 import org.example.k_market.entity.Users;
 import org.example.k_market.repository.MemberRepository;
+import org.example.k_market.repository.PointHistoryRepository;
 import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.security.MyUserDetails;
@@ -28,12 +30,14 @@ import java.util.Optional;
 public class UsersService implements UserDetailsService {
 
     private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(1900, 1, 1);
+    private static final int SIGNUP_BONUS_POINTS = 3_000;
 
     private final UsersRepository userRepository;
     private final MemberRepository memberRepository;
     private final ShopRepository shopRepository;
     private final PasswordEncoder passwordEncoder;
     private final DefaultMemberGradeService defaultMemberGradeService;
+    private final PointHistoryRepository pointHistoryRepository;
 
     public record FoundAccount(String id, String name, String email, String createdAt) {
     }
@@ -225,13 +229,21 @@ public class UsersService implements UserDetailsService {
                 .baseAddress(valueOrEmpty(baseAddress))
                 .detailAddress(trimToNull(detailAddress))
                 .gradeNo(defaultMemberGradeService.getDefaultGradeNo())
-                .points(0)
+                .points(SIGNUP_BONUS_POINTS)
                 .createdAt(LocalDateTime.now())
                 .status(MemberAccountStatus.ACTIVE)
                 .locationPolicyAgreed("Y")
                 .build();
 
         memberRepository.save(member);
+        pointHistoryRepository.save(PointHistory.builder()
+                .memberNo(user.getMemberNo())
+                .amount(SIGNUP_BONUS_POINTS)
+                .remainedAmount(SIGNUP_BONUS_POINTS)
+                .description("신규 회원가입 축하 포인트")
+                .createdAt(LocalDateTime.now())
+                .expiredAt(LocalDate.now().plusYears(1))
+                .build());
     }
 
     private void saveShopProfile(

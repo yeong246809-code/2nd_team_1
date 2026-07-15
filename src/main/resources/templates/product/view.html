@@ -263,7 +263,7 @@
                         <span class="text-on-surface-variant">제조사/원산지</span>
                         <span class="text-on-surface">국산</span>
                         <span class="text-on-surface-variant">판매자</span>
-                        <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="'상점 No.' + ${product.shopNo}">판매자명</span>
+                        <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="${shopName}">상호명</span>
                     </div>
                     <!-- Options & Actions -->
                     <form id="selected-product-form" th:action="@{/product/cart/add-selected}" method="post" onsubmit="return validateSelectedProducts()">
@@ -345,14 +345,18 @@
             <!-- Detail Sections -->
             <div class="mb-xl scroll-mt-[130px]" id="desc">
                 <h3 class="text-lg font-bold text-primary mb-md">상품 상세 정보</h3>
-                <div class="bg-surface-container rounded-xl min-h-[500px] border border-dashed border-outline relative overflow-hidden">
-                    <!-- product.detailContent: 관리자가 등록한 상세 이미지 URL -->
-                    <div th:if="${product.detailContent != null and !product.detailContent.isBlank()}" class="flex justify-center p-lg">
-                        <img th:src="${product.detailContent}"
-                             th:alt="${product.name + ' 상세 이미지'}"
-                             class="h-auto max-w-full object-contain"/>
-                    </div>
-                    <p th:if="${product.detailContent == null or product.detailContent.isBlank()}" class="p-md text-sm text-on-surface-variant">등록된 상세 설명이 없습니다.</p>
+                <!-- 상세 이미지가 있으면 배경과 테두리 없이 이미지만 표시 -->
+                <div th:if="${product.detailContent != null and !product.detailContent.isBlank()}"
+                     class="flex justify-center overflow-hidden">
+                    <img th:src="${product.detailContent}"
+                         th:alt="${product.name + ' 상세 이미지'}"
+                         class="h-auto max-w-full object-contain"/>
+                </div>
+
+                <!-- 상세 이미지가 없을 때만 회색 안내 박스 표시 -->
+                <div th:unless="${product.detailContent != null and !product.detailContent.isBlank()}"
+                     class="flex min-h-[500px] items-center justify-center rounded-xl border border-dashed border-outline bg-surface-container">
+                    <p class="p-md text-sm text-on-surface-variant">등록된 상세 설명이 없습니다.</p>
                 </div>
             </div>
 
@@ -414,7 +418,7 @@
                     <article class="border-b border-outline-variant p-md last:border-b-0" th:each="review : ${reviewList}">
                         <div class="flex justify-between items-start mb-sm">
                             <div class="flex flex-col">
-                                <span class="text-sm font-bold text-on-surface" th:text="'회원' + ${review.memberNo}">회원1</span>
+                                <span class="text-sm font-bold text-on-surface" th:text="${reviewWriterNames[review.reviewNO]}">이**</span>
                                 <span class="text-xs text-on-surface-variant" th:text="${#temporals.format(review.createdAt, 'yyyy.MM.dd')}">2024.05.12</span>
                             </div>
                             <div class="flex text-amber-500">

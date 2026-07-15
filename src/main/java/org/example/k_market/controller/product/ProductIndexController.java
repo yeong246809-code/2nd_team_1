@@ -10,6 +10,7 @@ import org.example.k_market.entity.Member;
 import org.example.k_market.entity.Product;
 import org.example.k_market.entity.Qna;
 import org.example.k_market.entity.Review;
+import org.example.k_market.entity.Shop;
 import org.example.k_market.repository.CategoryRepository;
 import org.example.k_market.repository.MemberRepository;
 import org.example.k_market.repository.OrderDetailsRepository;
@@ -17,6 +18,7 @@ import org.example.k_market.repository.ProductRepository;
 import org.example.k_market.repository.ProductSkuRepository;
 import org.example.k_market.repository.QnaRepository;
 import org.example.k_market.repository.ReviewRepository;
+import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.security.MyUserDetails;
 import org.example.k_market.service.ProductService;
 import org.example.k_market.service.CartService;
@@ -43,6 +45,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @Log4j2
@@ -62,6 +67,7 @@ public class ProductIndexController {
     private final ProductService productService;
     private final S3Uploader s3Uploader;
     private final BannerService bannerService;
+    private final ShopRepository shopRepository;
 
     private static final int PAGE_SIZE = 10;
     private static final int REVIEW_PAGE_SIZE = 5;
@@ -83,6 +89,7 @@ public class ProductIndexController {
             Model model
     ) {
 
+        List<Product> visibleProducts = productRepository.findAllVisible();
         List<Product> products;
         Integer activeCateNo = null;
         String mainCateName = "전체";
@@ -93,7 +100,7 @@ public class ProductIndexController {
          */
         if (cateNo != null) {
             products = new ArrayList<>(
-                    productRepository.findByCateNo(cateNo)
+                    visibleProducts.stream().filter(product -> cateNo.equals(product.getCateNo())).toList()
             );
 
             activeCateNo = cateNo;
@@ -124,11 +131,11 @@ public class ProductIndexController {
              */
             if (childCateNos.isEmpty()) {
                 products = new ArrayList<>(
-                        productRepository.findByCateNo(parentCateNo)
+                        visibleProducts.stream().filter(product -> parentCateNo.equals(product.getCateNo())).toList()
                 );
             } else {
                 products = new ArrayList<>(
-                        productRepository.findByCateNoIn(childCateNos)
+                        visibleProducts.stream().filter(product -> childCateNos.contains(product.getCateNo())).toList()
                 );
             }
 
@@ -145,7 +152,7 @@ public class ProductIndexController {
              * 카테고리 조건이 없으면 전체 상품 조회
              */
         } else {
-            products = new ArrayList<>(productRepository.findAll());
+            products = new ArrayList<>(visibleProducts);
         }
 
         /*
@@ -196,6 +203,7 @@ public class ProductIndexController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("mainCateName", mainCateName);
+        model.addAttribute("shopNames", shopNames(pageProducts));
 
         /*
          * 정렬 및 페이지 이동 시 현재 카테고리 조건을 유지하기 위한 값
@@ -277,6 +285,36 @@ public class ProductIndexController {
         return (int) (product.getPrice() * (100L - discountRate) / 100L);
     }
 
+    private Map<Integer, String> shopNames(List<Product> products) {
+        Map<Integer, String> names = new LinkedHashMap<>();
+        products.stream().map(Product::getShopNo).filter(Objects::nonNull).distinct()
+                .forEach(shopNo -> names.put(shopNo, shopRepository.findByShopNo(shopNo)
+                        .map(Shop::getName)
+                        .orElse("판매자 정보 없음")));
+        return names;
+    }
+
+    private Map<Long, String> maskedReviewWriterNames(List<Review> reviews) {
+        Map<Integer, String> memberNames = memberRepository.findAllById(
+                        reviews.stream().map(Review::getMemberNo).distinct().toList())
+                .stream()
+                .collect(Collectors.toMap(Member::getMemberNo, member -> maskName(member.getName())));
+
+        Map<Long, String> writers = new LinkedHashMap<>();
+        reviews.forEach(review -> writers.put(
+                review.getReviewNO(), memberNames.getOrDefault(review.getMemberNo(), "회원")));
+        return writers;
+    }
+
+    private String maskName(String name) {
+        if (name == null || name.isBlank()) return "회원";
+        String trimmed = name.trim();
+        int characterCount = trimmed.codePointCount(0, trimmed.length());
+        if (characterCount <= 1) return trimmed;
+        int firstCharacterEnd = trimmed.offsetByCodePoints(0, 1);
+        return trimmed.substring(0, firstCharacterEnd) + "*".repeat(characterCount - 1);
+    }
+
 
     @GetMapping("/search")
     public String search(@RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -288,18 +326,33 @@ public class ProductIndexController {
                          @RequestParam(defaultValue = "salesDesc") String sort,
                          Model model) {
 
+        List<Product> visibleProducts = productRepository.findAllVisible();
         List<Product> found;
         if (keyword.isBlank()) {
             found = List.of();
         } else if (searchName && !searchDescription) {
             // "상품명"만 체크한 경우
-            found = productRepository.findByNameContainingIgnoreCase(keyword);
+            String loweredKeyword = keyword.toLowerCase();
+            found = visibleProducts.stream()
+                    .filter(product -> product.getName() != null
+                            && product.getName().toLowerCase().contains(loweredKeyword))
+                    .toList();
         } else if (searchDescription && !searchName) {
             // "설명"만 체크한 경우
-            found = productRepository.findByDescriptionContainingIgnoreCase(keyword);
+            String loweredKeyword = keyword.toLowerCase();
+            found = visibleProducts.stream()
+                    .filter(product -> product.getDescription() != null
+                            && product.getDescription().toLowerCase().contains(loweredKeyword))
+                    .toList();
         } else {
             // 둘 다 체크했거나, 둘 다 안 체크한 기본 상태 -> 이름+설명 둘 다에서 검색
-            found = productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
+            String loweredKeyword = keyword.toLowerCase();
+            found = visibleProducts.stream()
+                    .filter(product -> (product.getName() != null
+                            && product.getName().toLowerCase().contains(loweredKeyword))
+                            || (product.getDescription() != null
+                            && product.getDescription().toLowerCase().contains(loweredKeyword)))
+                    .toList();
         }
 
         // "가격" 체크박스를 켰을 때만 최소~최대 가격 필터 적용
@@ -364,7 +417,9 @@ public class ProductIndexController {
         map.put("discount", discountRate);
         map.put("originalPrice", String.format("%,d", price));
         map.put("price", String.format("%,d", discountedPrice));
-        map.put("seller", "상점 No." + p.getShopNo());
+        map.put("seller", shopRepository.findByShopNo(p.getShopNo())
+                .map(Shop::getName)
+                .orElse("판매자 정보 없음"));
         return map;
     }
 
@@ -373,8 +428,13 @@ public class ProductIndexController {
                        @RequestParam(defaultValue = "1") int reviewPage,
                        Model model,
                        @AuthenticationPrincipal MyUserDetails userDetails) {
-        Product product = productRepository.findById(Long.valueOf(prodNo))
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + prodNo));
+        Product product = productRepository.findVisibleById(Long.valueOf(prodNo)).orElse(null);
+        if (product == null) {
+            return "redirect:/product/list";
+        }
+        String shopName = shopRepository.findByShopNo(product.getShopNo())
+                .map(Shop::getName)
+                .orElse("판매자 정보 없음");
 
         // 조회수 +1 (상세페이지 진입 시마다 증가)
         int currentViewCount = (product.getViewCount() == null) ? 0 : product.getViewCount();
@@ -399,6 +459,7 @@ public class ProductIndexController {
                     product.getProdNo(), PageRequest.of(requestedReviewPage, REVIEW_PAGE_SIZE));
         }
         List<Review> reviewList = reviewPageData.getContent();
+        Map<Long, String> reviewWriterNames = maskedReviewWriterNames(reviewList);
 
         // 상품 Q&A 목록 (해당 상품에 달린 문의 원글만, parentNo=0)
         List<Qna> qnaList = qnaRepository.findByProdNoAndParentNoOrderByNoDesc(product.getProdNo(), 0);
@@ -411,10 +472,12 @@ public class ProductIndexController {
                 && orderDetailsRepository.existsReviewablePurchase(reviewMemberNo, product.getProdNo());
 
         model.addAttribute("product", product);
+        model.addAttribute("shopName", shopName);
         model.addAttribute("productSkus", productSkuRepository.findByProdNoOrderBySkuNoAsc(product.getProdNo()));
         model.addAttribute("category", category);
         model.addAttribute("parentCategory", parentCategory);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("reviewWriterNames", reviewWriterNames);
         model.addAttribute("reviewCurrentPage", requestedReviewPage + 1);
         model.addAttribute("reviewTotalPages", reviewPageData.getTotalPages());
         model.addAttribute("reviewTotalElements", reviewPageData.getTotalElements());
@@ -515,7 +578,10 @@ public class ProductIndexController {
             for (int i = 0; i < directSkuNos.size(); i++) {
                 String skuValue = directSkuNos.get(i);
                 Long selectedSkuNo = "none".equals(skuValue) ? null : Long.valueOf(skuValue);
-                items.add(cartService.previewProduct(prodNo, selectedSkuNo, directQuantities.get(i)));
+                items.add(cartService.previewProduct(prodNo, selectedSkuNo, directQuantities.get(i))
+                        .toBuilder()
+                        .itemKey("direct:" + i)
+                        .build());
             }
             addOrderModel(model, items, userDetails.getUser().getMemberNo());
             model.addAttribute("directProdNo", prodNo);
@@ -540,8 +606,9 @@ public class ProductIndexController {
         int totalProductPrice = cartItems.stream()
                 .mapToInt(item -> item.getUnitPrice() * item.getQuantity())
                 .sum();
-        int totalShippingFee = cartItems.stream().mapToInt(CartItemViewDTO::getShippingFee).sum();
-        int totalOrderPrice = cartItems.stream().mapToInt(CartItemViewDTO::getLineTotal).sum();
+        int totalShippingFee = groupedShippingFee(cartItems);
+        int totalOrderPrice = cartItems.stream().mapToInt(CartItemViewDTO::getLineTotal).sum()
+                + totalShippingFee;
         int totalRewardPoints = cartItems.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
 
         model.addAttribute("cartItems", cartItems);
@@ -734,8 +801,9 @@ public class ProductIndexController {
     private void addOrderModel(Model model, List<CartItemViewDTO> items, int memberNo) {
         int totalQuantity = items.stream().mapToInt(CartItemViewDTO::getQuantity).sum();
         int totalProductPrice = items.stream().mapToInt(item -> item.getUnitPrice() * item.getQuantity()).sum();
-        int totalShippingFee = items.stream().mapToInt(CartItemViewDTO::getShippingFee).sum();
-        int totalOrderPrice = items.stream().mapToInt(CartItemViewDTO::getLineTotal).sum();
+        int totalShippingFee = groupedShippingFee(items);
+        int totalOrderPrice = items.stream().mapToInt(CartItemViewDTO::getLineTotal).sum()
+                + totalShippingFee;
         int totalRewardPoints = items.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
 
         model.addAttribute("orderItems", items);
@@ -749,9 +817,21 @@ public class ProductIndexController {
         addProductLayout(model, null);
     }
 
+    private int groupedShippingFee(List<CartItemViewDTO> items) {
+        return items.stream()
+                .collect(Collectors.groupingBy(
+                        CartItemViewDTO::getShopNo,
+                        Collectors.mapping(CartItemViewDTO::getShippingFee,
+                                Collectors.maxBy(Integer::compareTo))))
+                .values().stream()
+                .flatMap(Optional::stream)
+                .mapToInt(Integer::intValue)
+                .sum();
+    }
+
     private void addProductLayout(Model model, Integer selectedCateNo) {
         model.addAttribute("categories", categoryRepository.findByParentNoIsNull());
-        model.addAttribute("rankingProducts", productRepository.findTop3ByOrderBySalesCountDesc());
+        model.addAttribute("rankingProducts", productService.getBestProducts());
 
         Category selected = (selectedCateNo == null)
                 ? null
@@ -851,7 +931,7 @@ public class ProductIndexController {
          */
         model.addAttribute(
                 "rankingProducts",
-                productRepository.findTop3ByOrderBySalesCountDesc()
+                productService.getBestProducts()
         );
     }
 }

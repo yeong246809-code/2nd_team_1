@@ -249,38 +249,104 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
                 <div class="lg:col-span-8 flex flex-col gap-lg">
-                    <section class="flex flex-col gap-md bg-white standard-border rounded p-md">
+                    <section id="order-info" class="flex flex-col gap-md bg-white standard-border rounded p-md">
                         <div class="flex items-center gap-sm pb-2 border-b border-outline-variant">
                             <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">1</span>
-                            <h3 class="font-bold text-lg text-primary">배송정보</h3>
+                            <h3 class="font-bold text-lg text-primary">주문정보</h3>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-y-sm gap-x-md items-center text-sm mt-2">
-                            <label class="font-semibold text-on-surface-variant">수령자</label>
-                            <input name="recipientName" required maxlength="50" class="rounded border-outline bg-white p-2 text-body-md" placeholder="이름을 입력하세요" type="text" th:value="${orderMember?.name}">
+                            <label class="font-semibold text-on-surface-variant">주문자</label>
+                            <input data-order-field="name" name="ordererName" required maxlength="50" class="rounded border-outline bg-white p-2 text-body-md" placeholder="이름을 입력하세요" type="text" th:value="${orderMember?.name}">
 
                             <label class="font-semibold text-on-surface-variant">휴대폰</label>
-                            <input name="recipientPhone" required maxlength="30" class="rounded border-outline bg-white p-2 text-body-md" placeholder="010-0000-0000" type="tel" th:value="${orderMember?.phone}">
+                            <input data-order-field="phone" name="ordererPhone" required maxlength="30" class="rounded border-outline bg-white p-2 text-body-md" placeholder="010-0000-0000" type="tel" th:value="${orderMember?.phone}">
 
                             <label class="font-semibold text-on-surface-variant">우편번호</label>
                             <div class="flex gap-sm">
-                                <input id="order-zip-code" name="zipCode" class="flex-1 rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="우편번호" readonly type="text" th:value="${orderMember?.zipCode}">
-                                <button type="button" onclick="openPostcode()" class="px-4 py-2 bg-surface-container-high hover:bg-surface-dim transition-colors rounded text-sm font-bold standard-border">주소 검색</button>
+                                <input data-order-field="zipCode" name="ordererZipCode" class="flex-1 rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="우편번호" readonly type="text" th:value="${orderMember?.zipCode}">
+                                <button type="button" onclick="openPostcodeFor(document.getElementById('order-info'))" class="px-4 py-2 bg-surface-container-high hover:bg-surface-dim transition-colors rounded text-sm font-bold standard-border">주소 검색</button>
                             </div>
 
                             <label class="font-semibold text-on-surface-variant">기본주소</label>
-                            <input id="order-base-address" name="baseAddress" required class="rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="검색을 통해 입력하세요" readonly type="text" th:value="${orderMember?.baseAddress}">
+                            <input data-order-field="baseAddress" name="ordererBaseAddress" required class="rounded border-outline bg-surface-container-low p-2 text-body-md" placeholder="검색을 통해 입력하세요" readonly type="text" th:value="${orderMember?.baseAddress}">
 
                             <label class="font-semibold text-on-surface-variant">상세주소</label>
-                            <input id="order-detail-address" name="detailAddress" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md" placeholder="나머지 주소를 입력하세요" type="text" th:value="${orderMember?.detailAddress}">
-
-                            <label class="font-semibold text-on-surface-variant">배송 요청사항</label>
-                            <textarea name="memo" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md h-24" placeholder="배송 시 요청사항을 적어주세요"></textarea>
+                            <input data-order-field="detailAddress" name="ordererDetailAddress" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md" placeholder="나머지 주소를 입력하세요" type="text" th:value="${orderMember?.detailAddress}">
                         </div>
                     </section>
 
                     <section class="flex flex-col gap-md bg-white standard-border rounded p-md">
                         <div class="flex items-center gap-sm pb-2 border-b border-outline-variant">
                             <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">2</span>
+                            <h3 class="font-bold text-lg text-primary">배송정보</h3>
+                        </div>
+
+                        <div id="shipment-list" class="flex flex-col gap-md">
+                            <div class="shipment-card rounded-lg border border-outline-variant bg-surface-container-low p-md" data-shipment-index="0">
+                                <div class="mb-md flex items-center justify-between gap-sm">
+                                    <div class="flex items-center gap-sm">
+                                        <h4 class="shipment-title font-bold text-primary">배송지 1</h4>
+                                        <label class="flex cursor-pointer items-center gap-2 text-xs font-semibold text-on-surface-variant">
+                                            <input type="checkbox" class="same-as-order rounded text-primary focus:ring-primary" checked onchange="copyOrderInfo(this)">
+                                            주문정보와 동일
+                                        </label>
+                                    </div>
+                                    <button type="button" class="remove-shipment hidden text-xs font-bold text-error" onclick="removeShipment(this)">삭제</button>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-y-sm gap-x-md items-center text-sm">
+                                    <label class="font-semibold text-on-surface-variant">수령자</label>
+                                    <input data-shipment-field="recipientName" name="shipments[0].recipientName" required maxlength="50" class="rounded border-outline bg-white p-2 text-body-md" type="text" th:value="${orderMember?.name}">
+
+                                    <label class="font-semibold text-on-surface-variant">휴대폰</label>
+                                    <input data-shipment-field="recipientPhone" name="shipments[0].recipientPhone" required maxlength="30" class="rounded border-outline bg-white p-2 text-body-md" type="tel" th:value="${orderMember?.phone}">
+
+                                    <label class="font-semibold text-on-surface-variant">우편번호</label>
+                                    <div class="flex gap-sm">
+                                        <input data-shipment-field="zipCode" name="shipments[0].zipCode" class="flex-1 rounded border-outline bg-white p-2 text-body-md" readonly type="text" th:value="${orderMember?.zipCode}">
+                                        <button type="button" onclick="openPostcodeFor(this.closest('.shipment-card'))" class="px-4 py-2 bg-surface-container-high rounded text-sm font-bold standard-border">주소 검색</button>
+                                    </div>
+
+                                    <label class="font-semibold text-on-surface-variant">기본주소</label>
+                                    <input data-shipment-field="baseAddress" name="shipments[0].baseAddress" required class="rounded border-outline bg-white p-2 text-body-md" readonly type="text" th:value="${orderMember?.baseAddress}">
+
+                                    <label class="font-semibold text-on-surface-variant">상세주소</label>
+                                    <input data-shipment-field="detailAddress" name="shipments[0].detailAddress" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md" type="text" th:value="${orderMember?.detailAddress}">
+
+                            <label class="font-semibold text-on-surface-variant">배송 요청사항</label>
+                                    <textarea data-shipment-field="memo" name="shipments[0].memo" maxlength="255" class="rounded border-outline bg-white p-2 text-body-md h-20" placeholder="배송 시 요청사항을 적어주세요"></textarea>
+                                </div>
+
+                                <div class="mt-md border-t border-outline-variant pt-md">
+                                    <p class="mb-sm text-xs font-bold text-primary">이 배송지로 보낼 수량</p>
+                                    <div class="grid grid-cols-1 gap-2">
+                                        <div th:each="item, itemStat : ${orderItems}" class="shipment-item flex items-center justify-between gap-md rounded bg-white px-3 py-2 text-xs">
+                                            <input type="hidden" th:name="|shipments[0].items[${itemStat.index}].itemKey|" th:value="${item.itemKey}" data-item-key-input>
+                                            <span class="min-w-0 flex-1 truncate" th:text="${item.skuName == null ? item.name : item.name + ' / ' + item.skuName}">상품명</span>
+                                            <label class="flex items-center gap-2 whitespace-nowrap">
+                                                수량
+                                                <input type="number" min="0" th:max="${item.quantity}" th:value="${item.quantity}"
+                                                       th:name="|shipments[0].items[${itemStat.index}].quantity|"
+                                                       th:data-item-key="${item.itemKey}" th:data-ordered-quantity="${item.quantity}"
+                                                       class="shipment-quantity w-20 rounded border-outline p-1 text-right">
+                                                <span th:text="|/ ${item.quantity}개|">/ 1개</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="addShipment()" class="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-primary py-3 text-sm font-bold text-primary hover:bg-surface-container-low">
+                            <span class="material-symbols-outlined text-lg">add</span>
+                            배송정보 추가
+                        </button>
+                        <p class="text-xs text-outline">상품 수량을 각 배송지에 나누어 입력할 수 있습니다. 모든 배송지의 합계는 주문 수량과 같아야 합니다.</p>
+                    </section>
+
+                    <section class="flex flex-col gap-md bg-white standard-border rounded p-md">
+                        <div class="flex items-center gap-sm pb-2 border-b border-outline-variant">
+                            <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">3</span>
                             <h3 class="font-bold text-lg text-primary">할인정보</h3>
                         </div>
                         <div class="bg-surface-container-low p-md rounded flex flex-col gap-md mt-2 text-sm">
@@ -302,7 +368,7 @@
 
                     <section class="flex flex-col gap-md bg-white standard-border rounded p-md">
                         <div class="flex items-center gap-sm pb-2 border-b border-outline-variant">
-                            <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">3</span>
+                            <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">4</span>
                             <h3 class="font-bold text-lg text-primary">결제방법</h3>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-sm mt-2 text-sm">
@@ -354,7 +420,7 @@
                                 <span class="font-bold text-error" th:text="${totalDiscount > 0 ? '-' + #numbers.formatInteger(totalDiscount, 1, 'COMMA') + '원' : '0원'}">0원</span>
                             </li>
                             <li class="flex justify-between items-center">
-                                <span class="text-on-surface-variant">배송비</span>
+                                <span class="text-on-surface-variant">배송비 <small class="block text-[9px] text-outline">판매자별 최고 배송비 1회</small></span>
                                 <span class="font-bold" th:text="${#numbers.formatInteger(totalShippingFee, 1, 'COMMA') + '원'}">0원</span>
                             </li>
                             <li class="flex justify-between items-center">
@@ -468,7 +534,7 @@
 <script>
     const formatter = new Intl.NumberFormat('ko-KR');
 
-    function openPostcode() {
+    function openPostcodeFor(container) {
         if (typeof daum === 'undefined' || !daum.Postcode) {
             alert('주소 검색 서비스를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
             return;
@@ -476,11 +542,92 @@
         new daum.Postcode({
             oncomplete: function(data) {
                 const address = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
-                document.getElementById('order-zip-code').value = data.zonecode || '';
-                document.getElementById('order-base-address').value = address || '';
-                document.getElementById('order-detail-address').focus();
+                const isOrderInfo = container?.id === 'order-info';
+                const selectorPrefix = isOrderInfo ? 'data-order-field' : 'data-shipment-field';
+                const zipField = isOrderInfo ? 'zipCode' : 'zipCode';
+                const baseField = isOrderInfo ? 'baseAddress' : 'baseAddress';
+                const detailField = isOrderInfo ? 'detailAddress' : 'detailAddress';
+                container?.querySelector(`[${selectorPrefix}="${zipField}"]`)?.setAttribute('value', data.zonecode || '');
+                const zipInput = container?.querySelector(`[${selectorPrefix}="${zipField}"]`);
+                const baseInput = container?.querySelector(`[${selectorPrefix}="${baseField}"]`);
+                const detailInput = container?.querySelector(`[${selectorPrefix}="${detailField}"]`);
+                if (zipInput) zipInput.value = data.zonecode || '';
+                if (baseInput) baseInput.value = address || '';
+                detailInput?.focus();
+                if (isOrderInfo) syncCheckedShipments();
             }
         }).open();
+    }
+
+    const orderToShipmentFields = {
+        name: 'recipientName',
+        phone: 'recipientPhone',
+        zipCode: 'zipCode',
+        baseAddress: 'baseAddress',
+        detailAddress: 'detailAddress'
+    };
+
+    function copyOrderInfo(checkbox) {
+        const card = checkbox.closest('.shipment-card');
+        if (!card || !checkbox.checked) return;
+        Object.entries(orderToShipmentFields).forEach(([orderField, shipmentField]) => {
+            const source = document.querySelector(`[data-order-field="${orderField}"]`);
+            const target = card.querySelector(`[data-shipment-field="${shipmentField}"]`);
+            if (source && target) target.value = source.value;
+        });
+    }
+
+    function syncCheckedShipments() {
+        document.querySelectorAll('.same-as-order:checked').forEach(copyOrderInfo);
+    }
+
+    function renumberShipments() {
+        document.querySelectorAll('.shipment-card').forEach((card, shipmentIndex) => {
+            card.dataset.shipmentIndex = String(shipmentIndex);
+            const title = card.querySelector('.shipment-title');
+            if (title) title.textContent = `배송지 ${shipmentIndex + 1}`;
+            card.querySelectorAll('[name]').forEach(input => {
+                input.name = input.name.replace(/shipments\[\d+]/, `shipments[${shipmentIndex}]`);
+            });
+            const removeButton = card.querySelector('.remove-shipment');
+            removeButton?.classList.toggle('hidden', shipmentIndex === 0 && document.querySelectorAll('.shipment-card').length === 1);
+        });
+    }
+
+    function addShipment() {
+        const list = document.getElementById('shipment-list');
+        const source = list?.querySelector('.shipment-card');
+        if (!list || !source) return;
+        const clone = source.cloneNode(true);
+        clone.querySelector('.same-as-order').checked = false;
+        clone.querySelectorAll('[data-shipment-field]').forEach(input => input.value = '');
+        clone.querySelectorAll('.shipment-quantity').forEach(input => input.value = '0');
+        clone.querySelector('.remove-shipment')?.classList.remove('hidden');
+        list.appendChild(clone);
+        renumberShipments();
+        clone.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+
+    function removeShipment(button) {
+        const cards = document.querySelectorAll('.shipment-card');
+        if (cards.length <= 1) return;
+        button.closest('.shipment-card')?.remove();
+        renumberShipments();
+    }
+
+    function validateShipmentQuantities() {
+        const totals = new Map();
+        const ordered = new Map();
+        document.querySelectorAll('.shipment-quantity').forEach(input => {
+            const key = input.dataset.itemKey;
+            const quantity = Math.max(Number(input.value || 0), 0);
+            totals.set(key, (totals.get(key) || 0) + quantity);
+            ordered.set(key, Number(input.dataset.orderedQuantity || 0));
+        });
+        for (const [key, orderedQuantity] of ordered.entries()) {
+            if ((totals.get(key) || 0) !== orderedQuantity) return false;
+        }
+        return true;
     }
 
     function normalizedUsedPoints(showAlert) {
@@ -533,8 +680,18 @@
     }
 
     document.getElementById('used-points')?.addEventListener('change', applyPoints);
+    document.querySelectorAll('[data-order-field]').forEach(input => {
+        input.addEventListener('input', syncCheckedShipments);
+    });
+    renumberShipments();
+    syncCheckedShipments();
     document.getElementById('checkout-form')?.addEventListener('submit', (event) => {
         applyPoints();
+        if (!validateShipmentQuantities()) {
+            event.preventDefault();
+            alert('각 상품의 배송 수량 합계가 주문 수량과 같도록 입력해주세요.');
+            return;
+        }
         if (!event.currentTarget.checkValidity()) return;
         const submitButton = document.getElementById('checkout-submit');
         if (submitButton) {

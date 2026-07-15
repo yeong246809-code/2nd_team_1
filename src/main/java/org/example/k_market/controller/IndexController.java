@@ -114,13 +114,13 @@ public class IndexController {
 
         /*
          * 왼쪽 사이드바 실시간 인기 상품
-         * 판매량(salesCount)이 높은 순서대로 3개를 출력한다.
+         * 판매량(salesCount)이 높은 순서대로 5개를 출력한다.
          *
          * 기존 index.html에서 rankingProducts를 사용하고 있으므로 유지한다.
          */
         model.addAttribute(
                 "rankingProducts",
-                productRepository.findTop3ByOrderBySalesCountDesc()
+                productService.getBestProducts()
         );
 
         /*

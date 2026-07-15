@@ -210,6 +210,7 @@
                                    th:value="${item.cartNo}"
                                    th:data-quantity="${item.quantity}"
                                    th:data-product-total="${item.unitPrice * item.quantity}"
+                                   th:data-shop-no="${item.shopNo}"
                                    th:data-shipping-fee="${item.shippingFee}"
                                    th:data-line-total="${item.lineTotal}"
                                    th:data-reward-points="${item.lineRewardPoints}"/>
@@ -338,7 +339,7 @@
                             안내사항
                         </div>
                         <ul class="list-disc list-inside text-on-surface-variant text-label-sm font-label-sm space-y-xs opacity-80">
-                            <li>배송비는 판매자 설정 및 합배송 여부에 따라 달라질 수 있습니다.</li>
+                            <li>같은 판매자의 상품은 가장 높은 배송비 한 번만 적용됩니다.</li>
                             <li>포인트는 최종 주문 금액의 1%가 적립될 예정입니다.</li>
                             <li>장바구니 보관 기간은 최대 30일입니다.</li>
                         </ul>
@@ -481,10 +482,17 @@
         const sum = (key) => selected.reduce((total, checkbox) => total + Number(checkbox.dataset[key] || 0), 0);
         const quantity = sum('quantity');
         const productPrice = sum('productTotal');
-        const shippingFee = sum('shippingFee');
-        const orderPrice = sum('lineTotal');
+        const shippingByShop = new Map();
+        selected.forEach(checkbox => {
+            const shopNo = checkbox.dataset.shopNo || 'unknown';
+            const fee = Number(checkbox.dataset.shippingFee || 0);
+            shippingByShop.set(shopNo, Math.max(shippingByShop.get(shopNo) || 0, fee));
+        });
+        const shippingFee = [...shippingByShop.values()].reduce((total, fee) => total + fee, 0);
+        const discountedProductPrice = sum('lineTotal');
+        const orderPrice = discountedProductPrice + shippingFee;
         const rewardPoints = sum('rewardPoints');
-        const discount = Math.max(productPrice + shippingFee - orderPrice, 0);
+        const discount = Math.max(productPrice - discountedProductPrice, 0);
 
         setText('selected-item-count', String(selected.length));
         setText('selected-total-quantity', String(quantity));
