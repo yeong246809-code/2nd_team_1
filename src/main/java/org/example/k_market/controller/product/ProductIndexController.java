@@ -149,7 +149,9 @@ public class ProductIndexController {
         String normalizedSort =
                 (sort == null || sort.isBlank()) ? "latest" : sort;
 
-        sortProducts(products, normalizedSort);
+        Map<Long, ProductService.ProductRating> reviewStats = productService.getProductRatingStats(
+                products.stream().map(Product::getProdNo).toList());
+        sortProducts(products, normalizedSort, reviewStats);
 
         /*
          * 조회된 목록을 10개씩 나누어 현재 페이지에 출력
@@ -191,6 +193,7 @@ public class ProductIndexController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("shopNames", shopNames(pageProducts));
+        model.addAttribute("reviewStats", reviewStats);
 
         /*
          * 정렬 및 페이지 이동 시 현재 카테고리 조건을 유지하기 위한 값
@@ -206,7 +209,8 @@ public class ProductIndexController {
      */
     private void sortProducts(
             List<Product> products,
-            String sort
+            String sort,
+            Map<Long, ProductService.ProductRating> reviewStats
     ) {
 
         Comparator<Product> comparator;
@@ -237,12 +241,9 @@ public class ProductIndexController {
                     );
 
             case "ratingDesc" ->
-                    Comparator.comparing(
-                            Product::getRating,
-                            Comparator.nullsLast(
-                                    Comparator.reverseOrder()
-                            )
-                    );
+                    Comparator.comparingDouble((Product product) ->
+                            reviewStats.getOrDefault(product.getProdNo(), new ProductService.ProductRating(0, 0)).averageRating()
+                    ).reversed();
 
             case "reviewCount" ->
                     Comparator.comparingLong(
@@ -361,10 +362,12 @@ public class ProductIndexController {
             default -> "salesDesc";
         };
         found = new ArrayList<>(found);
-        sortProducts(found, normalizedSort);
+        Map<Long, ProductService.ProductRating> reviewStats = productService.getProductRatingStats(
+                found.stream().map(Product::getProdNo).toList());
+        sortProducts(found, normalizedSort, reviewStats);
 
         List<Map<String, Object>> products = found.stream()
-                .map(this::toSearchResultMap)
+                .map(product -> toSearchResultMap(product, reviewStats))
                 .toList();
 
         model.addAttribute("keyword", keyword);
@@ -377,6 +380,7 @@ public class ProductIndexController {
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
         model.addAttribute("shopNameMap", productService.getShopNameMap());
+        model.addAttribute("reviewStats", reviewStats);
         addProductLayout(model, null);
 
         return "product/search";
@@ -386,28 +390,33 @@ public class ProductIndexController {
      * product/search.html이 기대하는 Map 형태(name, description, isNew, isFreeShipping,
      * discount, originalPrice, price, seller)로 실제 Product 엔티티를 변환
      */
-    private Map<String, Object> toSearchResultMap(Product p) {
+    private Map<String, Object> toSearchResultMap(
+            Product p,
+            Map<Long, ProductService.ProductRating> reviewStats
+    ) {
         int discountRate = (p.getDiscountRate() == null) ? 0 : p.getDiscountRate();
         int price = (p.getPrice() == null) ? 0 : p.getPrice();
         int discountedPrice = getDiscountedPrice(p) == null ? 0 : getDiscountedPrice(p);
-
-        boolean isNew = p.getCreatedAt() != null
-                && p.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(7));
-        boolean isFreeShipping = p.getShippingFee() != null && p.getShippingFee() == 0;
 
         Map<String, Object> map = new java.util.LinkedHashMap<>();
         map.put("prodNo", p.getProdNo());
         map.put("name", p.getName());
         map.put("description", p.getDescription());
         map.put("thumb1", p.getThumb1());
-        map.put("isNew", isNew);
-        map.put("isFreeShipping", isFreeShipping);
+
+        map.put("shippingFee", p.getShippingFee());
+        map.put("rating", p.getRating());
+
         map.put("discount", discountRate);
         map.put("originalPrice", String.format("%,d", price));
         map.put("price", String.format("%,d", discountedPrice));
         map.put("seller", shopRepository.findByShopNo(p.getShopNo())
                 .map(Shop::getName)
                 .orElse("판매자 정보 없음"));
+        ProductService.ProductRating rating = reviewStats
+                .getOrDefault(p.getProdNo(), new ProductService.ProductRating(0, 0));
+        map.put("rating", rating.averageRating());
+        map.put("reviewCount", rating.reviewCount());
         return map;
     }
 
@@ -424,6 +433,7 @@ public class ProductIndexController {
                 .map(Shop::getName)
                 .orElse("판매자 정보 없음");
         Double sellerAverageRating = reviewRepository.findAverageRatingByShopNo(product.getShopNo());
+        Double productAverageRating = reviewRepository.findAverageRatingByProdNo(product.getProdNo());
 
         // 조회수 +1 (상세페이지 진입 시마다 증가)
         int currentViewCount = (product.getViewCount() == null) ? 0 : product.getViewCount();
@@ -463,6 +473,7 @@ public class ProductIndexController {
         model.addAttribute("product", product);
         model.addAttribute("shopName", shopName);
         model.addAttribute("sellerAverageRating", sellerAverageRating);
+        model.addAttribute("productAverageRating", productAverageRating == null ? 0.0 : productAverageRating);
         model.addAttribute("productSkus", productSkuRepository.findByProdNoOrderBySkuNoAsc(product.getProdNo()));
         model.addAttribute("category", category);
         model.addAttribute("parentCategory", parentCategory);

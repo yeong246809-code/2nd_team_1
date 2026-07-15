@@ -48,9 +48,13 @@ public class MyPageService {
         int points = memberRepository.findById(memberNo)
                 .map(Member::getPoints)
                 .orElse(0);
+        long availableCouponCount = couponDetailsRepository.findByMemberNoOrderByIssuedAtDesc(memberNo).stream()
+                .map(this::toCouponItem)
+                .filter(coupon -> "사용가능".equals(coupon.statusLabel()))
+                .count();
         return new MyPageDtos.Summary(
                 orderRepository.countByMemberNo(memberNo),
-                couponDetailsRepository.countByMemberNoAndIsUsedIgnoreCase(memberNo, "N"),
+                availableCouponCount,
                 points,
                 qnaRepository.countByMemberNoAndParentNo(memberNo, 0)
         );
@@ -92,7 +96,7 @@ public class MyPageService {
     }
 
     public MyPageDtos.PageBlock<MyPageDtos.CouponItem> coupons(int memberNo, int page) {
-        Page<CouponDetails> details = couponDetailsRepository.findByMemberNoOrderByIssuedAtDesc(memberNo, pageRequest(page));
+        Page<CouponDetails> details = couponDetailsRepository.findUnusedByMemberNo(memberNo, pageRequest(page));
         List<MyPageDtos.CouponItem> items = details.getContent().stream()
                 .map(this::toCouponItem)
                 .toList();
@@ -139,6 +143,16 @@ public class MyPageService {
                     .expiredAt(LocalDate.now().plusYears(1))
                     .build());
         }
+    }
+
+    @Transactional
+    public void requestOrderCancellation(long orderDetailNo, int memberNo) {
+        OrderDetails detail = requireOwnedOrderDetail(orderDetailNo, memberNo);
+        String status = valueOr(detail.getStatus(), "");
+        if (!List.of("입금대기", "결제완료", "주문완료").contains(status)) {
+            throw new IllegalArgumentException("입금대기 또는 결제완료 상태의 상품만 주문 취소를 요청할 수 있습니다.");
+        }
+        orderDetailsRepository.updateStatus(detail.getOrderDetailNo(), "취소요청");
     }
 
     @Transactional
@@ -196,7 +210,17 @@ public class MyPageService {
     public void deleteReview(long reviewNo, int memberNo) {
         reviewRepository.findById(reviewNo)
                 .filter(review -> review.getMemberNo() == memberNo)
-                .ifPresent(reviewRepository::delete);
+                .ifPresent(review -> {
+                    Long productNo = review.getProdNo();
+                    reviewRepository.delete(review);
+                    reviewRepository.flush();
+                    Product product = productRepository.findById(productNo).orElse(null);
+                    if (product != null) {
+                        Double average = reviewRepository.findAverageRatingByProdNo(productNo);
+                        product.setRating(average == null ? null : java.math.BigDecimal.valueOf(average)
+                                .setScale(2, java.math.RoundingMode.HALF_UP));
+                    }
+                });
     }
 
     private OrderDetails requireOwnedOrderDetail(long orderDetailNo, int memberNo) {

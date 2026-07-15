@@ -184,7 +184,7 @@
             <nav class="flex items-center gap-xs text-on-surface-variant text-xs mb-1 border-b border-outline-variant pb-2">
                 <a class="hover:text-primary" th:href="@{/product/list}">홈</a>
                 <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-                <a class="hover:text-primary" th:href="@{/product/list(cateNo=${parentCategory?.cateNo})}"
+                <a class="hover:text-primary" th:href="@{/product/list(parentCateNo=${parentCategory?.cateNo})}"
                    th:text="${parentCategory != null ? parentCategory.name : ''}">카테고리</a>
                 <span class="material-symbols-outlined text-[14px]">chevron_right</span>
                 <span class="text-primary font-bold" th:text="${category != null ? category.name : ''}">서브카테고리</span>
@@ -196,7 +196,7 @@
                 <div class="flex-1">
                     <div class="bg-surface-container-lowest rounded-xl aspect-square relative overflow-hidden shadow-sm flex items-center justify-center group border border-outline-variant">
                         <img id="mainProductImage" th:alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             th:src="@{${product.thumb1} ?: '/images/no-image.png'}"/>
+                             th:src="@{${product.thumb1 ?: '/images/no-image.png'}}"/>
                         <div class="absolute bottom-md right-md bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]">zoom_in</span>
                             <span class="text-xs font-semibold">확대보기</span>
@@ -223,28 +223,7 @@
                         <p th:if="${product.description != null and !product.description.isBlank()}"
                            class="text-sm leading-relaxed text-on-surface-variant"
                            th:text="${product.description}">상품 설명</p>
-                        <div class="flex items-center gap-xs">
-                            <!-- product.rating(0~5, Double) 값을 CSS width로 채워서 표시. 루프/정수변환 없이 안전하게 처리 -->
-                            <div class="relative inline-flex" style="font-family: 'Material Symbols Outlined';">
-                                <div class="flex text-surface-container-high">
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                </div>
-                                <div class="flex text-amber-500 absolute top-0 left-0 overflow-hidden"
-                                     th:style="'width: ' + ${(product.rating != null ? product.rating : 0) / 5 * 100} + '%'">
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                </div>
-                            </div>
-                            <span class="text-xs text-on-surface-variant font-semibold"
-                                  th:text="${#numbers.formatDecimal(product.rating != null ? product.rating : 0, 1, 1)} + ' (' + ${reviewTotalElements != null ? reviewTotalElements : 0} + ' 리뷰)'">4.5 (824 리뷰)</span>
-                        </div>
+                        <div th:replace="~{fragments/rating :: productRating(${productAverageRating}, ${reviewTotalElements})}"></div>
                     </div>
                     <div class="bg-surface-container-low p-md rounded-lg flex flex-col gap-xs">
                         <div class="flex items-center gap-sm">
@@ -348,7 +327,6 @@
             <div class="border-b border-outline-variant mb-lg sticky top-[73px] bg-white backdrop-blur z-40">
                 <nav class="flex gap-lg">
                     <button class="text-sm py-3 border-b-2 border-primary text-primary font-bold" onclick="scrollToSection('desc')">상세정보</button>
-                    <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('specs')">규격사양</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('notice')">상품정보 제공고시</button>
                     <button class="text-sm py-3 text-on-surface-variant hover:text-primary" onclick="scrollToSection('reviews')"
                             th:text="'상품후기 (' + ${reviewTotalElements != null ? reviewTotalElements : 0} + ')'">상품후기 (824)</button>

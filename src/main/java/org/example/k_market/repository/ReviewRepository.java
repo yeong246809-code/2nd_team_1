@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Collection;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
@@ -51,6 +52,20 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
            WHERE p.shopNo = :shopNo
            """)
     Double findAverageRatingByShopNo(@Param("shopNo") Integer shopNo);
+
+    @Query("""
+           SELECT r.prodNo AS prodNo, AVG(r.rating) AS averageRating, COUNT(r) AS reviewCount
+           FROM Review r
+           WHERE r.prodNo IN :prodNos
+           GROUP BY r.prodNo
+           """)
+    List<ProductRatingStat> findProductRatingStats(@Param("prodNos") Collection<Long> prodNos);
+
+    interface ProductRatingStat {
+        Long getProdNo();
+        Double getAverageRating();
+        long getReviewCount();
+    }
 
 
 }

@@ -65,8 +65,10 @@ public class MyIndexController {
                         }
                     });
         } else {
-            currentMemberNo(authentication).ifPresent(memberNo ->
-                    model.addAttribute("dashboard", myPageService.dashboard(memberNo)));
+            currentMemberNo(authentication).ifPresent(memberNo -> {
+                model.addAttribute("dashboard", myPageService.dashboard(memberNo));
+                addDashboardSettings(memberNo, model);
+            });
         }
         return "my/index";
     }
@@ -200,6 +202,23 @@ public class MyIndexController {
         return "redirect:/my/order";
     }
 
+    @PostMapping("/my/order/cancel")
+    public String cancelOrder(Authentication authentication,
+                              @RequestParam long orderDetailNo,
+                              RedirectAttributes redirectAttributes) {
+        Optional<Integer> memberNo = currentMemberNo(authentication);
+        if (memberNo.isEmpty()) {
+            return "redirect:/member/login";
+        }
+        try {
+            myPageService.requestOrderCancellation(orderDetailNo, memberNo.get());
+            redirectAttributes.addFlashAttribute("myOrderMessage", "주문 취소를 요청했습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("myOrderError", e.getMessage());
+        }
+        return "redirect:/my/order";
+    }
+
     @PostMapping("/my/order/claim")
     public String claimOrder(Authentication authentication,
                              @RequestParam int orderNo,
@@ -282,6 +301,23 @@ public class MyIndexController {
     private boolean isSeller(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(authority -> "ROLE_SELLER".equals(authority.getAuthority()));
+    }
+
+    private void addDashboardSettings(int memberNo, Model model) {
+        memberRepository.findById(memberNo).ifPresent(member -> {
+            String address = String.join(" ",
+                    Optional.ofNullable(member.getBaseAddress()).orElse(""),
+                    Optional.ofNullable(member.getDetailAddress()).orElse("")).trim();
+            String[] phoneParts = splitPhone(member.getPhone());
+            String phone = String.join("-", phoneParts);
+
+            model.addAttribute("mySettingAddress", address.isBlank() ? "등록된 배송지가 없습니다." : address);
+            model.addAttribute("mySettingEmail",
+                    member.getEmail() == null || member.getEmail().isBlank() ? "등록된 이메일이 없습니다." : member.getEmail());
+            model.addAttribute("mySettingPhone",
+                    phoneParts[1].isBlank() || phoneParts[2].isBlank() ? "등록된 휴대폰 번호가 없습니다." : phone);
+            model.addAttribute("mySettingRegisteredAt", member.getCreatedAt());
+        });
     }
 
     private void addMyInfoModel(Authentication authentication, Model model) {

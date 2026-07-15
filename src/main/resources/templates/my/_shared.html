@@ -353,6 +353,12 @@
                                     <span class="inline-flex px-3 py-1 bg-surface-container border border-outline-variant rounded-full text-label-sm font-label-sm whitespace-nowrap" th:text="${item.status}">배송완료</span>
                                 </div>
                                 <div class="mypage-action-stack md:col-span-2 flex flex-col gap-2">
+                                    <form th:if="${item.status == '입금대기' or item.status == '결제완료' or item.status == '주문완료'}"
+                                          th:action="@{/my/order/cancel}" method="post"
+                                          onsubmit="return confirm('이 상품의 주문 취소를 요청하시겠습니까?');">
+                                        <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
+                                        <button type="submit" class="w-full py-1.5 px-3 border border-error text-error rounded-lg text-label-sm font-label-sm hover:bg-error-container">주문취소</button>
+                                    </form>
                                     <form th:if="${item.status == '배송완료'}" th:action="@{/my/order/confirm}" method="post">
                                         <input type="hidden" name="orderDetailNo" th:value="${item.orderDetailNo}">
                                         <button type="submit" class="w-full py-1.5 px-3 bg-primary text-on-primary rounded-lg text-label-sm font-label-sm hover:opacity-90">구매확정</button>
