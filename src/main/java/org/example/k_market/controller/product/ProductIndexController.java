@@ -190,7 +190,6 @@ public class ProductIndexController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalCount", totalCount);
-        model.addAttribute("mainCateName", mainCateName);
         model.addAttribute("shopNames", shopNames(pageProducts));
 
         /*
