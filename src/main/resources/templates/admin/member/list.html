@@ -274,7 +274,7 @@
         <form th:action="@{/admin/member/list}" method="get" class="flex gap-4 items-center">
             <input type="hidden" name="statusFilter" th:value="${statusFilter}">
             <input type="hidden" name="sort" th:value="${sort}">
-            <select name="searchType" class="border border-outline-variant rounded p-2 text-sm focus:ring-primary focus:border-primary">
+            <select name="searchType" class="border border-outline-variant rounded p-2 text-sm focus:ring-primary focus:border-primary pr-8">
                 <option value="id" th:selected="${searchType == 'id'}">아이디</option>
                 <option value="name" th:selected="${searchType == 'name'}">이름</option>
                 <option value="email" th:selected="${searchType == 'email'}">이메일</option>
@@ -296,7 +296,7 @@
                    class="px-3 py-1 text-sm border rounded" th:classappend="${statusFilter == 'WITHDRAWN'} ? 'bg-gray-200' : ''">탈퇴</a>
 
                 <select th:onchange="|location.href='@{/admin/member/list(searchType=${searchType}, keyword=${keyword}, statusFilter=${statusFilter})}&sort=' + this.value|"
-                        class="border border-outline-variant rounded p-2 text-sm bg-white">
+                        class="border border-outline-variant rounded p-2 text-sm bg-white pr-8">
                     <option value="idDesc" th:selected="${sort == 'idDesc'}">번호내림차순</option>
                     <option value="idAsc" th:selected="${sort == 'idAsc'}">번호오름차순</option>
                 </select>
@@ -338,7 +338,7 @@
                     <td class="p-3" th:text="${member.name}">홍길동</td>
                     <td class="p-3 text-center" th:text="${member.gender == 'M' ? '남' : (member.gender == 'F' ? '여' : '-')}">남</td>
                     <td class="p-3 text-center">
-                        <select th:name="'grade_' + ${member.memberNo}" class="border border-outline-variant rounded text-sm p-1">
+                        <select th:name="'grade_' + ${member.memberNo}" class="border border-outline-variant rounded text-sm p-1 pr-8">
                             <option value="1" th:selected="${member.gradeNo == 1}">FAMILY</option>
                             <option value="2" th:selected="${member.gradeNo == 2}">SILVER</option>
                             <option value="3" th:selected="${member.gradeNo == 3}">GOLD</option>

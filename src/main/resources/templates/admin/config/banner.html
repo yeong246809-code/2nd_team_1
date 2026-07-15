@@ -328,7 +328,7 @@
 
             <div class="flex items-center gap-3">
                 <select th:onchange="|location.href='@{/admin/config/banner(position=${currentPosition})}&sort=' + this.value|"
-                        class="border-gray-300 rounded-sm text-sm font-medium focus:ring-primary focus:border-primary py-2 px-3">
+                        class="border-gray-300 rounded-sm text-sm font-medium focus:ring-primary focus:border-primary py-2 px-3 pr-8">
                     <option value="idDesc" th:selected="${currentSort == 'idDesc'}">최신등록순</option>
                     <option value="idAsc" th:selected="${currentSort == 'idAsc'}">오래된순</option>
                     <option value="dateDesc" th:selected="${currentSort == 'dateDesc'}">배너노출일순</option>
@@ -447,7 +447,7 @@
             <div class="flex items-center border border-gray-300">
                 <div class="w-32 bg-gray-100 py-2 px-4 font-bold text-gray-700 border-r border-gray-300 text-center">배너위치</div>
                 <div class="flex-1 p-2">
-                    <select name="position" class="w-32 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm">
+                    <select name="position" class="w-32 border-gray-300 rounded-sm focus:border-primary focus:ring-primary text-sm pr-8">
                         <option value="">선택</option>
                         <option value="MAIN1">메인상단</option>
                         <option value="MAIN2">메인슬라이더</option>

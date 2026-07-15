@@ -459,7 +459,8 @@
 
                 <td class="py-4" th:text="${order.id != null ? order.id : '비회원'}"></td>
 
-                <td class="py-4" th:text="${order.orderName}"></td>
+                <td class="py-4"
+                    th:text="${order.ordererName != null and !#strings.isEmpty(order.ordererName) ? order.ordererName : (order.recipientName != null and !#strings.isEmpty(order.recipientName) ? order.recipientName : '-')}"></td>
 
                 <td class="py-4">1</td>
 
@@ -578,7 +579,7 @@
             <tr>
                 <th class="py-2 text-left">택배사</th>
                 <td class="py-2">
-                    <select id="d-courier" class="border w-full p-2">
+                    <select id="d-courier" class="border w-full p-2 pr-8">
                         <option value="">택배사 선택</option>
                         <option th:each="courier : ${courierList}"
                                 th:value="${courier}"
@@ -634,7 +635,7 @@
                 document.getElementById('popupOrderNo').innerText = data.orderNo;
                 document.getElementById('p-orderNo').innerText = data.orderNo;
                 document.getElementById('p-payment').innerText = data.paymentMethod;
-                document.getElementById('p-member').innerText = data.orderName || '비회원';
+                document.getElementById('p-member').innerText = data.ordererName || data.recipientName || data.id || '비회원';
                 document.getElementById('p-status').innerText = data.status;
 
                 document.getElementById('p-receiver').innerText = data.recipientName || '정보없음';

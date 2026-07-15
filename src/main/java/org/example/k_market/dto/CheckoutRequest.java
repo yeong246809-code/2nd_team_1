@@ -22,6 +22,7 @@ public class CheckoutRequest {
     private String memo;
     private String paymentMethod;
     private Integer usedPoints;
+    private Long couponDetailNo;
     private String ordererName;
     private String ordererPhone;
     private String ordererZipCode;

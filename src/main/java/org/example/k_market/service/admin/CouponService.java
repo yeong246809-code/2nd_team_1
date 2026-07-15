@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.k_market.dto.*;
 import org.example.k_market.entity.*;
 import org.example.k_market.repository.*;
+import org.example.k_market.service.CouponIssuanceService;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,12 @@ public class CouponService {
         Page<Coupon> result = couponRepository.findAll(spec, pageable);
 
         // Entity -> DTO 변환 (발급수/사용수 등은 필요 시 count 쿼리 연동)
-        Page<CouponDTO> dtoPage = result.map(Coupon::toDTO);
+        Page<CouponDTO> dtoPage = result.map(coupon -> {
+            CouponDTO dto = coupon.toDTO();
+            dto.setIssueCount(couponDetailsRepository.countByCouponNo(coupon.getCouponNo()));
+            dto.setUseCount(couponDetailsRepository.countByCouponNoAndIsUsed(coupon.getCouponNo(), "Y"));
+            return dto;
+        });
 
         // 기존에 쓰시던 PageResponseDTO 생성 (블록 사이즈 5)
         return new PageResponseDTO<>(dtoPage, 5);
@@ -77,17 +83,32 @@ public class CouponService {
 
         String issuerName = "최고관리자";
         Integer shopNo = null;
+        boolean seller = "SELLER".equalsIgnoreCase(user.getRole());
+
+        if ("ADMIN".equalsIgnoreCase(user.getRole())
+                && CouponIssuanceService.INDIVIDUAL_PRODUCT.equals(dto.getCouponType())) {
+            throw new IllegalArgumentException("관리자는 개별상품 쿠폰을 생성할 수 없습니다.");
+        }
+        if (seller && !CouponIssuanceService.INDIVIDUAL_PRODUCT.equals(dto.getCouponType())) {
+            throw new IllegalArgumentException("판매자는 개별상품 쿠폰만 생성할 수 있습니다.");
+        }
 
         System.out.println("조회된 정보: " + user.getRole());
 
         // DB의 role 컬럼 값은 "SELLER" 또는 "ADMIN" (MyUserDetails에서 앞에 ROLE_을 붙임)
-        if ("SELLER".equalsIgnoreCase(user.getRole())) {
+        if (seller) {
             // SellerShopAccessInterceptor와 동일한 방식으로 memberNo를 통해 Shop 조회
             Shop shop = shopRepository.findByMemberNo(user.getMemberNo())
                     .orElseThrow(() -> new IllegalArgumentException("상점 정보를 찾을 수 없습니다."));
             System.out.println("조회된 상점명: " + shop.getName());
             issuerName = shop.getName();
             shopNo = shop.getShopNo();
+            if (dto.getProdNo() == null) throw new IllegalArgumentException("쿠폰을 적용할 상품을 선택해주세요.");
+            Product selectedProduct = productRepository.findById(dto.getProdNo())
+                    .orElseThrow(() -> new IllegalArgumentException("선택한 상품을 찾을 수 없습니다."));
+            if (!shopNo.equals(selectedProduct.getShopNo())) {
+                throw new IllegalArgumentException("본인 상점의 상품에만 쿠폰을 생성할 수 있습니다.");
+            }
         }
 
         // 할인 금액/율에 따른 benefitType 자동 판별 (예: 50 이하면 할인율(RATE), 초과면 정액(AMOUNT))
@@ -173,7 +194,7 @@ public class CouponService {
                 dto.setIssuerName(c.getIssuerName()); // 발급처
                 dto.setBenefitType(c.getBenefitType()); // 혜택 타입
                 dto.setBenefitValue(c.getBenefitValue()); // 혜택 값
-                dto.setDateType(c.getDateType()); // 날짜 타입
+                dto.setDateType(c.getStartDate() != null || c.getEndDate() != null ? "PERIOD" : "DAYS");
                 dto.setStartDate(c.getStartDate());
                 dto.setEndDate(c.getEndDate());
                 dto.setValidDays(c.getValidDays());

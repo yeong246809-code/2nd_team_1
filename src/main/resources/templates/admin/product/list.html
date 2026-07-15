@@ -208,7 +208,7 @@
             <form th:action="@{/admin/product/list}" method="get" class="flex items-center gap-xs flex-wrap">
                 <input type="hidden" name="sort" th:value="${sort}"/>
                 <div class="relative inline-block w-36">
-                    <select name="searchType" class="w-full bg-surface border border-outline border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer">
+                    <select name="searchType" class="w-full bg-surface border border-outline border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer pr-8">
                         <option value="name" th:selected="${searchType == 'name'}">상품명</option>
                         <option value="shopName" th:selected="${searchType == 'shopName'}">상호명</option>
                         <option value="category" th:selected="${searchType == 'category'}">카테고리</option>
@@ -221,7 +221,7 @@
 
             <div class="flex items-center gap-2">
                 <div class="relative inline-block w-44">
-                    <select id="sortSelect" onchange="changeSort(this.value)" class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer">
+                    <select id="sortSelect" onchange="changeSort(this.value)" class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer pr-8">
                         <option value="latest" th:selected="${sort == 'latest'}">등록일 최신순</option>
                         <option value="oldest" th:selected="${sort == 'oldest'}">등록일 오래된순</option>
                         <option value="priceAsc" th:selected="${sort == 'priceAsc'}">판매가 낮은순</option>

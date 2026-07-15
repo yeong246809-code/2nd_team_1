@@ -263,7 +263,15 @@
                         <span class="text-on-surface-variant">제조사/원산지</span>
                         <span class="text-on-surface">국산</span>
                         <span class="text-on-surface-variant">판매자</span>
-                        <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="${shopName}">상호명</span>
+                        <span class="flex flex-wrap items-center gap-xs">
+                            <span class="text-on-surface underline underline-offset-4 cursor-pointer" th:text="${shopName}">상호명</span>
+                            <span th:if="${sellerAverageRating != null and sellerAverageRating >= 4.5}"
+                                  class="inline-flex items-center gap-[2px] rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold leading-none text-amber-700 ring-1 ring-inset ring-amber-300"
+                                  th:title="${'판매자 평균 평점 ' + #numbers.formatDecimal(sellerAverageRating, 1, 1) + '점'}">
+                                <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                우수판매자
+                            </span>
+                        </span>
                     </div>
                     <!-- Options & Actions -->
                     <form id="selected-product-form" th:action="@{/product/cart/add-selected}" method="post" onsubmit="return validateSelectedProducts()">
@@ -274,7 +282,7 @@
                         <div th:if="${productSkus != null and !#lists.isEmpty(productSkus)}" class="flex flex-col gap-sm mb-md">
                             <label class="text-sm font-semibold text-on-surface-variant">옵션 선택</label>
                             <select id="skuSelect" onchange="addSelectedSku()"
-                                    class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none">
+                                    class="w-full bg-white border border-outline-variant rounded-lg p-sm text-sm focus:ring-primary focus:border-primary focus:outline-none pr-8">
                                 <option value="">색상/사이즈를 선택하세요</option>
                                 <option th:each="sku : ${productSkus}"
                                         th:value="${sku.skuNo}"
@@ -317,14 +325,20 @@
                         </div>
                     </form>
 
-                    <aside th:if="${productDetailBanner != null}"
+                    <aside th:if="${productCoupon != null}"
                            class="mt-sm h-16 w-full max-w-[550px] overflow-hidden rounded-lg border border-outline-variant bg-white"
-                           aria-label="상품 상세 광고">
-                        <a th:href="${#strings.isEmpty(productDetailBanner.linkUrl) ? null : productDetailBanner.linkUrl}"
-                           class="block h-full w-full">
-                            <img th:src="${productDetailBanner.fileUrl_stored}"
+                           aria-label="상품 쿠폰 발급">
+                        <a th:href="@{/coupon/claim(couponNo=${productCoupon.couponNo})}"
+                           class="block h-full w-full" title="쿠폰 발급받기">
+                            <img th:if="${productDetailBanner != null}"
+                                 th:src="${productDetailBanner.fileUrl_stored}"
                                  th:alt="${#strings.isEmpty(productDetailBanner.name) ? '상품 상세보기 배너' : productDetailBanner.name}"
                                  class="h-full w-full object-cover">
+                            <span th:unless="${productDetailBanner != null}"
+                                  class="flex h-full w-full items-center justify-between bg-gradient-to-r from-cyan-900 to-teal-500 px-5 text-white">
+                                <strong th:text="${productCoupon.name}">상품 할인 쿠폰</strong>
+                                <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-primary">쿠폰 받기</span>
+                            </span>
                         </a>
                     </aside>
                 </div>
@@ -392,7 +406,7 @@
                     <input type="hidden" name="prodNo" th:value="${product.prodNo}"/>
                     <div class="flex items-center gap-sm">
                         <label class="text-sm font-semibold text-on-surface-variant">평점</label>
-                        <select name="rating" class="border border-outline-variant rounded p-xs text-sm">
+                        <select name="rating" class="border border-outline-variant rounded p-xs text-sm pr-8">
                             <option value="5">★★★★★ (5)</option>
                             <option value="4">★★★★☆ (4)</option>
                             <option value="3">★★★☆☆ (3)</option>

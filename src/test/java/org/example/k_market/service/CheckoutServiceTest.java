@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -26,6 +27,9 @@ class CheckoutServiceTest {
     @Autowired OrderRepository orderRepository;
     @Autowired OrderDeliveryRepository orderDeliveryRepository;
     @Autowired UsersRepository usersRepository;
+    @Autowired CouponRepository couponRepository;
+    @Autowired CouponDetailsRepository couponDetailsRepository;
+    @Autowired CouponIssuanceService couponIssuanceService;
     @Autowired JdbcTemplate jdbcTemplate;
 
     @Test
@@ -139,6 +143,82 @@ class CheckoutServiceTest {
 
         assertThat(productRepository.findVisibleById(product.getProdNo())).isEmpty();
         assertThat(productRepository.findAllVisible()).doesNotContain(product);
+    }
+
+    @Test
+    void ownedCouponDiscountsOrderAndBecomesUsed() {
+        ensureActiveShop(12);
+        Member member = createMember("checkout-coupon", "쿠폰테스트", 0);
+        Product product = productRepository.save(Product.builder()
+                .shopNo(12).name("쿠폰 주문 상품").price(20000).discountRate(0)
+                .shippingFee(3000).rewardPoints(0).stockQuantity(2).salesCount(0)
+                .createdAt(LocalDateTime.now()).build());
+        Coupon coupon = couponRepository.save(Coupon.builder()
+                .issuerName("최고관리자").couponType(CouponIssuanceService.ORDER_DISCOUNT)
+                .name("주문 5천원 할인").benefitType("AMOUNT").benefitValue(5000)
+                .status("ACTIVE").createdAt(LocalDateTime.now()).build());
+        CouponDetails issued = couponDetailsRepository.save(CouponDetails.builder()
+                .couponNo(coupon.getCouponNo()).memberNo(member.getMemberNo()).isUsed("N")
+                .status("사용가능").issuedAt(LocalDateTime.now()).build());
+
+        CheckoutRequest request = baseRequest();
+        request.setDirectProdNo(product.getProdNo());
+        request.setDirectQuantity(1);
+        request.setCouponDetailNo(issued.getCouponDetailNo());
+
+        CheckoutService.CheckoutResult result = checkoutService.placeOrder(member.getMemberNo(), request);
+
+        Order savedOrder = orderRepository.findById(result.orderNo()).orElseThrow();
+        assertThat(savedOrder.getTotalDiscountPrice()).isEqualTo(5000);
+        assertThat(savedOrder.getTotalPaymentPrice()).isEqualTo(18000);
+        assertThat(couponDetailsRepository.findById(issued.getCouponDetailNo()).orElseThrow().getIsUsed())
+                .isEqualTo("Y");
+    }
+
+    @Test
+    void bannerCouponCanOnlyBeClaimedOnce() {
+        Member member = createMember("banner-coupon", "배너쿠폰", 0);
+        Coupon coupon = couponRepository.save(Coupon.builder()
+                .issuerName("최고관리자").couponType(CouponIssuanceService.ORDER_DISCOUNT)
+                .name("생성기념 쿠폰").benefitType("AMOUNT").benefitValue(1000)
+                .status("ACTIVE").createdAt(LocalDateTime.now()).build());
+
+        couponIssuanceService.claimByCouponNo(coupon.getCouponNo(), member.getMemberNo());
+
+        assertThatThrownBy(() -> couponIssuanceService.claimByCouponNo(
+                coupon.getCouponNo(), member.getMemberNo()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이미 발급");
+        assertThat(couponDetailsRepository.countByCouponNo(coupon.getCouponNo())).isEqualTo(1);
+    }
+
+    @Test
+    void freeShippingCouponRemovesGroupedShippingFee() {
+        ensureActiveShop(13);
+        Member member = createMember("shipping-coupon", "배송쿠폰", 0);
+        Product product = productRepository.save(Product.builder()
+                .shopNo(13).name("배송비 쿠폰 상품").price(10000).discountRate(0)
+                .shippingFee(3500).rewardPoints(0).stockQuantity(2).salesCount(0)
+                .createdAt(LocalDateTime.now()).build());
+        Coupon coupon = couponRepository.save(Coupon.builder()
+                .issuerName("최고관리자").couponType(CouponIssuanceService.FREE_SHIPPING)
+                .name("배송비무료 확인용 쿠폰").benefitType("FREE_SHIPPING").benefitValue(0)
+                .status("ACTIVE").createdAt(LocalDateTime.now()).build());
+        CouponDetails issued = couponDetailsRepository.save(CouponDetails.builder()
+                .couponNo(coupon.getCouponNo()).memberNo(member.getMemberNo()).isUsed("N")
+                .status("사용가능").issuedAt(LocalDateTime.now()).build());
+
+        CheckoutRequest request = baseRequest();
+        request.setDirectProdNo(product.getProdNo());
+        request.setDirectQuantity(1);
+        request.setCouponDetailNo(issued.getCouponDetailNo());
+
+        CheckoutService.CheckoutResult result = checkoutService.placeOrder(member.getMemberNo(), request);
+
+        Order savedOrder = orderRepository.findById(result.orderNo()).orElseThrow();
+        assertThat(savedOrder.getTotalShippingFee()).isZero();
+        assertThat(savedOrder.getTotalPaymentPrice()).isEqualTo(10000);
+        assertThat(orderDetailsRepository.findByOrderNo(result.orderNo()).get(0).getShippingFee()).isZero();
     }
 
     private CheckoutRequest.Shipment shipment(String name, String address,

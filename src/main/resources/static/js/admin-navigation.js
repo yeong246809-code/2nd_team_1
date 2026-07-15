@@ -47,8 +47,8 @@
             icon: "confirmation_number",
             base: ["/admin/coupon"],
             links: [
-                { label: "쿠폰목록", url: "/admin/index" },
-                { label: "쿠폰발급현황", url: "/admin/index" }
+                { label: "쿠폰목록", url: "/admin/coupon/list" },
+                { label: "쿠폰발급현황", url: "/admin/coupon/issued" }
             ]
         },
         {

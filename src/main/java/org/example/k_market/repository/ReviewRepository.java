@@ -41,5 +41,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
            """)
     Double findAverageRatingByProdNo(@Param("prodNo") Long prodNo);
 
+    /**
+     * 판매자가 등록한 전체 상품 후기의 평균 별점 조회
+     */
+    @Query("""
+           SELECT AVG(r.rating)
+           FROM Review r
+           JOIN Product p ON r.prodNo = p.prodNo
+           WHERE p.shopNo = :shopNo
+           """)
+    Double findAverageRatingByShopNo(@Param("shopNo") Integer shopNo);
+
 
 }

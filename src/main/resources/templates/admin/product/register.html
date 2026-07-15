@@ -204,13 +204,13 @@
         <div class="mb-8">
             <h2 class="font-bold text-lg mb-4 border-b pb-2">상품분류</h2>
             <div class="grid grid-cols-2 gap-4">
-                <select id="cate1" onchange="updateCate2()" class="border-outline-variant rounded-lg" required>
+                <select id="cate1" onchange="updateCate2()" class="border-outline-variant rounded-lg pr-8" required>
                     <option value="">1차 분류 선택</option>
                     <option th:each="c : ${allCategories}" th:if="${c.depth == 1}"
                             th:value="${c.cateNo}" th:text="${c.name}"></option>
                 </select>
 
-                <select id="cate2" name="cateNo" class="border-outline-variant rounded-lg" required>
+                <select id="cate2" name="cateNo" class="border-outline-variant rounded-lg pr-8" required>
                     <option value="">2차 분류 선택</option>
                 </select>
             </div>
@@ -263,7 +263,7 @@
         <div class="mb-8">
             <h2 class="font-bold text-lg mb-4 border-b pb-2">상점 연결</h2>
             <div th:if="${adminUser}" class="space-y-2">
-                <select th:field="*{shopNo}" class="w-full border-outline-variant rounded-lg" required>
+                <select th:field="*{shopNo}" class="w-full border-outline-variant rounded-lg pr-8" required>
                     <option value="">상점 선택</option>
                     <option th:each="shop : ${shops}" th:value="${shop.shopNo}" th:text="${shop.shopNo + ' - ' + shop.name}"></option>
                 </select>

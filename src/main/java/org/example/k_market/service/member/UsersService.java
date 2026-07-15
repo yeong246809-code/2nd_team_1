@@ -11,6 +11,7 @@ import org.example.k_market.repository.PointHistoryRepository;
 import org.example.k_market.repository.ShopRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.example.k_market.security.MyUserDetails;
+import org.example.k_market.service.CouponIssuanceService;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,6 +39,7 @@ public class UsersService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final DefaultMemberGradeService defaultMemberGradeService;
     private final PointHistoryRepository pointHistoryRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     public record FoundAccount(String id, String name, String email, String createdAt) {
     }
@@ -244,6 +246,7 @@ public class UsersService implements UserDetailsService {
                 .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDate.now().plusYears(1))
                 .build());
+        couponIssuanceService.issueWelcomeCoupon(user.getMemberNo());
     }
 
     private void saveShopProfile(

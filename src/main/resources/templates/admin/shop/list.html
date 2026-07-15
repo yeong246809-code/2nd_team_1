@@ -283,7 +283,7 @@
         <form th:action="@{/admin/shop/list}" method="get" class="flex items-center">
             <input type="hidden" name="statusFilter" th:value="${statusFilter}">
             <input type="hidden" name="sort" th:value="${sort}">
-            <select name="searchType" class="border border-gray-300 p-2 h-10 text-sm outline-none text-gray-600 focus:border-primary focus:ring-primary rounded-l-sm">
+            <select name="searchType" class="border border-gray-300 p-2 h-10 text-sm outline-none text-gray-600 focus:border-primary focus:ring-primary rounded-l-sm pr-8">
                 <option value="name" th:selected="${searchType == 'name'}">상호명</option>
                 <option value="ceo" th:selected="${searchType == 'ceo'}">대표자</option>
                 <option value="bizNumber" th:selected="${searchType == 'bizNumber'}">사업자등록번호</option>
@@ -319,7 +319,7 @@
             </div>
 
             <select th:onchange="|location.href='@{/admin/shop/list(searchType=${searchType}, keyword=${keyword}, statusFilter=${statusFilter})}&sort=' + this.value|"
-                    class="border-gray-300 rounded-sm text-sm font-medium focus:ring-primary focus:border-primary py-2 px-3 bg-white">
+                    class="border-gray-300 rounded-sm text-sm font-medium focus:ring-primary focus:border-primary py-2 px-3 bg-white pr-8">
                 <option value="default" th:selected="${sort == 'default' or sort == null}">기본정렬</option>
                 <option value="idDesc" th:selected="${sort == 'idDesc'}">번호내림차순</option>
                 <option value="idAsc" th:selected="${sort == 'idAsc'}">번호오름차순 </option>

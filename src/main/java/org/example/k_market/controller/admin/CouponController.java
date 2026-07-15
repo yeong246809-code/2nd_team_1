@@ -61,9 +61,14 @@ public class CouponController {
      */
     @PostMapping("/register")
     public String register(CouponDTO couponDTO,
-                           @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails != null) {
+                           @AuthenticationPrincipal UserDetails userDetails,
+                           org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            if (userDetails == null) throw new IllegalArgumentException("로그인이 필요합니다.");
             couponService.registerCoupon(couponDTO, userDetails.getUsername());
+            redirectAttributes.addFlashAttribute("couponMessage", "쿠폰이 등록되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("couponError", e.getMessage());
         }
         return "redirect:/admin/coupon/list";
     }
