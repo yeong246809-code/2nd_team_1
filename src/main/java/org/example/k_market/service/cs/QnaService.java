@@ -53,8 +53,27 @@ public class QnaService {
                         new IllegalArgumentException("존재하지 않는 문의글입니다."));
     }
 
+    @Transactional
     public void save(QnaDTO dto) {
-        qnaRepository.save(dto.toEntity());
+
+        Qna question = Qna.builder()
+                // 원글도 신규 행이므로 no를 넣지 않는다.
+                .type1(dto.getType1())
+                .type2(dto.getType2())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .memberNo(dto.getMemberNo())
+                .prodNo(dto.getProdNo())
+
+                // 원글과 답변을 구분하는 핵심 값
+                .parentNo(0)
+                .isAnswered("답변대기")
+
+                .viewCount(0)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        qnaRepository.save(question);
     }
 
     @Transactional(readOnly = true)
@@ -117,6 +136,11 @@ public class QnaService {
 
     @Transactional
     public void deleteChecked(List<Integer> nos) {
+
+        for (Integer no : nos) {
+            qnaRepository.deleteByParentNo(no);
+        }
+
         qnaRepository.deleteAllById(nos);
     }
 }

@@ -1,11 +1,12 @@
 package org.example.k_market.repository;
 
-import org.apache.ibatis.annotations.Param;
+
 import org.example.k_market.entity.Qna;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +30,9 @@ public interface QnaRepository extends JpaRepository<Qna, Integer> {
 
     // 상품별 문의 원글 조회
     List<Qna> findByProdNoAndParentNoOrderByNoDesc(Long prodNo, int parentNo);
+
+    // 원글 번호를 parentNo로 가지고 있는 답변 삭제
+    void deleteByParentNo(Integer parentNo);
 
     Page<Qna> findByMemberNoAndParentNoOrderByNoDesc(Integer memberNo, Integer parentNo, Pageable pageable);
 

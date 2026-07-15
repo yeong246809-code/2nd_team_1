@@ -16,9 +16,12 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(
+            @RequestParam(defaultValue = "전체") String type,
+            Model model) {
 
-        model.addAttribute("notices", noticeService.findAll());
+        model.addAttribute("notices", noticeService.findByType(type));
+        model.addAttribute("selectedType", type);
 
         return "cs/notice/list";
     }
