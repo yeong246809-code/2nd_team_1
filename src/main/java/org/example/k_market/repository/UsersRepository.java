@@ -34,4 +34,5 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     Page<Users> findByIdContaining(String id, Pageable pageable);
     List<Users> findAllByMemberNoIn(List<Integer> memberNos);
 
+
 }

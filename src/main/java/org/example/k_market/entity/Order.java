@@ -45,6 +45,11 @@ public class Order {
     private String baseAddress;
     private String detailAddress;  // 추가
     private String memo;           // 추가
+    private String ordererName;
+    private String ordererPhone;
+    private String ordererZipCode;
+    private String ordererBaseAddress;
+    private String ordererDetailAddress;
 
     // --- 수정 및 추가 메서드 ---
 
@@ -65,8 +70,12 @@ public class Order {
                 .orderName(this.orderName)
                 .memberNo(this.memberNo)
                 .id(this.user != null ? this.user.getId() : "비회원")
+                .ordererName(this.ordererName)
+                .ordererPhone(this.ordererPhone)
+                .ordererZipCode(this.ordererZipCode)
+                .ordererBaseAddress(this.ordererBaseAddress)
+                .ordererDetailAddress(this.ordererDetailAddress)
                 .recipientName(this.recipientName)
-                .recipientPhone(this.recipientPhone)
                 .recipientPhone(this.recipientPhone)
                 .zipCode(this.zipCode)
                 .baseAddress(this.baseAddress)

@@ -2,14 +2,17 @@ package org.example.k_market.service.member;
 
 import lombok.RequiredArgsConstructor;
 import org.example.k_market.entity.Member;
+import org.example.k_market.entity.PointHistory;
 import org.example.k_market.entity.SnsAccount;
 import org.example.k_market.entity.Users;
 import org.example.k_market.repository.MemberRepository;
+import org.example.k_market.repository.PointHistoryRepository;
 import org.example.k_market.repository.SnsAccountRepository;
 import org.example.k_market.repository.UsersRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.k_market.service.CouponIssuanceService;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -22,6 +25,7 @@ import java.util.Base64;
 public class SnsLoginService {
 
     private static final LocalDate DEFAULT_BIRTH_DATE = LocalDate.of(1900, 1, 1);
+    private static final int SIGNUP_BONUS_POINTS = 3_000;
     private static final int NAVER_LOGIN_ID_MAX_LENGTH = 8;
     private static final int GOOGLE_LOGIN_ID_MAX_LENGTH = 10;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -31,6 +35,8 @@ public class SnsLoginService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final DefaultMemberGradeService defaultMemberGradeService;
+    private final PointHistoryRepository pointHistoryRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     @Transactional
     public Users findOrCreateUser(SnsProfile profile) {
@@ -70,13 +76,22 @@ public class SnsLoginService {
                 .phone(profile.phone())
                 .baseAddress("")
                 .gradeNo(defaultMemberGradeService.getDefaultGradeNo())
-                .points(0)
+                .points(SIGNUP_BONUS_POINTS)
                 .createdAt(LocalDateTime.now())
                 .status(MemberAccountStatus.ACTIVE)
                 .locationPolicyAgreed("N")
                 .build();
 
         memberRepository.save(member);
+        pointHistoryRepository.save(PointHistory.builder()
+                .memberNo(user.getMemberNo())
+                .amount(SIGNUP_BONUS_POINTS)
+                .remainedAmount(SIGNUP_BONUS_POINTS)
+                .description("신규 회원가입 축하 포인트")
+                .createdAt(LocalDateTime.now())
+                .expiredAt(LocalDate.now().plusYears(1))
+                .build());
+        couponIssuanceService.issueWelcomeCoupon(user.getMemberNo());
     }
 
     private void saveSnsAccount(Users user, SnsProfile profile) {

@@ -298,14 +298,20 @@ public class MyPageService {
     private MyPageDtos.CouponItem toCouponItem(CouponDetails detail) {
         CouponRepository.CouponSummary coupon = couponRepository.findSummaryByCouponNo(detail.getCouponNo()).orElse(null);
         String used = valueOr(detail.getIsUsed(), "N");
+        LocalDate endDate = coupon == null ? null : coupon.getEndDate();
+        if (endDate == null && coupon != null && coupon.getValidDays() != null && detail.getIssuedAt() != null) {
+            endDate = detail.getIssuedAt().toLocalDate().plusDays(coupon.getValidDays());
+        }
         String status = "Y".equalsIgnoreCase(used) ? "사용완료" : valueOr(detail.getStatus(), "사용가능");
+        if (!"사용완료".equals(status) && endDate != null && endDate.isBefore(LocalDate.now())) status = "기간만료";
+        if (!"사용완료".equals(status) && coupon != null && !"ACTIVE".equalsIgnoreCase(coupon.getStatus())) status = "사용중단";
         return new MyPageDtos.CouponItem(
                 detail.getCouponDetailNo(),
                 coupon == null ? "쿠폰 정보 없음" : coupon.getName(),
                 coupon == null ? "-" : benefitLabel(coupon.getBenefitType(), coupon.getBenefitValue()),
                 coupon == null ? "-" : valueOr(coupon.getNotes(), "제한조건 없음"),
                 status,
-                coupon == null ? null : coupon.getEndDate(),
+                endDate,
                 detail.getIssuedAt()
         );
     }
@@ -351,6 +357,7 @@ public class MyPageService {
     private String benefitLabel(String benefitType, Integer benefitValue) {
         String type = valueOr(benefitType, "");
         int value = benefitValue == null ? 0 : benefitValue;
+        if (type.equalsIgnoreCase("FREE_SHIPPING")) return "배송비 무료";
         if (type.contains("%") || type.equalsIgnoreCase("RATE") || type.contains("율")) {
             return value + "%";
         }

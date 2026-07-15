@@ -1,730 +1,664 @@
 <!DOCTYPE html>
-
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-
-    <meta charset="utf-8"/>
-
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-
-    <title>K-market Admin Dashboard - 주문현황</title>
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>K-market Admin Dashboard</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
-
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
-
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <style>
-
         .material-symbols-outlined {
-
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-
         }
-
-        /* Accordion Smooth Animation */
-
         .menu-content {
-
             max-height: 0;
-
             overflow: hidden;
-
             transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, padding 0.3s ease-in-out;
-
             opacity: 0;
-
         }
-
         .menu-item-active .menu-content {
-
             max-height: 500px;
-
             opacity: 1;
-
             padding-top: 4px;
-
             padding-bottom: 8px;
-
         }
-
         .chevron-icon {
-
             transition: transform 0.3s ease;
-
         }
-
         .menu-item-active .chevron-icon {
-
             transform: rotate(180deg);
-
         }
-
     </style>
-
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
     <script id="tailwind-config">
-
         tailwind.config = {
-
             darkMode: "class",
-
             theme: {
-
                 extend: {
-
                     "colors": {
-
-                        "secondary-container": "#c0ecdc", "surface-container-highest": "#e1e3e4", "primary-fixed": "#c8e8f2", "on-error": "#ffffff",
-
-                        "inverse-surface": "#2e3132", "on-surface": "#191c1d", "on-secondary": "#ffffff", "tertiary-fixed": "#ffdcc7",
-
-                        "surface-bright": "#f8f9fa", "surface-container-lowest": "#ffffff", "primary-container": "#2c4a52", "error-container": "#ffdad6",
-
-                        "primary": "#14333b", "on-tertiary-fixed-variant": "#5f402b", "on-secondary-fixed": "#002018", "background": "#f8f9fa",
-
-                        "secondary-fixed": "#c0ecdc", "tertiary-fixed-dim": "#eabda2", "secondary": "#3e6659", "error": "#ba1a1a",
-
-                        "primary-fixed-dim": "#acccd5", "on-secondary-fixed-variant": "#264e42", "tertiary": "#452916", "surface": "#f8f9fa",
-
-                        "on-tertiary": "#ffffff", "on-primary-container": "#99b9c2", "inverse-primary": "#acccd5", "surface-container-low": "#f3f4f5",
-
-                        "on-tertiary-container": "#d6ab90", "on-primary-fixed": "#001f26", "surface-tint": "#45636b", "tertiary-container": "#5e3f2a",
-
-                        "on-error-container": "#93000a", "secondary-fixed-dim": "#a5d0c0", "on-primary": "#ffffff", "on-tertiary-fixed": "#2d1605",
-
-                        "on-background": "#191c1d", "on-secondary-container": "#446c5f", "outline": "#72787a", "outline-variant": "#c1c7ca",
-
-                        "on-surface-variant": "#41484a", "inverse-on-surface": "#f0f1f2", "on-primary-fixed-variant": "#2d4b53", "surface-variant": "#e1e3e4",
-
-                        "surface-dim": "#d9dadb", "surface-container": "#edeeef", "surface-container-high": "#e7e8e9"
-
+                        "secondary-container": "#c0ecdc",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed": "#c8e8f2",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "on-surface": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc7",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2c4a52",
+                        "error-container": "#ffdad6",
+                        "primary": "#14333b",
+                        "on-tertiary-fixed-variant": "#5f402b",
+                        "on-secondary-fixed": "#002018",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#c0ecdc",
+                        "tertiary-fixed-dim": "#eabda2",
+                        "secondary": "#3e6659",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#acccd5",
+                        "on-secondary-fixed-variant": "#264e42",
+                        "tertiary": "#452916",
+                        "surface": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#99b9c2",
+                        "inverse-primary": "#acccd5",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#d6ab90",
+                        "on-primary-fixed": "#001f26",
+                        "surface-tint": "#45636b",
+                        "tertiary-container": "#5e3f2a",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#a5d0c0",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#2d1605",
+                        "on-background": "#191c1d",
+                        "on-secondary-container": "#446c5f",
+                        "outline": "#72787a",
+                        "outline-variant": "#c1c7ca",
+                        "on-surface-variant": "#41484a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed-variant": "#2d4b53",
+                        "surface-variant": "#e1e3e4",
+                        "surface-dim": "#d9dadb",
+                        "surface-container": "#edeeef",
+                        "surface-container-high": "#e7e8e9"
                     },
-
-                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
-
-                    "spacing": { "margin-mobile": "16px", "base": "8px", "gutter": "24px", "xs": "4px", "sm": "12px", "xl": "80px", "container-max": "1280px", "md": "24px", "lg": "48px" },
-
-                    "fontFamily": { "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Be Vietnam Pro"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-md": ["Be Vietnam Pro"], "label-md": ["Be Vietnam Pro"], "label-sm": ["Be Vietnam Pro"], "headline-lg": ["Plus Jakarta Sans"] },
-
-                    "fontSize": { "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}], "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}], "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}], "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}], "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}], "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}], "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}], "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}] }
-
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "80px",
+                        "container-max": "1280px",
+                        "md": "24px",
+                        "lg": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
                 }
-
             }
-
         }
-
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
-
+<!-- Shared Component: SideNavBar -->
 <aside class="fixed left-0 top-0 bottom-0 flex flex-col w-64 z-40 bg-surface dark:bg-inverse-surface border-r border-outline-variant overflow-hidden">
-
-    <div class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0">
-
+    <a class="flex items-center gap-md px-md py-lg border-b border-outline-variant flex-shrink-0 hover:bg-surface-container-low transition-colors" th:href="@{/admin/index}" href="/admin/index" aria-label="관리자 메인으로 이동">
         <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
-
             <span class="material-symbols-outlined">storefront</span>
-
         </div>
-
         <div>
-
             <h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">K-market Admin</h2>
-
             <p class="font-label-md text-label-md text-on-surface-variant">관리자 모드</p>
-
         </div>
-
-    </div>
-
-
-
+    </a>
     <div class="flex-1 overflow-y-auto py-md px-base flex flex-col gap-xs">
-
         <div class="group/menu">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-
-                    <span class="material-symbols-outlined">store</span>
-
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">store</span>
                     <span class="font-label-md text-label-md">상점 관리</span>
-
                 </div>
-
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
-
             </button>
-
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/list}">상점목록</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/sales}">매출현황</a>
-
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">상점목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/sales}" href="/admin/shop/sales">매출현황</a>
             </div>
-
         </div>
-
-
-
         <div class="group/menu">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-
                     <span class="material-symbols-outlined">group</span>
-
                     <span class="font-label-md text-label-md">회원 관리</span>
-
                 </div>
-
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
-
             </button>
-
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">회원목록</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">포인트관리</a>
-
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">회원목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">포인트관리</a>
             </div>
-
         </div>
-
-
-
         <div class="group/menu">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-
                     <span class="material-symbols-outlined">inventory_2</span>
-
                     <span class="font-label-md text-label-md">상품 관리</span>
-
                 </div>
-
-                <span class="material-symbols-outlined text-sm chevron-icon text-primary">expand_more</span>
-
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
             </button>
-
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/list}">상품목록</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/register}">상품등록</a>
-
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/list}" href="/admin/product/list">상품목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/product/register}" href="/admin/product/register">상품등록</a>
             </div>
-
         </div>
-
-
-
         <div class="group/menu">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-
                     <span class="material-symbols-outlined">shopping_cart</span>
-
                     <span class="font-label-md text-label-md">주문 관리</span>
-
                 </div>
-
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
-
             </button>
-
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/order/list}">주문현황</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/order/delivery}">배송현황</a>
-
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/shop/sales}" href="/admin/shop/sales">주문현황</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/index}" href="/admin/index">배송현황</a>
             </div>
-
         </div>
-
-
-
-        <div class="group/menu menu-item-active">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
-                <div class="flex items-center gap-3">
-
-                    <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
-
-                    <span class="font-label-md text-label-md font-bold text-primary">쿠폰 관리</span>
-
-                </div>
-
-                <span class="material-symbols-outlined text-sm chevron-icon text-primary">expand_more</span>
-
-            </button>
-
-            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">쿠폰목록</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary" href="#">쿠폰발급현황</a>
-
-            </div>
-
-        </div>
-
-
-
         <div class="group/menu">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-
+                    <span class="material-symbols-outlined">confirmation_number</span>
+                    <span class="font-label-md text-label-md">쿠폰 관리</span>
+                </div>
+                <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
+            </button>
+            <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/coupon/list}" href="/admin/coupon/list">쿠폰목록</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/coupon/issued}" href="/admin/coupon/issued">쿠폰발급현황</a>
+            </div>
+        </div>
+        <div class="group/menu">
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined">support_agent</span>
-
                     <span class="font-label-md text-label-md">고객 센터</span>
-
                 </div>
-
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
-
             </button>
-
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">공지사항</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">자주묻는질문</a>
-
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">문의하기</a>
-
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/cs/notice/list}" href="/admin/cs/notice/list">공지사항</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/cs/faq/list}" href="/admin/cs/faq/list">자주묻는질문</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/cs/qna/list}" href="/admin/cs/qna/list">문의하기</a>
             </div>
-
         </div>
-
-
-
         <div class="group/menu">
-
-            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" onclick="toggleAccordion(this)">
-
+            <button class="w-full flex items-center justify-between px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" type="button" onclick="toggleAccordion(this)">
                 <div class="flex items-center gap-3">
-
                     <span class="material-symbols-outlined">settings</span>
-
                     <span class="font-label-md text-label-md">환경 설정</span>
-
                 </div>
-
                 <span class="material-symbols-outlined text-sm chevron-icon">expand_more</span>
-
             </button>
-
             <div class="menu-content flex flex-col gap-1 pl-12 pr-4">
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/basic}" href="/admin/config/basic">기본설정</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/banner}" href="/admin/config/banner">배너관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/policy}" href="/admin/config/policy">약관관리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/category}" href="/admin/config/category">카테고리</a>
+                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" th:href="@{/admin/config/version}" href="/admin/config/version">버전관리</a>
+            </div>
+        </div>
+    </div>
+    <div class="border-t border-outline-variant p-base flex flex-col gap-xs flex-shrink-0">
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" th:href="@{/admin/index}" href="/admin/index">
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-label-md text-label-md">시스템 로그</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" th:href="@{/admin/cs/notice/list}" href="/admin/cs/notice/list">
+            <span class="material-symbols-outlined">help</span>
+            <span class="font-label-md text-label-md">도움말</span>
+        </a>
+        <a class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" th:href="@{/member/logout}" href="/member/logout">
+            <span class="material-symbols-outlined text-sm">logout</span>
+            로그아웃
+        </a>
+    </div>
+</aside>
+<!-- Shared Component: TopAppBar -->
+<header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-md z-30 bg-surface-container-lowest dark:bg-surface-container-highest border-b border-outline-variant">
+    <div class="flex items-center gap-md">
+        <h1 class="font-headline-md text-headline-md font-black text-primary dark:text-inverse-primary">K-market Admin Dashboard</h1>
+    </div>
+    <a class="font-headline-md text-[40px] leading-none font-black text-primary dark:text-inverse-primary hover:text-on-surface transition-colors" th:href="@{/}" href="/" aria-label="메인 화면으로 이동">메인</a>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 mt-16 p-lg flex-1 w-full max-w-[1400px] mx-auto">
+    <div th:if="${couponMessage}" class="mb-md rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-700" th:text="${couponMessage}"></div>
+    <div th:if="${couponError}" class="mb-md rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700" th:text="${couponError}"></div>
+    <div class="flex justify-between items-end mb-md border-b border-outline-variant pb-sm">
+        <h1 class="font-headline-lg text-headline-lg text-on-background font-bold">쿠폰목록</h1>
+        <div class="font-label-md text-label-md text-on-surface-variant">
+            <span>HOME</span> &gt; <span>쿠폰관리</span> &gt; <span class="text-on-background font-bold">쿠폰목록</span>
+        </div>
+    </div>
 
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">기본설정</a>
+    <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md mb-md">
+        <form th:action="@{/admin/coupon/list}" method="get" class="flex items-center gap-2">
+            <select name="searchType" class="border border-outline-variant rounded px-3 py-2 text-sm focus:border-primary focus:outline-none pr-8">
+                <option value="couponNo" th:selected="${pageRequestDTO.searchType == 'couponNo'}">쿠폰번호</option>
+                <option value="name" th:selected="${pageRequestDTO.searchType == 'name'}">쿠폰명</option>
+                <option value="issuerName" th:selected="${pageRequestDTO.searchType == 'issuerName'}">발급처</option>
+            </select>
+            <input type="text" name="keyword" th:value="${pageRequestDTO.keyword}" placeholder="검색어입력"
+                   class="border border-outline-variant rounded px-3 py-2 text-sm w-64 focus:border-primary focus:outline-none"/>
+            <button type="submit" class="bg-surface-dim hover:bg-outline-variant text-on-surface font-label-md px-5 py-2 rounded transition-colors">
+                검색
+            </button>
+        </form>
+    </section>
 
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">배너관리</a>
+    <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md relative min-h-[450px] flex flex-col justify-between">
+        <div class="overflow-x-auto">
+            <table class="w-full text-center border-collapse">
+                <thead>
+                <tr class="border-b-2 border-outline-variant bg-surface text-on-surface font-label-md">
+                    <th class="py-3 px-2">쿠폰번호</th>
+                    <th class="py-3 px-2">쿠폰종류</th>
+                    <th class="py-3 px-2">쿠폰명</th>
+                    <th class="py-3 px-2">혜택</th>
+                    <th class="py-3 px-2">사용기간</th>
+                    <th class="py-3 px-2">발급자</th>
+                    <th class="py-3 px-2">발급수</th>
+                    <th class="py-3 px-2">사용수</th>
+                    <th class="py-3 px-2">상태</th>
+                    <th class="py-3 px-2">발급일</th>
+                    <th class="py-3 px-2">관리</th>
+                </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-surface-variant">
+                <tr th:each="coupon : ${pageData.dtoList}" class="hover:bg-surface-container-low transition-colors">
+                    <td class="py-4 px-2">
+                        <a href="#" class="underline font-bold text-primary hover:text-secondary"
+                           th:text="${coupon.couponNo}"
+                           th:data-no="${coupon.couponNo}"
+                           th:data-issuer="${coupon.issuerName != null ? coupon.issuerName : '최고관리자'}"
+                           th:data-type="${coupon.couponType}"
+                           th:data-name="${coupon.name}"
+                           th:data-benefit="${coupon.benefitValue + (coupon.benefitType == 'RATE' ? '% 할인' : (coupon.benefitValue == 0 ? '배송비 무료' : '원 할인'))}"
+                           th:data-period="${coupon.dateType == 'PERIOD' ? (coupon.startDate + ' ~ ' + coupon.endDate) : ('발급일로 ' + coupon.validDays + '일 이내')}"
+                           th:data-notes="${coupon.notes}"
+                           onclick="openCouponInfoModal(this); return false;">10121211341</a>
+                    </td>
+                    <td class="py-4 px-2" th:text="${coupon.couponType}">개별상품 할인</td>
+                    <td class="py-4 px-2 text-left font-medium" th:text="${coupon.name}">10월 한달 감사 쿠폰</td>
+                    <td class="py-4 px-2 font-bold" th:text="${coupon.benefitValue + (coupon.benefitType == 'RATE' ? '% 할인' : (coupon.benefitValue == 0 ? '배송비 무료' : '원 할인'))}">2,000원 할인</td>
+                    <td class="py-4 px-2 text-xs text-on-surface-variant">
+                        <span th:if="${coupon.validDays == null}">
+                            <span th:text="${coupon.startDate} + ' ~ ' + ${coupon.endDate}">2026-07-01 ~ 2026-07-31</span>
+                        </span>
+                                            <span th:if="${coupon.validDays != null}">
+                            <span th:text="'발급일로 ' + ${coupon.validDays} + '일 이내'">발급일로 100일 이내</span>
+                        </span>
+                                        </td>
+                    <td class="py-4 px-2" th:text="${coupon.issuerName != null ? coupon.issuerName : '최고관리자'}">(주)다있어</td>
+                    <td class="py-4 px-2" th:text="${coupon.issueCount}">102</td>
+                    <td class="py-4 px-2" th:text="${coupon.useCount}">43</td>
+                    <td class="py-4 px-2">
+                        <span th:if="${coupon.status == 'ACTIVE' or coupon.status == '발급중'}" class="text-green-600 font-bold">발급중</span>
+                        <span th:unless="${coupon.status == 'ACTIVE' or coupon.status == '발급중'}" class="text-gray-400 font-bold">종료</span>
+                    </td>
+                    <td class="py-4 px-2 text-xs text-on-surface-variant" th:text="${#temporals.format(coupon.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2026-07-01 00:00:00</td>
+                    <td class="py-4 px-2">
+                        <button th:if="${coupon.status == 'ACTIVE' or coupon.status == '발급중'}"
+                                type="button" th:onclick="'stopCoupon(' + ${coupon.couponNo} + ')'"
+                                class="border border-blue-500 text-blue-500 hover:bg-blue-50 text-xs px-2.5 py-1 rounded font-bold transition-colors">
+                            종료
+                        </button>
+                        <span th:unless="${coupon.status == 'ACTIVE' or coupon.status == '발급중'}"
+                              class="bg-gray-400 text-white text-xs px-2.5 py-1 rounded font-bold">
+                            종료
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${pageData == null or pageData.dtoList == null or pageData.dtoList.isEmpty()}" class="hover:bg-surface-container-low transition-colors">
+                    <td colspan="11" class="py-10 text-center text-gray-400">
+                        등록된 쿠폰이 없거나 검색 결과가 없습니다.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">약관관리</a>
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-outline-variant">
+            <div class="w-24"></div>
+            <div th:replace="~{fragments/_pagination :: pagination(${pageData}, '/admin/coupon/list?searchType=' + ${pageRequestDTO.searchType != null ? pageRequestDTO.searchType : ''} + '&keyword=' + ${pageRequestDTO.keyword != null ? pageRequestDTO.keyword : ''})}"></div>
 
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">카테고리</a>
+            <button type="button" onclick="openCouponRegisterModal()"
+                    class="bg-blue-400 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded shadow transition-colors">
+                쿠폰등록
+            </button>
+        </div>
+    </section>
 
-                <a class="py-2 text-on-surface-variant hover:text-primary font-label-md transition-colors" href="#">버전관리</a>
+    <div id="couponInfoModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden font-body-md border border-outline-variant">
+            <div class="bg-inverse-surface text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="font-bold text-lg">쿠폰정보</span>
+                    <span id="modal-coupon-no-header" class="text-sm font-normal text-gray-300"></span>
+                </div>
+                <button type="button" onclick="closeCouponInfoModal()" class="text-white hover:text-gray-300 font-bold text-xl leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <table class="w-full border-collapse border border-outline-variant text-sm">
+                    <tbody>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left w-28 font-medium text-on-surface-variant">쿠폰번호</th>
+                        <td id="modal-coupon-no" class="py-3 px-4 w-60"></td>
+                        <th class="bg-surface-container-low py-3 px-4 text-left w-24 font-medium text-on-surface-variant border-l border-outline-variant">발급처</th>
+                        <td id="modal-issuer" class="py-3 px-4"></td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">쿠폰종류</th>
+                        <td id="modal-type" colspan="3" class="py-3 px-4"></td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">쿠폰명</th>
+                        <td id="modal-name" colspan="3" class="py-3 px-4 font-bold"></td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">혜택</th>
+                        <td id="modal-benefit" colspan="3" class="py-3 px-4 font-bold text-primary"></td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">사용기간</th>
+                        <td id="modal-period" colspan="3" class="py-3 px-4"></td>
+                    </tr>
+                    <tr>
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant align-top">유의사항</th>
+                        <td id="modal-notes" colspan="3" class="py-3 px-4 whitespace-pre-line text-on-surface-variant leading-relaxed h-32 align-top"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mt-6 flex justify-center">
+                    <button type="button" onclick="closeCouponInfoModal()"
+                            class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-2 rounded shadow transition-colors">
+                        닫기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div id="couponRegisterModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl overflow-hidden font-body-md border border-outline-variant">
+            <div class="bg-inverse-surface text-white px-6 py-4 flex items-center justify-between">
+                <span class="font-bold text-lg">쿠폰등록</span>
+                <button type="button" onclick="closeCouponRegisterModal()" class="text-white hover:text-gray-300 font-bold text-xl leading-none">&times;</button>
             </div>
 
-        </div>
+            <form th:action="@{/admin/coupon/register}" method="post" id="couponRegisterForm" class="p-6">
+                <table class="w-full border-collapse border border-outline-variant text-sm">
+                    <tbody>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left w-32 font-medium text-on-surface-variant">발급처</th>
+                        <td class="py-3 px-4">
+                            <input th:if="${myShopName == null}" type="text" name="issuerName" readonly value="최고관리자"
+                                   class="border border-outline-variant rounded px-3 py-1.5 w-64 bg-surface-container-low text-on-surface-variant focus:outline-none"/>
 
-    </div>
+                            <input th:if="${myShopName != null}" type="text" name="issuerName" readonly th:value="${myShopName}"
+                                   class="border border-outline-variant rounded px-3 py-1.5 w-64 bg-surface-container-low text-on-surface-variant focus:outline-none"/>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">쿠폰종류</th>
+                        <td class="py-3 px-4">
+                            <select name="couponType" id="reg-coupon-type" required onchange="toggleProductSelect(this)"
+                                    class="border border-outline-variant rounded px-3 py-1.5 w-64 focus:border-primary focus:outline-none pr-8">
+                                <option value="">종류선택</option>
+                                <option value="개별상품 할인" sec:authorize="hasRole('SELLER')">개별상품 할인</option>
+                                <option value="주문상품 할인" sec:authorize="hasRole('ADMIN')">주문상품 할인</option>
+                                <option value="배송비 무료" sec:authorize="hasRole('ADMIN')">배송비 무료</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="product-select-row" class="border-b border-outline-variant hidden bg-blue-50/30 transition-all">
+                        <th class="bg-blue-100/50 py-3 px-4 text-left font-medium text-primary">적용 상품선택</th>
+                        <td class="py-3 px-4">
+                            <select name="prodNo" id="reg-prod-no" class="border border-outline-variant rounded px-3 py-1.5 w-full focus:border-primary focus:outline-none bg-white pr-8">
+                                <option value="">상품선택</option>
+                                <option th:each="prod : ${sellerProducts}"
+                                        th:value="${prod.prodNo}"
+                                        th:text="${'[' + prod.prodNo + '] ' + prod.name}"></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">쿠폰명</th>
+                        <td class="py-3 px-4">
+                            <input type="text" name="name" required placeholder="쿠폰명을 입력하세요"
+                                   class="border border-outline-variant rounded px-3 py-1.5 w-full focus:border-primary focus:outline-none"/>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant align-top">혜택</th>
+                        <td class="py-3 px-4">
+                            <div id="discount-options" class="grid grid-cols-5 gap-3">
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="1000" class="text-primary focus:ring-primary"/> 1,000 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="2000" class="text-primary focus:ring-primary"/> 2,000 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="3000" class="text-primary focus:ring-primary"/> 3,000 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="4000" class="text-primary focus:ring-primary"/> 4,000 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="5000" class="text-primary focus:ring-primary"/> 5,000 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="10" class="text-primary focus:ring-primary"/> 10% 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="20" class="text-primary focus:ring-primary"/> 20% 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="30" class="text-primary focus:ring-primary"/> 30% 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="40" class="text-primary focus:ring-primary"/> 40% 할인</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="benefitValue" value="50" class="text-primary focus:ring-primary"/> 50% 할인</label>
+                            </div>
 
-
-
-    <div class="border-t border-outline-variant p-base flex flex-col gap-xs flex-shrink-0">
-
-        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
-
-            <span class="material-symbols-outlined">history</span>
-
-            <span class="font-label-md text-label-md">시스템 로그</span>
-
-        </a>
-
-        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors duration-200 ease-in-out rounded-lg" href="#">
-
-            <span class="material-symbols-outlined">help</span>
-
-            <span class="font-label-md text-label-md">도움말</span>
-
-        </a>
-
-        <button class="mt-sm flex items-center justify-center gap-2 w-full py-2 border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md">
-
-            <span class="material-symbols-outlined text-sm">logout</span>로그아웃
-
-        </button>
-
-    </div>
-
-</aside>
-
-
-
-<header class="fixed top-0 right-0 left-64 h-16 flex items-center px-md z-30 bg-surface-container-lowest border-b border-outline-variant">
-
-    <h1 class="font-headline-md font-black text-primary">K-market Admin Dashboard</h1>
-
-</header>
-
-
-
-<main class="ml-64 mt-16 p-lg flex-1">
-
-    <div class="mb-lg border-b pb-sm">
-
-        <h1 class="font-headline-lg text-headline-lg text-on-background">주문현황</h1>
-
-    </div>
-
-
-
-    <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md shadow-sm">
-
-        <div class="mb-md flex gap-sm pb-md border-b">
-
-            <form th:action="@{/admin/coupon/list}" method="get" class="flex items-center gap-xs">
-                <div class="relative inline-block w-36">
-                    <select name="searchType" class="w-full bg-surface border border-outline border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface-variant focus:outline-none focus:border-primary appearance-none cursor-pointer">
-                        <option value="name" th:selected="${searchType == 'couponNo'}">쿠폰번호</option>
-                        <option value="prodNo" th:selected="${searchType == 'name'}">쿠폰명</option>
-                        <option value="manufacturer" th:selected="${searchType == 'issuerName'}">발급자</option>
-                    </select>
-                    <span class="material-symbols-outlined absolute right-2 top-2.5 pointer-events-none text-on-surface-variant text-md">expand_more</span>
+                            <div id="free-shipping-option" class="hidden">
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="radio" name="benefitValue" value="0" id="reg-free-shipping" class="text-primary focus:ring-primary"/> 배송비 무료
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-outline-variant">
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant">사용기간</th>
+                        <td class="py-3 px-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <input type="radio" name="dateType" value="PERIOD" checked class="text-primary focus:ring-primary"/>
+                                <input type="date" name="startDate" class="border border-outline-variant rounded px-2.5 py-1 text-sm focus:border-primary focus:outline-none"/>
+                                <span>~</span>
+                                <input type="date" name="endDate" class="border border-outline-variant rounded px-2.5 py-1 text-sm focus:border-primary focus:outline-none"/>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="radio" name="dateType" value="DAYS" class="text-primary focus:ring-primary"/>
+                                <span>또는 발급일로부터</span>
+                                <input type="number" name="validDays" class="border border-outline-variant rounded px-2 py-1 w-20 text-center focus:border-primary focus:outline-none"/>
+                                <span>이내</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="bg-surface-container-low py-3 px-4 text-left font-medium text-on-surface-variant align-top">유의사항</th>
+                        <td class="py-3 px-4">
+                            <textarea name="notes" rows="3" placeholder="쿠폰 사용 유의사항을 입력하세요."
+                                      class="border border-outline-variant rounded p-2.5 w-full focus:border-primary focus:outline-none resize-none"></textarea>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mt-6 flex justify-center gap-3">
+                    <button type="button" onclick="closeCouponRegisterModal()"
+                            class="bg-gray-400 hover:bg-gray-500 text-white font-bold px-8 py-2 rounded shadow transition-colors">
+                        취소
+                    </button>
+                    <button type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-2 rounded shadow transition-colors">
+                        등록
+                    </button>
                 </div>
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어입력" class="border border-outline-variant bg-surface rounded-lg px-3 py-2 text-body-md w-64 focus:outline-none focus:border-primary"/>
-                <button type="submit" class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-label-md hover:bg-primary hover:text-white transition-colors">검색</button>
             </form>
-
         </div>
-
-
-    <table class="w-full border-collapse text-center">
-        <thead class="bg-surface-container">
-        <tr class="text-label-md">
-            <th class="py-4">쿠폰번호</th>
-            <th class="py-4">쿠폰종류</th>
-            <th class="py-4">쿠폰명</th>
-            <th class="py-4">혜택</th>
-            <th class="py-4">사용기간</th>
-            <th class="py-4">발급자</th>
-            <th class="py-4">발급수</th>
-            <th class="py-4">사용수</th>
-            <th class="py-4">상태</th>
-            <th class="py-4">발급일</th>
-            <th class="py-4">관리</th>
-        </tr>
-        </thead>
-        <tbody class="divide-y divide-surface-variant">
-        <tr th:each="coupon : ${couponPage.content}">
-            <td class="py-4 text-primary font-bold cursor-pointer hover:underline"
-                th:text="${coupon.couponNo}"
-                th:onclick="|openCouponPopup('${coupon.couponNo}')|"></td>
-            <td class="py-4" th:text="${coupon.couponType}"></td>
-            <td class="py-4" th:text="${coupon.name}"></td>
-            <td class="py-4">
-                <th:block th:switch="${coupon.benefitType}">
-                    <span th:case="'PERCENT'" th:text="${coupon.benefitValue} + '% 할인'"></span>
-                    <span th:case="'FREE_SHIPPING'">무료배송</span>
-                    <span th:case="'AMOUNT'" th:text="${coupon.benefitValue} + '원 할인'"></span>
-                </th:block>
-            </td>
-            <td class="py-4" th:text="${#temporals.format(coupon.startDate, 'yy-MM-dd') + ' ~ ' + #temporals.format(coupon.endDate, 'yy-MM-dd')}"></td>
-            <td class="py-4" th:text="${coupon.issuerName}"></td>
-            <td class="py-4" th:text="${coupon.issueCount}"></td>
-            <td class="py-4" th:text="${coupon.useCount}"></td>
-            <td class="py-4 font-bold"
-                th:text="${coupon.status}"
-                th:classappend="${coupon.status == '발급중'} ? 'text-green-600' : 'text-gray-500'">
-            </td>
-            <td class="py-4" th:text="${#temporals.format(coupon.createdAt, 'yy-MM-dd HH:mm')}"></td>
-            <td class="py-4">
-                <button th:if="${coupon.status != '종료'}"
-                        th:onclick="'terminateCoupon(\'' + ${coupon.couponNo} + '\', this)'"
-                        class="border border-red-500 text-red-500 px-3 py-1 rounded text-xs hover:bg-red-500 hover:text-white transition-colors">
-                    종료
-                </button>
-                <span th:if="${coupon.status == '종료'}" class="text-gray-400">-</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="mt-4 flex justify-end">
-        <button onclick="openRegisterPopup()"
-                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-            쿠폰 등록
-        </button>
     </div>
-
-
-    <div class="mt-8 flex justify-center gap-2">
-
-        <a th:if="${couponPage.hasPrevious()}"
-
-           th:href="@{/admin/coupon/list(page=${couponPage.number - 1}, searchType=${searchType}, keyword=${keyword})}"
-
-           class="px-3 py-1 border rounded">이전</a>
-
-
-
-        <span th:each="i : ${#numbers.sequence(0, couponPage.totalPages - 1)}">
-
-<a th:href="@{/admin/coupon/list(page=${i}, searchType=${searchType}, keyword=${keyword})}"
-
-   th:text="${i + 1}"
-
-   th:classappend="${i == couponPage.number} ? 'bg-primary text-white' : 'bg-white'"
-
-   class="px-3 py-1 border rounded">1</a>
-
-</span>
-
-        <a th:if="${couponPage.hasNext()}"
-           th:href="@{/admin/coupon/list(page=${couponPage.number + 1}, searchType=${searchType}, keyword=${keyword})}"
-           class="px-3 py-1 border rounded">다음</a>
-    </div>
-
-    </div>
-
 </main>
-<div id="couponPopup" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-[600px] p-6 shadow-xl">
-        <div class="flex justify-between items-center mb-4 border-b pb-2">
-            <h2 class="text-lg font-bold">쿠폰정보 <span id="p-couponNo" class="text-gray-500 font-normal text-sm"></span></h2>
-            <button onclick="closeCouponPopup()" class="text-xl">&times;</button>
-        </div>
 
-        <table class="w-full border-t border-gray-300 text-sm">
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r w-32">쿠폰번호</td>
-                <td class="p-3 border-b" id="p-couponNo-val"></td>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r w-32">발급처</td>
-                <td class="p-3 border-b" id="p-issuerName"></td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">쿠폰종류</td>
-                <td class="p-3 border-b" colspan="3" id="p-couponType"></td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">쿠폰명</td>
-                <td class="p-3 border-b" colspan="3" id="p-name"></td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">혜택</td>
-                <td class="p-3 border-b" colspan="3" id="p-benefit"></td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">사용기간</td>
-                <td class="p-3 border-b" colspan="3" id="p-date"></td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">유의사항</td>
-                <td class="p-3 border-b h-24 align-top" colspan="3" id="p-notes"></td>
-            </tr>
-        </table>
+<script>
+    function toggleAccordion(button) {
+        const menuItem = button.closest('.group\\/menu');
+        if (!menuItem) return;
 
-        <div class="mt-6 flex justify-center">
-            <button onclick="closeCouponPopup()" class="bg-green-600 text-white px-8 py-2 rounded">닫기</button>
-        </div>
-    </div>
-</div>
-
-<div id="registerPopup" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-[600px] p-6 shadow-xl">
-        <h2 class="text-lg font-bold mb-4 border-b pb-2">쿠폰 등록</h2>
-        <table class="w-full text-sm">
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r w-32">발급처</td>
-                <td class="p-3 border-b">
-                    <input type="text" id="r-issuer" th:value="${loggedInUserName}" readonly class="w-full border p-2 bg-gray-100">
-                </td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">쿠폰종류</td>
-                <td class="p-3 border-b">
-                    <select id="r-type" class="w-full border p-2">
-                        <option value="개별상품 할인">개별상품 할인</option>
-                        <option value="주문상품 할인">주문상품 할인</option>
-                        <option value="배송비 무료">배송비 무료</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">쿠폰명</td>
-                <td class="p-3 border-b"><input type="text" id="r-name" class="w-full border p-2"></td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">혜택</td>
-                <td class="p-3 border-b">
-                    <div class="grid grid-cols-5 gap-2">
-                        <label><input type="radio" name="benefit" value="1000"> 1,000 할인</label>
-                        <label><input type="radio" name="benefit" value="2000"> 2,000 할인</label>
-                        <label><input type="radio" name="benefit" value="3000"> 3,000 할인</label>
-                        <label><input type="radio" name="benefit" value="4000"> 4,000 할인</label>
-                        <label><input type="radio" name="benefit" value="5000"> 5,000 할인</label>
-                        <label><input type="radio" name="benefit" value="10%"> 10% 할인</label>
-                        <label><input type="radio" name="benefit" value="20%"> 20% 할인</label>
-                        <label><input type="radio" name="benefit" value="30%"> 30% 할인</label>
-                        <label><input type="radio" name="benefit" value="40%"> 40% 할인</label>
-                        <label><input type="radio" name="benefit" value="50%"> 50% 할인</label>
-                        <label><input type="radio" name="benefit" value="FREE"> 배송비 무료</label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">사용기간</td>
-                <td class="p-3 border-b">
-                    <input type="date" id="r-start" name="startDate"> ~ <input type="date" id="r-end" name="endDate">
-                    또는 발급일로부터
-                    <input type="number" id="validDays" name="validDays" style="width: 60px;">
-                    일 이내
-                </td>
-            </tr>
-            <tr>
-                <td class="bg-gray-50 p-3 font-bold border-b border-r">유의사항</td>
-                <td class="p-3 border-b"><textarea id="r-notes" class="w-full border p-2 h-20"></textarea></td>
-            </tr>
-        </table>
-        <div class="mt-6 flex justify-center gap-2">
-            <button onclick="closeRegisterPopup()" class="px-6 py-2 bg-gray-500 text-white rounded">취소</button>
-            <button onclick="submitCoupon()" class="px-6 py-2 bg-green-600 text-white rounded">등록</button>
-        </div>
-    </div>
-</div>
-
-
-<script th:inline="javascript">
-    const contextPath = /*[[@{/}]]*/ '/';
-
-    // 쿠폰 상세 팝업 열기
-    function openCouponPopup(couponNo) {
-        fetch(`${contextPath}admin/coupon/detail/${couponNo}`)
-            .then(res => res.json())
-            .then(data => {
-                // 데이터 매핑
-                document.getElementById('p-couponNo').innerText = data.couponNo;
-                document.getElementById('p-couponNo-val').innerText = data.couponNo;
-                document.getElementById('p-issuerName').innerText = data.issuerName;
-                document.getElementById('p-couponType').innerText = data.couponType;
-                document.getElementById('p-name').innerText = data.name;
-
-                // 혜택 포맷팅
-                const benefit = `${data.benefitValue}${data.benefitType === 'PERCENT' ? '%' : '원'} 할인`;
-                document.getElementById('p-benefit').innerText = benefit;
-
-                // 날짜 포맷팅
-                document.getElementById('p-date').innerText = `${data.startDate} ~ ${data.endDate}`;
-                document.getElementById('p-notes').innerText = data.notes || '유의사항 없음';
-
-                document.getElementById('couponPopup').classList.remove('hidden');
+        const isActive = menuItem.classList.contains('menu-item-active');
+        if (isActive) {
+            menuItem.classList.remove('menu-item-active');
+        } else {
+            document.querySelectorAll('.menu-item-active').forEach(item => {
+                if (item !== menuItem) item.classList.remove('menu-item-active');
             });
-    }
-
-    function closeCouponPopup() {
-        document.getElementById('couponPopup').classList.add('hidden');
-    }
-
-    // 등록 팝업 열기
-    function openRegisterPopup() {
-        document.getElementById('registerPopup').classList.remove('hidden');
-    }
-
-    function closeRegisterPopup() {
-        document.getElementById('registerPopup').classList.add('hidden');
-    }
-
-    // 서버로 데이터 전송
-    function submitCoupon() {
-        // 라디오 버튼 체크 확인
-        const selectedBenefit = document.querySelector('input[name="benefit"]:checked');
-
-        // 필수 항목 검사
-        if (!document.getElementById('r-name').value) {
-            alert("쿠폰명을 입력해주세요.");
-            return;
+            menuItem.classList.add('menu-item-active');
         }
-        if (!selectedBenefit) {
-            alert("혜택을 선택해주세요.");
-            return;
+    }
+
+    /* 1. 쿠폰 상세 정보 모달 열기 */
+    function openCouponInfoModal(element) {
+        const no = element.getAttribute('data-no');
+        const issuer = element.getAttribute('data-issuer');
+        const type = element.getAttribute('data-type');
+        const name = element.getAttribute('data-name');
+        const benefit = element.getAttribute('data-benefit');
+        const period = element.getAttribute('data-period');
+        const notes = element.getAttribute('data-notes');
+
+        document.getElementById('modal-coupon-no-header').innerText = no || '';
+        document.getElementById('modal-coupon-no').innerText = no || '';
+        document.getElementById('modal-issuer').innerText = issuer || '';
+        document.getElementById('modal-type').innerText = type || '';
+        document.getElementById('modal-name').innerText = name || '';
+        document.getElementById('modal-benefit').innerText = benefit || '';
+        document.getElementById('modal-period').innerText = period || '';
+        document.getElementById('modal-notes').innerText = notes || '';
+
+        document.getElementById('couponInfoModal').classList.remove('hidden');
+    }
+
+    /* 1-1. 쿠폰 상세 정보 모달 닫기 */
+    function closeCouponInfoModal() {
+        document.getElementById('couponInfoModal').classList.add('hidden');
+    }
+
+    /* 2. 쿠폰 등록 모달 열기 */
+    function openCouponRegisterModal() {
+        document.getElementById('couponRegisterModal').classList.remove('hidden');
+    }
+
+    /* 2-1. 쿠폰 등록 모달 닫기 */
+    function closeCouponRegisterModal() {
+        document.getElementById('couponRegisterModal').classList.add('hidden');
+        document.getElementById('couponRegisterForm').reset();
+        document.getElementById('product-select-row').classList.add('hidden');
+    }
+
+    /* 3. '개별상품 할인' 선택 시에만 적용 상품 선택창 나타나게 하기 */
+    function toggleProductSelect(selectObj) {
+        const prodRow = document.getElementById('product-select-row');
+        const prodSelect = document.getElementById('reg-prod-no');
+
+        // 혜택 라디오 버튼 영역
+        const discountOptions = document.getElementById('discount-options');
+        const freeShippingOption = document.getElementById('free-shipping-option');
+        const freeShippingRadio = document.getElementById('reg-free-shipping');
+
+        // 1. 상품 선택창 제어 ('개별상품 할인'일 때만)
+        if (selectObj.value === '개별상품 할인') {
+            prodRow.classList.remove('hidden');
+            prodSelect.setAttribute('required', 'required');
+        } else {
+            prodRow.classList.add('hidden');
+            prodSelect.removeAttribute('required');
+            prodSelect.value = "";
         }
 
-        // 1. 데이터 수집
-        const data = {
-            issuerName: document.getElementById('r-issuer').value,
-            couponType: document.getElementById('r-type').value,
-            name: document.getElementById('r-name').value,
-            benefitValue: selectedBenefit.value, // 라디오 버튼 값
-            startDate: document.getElementById('r-start').value, // 이제 ID가 있으므로 작동
-            endDate: document.getElementById('r-end').value,     // 이제 ID가 있으므로 작동
-            validDays: document.getElementById('validDays').value,
-            notes: document.getElementById('r-notes').value
-        };
-
-        // 2. 서버 전송
-        fetch('/admin/coupon/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('쿠폰이 성공적으로 등록되었습니다.');
-                    closeRegisterPopup();
-                    location.reload();
-                } else {
-                    alert('등록에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('요청 중 오류가 발생했습니다.');
-            });
+        // 2. 혜택 라디오 버튼 제어 ('배송비 무료'일 때만)
+        if (selectObj.value === '배송비 무료') {
+            discountOptions.classList.add('hidden');       // 금액/할인율 그룹 숨김
+            freeShippingOption.classList.remove('hidden'); // 배송비무료 버튼만 표시
+            freeShippingRadio.checked = true;              // 배송비무료 자동 체크!
+        } else {
+            discountOptions.classList.remove('hidden');    // 금액/할인율 그룹 표시
+            freeShippingOption.classList.add('hidden');    // 배송비무료 버튼 숨김
+            if (freeShippingRadio.checked) {
+                freeShippingRadio.checked = false;         // 배송비무료 체크 해제
+            }
+        }
     }
-    // 쿠폰 종료 함수
-    function terminateCoupon(couponNo, btnElement) {
-        if (confirm("정말 이 쿠폰을 종료하시겠습니까?")) {
-            fetch(`${contextPath}admin/coupon/terminate/${couponNo}`, {
+
+    /* 4. [종료] 버튼 클릭 시 알럿 확인 및 처리 */
+    function stopCoupon(couponNo) {
+        if (confirm('해당 쿠폰(' + couponNo + ')의 발급을 중단(종료)하시겠습니까?')) {
+            fetch('/admin/coupon/stop?couponNo=' + couponNo, {
                 method: 'POST'
             })
-                .then(res => {
-                    if (res.ok) {
-                        alert("쿠폰이 종료되었습니다.");
-                        location.reload(); // 페이지 새로고침하여 상태 변경 반영
+                .then(response => response.text())
+                .then(result => {
+                    if(result === 'success') {
+                        alert('쿠폰 발급이 종료되었습니다.');
+                        location.reload();
                     } else {
-                        alert("종료 처리에 실패했습니다.");
+                        alert('처리에 실패했습니다.');
                     }
                 })
-                .catch(err => console.error("오류 발생:", err));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('쿠폰 발급이 종료되었습니다.');
+                    location.reload();
+                });
         }
     }
+
+    /* 모달 바깥 배경 클릭 시 창 닫기 */
+    window.addEventListener('click', function(event) {
+        const infoModal = document.getElementById('couponInfoModal');
+        const regModal = document.getElementById('couponRegisterModal');
+        if (event.target === infoModal) {
+            closeCouponInfoModal();
+        }
+        if (event.target === regModal) {
+            closeCouponRegisterModal();
+        }
+    });
 </script>
-    </body>
-</html>
+<script th:src="@{/js/auth-nav.js}" src="/k_market/js/auth-nav.js"></script>
+<script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
+</body></html>

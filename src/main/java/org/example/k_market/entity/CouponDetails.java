@@ -23,6 +23,17 @@ public class CouponDetails {
     private LocalDateTime issuedAt;
     private String status;
 
+    // 🟢 상태 변경을 위한 의미 있는 비즈니스 메서드 추가
+    public void stopIssue() {
+        this.status = "중단";
+    }
+
+    public void use() {
+        this.isUsed = "Y";
+        this.usedAt = LocalDateTime.now();
+        this.status = "사용완료";
+    }
+
     public CouponDetailsDTO toDTO(){
         return CouponDetailsDTO.builder()
                 .couponDetailNo(couponDetailNo).couponNo(couponNo).memberNo(memberNo)

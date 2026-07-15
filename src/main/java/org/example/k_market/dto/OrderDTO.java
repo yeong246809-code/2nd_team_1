@@ -28,6 +28,12 @@ public class OrderDTO {
     private LocalDateTime createdAt;
     private String status;
 
+    private String ordererName;      // 주문자명
+    private String ordererPhone;
+    private String ordererZipCode;
+    private String ordererBaseAddress;
+    private String ordererDetailAddress;
+
     private String recipientName;    // 수령인
     private String recipientPhone;   // 연락처
     private String zipCode;          // 우편번호 (추가됨)
@@ -54,6 +60,11 @@ public class OrderDTO {
                 .totalPaymentPrice(totalPaymentPrice)
                 .createdAt(createdAt)
                 .status(status)
+                .ordererName(ordererName)
+                .ordererPhone(ordererPhone)
+                .ordererZipCode(ordererZipCode)
+                .ordererBaseAddress(ordererBaseAddress)
+                .ordererDetailAddress(ordererDetailAddress)
                 .recipientName(recipientName)
                 .recipientPhone(recipientPhone)
                 .zipCode(zipCode)

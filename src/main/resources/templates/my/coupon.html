@@ -145,6 +145,8 @@
         <div class="pt-md pb-sm border-b border-outline-variant">
             <h1 class="font-headline-lg text-headline-lg text-primary">쿠폰내역</h1>
         </div>
+        <div th:if="${couponMessage}" class="rounded-lg border border-green-200 bg-green-50 px-md py-sm text-sm font-bold text-green-700" th:text="${couponMessage}"></div>
+        <div th:if="${couponError}" class="rounded-lg border border-red-200 bg-red-50 px-md py-sm text-sm font-bold text-red-700" th:text="${couponError}"></div>
         <!-- Coupon Table Container -->
         <div class="bento-card overflow-hidden">
             <div class="overflow-x-auto">

@@ -20,6 +20,19 @@ public class CouponDetailsDTO {
     private LocalDateTime issuedAt;
     private String status;
 
+    private String couponType;
+    private String couponName;
+    private String userId;
+
+    private String issuerName;
+    private String benefitType;
+    private int benefitValue;
+    private String dateType;
+    private java.time.LocalDate startDate;
+    private java.time.LocalDate endDate;
+    private Integer validDays;
+    private String notes;
+
     public CouponDetails toEntity(){
         return CouponDetails.builder()
                 .couponDetailNo(couponDetailNo).couponNo(couponNo).memberNo(memberNo)

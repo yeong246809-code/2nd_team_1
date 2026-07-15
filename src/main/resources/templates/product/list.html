@@ -272,7 +272,7 @@
                                 <div class="flex flex-col items-end gap-1">
                                     <div class="flex items-center gap-1 text-on-surface-variant text-sm">
                                         <span class="material-symbols-outlined text-sm">store</span>
-                                        <span th:text="${shopNameMap != null and shopNameMap.get(product.shopNo) != null} ? ${shopNameMap.get(product.shopNo)} : '상점 No.' + ${product.shopNo}">판매자 상점명</span>
+                                        <span th:text="${shopNames[product.shopNo]}">상호명</span>
                                     </div>
                                     <div th:if="${product.rating == null}" class="text-xs text-on-surface-variant">
                                         후기 없음

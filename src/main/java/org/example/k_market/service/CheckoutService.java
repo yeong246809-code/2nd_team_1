@@ -29,6 +29,9 @@ public class CheckoutService {
     private final ProductSkuRepository productSkuRepository;
     private final MemberRepository memberRepository;
     private final PointHistoryRepository pointHistoryRepository;
+    private final OrderDeliveryRepository orderDeliveryRepository;
+    private final ShopRepository shopRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     @Transactional
     public CheckoutResult placeOrder(int memberNo, CheckoutRequest request) {
@@ -41,10 +44,21 @@ public class CheckoutService {
         for (SourceItem item : source.items().stream().sorted(Comparator.comparing(SourceItem::prodNo)).toList()) {
             lines.add(loadAndValidateLine(item));
         }
+        List<NormalizedShipment> shipments = normalizeAndValidateShipments(request, lines);
 
         int totalProductPrice = lines.stream().mapToInt(Line::productTotal).sum();
-        int totalDiscountPrice = lines.stream().mapToInt(Line::discountTotal).sum();
-        int totalShippingFee = lines.stream().mapToInt(Line::shippingFee).sum();
+        int productDiscountPrice = lines.stream().mapToInt(Line::discountTotal).sum();
+        int originalShippingFee = groupedShippingFee(lines);
+        Map<Long, Integer> productPrices = new LinkedHashMap<>();
+        lines.forEach(line -> productPrices.merge(line.product().getProdNo(),
+                line.productTotal() - line.discountTotal(), Integer::sum));
+        CouponIssuanceService.AppliedCoupon appliedCoupon = request.getCouponDetailNo() == null
+                ? null : couponIssuanceService.useForOrder(
+                        request.getCouponDetailNo(), memberNo, productPrices, originalShippingFee);
+        int couponProductDiscount = appliedCoupon == null || appliedCoupon.freeShipping()
+                ? 0 : appliedCoupon.discount();
+        int totalDiscountPrice = productDiscountPrice + couponProductDiscount;
+        int totalShippingFee = appliedCoupon != null && appliedCoupon.freeShipping() ? 0 : originalShippingFee;
         int rewardPoints = lines.stream().mapToInt(Line::rewardTotal).sum();
         int beforePoints = totalProductPrice - totalDiscountPrice + totalShippingFee;
         int usedPoints = request.getUsedPoints() == null ? 0 : request.getUsedPoints();
@@ -53,6 +67,13 @@ public class CheckoutService {
         String paymentLabel = PAYMENT_LABELS.get(request.getPaymentMethod());
         String status = "DEPOSIT".equals(request.getPaymentMethod()) ? "입금대기" : "결제완료";
         String orderName = buildOrderName(lines);
+        NormalizedShipment primaryShipment = shipments.get(0);
+        String ordererName = firstText(request.getOrdererName(), firstText(member.getName(), request.getRecipientName()));
+        String ordererPhone = firstText(request.getOrdererPhone(), firstText(member.getPhone(), request.getRecipientPhone()));
+        String ordererZipCode = firstText(request.getOrdererZipCode(), firstText(member.getZipCode(), request.getZipCode()));
+        String ordererBaseAddress = firstText(request.getOrdererBaseAddress(), firstText(member.getBaseAddress(), request.getBaseAddress()));
+        String ordererDetailAddress = firstText(request.getOrdererDetailAddress(), firstText(member.getDetailAddress(), request.getDetailAddress()));
+        validateOrderer(ordererName, ordererPhone, ordererBaseAddress);
 
         Order order = orderRepository.save(Order.builder()
                 .memberNo(memberNo)
@@ -65,27 +86,53 @@ public class CheckoutService {
                 .totalPaymentPrice(totalPaymentPrice)
                 .createdAt(LocalDateTime.now())
                 .status(status)
-                .recipientName(request.getRecipientName().trim())
-                .recipientPhone(request.getRecipientPhone().trim())
-                .zipCode(valueOrEmpty(request.getZipCode()))
-                .baseAddress(request.getBaseAddress().trim())
-                .detailAddress(valueOrEmpty(request.getDetailAddress()))
-                .memo(valueOrEmpty(request.getMemo()))
+                .recipientName(primaryShipment.recipientName())
+                .recipientPhone(primaryShipment.recipientPhone())
+                .zipCode(primaryShipment.zipCode())
+                .baseAddress(primaryShipment.baseAddress())
+                .detailAddress(primaryShipment.detailAddress())
+                .memo(primaryShipment.memo())
+                .ordererName(ordererName)
+                .ordererPhone(ordererPhone)
+                .ordererZipCode(valueOrEmpty(ordererZipCode))
+                .ordererBaseAddress(ordererBaseAddress)
+                .ordererDetailAddress(valueOrEmpty(ordererDetailAddress))
                 .build());
 
-        List<OrderDetails> details = lines.stream().map(line -> OrderDetails.builder()
-                .orderNo(order.getOrderNo())
-                .productNo(line.product().getProdNo())
-                .skuNo(line.sku() == null ? null : line.sku().getSkuNo())
-                .shopNo(line.product().getShopNo())
-                .quantity(line.quantity())
-                .price(line.unitPrice())
-                .discountPrice(line.discountTotal())
-                .shippingFee(line.shippingFee())
-                .rewardPoints(line.rewardTotal())
-                .status(status)
-                .build()).toList();
-        orderDetailsRepository.saveAll(details);
+        Map<Integer, Integer> maxShippingByShop = maxShippingByShop(lines);
+        Set<Integer> chargedShops = new HashSet<>();
+        List<OrderDetails> details = new ArrayList<>();
+        int remainingCouponDiscount = couponProductDiscount;
+        for (Line line : lines) {
+            int shopNo = line.product().getShopNo();
+            int maxShippingFee = maxShippingByShop.getOrDefault(shopNo, 0);
+            int chargedShippingFee = appliedCoupon != null && appliedCoupon.freeShipping() ? 0
+                    : line.shippingFee() == maxShippingFee && chargedShops.add(shopNo)
+                    ? maxShippingFee : 0;
+            boolean couponEligibleLine = appliedCoupon != null && !appliedCoupon.freeShipping()
+                    && (appliedCoupon.prodNo() == null || appliedCoupon.prodNo().equals(line.product().getProdNo()));
+            int allocatedCouponDiscount = couponEligibleLine
+                    ? Math.min(remainingCouponDiscount, line.productTotal() - line.discountTotal()) : 0;
+            remainingCouponDiscount -= allocatedCouponDiscount;
+            details.add(OrderDetails.builder()
+                    .orderNo(order.getOrderNo())
+                    .productNo(line.product().getProdNo())
+                    .skuNo(line.sku() == null ? null : line.sku().getSkuNo())
+                    .shopNo(shopNo)
+                    .quantity(line.quantity())
+                    .price(line.unitPrice())
+                    .discountPrice(line.discountTotal() + allocatedCouponDiscount)
+                    .shippingFee(chargedShippingFee)
+                    .rewardPoints(line.rewardTotal())
+                    .status(status)
+                    .build());
+        }
+        List<OrderDetails> savedDetails = orderDetailsRepository.saveAll(details);
+        Map<String, OrderDetails> detailByItemKey = new HashMap<>();
+        for (int i = 0; i < lines.size(); i++) {
+            detailByItemKey.put(lines.get(i).itemKey(), savedDetails.get(i));
+        }
+        saveDeliveries(order.getOrderNo(), shipments, detailByItemKey);
 
         lines.forEach(this::decreaseStockAndIncreaseSales);
         applyUsedPoints(member, order.getOrderNo(), usedPoints);
@@ -131,7 +178,8 @@ public class CheckoutService {
                 throw new IllegalArgumentException("본인의 장바구니 상품만 주문할 수 있습니다.");
             }
             List<SourceItem> items = carts.stream()
-                    .map(cart -> new SourceItem(cart.getProdNo(), cart.getSkuNo(), cart.getQuantity()))
+                    .map(cart -> new SourceItem("cart:" + cart.getCartNo(), cart.getProdNo(),
+                            cart.getSkuNo(), cart.getQuantity()))
                     .toList();
             return new OrderSource(items, carts);
         }
@@ -148,7 +196,7 @@ public class CheckoutService {
             for (int i = 0; i < request.getDirectSkuNos().size(); i++) {
                 String skuValue = request.getDirectSkuNos().get(i);
                 Long skuNo = "none".equals(skuValue) ? null : Long.valueOf(skuValue);
-                items.add(new SourceItem(
+                items.add(new SourceItem("direct:" + i,
                         request.getDirectProdNo(), skuNo, request.getDirectQuantities().get(i)));
             }
             return new OrderSource(items, List.of());
@@ -157,7 +205,7 @@ public class CheckoutService {
         if (request.getDirectQuantity() == null) {
             throw new IllegalArgumentException("주문 상품 정보가 없습니다.");
         }
-        return new OrderSource(List.of(new SourceItem(
+        return new OrderSource(List.of(new SourceItem("direct:0",
                 request.getDirectProdNo(), request.getDirectSkuNo(), request.getDirectQuantity())), List.of());
     }
 
@@ -166,6 +214,12 @@ public class CheckoutService {
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다: " + item.prodNo()));
         if (product.getShopNo() == null) {
             throw new IllegalArgumentException("판매자 정보가 없는 상품은 주문할 수 없습니다.");
+        }
+        boolean activeShop = shopRepository.findByShopNo(product.getShopNo())
+                .map(shop -> "ACTIVE".equals(shop.getStatus()))
+                .orElse(false);
+        if (!activeShop) {
+            throw new IllegalArgumentException("운영 중인 상점의 상품만 주문할 수 있습니다.");
         }
         ProductSku sku = null;
         int stock;
@@ -192,7 +246,8 @@ public class CheckoutService {
         int discountTotal = productTotal - discountedUnitPrice * item.quantity();
         int shippingFee = product.getShippingFee() == null ? 0 : product.getShippingFee();
         int rewardTotal = (product.getRewardPoints() == null ? 0 : product.getRewardPoints()) * item.quantity();
-        return new Line(product, sku, item.quantity(), unitPrice, productTotal, discountTotal, shippingFee, rewardTotal);
+        return new Line(item.itemKey(), product, sku, item.quantity(), unitPrice,
+                productTotal, discountTotal, shippingFee, rewardTotal);
     }
 
     private void decreaseStockAndIncreaseSales(Line line) {
@@ -222,12 +277,122 @@ public class CheckoutService {
 
     private void validateRequest(CheckoutRequest request) {
         if (request == null) throw new IllegalArgumentException("주문 정보가 없습니다.");
-        if (isBlank(request.getRecipientName())) throw new IllegalArgumentException("수령자를 입력해주세요.");
-        if (isBlank(request.getRecipientPhone())) throw new IllegalArgumentException("연락처를 입력해주세요.");
-        if (isBlank(request.getBaseAddress())) throw new IllegalArgumentException("배송주소를 입력해주세요.");
         if (!PAYMENT_LABELS.containsKey(request.getPaymentMethod())) {
             throw new IllegalArgumentException("결제방법을 선택해주세요.");
         }
+    }
+
+    private void validateOrderer(String name, String phone, String baseAddress) {
+        if (isBlank(name)) throw new IllegalArgumentException("주문자 이름을 입력해주세요.");
+        if (isBlank(phone)) throw new IllegalArgumentException("주문자 연락처를 입력해주세요.");
+        if (isBlank(baseAddress)) throw new IllegalArgumentException("주문자 주소를 입력해주세요.");
+    }
+
+    private List<NormalizedShipment> normalizeAndValidateShipments(
+            CheckoutRequest request, List<Line> lines) {
+        Map<String, Integer> orderedQuantities = new LinkedHashMap<>();
+        lines.forEach(line -> orderedQuantities.put(line.itemKey(), line.quantity()));
+
+        List<CheckoutRequest.Shipment> requested = request.getShipments();
+        if (requested == null || requested.isEmpty()) {
+            CheckoutRequest.Shipment legacy = new CheckoutRequest.Shipment();
+            legacy.setRecipientName(request.getRecipientName());
+            legacy.setRecipientPhone(request.getRecipientPhone());
+            legacy.setZipCode(request.getZipCode());
+            legacy.setBaseAddress(request.getBaseAddress());
+            legacy.setDetailAddress(request.getDetailAddress());
+            legacy.setMemo(request.getMemo());
+            List<CheckoutRequest.ShipmentItem> legacyItems = new ArrayList<>();
+            orderedQuantities.forEach((key, quantity) -> {
+                CheckoutRequest.ShipmentItem item = new CheckoutRequest.ShipmentItem();
+                item.setItemKey(key);
+                item.setQuantity(quantity);
+                legacyItems.add(item);
+            });
+            legacy.setItems(legacyItems);
+            requested = List.of(legacy);
+        }
+
+        Map<String, Integer> assignedQuantities = new HashMap<>();
+        List<NormalizedShipment> normalized = new ArrayList<>();
+        for (int shipmentIndex = 0; shipmentIndex < requested.size(); shipmentIndex++) {
+            CheckoutRequest.Shipment shipment = requested.get(shipmentIndex);
+            if (shipment == null) continue;
+            if (isBlank(shipment.getRecipientName())) {
+                throw new IllegalArgumentException((shipmentIndex + 1) + "번 배송지의 수령자를 입력해주세요.");
+            }
+            if (isBlank(shipment.getRecipientPhone())) {
+                throw new IllegalArgumentException((shipmentIndex + 1) + "번 배송지의 연락처를 입력해주세요.");
+            }
+            if (isBlank(shipment.getBaseAddress())) {
+                throw new IllegalArgumentException((shipmentIndex + 1) + "번 배송지의 주소를 입력해주세요.");
+            }
+
+            Map<String, Integer> allocations = new LinkedHashMap<>();
+            if (shipment.getItems() != null) {
+                for (CheckoutRequest.ShipmentItem item : shipment.getItems()) {
+                    if (item == null || isBlank(item.getItemKey())) continue;
+                    if (!orderedQuantities.containsKey(item.getItemKey())) {
+                        throw new IllegalArgumentException("배송 상품 정보가 올바르지 않습니다.");
+                    }
+                    int quantity = item.getQuantity() == null ? 0 : item.getQuantity();
+                    if (quantity < 0) throw new IllegalArgumentException("배송 수량은 0 이상이어야 합니다.");
+                    if (quantity > 0) allocations.merge(item.getItemKey(), quantity, Integer::sum);
+                }
+            }
+            if (allocations.isEmpty()) {
+                throw new IllegalArgumentException((shipmentIndex + 1) + "번 배송지에 보낼 상품 수량을 입력해주세요.");
+            }
+            allocations.forEach((key, quantity) -> assignedQuantities.merge(key, quantity, Integer::sum));
+            normalized.add(new NormalizedShipment(
+                    shipment.getRecipientName().trim(), shipment.getRecipientPhone().trim(),
+                    valueOrEmpty(shipment.getZipCode()), shipment.getBaseAddress().trim(),
+                    valueOrEmpty(shipment.getDetailAddress()), valueOrEmpty(shipment.getMemo()), allocations));
+        }
+
+        if (normalized.isEmpty()) throw new IllegalArgumentException("배송지를 하나 이상 입력해주세요.");
+        orderedQuantities.forEach((key, orderedQuantity) -> {
+            int assigned = assignedQuantities.getOrDefault(key, 0);
+            if (assigned != orderedQuantity) {
+                throw new IllegalArgumentException("상품별 배송 수량의 합계가 주문 수량과 일치해야 합니다.");
+            }
+        });
+        return normalized;
+    }
+
+    private void saveDeliveries(long orderNo, List<NormalizedShipment> shipments,
+                                Map<String, OrderDetails> detailByItemKey) {
+        List<OrderDelivery> deliveries = new ArrayList<>();
+        for (int shipmentIndex = 0; shipmentIndex < shipments.size(); shipmentIndex++) {
+            NormalizedShipment shipment = shipments.get(shipmentIndex);
+            for (Map.Entry<String, Integer> allocation : shipment.allocations().entrySet()) {
+                OrderDetails detail = detailByItemKey.get(allocation.getKey());
+                if (detail == null) throw new IllegalArgumentException("배송 상품을 찾을 수 없습니다.");
+                deliveries.add(OrderDelivery.builder()
+                        .orderNo(orderNo)
+                        .orderDetailNo(detail.getOrderDetailNo())
+                        .shipmentIndex(shipmentIndex)
+                        .quantity(allocation.getValue())
+                        .recipientName(shipment.recipientName())
+                        .recipientPhone(shipment.recipientPhone())
+                        .zipCode(shipment.zipCode())
+                        .baseAddress(shipment.baseAddress())
+                        .detailAddress(shipment.detailAddress())
+                        .memo(shipment.memo())
+                        .build());
+            }
+        }
+        orderDeliveryRepository.saveAll(deliveries);
+    }
+
+    private int groupedShippingFee(List<Line> lines) {
+        return maxShippingByShop(lines).values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    private Map<Integer, Integer> maxShippingByShop(List<Line> lines) {
+        Map<Integer, Integer> result = new HashMap<>();
+        lines.forEach(line -> result.merge(line.product().getShopNo(), line.shippingFee(), Math::max));
+        return result;
     }
 
     private void validatePoints(int currentPoints, int usedPoints, int paymentPrice) {
@@ -249,6 +414,10 @@ public class CheckoutService {
         return value == null ? "" : value.trim();
     }
 
+    private String firstText(String preferred, String fallback) {
+        return isBlank(preferred) ? valueOrEmpty(fallback) : preferred.trim();
+    }
+
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
     }
@@ -267,8 +436,11 @@ public class CheckoutService {
                               int unitPrice, int discountPrice, int shippingFee,
                               int linePaymentPrice, String status) {}
 
-    private record SourceItem(long prodNo, Long skuNo, int quantity) {}
+    private record SourceItem(String itemKey, long prodNo, Long skuNo, int quantity) {}
     private record OrderSource(List<SourceItem> items, List<Cart> carts) {}
-    private record Line(Product product, ProductSku sku, int quantity, int unitPrice,
+    private record Line(String itemKey, Product product, ProductSku sku, int quantity, int unitPrice,
                         int productTotal, int discountTotal, int shippingFee, int rewardTotal) {}
+    private record NormalizedShipment(String recipientName, String recipientPhone, String zipCode,
+                                      String baseAddress, String detailAddress, String memo,
+                                      Map<String, Integer> allocations) {}
 }

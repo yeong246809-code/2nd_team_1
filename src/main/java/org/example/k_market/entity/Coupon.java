@@ -22,6 +22,8 @@ public class Coupon {
     private String name;
     private String benefitType;
     private int benefitValue;
+    private Integer shopNo;
+    private Long prodNo;
 
     @Transient
     private String dateType;
@@ -36,11 +38,13 @@ public class Coupon {
     private LocalDateTime createdAt;
 
     public CouponDTO toDTO(){
+        String resolvedDateType = startDate != null || endDate != null ? "PERIOD" : "DAYS";
         return CouponDTO.builder()
                 .couponNo(couponNo).issuerName(issuerName).couponType(couponType)
                 .name(name).benefitType(benefitType).benefitValue(benefitValue)
-                .dateType(dateType).startDate(startDate).endDate(endDate)
+                .dateType(resolvedDateType).startDate(startDate).endDate(endDate)
                 .validDays(validDays).notes(notes).status(status).createdAt(createdAt)
+                .shopNo(shopNo).prodNo(prodNo)
                 .build();
     }
 }
