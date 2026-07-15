@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(activeMenu)"
+       class="fixed bottom-0 left-0 top-0 z-40 flex w-64 flex-col overflow-hidden border-r border-outline-variant bg-surface">
+    <a class="flex flex-shrink-0 items-center gap-md border-b border-outline-variant px-md py-lg transition-colors hover:bg-surface-container-low"
+       th:href="@{/admin/index}" href="/admin/index" aria-label="관리자 메인으로 이동">
+        <span class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-container-high text-primary">
+            <span class="material-symbols-outlined">storefront</span>
+        </span>
+        <span><strong class="block font-headline-md text-headline-md text-primary">K-market Admin</strong><small class="text-on-surface-variant">관리자 모드</small></span>
+    </a>
+
+    <nav class="flex flex-1 flex-col gap-2 overflow-y-auto px-3 py-4 text-sm" aria-label="관리자 메뉴">
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'shop'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'shop'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">store</span>상점 관리</h3>
+            <div class="flex gap-3 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/shop/list}">상점목록</a><a class="hover:text-primary" th:href="@{/admin/shop/sales}">매출현황</a></div>
+        </section>
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'member'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'member'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">group</span>회원 관리</h3>
+            <div class="flex gap-3 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/member/list}">회원목록</a><a class="hover:text-primary" th:href="@{/admin/member/point}">포인트관리</a></div>
+        </section>
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'product'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'product'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">inventory_2</span>상품 관리</h3>
+            <div class="flex gap-3 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/product/list}">상품목록</a><a class="hover:text-primary" th:href="@{/admin/product/register}">상품등록</a></div>
+        </section>
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'order'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'order'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">shopping_cart</span>주문 관리</h3>
+            <div class="flex gap-3 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/order/list}">주문현황</a><a class="hover:text-primary" th:href="@{/admin/order/delivery}">배송현황</a></div>
+        </section>
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'coupon'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'coupon'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">confirmation_number</span>쿠폰 관리</h3>
+            <div class="flex gap-3 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/coupon/list}">쿠폰목록</a><a class="hover:text-primary" th:href="@{/admin/coupon/issued}">발급현황</a></div>
+        </section>
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'cs'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'cs'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">support_agent</span>고객 센터</h3>
+            <div class="flex flex-wrap gap-x-3 gap-y-1 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/cs/notice/list}">공지사항</a><a class="hover:text-primary" th:href="@{/admin/cs/faq/list}">FAQ</a><a class="hover:text-primary" th:href="@{/admin/cs/qna/list}">문의</a></div>
+        </section>
+        <section class="rounded-lg px-2 py-1" th:classappend="${activeMenu == 'config'} ? ' bg-surface-container-high' : ''">
+            <h3 class="flex items-center gap-2 py-1 font-bold" th:classappend="${activeMenu == 'config'} ? ' text-primary' : ' text-on-surface-variant'"><span class="material-symbols-outlined text-[18px]">settings</span>환경 설정</h3>
+            <div class="flex flex-wrap gap-x-3 gap-y-1 pl-7 text-xs"><a class="hover:text-primary" th:href="@{/admin/config/basic}">기본</a><a class="hover:text-primary" th:href="@{/admin/config/banner}">배너</a><a class="hover:text-primary" th:href="@{/admin/config/policy}">약관</a><a class="hover:text-primary" th:href="@{/admin/config/category}">카테고리</a><a class="hover:text-primary" th:href="@{/admin/config/version}">버전</a></div>
+        </section>
+    </nav>
+
+    <div class="flex flex-shrink-0 flex-col gap-1 border-t border-outline-variant p-3 text-sm">
+        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-on-surface-variant hover:bg-surface-container-high" th:href="@{/admin/cs/notice/list}"><span class="material-symbols-outlined text-[18px]">help</span>도움말</a>
+        <a class="flex items-center justify-center gap-2 rounded-lg border border-outline-variant py-2 font-bold text-primary hover:bg-surface-container-high" th:href="@{/member/logout}"><span class="material-symbols-outlined text-[18px]">logout</span>로그아웃</a>
+    </div>
+</aside>
+
+<header th:fragment="header" class="fixed left-64 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-md">
+    <h1 class="font-headline-md text-headline-md font-black text-primary">K-market Admin Dashboard</h1>
+    <a class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-primary hover:bg-surface-container-high" th:href="@{/}" href="/">
+        <span class="material-symbols-outlined text-[18px]">storefront</span>쇼핑몰 메인
+    </a>
+</header>
+</body>
+</html>

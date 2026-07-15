@@ -26,6 +26,7 @@ public class CouponIssuanceService {
     public static final String FREE_SHIPPING = "배송비 무료";
     public static final String WELCOME_SHIPPING_COUPON = "가입축하 배송비쿠폰";
     public static final String BIRTHDAY_COUPON = "생일축하 쿠폰";
+    public static final String BIRTHDAY_MEMORIAL_COUPON = "생일기념쿠폰";
 
     private final CouponRepository couponRepository;
     private final CouponDetailsRepository couponDetailsRepository;
@@ -81,7 +82,8 @@ public class CouponIssuanceService {
                 || birthDate.getMonthValue() != today.getMonthValue()
                 || birthDate.getDayOfMonth() != today.getDayOfMonth()) return false;
 
-        Coupon found = couponRepository.findFirstByNameAndStatusOrderByCouponNoDesc(BIRTHDAY_COUPON, "ACTIVE")
+        Coupon found = couponRepository.findFirstByNameInAndStatusOrderByCouponNoDesc(
+                        List.of(BIRTHDAY_COUPON, BIRTHDAY_MEMORIAL_COUPON), "ACTIVE")
                 .orElse(null);
         if (found == null || !isCurrentlyValid(found)) return false;
         LocalDateTime yearStart = today.withDayOfYear(1).atStartOfDay();

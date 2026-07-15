@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.time.LocalDate;
 
 @Log4j2
 @Controller
@@ -180,6 +182,8 @@ public class UsersController {
             @RequestParam String password,
             @RequestParam(name = "password_confirm") String passwordConfirm,
             @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "birthDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthDate,
             @RequestParam(name = "phone", required = false) String phone,
             @RequestParam(name = "zip", required = false) String zipCode,
             @RequestParam(name = "addr1", required = false) String baseAddress,
@@ -192,7 +196,8 @@ public class UsersController {
         }
 
         try {
-            usersService.registerUser(id, password, passwordConfirm, email, name, phone, zipCode, baseAddress, detailAddress);
+            usersService.registerUser(id, password, passwordConfirm, email, name, birthDate,
+                    phone, zipCode, baseAddress, detailAddress);
             redirectAttributes.addAttribute("id", id.trim());
             redirectAttributes.addAttribute("type", "user");
             clearEmailVerification(session);

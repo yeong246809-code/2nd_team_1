@@ -39,9 +39,12 @@ class SignupPointServiceTest {
     void regularSignupReceivesThreeThousandPoints() {
         Users user = usersService.registerUser(
                 "signup-bonus", "1234", "1234", "signup@test.com",
-                "신규회원", "010-1234-5678", "12345", "부산광역시", "101호");
+                "신규회원", LocalDate.of(2000, 7, 15),
+                "010-1234-5678", "12345", "부산광역시", "101호");
 
         assertSignupBonus(user.getMemberNo());
+        assertThat(memberRepository.findById(user.getMemberNo()).orElseThrow().getBirthDate())
+                .isEqualTo(LocalDate.of(2000, 7, 15));
     }
 
     @Test
@@ -79,7 +82,7 @@ class SignupPointServiceTest {
     void birthdayCouponIsIssuedOncePerYearOnlyToRegularUser() {
         Coupon birthdayCoupon = couponRepository.save(Coupon.builder()
                 .issuerName("최고관리자").couponType(CouponIssuanceService.ORDER_DISCOUNT)
-                .name(CouponIssuanceService.BIRTHDAY_COUPON).benefitType("AMOUNT").benefitValue(3000)
+                .name(CouponIssuanceService.BIRTHDAY_MEMORIAL_COUPON).benefitType("AMOUNT").benefitValue(3000)
                 .status("ACTIVE").createdAt(LocalDateTime.now()).build());
         Users regular = usersRepository.save(Users.builder().id("birthday-user").pass("x").role("USER").build());
         memberRepository.save(Member.builder().memberNo(regular.getMemberNo()).name("생일회원")

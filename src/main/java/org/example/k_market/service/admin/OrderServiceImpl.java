@@ -92,7 +92,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public Page<OrderDTO> findOrderList(Pageable pageable, String searchType, String keyword) {
-        return orderRepository.findAllWithJoin(pageable).map(Order::toDTO);
+        String normalizedType = "memberId".equals(searchType) ? "memberId" : "orderNo";
+        String normalizedKeyword = keyword == null ? "" : keyword.trim();
+        return orderRepository.findAdminOrders(normalizedType, normalizedKeyword, pageable)
+                .map(Order::toDTO);
     }
 
     @Override

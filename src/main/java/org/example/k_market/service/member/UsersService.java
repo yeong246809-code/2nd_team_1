@@ -146,7 +146,7 @@ public class UsersService implements UserDetailsService {
     public Users register(String id, String password, String passwordConfirm, String role) {
         Users user = createUser(id, password, passwordConfirm, role);
         if ("USER".equalsIgnoreCase(user.getRole())) {
-            saveMemberProfile(user, null, null, null, null, null, null);
+            saveMemberProfile(user, null, null, DEFAULT_BIRTH_DATE, null, null, null, null);
         } else if ("SELLER".equalsIgnoreCase(user.getRole())) {
             saveShopProfile(user, null, null, null, null, null, null, null, null, null);
         }
@@ -160,12 +160,22 @@ public class UsersService implements UserDetailsService {
             String passwordConfirm,
             String email,
             String name,
+            LocalDate birthDate,
             String phone,
             String zipCode,
             String baseAddress,
             String detailAddress) {
+        validateBirthDate(birthDate);
         Users user = createUser(id, password, passwordConfirm, "USER");
-        saveMemberProfile(user, email, name, phone, zipCode, baseAddress, detailAddress);
+        saveMemberProfile(user, email, name, birthDate, phone, zipCode, baseAddress, detailAddress);
+        return user;
+    }
+
+    public Users registerUser(
+            String id, String password, String passwordConfirm, String email, String name,
+            String phone, String zipCode, String baseAddress, String detailAddress) {
+        Users user = createUser(id, password, passwordConfirm, "USER");
+        saveMemberProfile(user, email, name, DEFAULT_BIRTH_DATE, phone, zipCode, baseAddress, detailAddress);
         return user;
     }
 
@@ -217,6 +227,7 @@ public class UsersService implements UserDetailsService {
             Users user,
             String email,
             String name,
+            LocalDate birthDate,
             String phone,
             String zipCode,
             String baseAddress,
@@ -224,7 +235,7 @@ public class UsersService implements UserDetailsService {
         Member member = Member.builder()
                 .memberNo(user.getMemberNo())
                 .name(trimToNull(name))
-                .birthDate(DEFAULT_BIRTH_DATE)
+                .birthDate(birthDate == null ? DEFAULT_BIRTH_DATE : birthDate)
                 .email(trimToNull(email))
                 .phone(trimToNull(phone))
                 .zipCode(trimToNull(zipCode))
@@ -247,6 +258,15 @@ public class UsersService implements UserDetailsService {
                 .expiredAt(LocalDate.now().plusYears(1))
                 .build());
         couponIssuanceService.issueWelcomeCoupon(user.getMemberNo());
+    }
+
+    private void validateBirthDate(LocalDate birthDate) {
+        if (birthDate == null || DEFAULT_BIRTH_DATE.equals(birthDate)) {
+            throw new IllegalArgumentException("생년월일을 입력해주세요.");
+        }
+        if (birthDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("생년월일은 오늘 이후 날짜로 입력할 수 없습니다.");
+        }
     }
 
     private void saveShopProfile(

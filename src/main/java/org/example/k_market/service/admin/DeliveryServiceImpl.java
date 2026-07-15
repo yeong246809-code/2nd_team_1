@@ -95,18 +95,20 @@ public class DeliveryServiceImpl implements DeliveryService {
                 }
             }
 
-            // 상세 주문 조회 후 수량 합산 (0으로 초기화하여 Null 방지)
-            int totalQuantity = orderDetailsRepository.findByOrderNo((int) d.getOrderNo())
-                    .stream()
-                    .mapToInt(detail -> detail.getQuantity())
-                    .sum();
+            OrderDetails detail = orderDetailsRepository.findById(d.getOrderDetailNo())
+                    .orElseGet(() -> orderDetailsRepository.findByOrderNo(d.getOrderNo()).stream()
+                            .findFirst().orElse(null));
+            Product product = detail == null ? null
+                    : productRepository.findById(detail.getProductNo()).orElse(null);
+            String productName = product == null ? "상품 정보 없음" : product.getName();
+            int totalQuantity = detail == null ? 0 : detail.getQuantity();
 
             return DeliveryDTO.builder()
                     .trackingNumber(d.getTrackingNumber() != null ? d.getTrackingNumber() : "미등록")
                     .courierName(d.getCourierName() != null ? d.getCourierName() : "미지정")
                     .orderNo(d.getOrderNo())
                     .recipientName(o.getRecipientName() != null ? o.getRecipientName() : "비회원")
-                    .orderName(o.getOrderName() != null ? o.getOrderName() : "상품명없음")
+                    .orderName(productName)
                     .totalProductPrice(o.getTotalProductPrice())
                     .shippingFee(o.getTotalShippingFee())
                     .deliveryStatus(o.getStatus() != null ? o.getStatus() : "배송준비")
@@ -122,10 +124,10 @@ public class DeliveryServiceImpl implements DeliveryService {
         Order o = orderRepository.findById((int) d.getOrderNo()).orElseThrow();
 
         // 수정: 클래스명이 아니라 주입된 인스턴스명을 사용하세요!
-        OrderDetails od = orderDetailsRepository.findByOrderNo((int) o.getOrderNo())
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("주문 상세 정보를 찾을 수 없습니다."));
+        OrderDetails od = orderDetailsRepository.findById(d.getOrderDetailNo())
+                .orElseGet(() -> orderDetailsRepository.findByOrderNo(o.getOrderNo()).stream()
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("주문 상세 정보를 찾을 수 없습니다.")));
 
         Product p = productRepository.findById(od.getProductNo()).orElseThrow();
 
