@@ -205,10 +205,12 @@
             <div class="bg-surface-container-low p-md rounded standard-border mb-lg">
                 <form class="flex flex-wrap items-center gap-md text-sm" th:action="@{/product/search}" action="/product/search" method="get">
                     <input type="hidden" name="sort" th:value="${sort}">
+
                     <div class="flex-1 min-w-[280px] flex gap-2">
-                        <input name="keyword" th:value="${keyword}" class="flex-1 p-2.5 rounded border-outline bg-white focus:ring-primary focus:border-primary" placeholder="결과 내 재검색" type="text"/>
+                        <input name="keyword" th:value="${keyword}" class="flex-1 p-2.5 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none" placeholder="결과 내 재검색" type="text"/>
                         <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded font-bold hover:opacity-90 transition-opacity">검색</button>
                     </div>
+
                     <div class="flex items-center gap-md text-on-surface-variant font-medium">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input name="searchName" value="true" th:checked="${searchName}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 상품명
@@ -220,10 +222,15 @@
                             <input name="searchPrice" value="true" th:checked="${searchPrice}" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> 가격
                         </label>
                     </div>
+
                     <div class="flex items-center gap-2">
-                        <input name="minPrice" th:value="${minPrice}" class="w-24 p-2 rounded border-outline bg-white" placeholder="최소(원)" type="number"/>
+                        <input name="minPrice" th:value="${minPrice}" min="0" oninput="if(value<0) value=0;"
+                               class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                               placeholder="최소(원)" type="number"/>
                         <span class="text-outline-variant">~</span>
-                        <input name="maxPrice" th:value="${maxPrice}" class="w-24 p-2 rounded border-outline bg-white" placeholder="최대(원)" type="number"/>
+                        <input name="maxPrice" th:value="${maxPrice}" min="0" oninput="if(value<0) value=0;"
+                               class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                               placeholder="최대(원)" type="number"/>
                     </div>
                 </form>
             </div>
