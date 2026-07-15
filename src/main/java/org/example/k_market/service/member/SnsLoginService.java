@@ -12,6 +12,7 @@ import org.example.k_market.repository.UsersRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.k_market.service.CouponIssuanceService;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class SnsLoginService {
     private final PasswordEncoder passwordEncoder;
     private final DefaultMemberGradeService defaultMemberGradeService;
     private final PointHistoryRepository pointHistoryRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     @Transactional
     public Users findOrCreateUser(SnsProfile profile) {
@@ -89,6 +91,7 @@ public class SnsLoginService {
                 .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDate.now().plusYears(1))
                 .build());
+        couponIssuanceService.issueWelcomeCoupon(user.getMemberNo());
     }
 
     private void saveSnsAccount(Users user, SnsProfile profile) {

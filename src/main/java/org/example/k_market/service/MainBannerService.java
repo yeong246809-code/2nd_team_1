@@ -8,11 +8,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriUtils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,11 @@ public class MainBannerService {
     }
 
     public List<BannerDTO> findSliderBanners() {
-        return findBanners(SLIDER_POSITION, MAX_SLIDER_BANNERS, "16 / 6");
+        List<BannerDTO> banners = findBanners(SLIDER_POSITION, MAX_SLIDER_BANNERS, "16 / 6");
+        banners.stream()
+                .filter(banner -> "ㅁㄴㅇ".equals(banner.getName()))
+                .forEach(banner -> banner.setLinkUrl(claimUrl("배송비무료 확인용 쿠폰")));
+        return banners;
     }
 
     public Optional<BannerDTO> findLeftSideBanner() {
@@ -39,7 +45,11 @@ public class MainBannerService {
     }
 
     public Optional<BannerDTO> findRightSideBanner() {
-        return findBanners(RIGHT_SIDE_POSITION, 1, "1 / 2").stream().findFirst();
+        return findBanners(RIGHT_SIDE_POSITION, 1, "1 / 2").stream().findFirst()
+                .map(banner -> {
+                    banner.setLinkUrl(claimUrl("생성기념 쿠폰"));
+                    return banner;
+                });
     }
 
     private List<BannerDTO> findBanners(String position, int limit, String fallbackAspectRatio) {
@@ -79,5 +89,10 @@ public class MainBannerService {
         } else {
             banner.setAspectRatio(fallbackAspectRatio);
         }
+    }
+
+    private String claimUrl(String couponName) {
+        return "/coupon/claim?couponName="
+                + UriUtils.encodeQueryParam(couponName, StandardCharsets.UTF_8);
     }
 }

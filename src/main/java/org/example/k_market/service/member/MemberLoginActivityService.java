@@ -8,6 +8,7 @@ import org.example.k_market.repository.UsersRepository;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.k_market.service.CouponIssuanceService;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,7 @@ public class MemberLoginActivityService {
 
     private final UsersRepository usersRepository;
     private final MemberRepository memberRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     @Transactional
     public boolean recordSuccessfulLogin(String loginId) {
@@ -29,9 +31,11 @@ public class MemberLoginActivityService {
             throw new DisabledException(MemberAccountStatus.loginBlockMessage(user.getStatus()));
         }
 
-        return memberRepository.findById(user.getMemberNo())
+        boolean dormantReleased = memberRepository.findById(user.getMemberNo())
                 .map(member -> recordMemberLogin(user, member))
                 .orElse(false);
+        couponIssuanceService.issueBirthdayCouponIfEligible(user.getMemberNo());
+        return dormantReleased;
     }
 
     private boolean recordMemberLogin(Users user, Member member) {

@@ -28,6 +28,12 @@ public class CouponDetails {
         this.status = "중단";
     }
 
+    public void use() {
+        this.isUsed = "Y";
+        this.usedAt = LocalDateTime.now();
+        this.status = "사용완료";
+    }
+
     public CouponDetailsDTO toDTO(){
         return CouponDetailsDTO.builder()
                 .couponDetailNo(couponDetailNo).couponNo(couponNo).memberNo(memberNo)

@@ -161,7 +161,6 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-base">
-                    <div th:replace="~{fragments/cart-button :: button}"></div>
                     <button class="md:hidden p-2 border border-outline-variant rounded">
                         <span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
                     </button>
@@ -350,6 +349,19 @@
                             <h3 class="font-bold text-lg text-primary">할인정보</h3>
                         </div>
                         <div class="bg-surface-container-low p-md rounded flex flex-col gap-md mt-2 text-sm">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-md">
+                                <label for="coupon-select" class="font-semibold text-on-surface-variant">쿠폰 사용</label>
+                                <select id="coupon-select" name="couponDetailNo"
+                                        class="w-full sm:w-96 rounded border-outline bg-white p-2 text-sm pr-8">
+                                    <option value="" data-discount="0">쿠폰 사용 안 함</option>
+                                    <option th:each="coupon : ${availableCoupons}"
+                                            th:value="${coupon.couponDetailNo}"
+                                            th:data-discount="${coupon.estimatedDiscount}"
+                                            th:text="|${coupon.name} (-${#numbers.formatInteger(coupon.estimatedDiscount, 1, 'COMMA')}원)|">
+                                        쿠폰명
+                                    </option>
+                                </select>
+                            </div>
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <span class="text-on-surface-variant">현재 사용 가능 포인트: <span class="font-bold text-primary" th:text="${#numbers.formatInteger(orderMember != null ? orderMember.points : 0, 1, 'COMMA')}">0</span> 점</span>
                                 <div class="flex gap-sm">
@@ -426,6 +438,10 @@
                             <li class="flex justify-between items-center">
                                 <span class="text-on-surface-variant">포인트 할인</span>
                                 <span id="point-discount" class="font-bold text-error">0원</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-on-surface-variant">쿠폰 할인</span>
+                                <span id="coupon-discount" class="font-bold text-error">0원</span>
                             </li>
                             <li class="pt-sm border-t border-outline-variant/60 mt-2">
                                 <div class="flex justify-between items-end">
@@ -633,7 +649,7 @@
     function normalizedUsedPoints(showAlert) {
         const input = document.getElementById('used-points');
         const available = Number(input?.dataset.availablePoints || 0);
-        const orderPrice = Number(input?.dataset.orderPrice || 0);
+        const orderPrice = Math.max(Number(input?.dataset.orderPrice || 0) - selectedCouponDiscount(), 0);
         let value = Math.max(Number(input?.value || 0), 0);
         if (value > 0 && available < 5000) {
             if (showAlert) alert('포인트는 5,000점 이상 보유한 경우 사용할 수 있습니다.');
@@ -647,9 +663,17 @@
     function updatePaymentSummary(usedPoints) {
         const finalPrice = document.getElementById('final-payment-price');
         const orderPrice = Number(finalPrice?.dataset.orderPrice || 0);
+        const couponDiscountValue = selectedCouponDiscount();
         const pointDiscount = document.getElementById('point-discount');
+        const couponDiscount = document.getElementById('coupon-discount');
         if (pointDiscount) pointDiscount.textContent = usedPoints > 0 ? `-${formatter.format(usedPoints)}원` : '0원';
-        if (finalPrice) finalPrice.textContent = `${formatter.format(Math.max(orderPrice - usedPoints, 0))}원`;
+        if (couponDiscount) couponDiscount.textContent = couponDiscountValue > 0 ? `-${formatter.format(couponDiscountValue)}원` : '0원';
+        if (finalPrice) finalPrice.textContent = `${formatter.format(Math.max(orderPrice - couponDiscountValue - usedPoints, 0))}원`;
+    }
+
+    function selectedCouponDiscount() {
+        const selected = document.getElementById('coupon-select')?.selectedOptions?.[0];
+        return Math.max(Number(selected?.dataset.discount || 0), 0);
     }
 
     function applyPoints() {
@@ -659,7 +683,7 @@
     function useAllPoints() {
         const input = document.getElementById('used-points');
         const available = Number(input?.dataset.availablePoints || 0);
-        const orderPrice = Number(input?.dataset.orderPrice || 0);
+        const orderPrice = Math.max(Number(input?.dataset.orderPrice || 0) - selectedCouponDiscount(), 0);
         if (available < 5000) {
             alert('포인트는 5,000점 이상 보유한 경우 사용할 수 있습니다.');
             return;
@@ -680,6 +704,10 @@
     }
 
     document.getElementById('used-points')?.addEventListener('change', applyPoints);
+    document.getElementById('coupon-select')?.addEventListener('change', () => {
+        const usedPoints = normalizedUsedPoints(false);
+        updatePaymentSummary(usedPoints);
+    });
     document.querySelectorAll('[data-order-field]').forEach(input => {
         input.addEventListener('input', syncCheckedShipments);
     });

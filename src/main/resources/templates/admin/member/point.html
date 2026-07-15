@@ -272,7 +272,7 @@
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md mb-md">
         <form th:action="@{/admin/member/point}" method="get" class="flex gap-2 items-center">
-            <select name="searchType" class="border border-outline-variant rounded p-2 text-sm focus:ring-primary focus:border-primary">
+            <select name="searchType" class="border border-outline-variant rounded p-2 text-sm focus:ring-primary focus:border-primary pr-8">
                 <option value="id" th:selected="${searchType == 'id'}">아이디</option>
                 <option value="name" th:selected="${searchType == 'name'}">이름</option>
             </select>

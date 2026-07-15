@@ -69,7 +69,7 @@
 
     <section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md">
         <form class="flex items-center gap-sm mb-md" th:action="@{/admin/cs/faq/list}" method="get">
-            <select name="type" class="rounded border-outline-variant text-label-md">
+            <select name="type" class="rounded border-outline-variant text-label-md pr-8">
                 <option value="전체" th:selected="${type == null or type == '전체'}">유형선택</option>
                 <option value="회원" th:selected="${type == '회원'}">회원</option>
                 <option value="쿠폰/이벤트" th:selected="${type == '쿠폰/이벤트'}">쿠폰/이벤트</option>

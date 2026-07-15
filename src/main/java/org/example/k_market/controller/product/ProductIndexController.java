@@ -6,6 +6,7 @@ import org.example.k_market.dto.CartItemViewDTO;
 import org.example.k_market.dto.CheckoutRequest;
 import org.example.k_market.entity.Cart;
 import org.example.k_market.entity.Category;
+import org.example.k_market.entity.Coupon;
 import org.example.k_market.entity.Member;
 import org.example.k_market.entity.Product;
 import org.example.k_market.entity.Qna;
@@ -23,6 +24,7 @@ import org.example.k_market.security.MyUserDetails;
 import org.example.k_market.service.ProductService;
 import org.example.k_market.service.CartService;
 import org.example.k_market.service.CheckoutService;
+import org.example.k_market.service.CouponIssuanceService;
 import org.example.k_market.service.aws.S3Uploader;
 import org.example.k_market.service.admin.BannerService;
 import org.springframework.data.domain.Page;
@@ -68,6 +70,7 @@ public class ProductIndexController {
     private final S3Uploader s3Uploader;
     private final BannerService bannerService;
     private final ShopRepository shopRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     private static final int PAGE_SIZE = 10;
     private static final int REVIEW_PAGE_SIZE = 5;
@@ -435,6 +438,7 @@ public class ProductIndexController {
         String shopName = shopRepository.findByShopNo(product.getShopNo())
                 .map(Shop::getName)
                 .orElse("판매자 정보 없음");
+        Double sellerAverageRating = reviewRepository.findAverageRatingByShopNo(product.getShopNo());
 
         // 조회수 +1 (상세페이지 진입 시마다 증가)
         int currentViewCount = (product.getViewCount() == null) ? 0 : product.getViewCount();
@@ -473,6 +477,7 @@ public class ProductIndexController {
 
         model.addAttribute("product", product);
         model.addAttribute("shopName", shopName);
+        model.addAttribute("sellerAverageRating", sellerAverageRating);
         model.addAttribute("productSkus", productSkuRepository.findByProdNoOrderBySkuNoAsc(product.getProdNo()));
         model.addAttribute("category", category);
         model.addAttribute("parentCategory", parentCategory);
@@ -481,7 +486,10 @@ public class ProductIndexController {
         model.addAttribute("reviewCurrentPage", requestedReviewPage + 1);
         model.addAttribute("reviewTotalPages", reviewPageData.getTotalPages());
         model.addAttribute("reviewTotalElements", reviewPageData.getTotalElements());
-        model.addAttribute("productDetailBanner", bannerService.getDisplayableBanner("PRODUCT1"));
+        Coupon productCoupon = couponIssuanceService.findActiveProductCoupon(product.getProdNo());
+        model.addAttribute("productCoupon", productCoupon);
+        model.addAttribute("productDetailBanner", productCoupon == null
+                ? null : bannerService.getDisplayableBanner("PRODUCT1"));
         model.addAttribute("qnaList", qnaList);
         model.addAttribute("reviewEligible", reviewEligible);
         model.addAttribute("reviewEligibilityMessage", userDetails == null
@@ -805,6 +813,12 @@ public class ProductIndexController {
         int totalOrderPrice = items.stream().mapToInt(CartItemViewDTO::getLineTotal).sum()
                 + totalShippingFee;
         int totalRewardPoints = items.stream().mapToInt(CartItemViewDTO::getLineRewardPoints).sum();
+        Map<Long, Integer> productPrices = new LinkedHashMap<>();
+        items.forEach(item -> {
+            int discountRate = Math.max(0, Math.min(item.getDiscountRate(), 100));
+            int discountedUnitPrice = (int) (item.getUnitPrice() * (100L - discountRate) / 100L);
+            productPrices.merge(item.getProdNo(), discountedUnitPrice * item.getQuantity(), Integer::sum);
+        });
 
         model.addAttribute("orderItems", items);
         model.addAttribute("totalQuantity", totalQuantity);
@@ -814,6 +828,8 @@ public class ProductIndexController {
         model.addAttribute("totalOrderPrice", totalOrderPrice);
         model.addAttribute("totalRewardPoints", totalRewardPoints);
         model.addAttribute("orderMember", memberRepository.findById(memberNo).orElse(null));
+        model.addAttribute("availableCoupons", couponIssuanceService.availableForOrder(
+                memberNo, productPrices, totalShippingFee));
         addProductLayout(model, null);
     }
 

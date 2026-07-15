@@ -31,6 +31,7 @@ public class CheckoutService {
     private final PointHistoryRepository pointHistoryRepository;
     private final OrderDeliveryRepository orderDeliveryRepository;
     private final ShopRepository shopRepository;
+    private final CouponIssuanceService couponIssuanceService;
 
     @Transactional
     public CheckoutResult placeOrder(int memberNo, CheckoutRequest request) {
@@ -46,8 +47,18 @@ public class CheckoutService {
         List<NormalizedShipment> shipments = normalizeAndValidateShipments(request, lines);
 
         int totalProductPrice = lines.stream().mapToInt(Line::productTotal).sum();
-        int totalDiscountPrice = lines.stream().mapToInt(Line::discountTotal).sum();
-        int totalShippingFee = groupedShippingFee(lines);
+        int productDiscountPrice = lines.stream().mapToInt(Line::discountTotal).sum();
+        int originalShippingFee = groupedShippingFee(lines);
+        Map<Long, Integer> productPrices = new LinkedHashMap<>();
+        lines.forEach(line -> productPrices.merge(line.product().getProdNo(),
+                line.productTotal() - line.discountTotal(), Integer::sum));
+        CouponIssuanceService.AppliedCoupon appliedCoupon = request.getCouponDetailNo() == null
+                ? null : couponIssuanceService.useForOrder(
+                        request.getCouponDetailNo(), memberNo, productPrices, originalShippingFee);
+        int couponProductDiscount = appliedCoupon == null || appliedCoupon.freeShipping()
+                ? 0 : appliedCoupon.discount();
+        int totalDiscountPrice = productDiscountPrice + couponProductDiscount;
+        int totalShippingFee = appliedCoupon != null && appliedCoupon.freeShipping() ? 0 : originalShippingFee;
         int rewardPoints = lines.stream().mapToInt(Line::rewardTotal).sum();
         int beforePoints = totalProductPrice - totalDiscountPrice + totalShippingFee;
         int usedPoints = request.getUsedPoints() == null ? 0 : request.getUsedPoints();
@@ -91,11 +102,18 @@ public class CheckoutService {
         Map<Integer, Integer> maxShippingByShop = maxShippingByShop(lines);
         Set<Integer> chargedShops = new HashSet<>();
         List<OrderDetails> details = new ArrayList<>();
+        int remainingCouponDiscount = couponProductDiscount;
         for (Line line : lines) {
             int shopNo = line.product().getShopNo();
             int maxShippingFee = maxShippingByShop.getOrDefault(shopNo, 0);
-            int chargedShippingFee = line.shippingFee() == maxShippingFee && chargedShops.add(shopNo)
+            int chargedShippingFee = appliedCoupon != null && appliedCoupon.freeShipping() ? 0
+                    : line.shippingFee() == maxShippingFee && chargedShops.add(shopNo)
                     ? maxShippingFee : 0;
+            boolean couponEligibleLine = appliedCoupon != null && !appliedCoupon.freeShipping()
+                    && (appliedCoupon.prodNo() == null || appliedCoupon.prodNo().equals(line.product().getProdNo()));
+            int allocatedCouponDiscount = couponEligibleLine
+                    ? Math.min(remainingCouponDiscount, line.productTotal() - line.discountTotal()) : 0;
+            remainingCouponDiscount -= allocatedCouponDiscount;
             details.add(OrderDetails.builder()
                     .orderNo(order.getOrderNo())
                     .productNo(line.product().getProdNo())
@@ -103,7 +121,7 @@ public class CheckoutService {
                     .shopNo(shopNo)
                     .quantity(line.quantity())
                     .price(line.unitPrice())
-                    .discountPrice(line.discountTotal())
+                    .discountPrice(line.discountTotal() + allocatedCouponDiscount)
                     .shippingFee(chargedShippingFee)
                     .rewardPoints(line.rewardTotal())
                     .status(status)

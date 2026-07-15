@@ -239,7 +239,7 @@
           <label for="cate1" class="block text-sm font-medium mb-1">1차 분류 <span class="text-error">*</span></label>
           <select id="cate1"
                   onchange="updateCate2()"
-                  class="w-full border-outline-variant rounded-lg"
+                  class="w-full border-outline-variant rounded-lg pr-8"
                   required>
             <option value="">1차 분류 선택</option>
             <option th:each="category : ${allCategories}"
@@ -253,7 +253,7 @@
           <label for="cate2" class="block text-sm font-medium mb-1">2차 분류 <span class="text-error">*</span></label>
           <select id="cate2"
                   name="cateNo"
-                  class="w-full border-outline-variant rounded-lg"
+                  class="w-full border-outline-variant rounded-lg pr-8"
                   required>
             <option value="">2차 분류 선택</option>
           </select>
@@ -272,7 +272,7 @@
         <label for="shopNo" class="block text-sm font-medium mb-1">상점 선택 <span class="text-error">*</span></label>
         <select id="shopNo"
                 th:field="*{shopNo}"
-                class="w-full border-outline-variant rounded-lg"
+                class="w-full border-outline-variant rounded-lg pr-8"
                 required>
           <option value="">상점 선택</option>
           <option th:each="shop : ${shops}"
