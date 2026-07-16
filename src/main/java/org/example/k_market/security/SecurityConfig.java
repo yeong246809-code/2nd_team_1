@@ -183,19 +183,7 @@ public class SecurityConfig {
                 })
         );
 
-        // CSRF 비활성화
-        //httpSecurity.csrf(CsrfConfigurer::disable);
-
-        httpSecurity.csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers(
-                        "/member/email/send",   // 이메일 인증번호 발송 API
-                        "/member/email/verify", // 이메일 인증번호 확인 API
-                        "/member/register",     // 회원가입 처리 API
-                        "/member/check-id",
-                        "/admin/**"
-                )
-        );
+        httpSecurity.csrf(CsrfConfigurer::disable);
         return httpSecurity.build();
     }
 
