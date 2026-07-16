@@ -379,7 +379,7 @@ public class ProductIndexController {
         model.addAttribute("sort", normalizedSort);
         model.addAttribute("totalCount", products.size());
         model.addAttribute("products", products);
-        model.addAttribute("shopNameMap", productService.getShopNameMap());
+        model.addAttribute("shopNames", productService.getShopNameMap());
         model.addAttribute("reviewStats", reviewStats);
         addProductLayout(model, null);
 
