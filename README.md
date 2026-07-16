@@ -74,9 +74,11 @@ mysql -u root -p < database/init.sql
 
 | 이름 | 역할 | GitHub |
 |------|------|--------|
-| 👨‍💻 | Frontend | [@yeong246809-code](https://github.com/yeong246809-code) |
-| 👨‍💻 | Backend | - |
-| 👨‍💻 | Database | - |
+| 👨‍💻 | Leader | 강채은 |
+| 👨‍💻 | Member1 | 강현주 |
+| 👨‍💻 | Member2 | 남수아 |
+| 👨‍💻 | Member3 | 이찬영 |
+| 👨‍💻 | Member4 | 한성주 |
 
 ---
 
