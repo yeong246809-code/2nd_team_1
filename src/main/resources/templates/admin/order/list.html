@@ -443,30 +443,55 @@
 
     // 등록하기: 서버로 데이터 전송
     function submitDelivery() {
+        // 1. 필수 입력값 검증 (프론트엔드 단에서 500 에러 사전 방지)
+        const courierName = document.getElementById('d-courier').value;
+        const trackingNumber = document.getElementById('d-trackingNo').value;
+
+        if (!courierName) {
+            alert("택배사를 선택해 주세요.");
+            return;
+        }
+        if (!trackingNumber.trim()) {
+            alert("운송장 번호를 입력해 주세요.");
+            return;
+        }
+
         const data = {
             orderNo: document.getElementById('d-orderNo').value,
             recipientName: document.getElementById('d-receiver').value,
             zipCode: document.getElementById('d-zip').value,
             baseAddress: document.getElementById('d-baseAddress').value,
             detailAddress: document.getElementById('d-detailAddress').value,
-            courierName: document.getElementById('d-courier').value, // 택배사
-            trackingNumber: document.getElementById('d-trackingNo').value, // 운송장
+            courierName: courierName,
+            trackingNumber: trackingNumber,
             memo: document.getElementById('d-memo').value
         };
 
+        // 2. 백엔드 전송 및 완벽한 예외 처리
         fetch(`${contextPath}admin/order/delivery/register`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
-        }).then(res => {
-            if(res.ok) {
-                alert("배송 등록이 완료되었습니다.");
-                location.reload();
-            }
-        });
+        })
+            .then(async (res) => {
+                if(res.ok) {
+                    alert("배송 등록이 완료되었습니다.");
+                    location.reload();
+                } else {
+                    // 백엔드에서 500 등 에러 발생 시, 서버가 보낸 에러 메시지를 읽어와서 출력
+                    const errorText = await res.text();
+                    console.error("서버 에러 응답:", errorText);
+                    alert("배송 등록에 실패했습니다. (서버 오류: " + res.status + ")\n백엔드 콘솔 로그를 확인해주세요.");
+                }
+            })
+            .catch(err => {
+                // 네트워크 끊김 또는 CORS 등 아예 통신 자체가 실패했을 때
+                console.error("네트워크 에러:", err);
+                alert("서버와 통신하는 중 문제가 발생했습니다.");
+            });
     }
 
-    </script>
-    <script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
-    </body>
+</script>
+<script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
+</body>
 </html>

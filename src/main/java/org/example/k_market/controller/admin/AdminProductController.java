@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Controller
@@ -190,18 +192,17 @@ public class AdminProductController {
             @RequestParam(value = "file3", required = false) MultipartFile file3,
             @RequestParam(value = "detailFile", required = false) MultipartFile detailFile,
 
-            // 🚨 [수정] modify.html에서 변경된 파라미터명(optionNames, optionValues) 수신
+            // 기본 옵션 파라미터 (사이즈, 컬러 등 옵션명과 값)
             @RequestParam(value = "optionNames", required = false) List<String> optionNames,
             @RequestParam(value = "optionValues", required = false) List<String> optionValues,
 
-            // 🚨 [추가] modify.html의 조합 테이블로부터 넘어온 SKU 파라미터 수신
-            @RequestParam(value = "skuNames", required = false) List<String> skuNames,
-            @RequestParam(value = "prices", required = false) List<Integer> prices,
-            @RequestParam(value = "stocks", required = false) List<Integer> stocks,
+            // 🚨 [핵심 변경점] 쪼개진 skuNames, prices, stocks를 지우고 JSON 문자열 단 1개로 수신!
+            @RequestParam(value = "skuJsonData", required = false) String skuJsonData,
 
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
+        // 1. 바인딩 오류 검증
         if (bindingResult.hasErrors()) {
             log.error("상품 수정 바인딩 오류");
             bindingResult.getAllErrors()
@@ -216,17 +217,18 @@ public class AdminProductController {
         }
 
         try {
+            // 2. 기존 상품 존재 여부 및 소유권 검증
             Product existingProduct = productService.findById(productDTO.getProdNo());
             if (existingProduct == null) {
                 throw new IllegalArgumentException("상품을 찾을 수 없습니다.");
             }
             assertProductOwnership(existingProduct, authentication);
 
-            // 카테고리와 상점정보 검증 및 기본값 세팅
+            // 3. 카테고리와 상점정보 검증 및 기본값 세팅
             validateProduct(productDTO, authentication);
             applyDefaults(productDTO);
 
-            // 1. 상품 기본정보 및 대표/상세 이미지 교체 (S3 업로드 및 저장)
+            // 4. 상품 기본정보 및 대표/상세 이미지 교체 (S3 업로드 및 DB 업데이트)
             Product modifiedProduct = productService.modify(
                     productDTO,
                     file1,
@@ -235,31 +237,42 @@ public class AdminProductController {
                     detailFile
             );
 
-            // 2. 일반 옵션 교체 저장 (기존 DB 데이터 삭제 후 재생성)
+            // 5. 일반 옵션 교체 저장 (기존 옵션 삭제 후 새 옵션 재생성)
             productOptionService.replaceOptions(
                     modifiedProduct.getProdNo(),
                     optionNames,
                     optionValues
             );
 
-            // 3. 🚨 [추가] 조합형 SKU 옵션 교체 저장 (기존 DB 데이터 삭제 후 재생성)
-            if (skuNames != null && !skuNames.isEmpty()) {
-                List<ProductSkus> skuList = new java.util.ArrayList<>();
-                for (int i = 0; i < skuNames.size(); i++) {
+            // 6. 🚨 [핵심 로직] JSON으로 묶여 온 SKU 조합 데이터 역직렬화 및 교체 저장
+            if (skuJsonData != null && !skuJsonData.isBlank()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                // JSON 문자열 -> List<Map<String, Object>> 형태로 변환
+                List<Map<String, Object>> skuMapList = objectMapper.readValue(
+                        skuJsonData, new TypeReference<List<Map<String, Object>>>() {}
+                );
+
+                List<ProductSkus> skuList = new ArrayList<>();
+                for (Map<String, Object> map : skuMapList) {
                     skuList.add(ProductSkus.builder()
-                            .product(modifiedProduct) // 연관관계 매핑 객체 전달
-                            .skuName(skuNames.get(i))
-                            .price(prices != null && i < prices.size() && prices.get(i) != null ? prices.get(i) : 0)
-                            .stock(stocks != null && i < stocks.size() && stocks.get(i) != null ? stocks.get(i) : 0)
+                            .product(modifiedProduct) // 변경된 상품 엔티티 연관관계 매핑
+                            .skuName((String) map.get("skuName"))
+                            .price((Integer) map.get("price"))
+                            .stock((Integer) map.get("stock"))
                             .build());
                 }
+
                 // 기존 SKU를 전부 지우고 새로운 조합으로 Bulk Insert 수행
                 productSkuService.replaceSkus(modifiedProduct.getProdNo(), skuList);
+            } else {
+                // 만약 넘어온 SKU 조합이 없다면 기존 SKU도 모두 삭제 (옵션을 전부 지운 경우 대비)
+                productSkuService.replaceSkus(modifiedProduct.getProdNo(), new ArrayList<>());
             }
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "상품이 수정되었습니다."
+                    "상품이 성공적으로 수정되었습니다."
             );
 
             return "redirect:/admin/product/list";
