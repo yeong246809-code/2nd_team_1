@@ -192,7 +192,8 @@ public class SecurityConfig {
                         "/member/email/send",   // 이메일 인증번호 발송 API
                         "/member/email/verify", // 이메일 인증번호 확인 API
                         "/member/register",     // 회원가입 처리 API
-                        "/member/check-id"      // 아이디 중복 확인 API (필요 시)
+                        "/member/check-id",
+                        "/admin/**"
                 )
         );
         return httpSecurity.build();
