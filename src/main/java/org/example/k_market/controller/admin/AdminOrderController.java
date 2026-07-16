@@ -121,7 +121,13 @@ public class AdminOrderController {
     }
 
     @GetMapping("/delivery")
-    public String deliveryList(@PageableDefault(size = 10) Pageable pageable, Model model,
+    public String deliveryList(
+                               @PageableDefault(
+                                       size = 10,
+                                       sort = {"shippedAt", "deliverNo"},
+                                       direction = Sort.Direction.DESC
+                               ) Pageable pageable,
+                               Model model,
                                Authentication authentication) {
         Page<DeliveryDTO> page = isAdmin(authentication)
                 ? deliveryService.getDeliveryList(pageable)

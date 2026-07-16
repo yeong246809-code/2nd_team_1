@@ -44,7 +44,12 @@ public class Deliveries {
 
     private LocalDateTime shippedAt;
 
-    
+    @PrePersist
+    private void setShippedAtOnCreate() {
+        if (shippedAt == null) {
+            shippedAt = LocalDateTime.now();
+        }
+    }
 
 
     public DeliveryDTO toDTO(){

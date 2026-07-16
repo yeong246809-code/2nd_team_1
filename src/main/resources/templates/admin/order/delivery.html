@@ -187,7 +187,8 @@
                 <td class="py-4 px-2" th:text="${delivery.totalProductPrice}"></td>
                 <td class="py-4 px-2" th:text="${delivery.shippingFee}"></td>
                 <td class="py-4 px-2" th:text="${delivery.deliveryStatus}"></td>
-                <td class="py-4 px-2" th:text="${delivery.shippedAt}"></td>
+                <td class="py-4 px-2"
+                    th:text="${delivery.shippedAt != null ? #temporals.format(delivery.shippedAt, 'yyyy-MM-dd HH:mm:ss') : '-'}"></td>
             </tr>
             </tbody>
         </table>

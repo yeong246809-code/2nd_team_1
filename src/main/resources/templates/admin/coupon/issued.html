@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>K-market Admin Dashboard</title>
@@ -167,6 +168,7 @@
                     <th class="py-3 px-2">쿠폰명</th>
                     <th class="py-3 px-2">사용자</th>
                     <th class="py-3 px-2">상태</th>
+                    <th class="py-3 px-2">발급일</th>
                     <th class="py-3 px-2">사용일</th>
                     <th class="py-3 px-2">관리</th>
                 </tr>
@@ -197,8 +199,10 @@
                         <span th:if="${item.status != '중단' and (item.isUsed == 'Y' or item.isUsed == '사용')}" class="text-green-600 font-bold">사용</span>
                         <span th:if="${item.status != '중단' and (item.isUsed == null or item.isUsed == 'N' or item.isUsed == '미사용')}" class="text-red-500 font-bold">미사용</span>
                     </td>
+                    <td class="py-4 px-2 text-xs text-on-surface-variant"
+                        th:text="${item.issuedAt != null ? #temporals.format(item.issuedAt, 'yyyy-MM-dd HH:mm:ss') : '-'}"></td>
                     <td class="py-4 px-2 text-xs text-on-surface-variant">
-                        <span th:text="${item.usedAt != null ? #temporals.format(item.usedAt, 'yyyy-MM-dd HH:mm:ss') : '0000-00-00 00:00:00'}"></span>
+                        <span th:text="${item.usedAt != null ? #temporals.format(item.usedAt, 'yyyy-MM-dd HH:mm:ss') : '-'}"></span>
                     </td>
                     <td class="py-4 px-2">
                         <button th:if="${item.status != '중단' and (item.isUsed == null or item.isUsed == 'N' or item.isUsed == '미사용')}"
@@ -211,7 +215,7 @@
                 </tr>
 
                 <tr th:if="${pageData == null or pageData.dtoList == null or pageData.dtoList.isEmpty()}" class="hover:bg-surface-container-low transition-colors">
-                    <td colspan="8" class="py-10 text-center text-gray-400">쿠폰 발급 내역이 존재하지 않습니다.</td>
+                    <td colspan="9" class="py-10 text-center text-gray-400">쿠폰 발급 내역이 존재하지 않습니다.</td>
                 </tr>
                 </tbody>
             </table>
