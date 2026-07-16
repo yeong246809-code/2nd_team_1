@@ -9,6 +9,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -18,8 +19,11 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.util.UriUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -180,15 +184,20 @@ public class SecurityConfig {
         );
 
         // CSRF 비활성화
-        httpSecurity.csrf(CsrfConfigurer::disable);
+        //httpSecurity.csrf(CsrfConfigurer::disable);
 
+        httpSecurity.csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringRequestMatchers(
+                        "/member/email/send",   // 이메일 인증번호 발송 API
+                        "/member/email/verify", // 이메일 인증번호 확인 API
+                        "/member/register",     // 회원가입 처리 API
+                        "/member/check-id"      // 아이디 중복 확인 API (필요 시)
+                )
+        );
         return httpSecurity.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
-    }
 
     private void redirectLoginFailure(
             HttpServletRequest request,
@@ -272,5 +281,10 @@ public class SecurityConfig {
             current = current.getCause();
         }
         return message.toString();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
