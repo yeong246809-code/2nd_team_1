@@ -219,9 +219,9 @@
                         </div>
 
                         <div class="flex items-center gap-2">
-                            <input name="minPrice" th:value="${minPrice}" min="0" oninput="if(value<0) value=0;" class="w-24 p-2 rounded border border-outline bg-white" placeholder="최소(원)" type="number"/>
+                            <input name="minPrice" th:value="${minPrice}" type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최소(원)"/>
                             <span class="text-outline-variant">~</span>
-                            <input name="maxPrice" th:value="${maxPrice}" min="0" oninput="if(value<0) value=0;" class="w-24 p-2 rounded border border-outline bg-white" placeholder="최대(원)" type="number"/>
+                            <input name="maxPrice" th:value="${maxPrice}" type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="w-24 p-2 rounded border border-outline bg-white focus:ring-1 focus:ring-primary focus:outline-none" placeholder="최대(원)"/>
                         </div>
                     </form>
                 </div>
@@ -289,16 +289,7 @@
                                         <span class="material-symbols-outlined text-sm">store</span>
                                         <span th:text="${product.seller != null ? product.seller : '상호명'}">상호명</span>
                                     </div>
-                                    <!-- 🟢 별점 출력 로직 추가 -->
-                                    <div th:if="${product.rating == null}" class="text-xs text-on-surface-variant">
-                                        후기 없음
-                                    </div>
-                                    <div th:if="${product.rating != null}" class="flex items-center gap-0.5" th:title="'평점: ' + ${product.rating}">
-                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                            <span class="material-symbols-outlined text-yellow-500 text-sm"
-                                                  th:style="${i <= product.rating} ? 'font-variation-settings: \'FILL\' 1;' : ''">star</span>
-                                        </th:block>
-                                    </div>
+                                    <div th:replace="~{fragments/rating :: productRating(${product.rating}, ${product.reviewCount})}"></div>
                                 </div>
 
                             </div>
