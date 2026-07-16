@@ -547,6 +547,10 @@
       menuItem.classList.add('menu-item-active');
     }
   }
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeCategorySelection();
+  });
+
 </script>
 
 <script th:src="@{/js/admin-navigation.js}" src="/js/admin-navigation.js"></script>
